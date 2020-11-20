@@ -2,6 +2,8 @@
 
 set -eux
 
+ansible-galaxy -vvv collection install community.crypto
+
 # First install pyOpenSSL, then test lookup in a second playbook in order to
 # workaround this error which occurs on OS X 10.11 only:
 #
