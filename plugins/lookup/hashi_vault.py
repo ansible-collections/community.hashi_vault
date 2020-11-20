@@ -182,56 +182,56 @@ DOCUMENTATION = """
 
 EXAMPLES = """
 - ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200') }}"
 
 - name: Return all secrets from a path
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/hello token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200') }}"
 
 - name: Vault that requires authentication via LDAP
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret/hello:value auth_method=ldap mount_point=ldap username=myuser password=mypas') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value auth_method=ldap mount_point=ldap username=myuser password=mypas') }}"
 
 - name: Vault that requires authentication via username and password
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/hello:value auth_method=userpass username=myuser password=psw url=http://myvault:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value auth_method=userpass username=myuser password=psw url=http://myvault:8200') }}"
 
 - name: Connect to Vault using TLS
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/hola:value token=c975b780-d1be-8016-866b-01d0f9b688a5 validate_certs=False') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hola:value token=c975b780-d1be-8016-866b-01d0f9b688a5 validate_certs=False') }}"
 
 - name: using certificate auth
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret/hi:value token=xxxx url=https://myvault:8200 validate_certs=True cacert=/cacert/path/ca.pem') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hi:value token=xxxx url=https://myvault:8200 validate_certs=True cacert=/cacert/path/ca.pem') }}"
 
 - name: Authenticate with a Vault app role
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/hello:value auth_method=approle role_id=myroleid secret_id=mysecretid') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value auth_method=approle role_id=myroleid secret_id=mysecretid') }}"
 
 - name: Return all secrets from a path in a namespace
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/hello token=c975b780-d1be-8016-866b-01d0f9b688a5 namespace=teama/admins') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello token=c975b780-d1be-8016-866b-01d0f9b688a5 namespace=teama/admins') }}"
 
 # When using KV v2 the PATH should include "data" between the secret engine mount and path (e.g. "secret/data/:path")
 # see: https://www.vaultproject.io/api/secret/kv/kv-v2.html#read-secret-version
 - name: Return latest KV v2 secret from path
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret=secret/data/hello token=my_vault_token url=http://myvault_url:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/data/hello token=my_vault_token url=http://myvault_url:8200') }}"
 
 # The following examples work in collection releases after community.general 0.2.0
 
 - name: secret= is not required if secret is first
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret/data/hello token=<token> url=http://myvault_url:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/hello token=<token> url=http://myvault_url:8200') }}"
 
 - name: options can be specified as parameters rather than put in term string
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret/data/hello', token=my_token_var, url='http://myvault_url:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/hello', token=my_token_var, url='http://myvault_url:8200') }}"
 
 # return_format (or its alias 'as') can control how secrets are returned to you
 - name: return secrets as a dict (default)
   ansible.builtin.set_fact:
-    my_secrets: "{{ lookup('community.general.hashi_vault', 'secret/data/manysecrets', token=my_token_var, url='http://myvault_url:8200') }}"
+    my_secrets: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/manysecrets', token=my_token_var, url='http://myvault_url:8200') }}"
 - ansible.builtin.debug:
     msg: "{{ my_secrets['secret_key'] }}"
 - ansible.builtin.debug:
@@ -241,11 +241,11 @@ EXAMPLES = """
 - name: return secrets as values only
   ansible.builtin.debug:
     msg: "A secret value: {{ item }}"
-  loop: "{{ query('community.general.hashi_vault', 'secret/data/manysecrets', token=my_token_var, url='http://myvault_url:8200', return_format='values') }}"
+  loop: "{{ query('community.hashi_vault.hashi_vault', 'secret/data/manysecrets', token=my_token_var, url='http://myvault_url:8200', return_format='values') }}"
 
 - name: return raw secret from API, including metadata
   ansible.builtin.set_fact:
-    my_secret: "{{ lookup('community.general.hashi_vault', 'secret/data/hello:value', token=my_token_var, url='http://myvault_url:8200', as='raw') }}"
+    my_secret: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/hello:value', token=my_token_var, url='http://myvault_url:8200', as='raw') }}"
 - ansible.builtin.debug:
     msg: "This is version {{ my_secret['metadata']['version'] }} of hello:value. The secret data is {{ my_secret['data']['data']['value'] }}"
 
@@ -254,13 +254,13 @@ EXAMPLES = """
 
 - name: authenticate with aws_iam_login
   ansible.builtin.debug:
-    msg: "{{ lookup('community.general.hashi_vault', 'secret/hello:value', auth_method='aws_iam_login', role_id='myroleid', profile=my_boto_profile) }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='aws_iam_login', role_id='myroleid', profile=my_boto_profile) }}"
 
 # The following examples work in collection releases after community.general 1.3.0
 
 - name: Authenticate with a JWT
   ansible.builtin.debug:
-      msg: "{{ lookup('community.general.hashi_vault', 'secret/hello:value', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://myvault:8200')}}"
+      msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://myvault:8200')}}"
 """
 
 RETURN = """
