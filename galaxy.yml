@@ -5,7 +5,8 @@ name: hashi_vault
 version: 0.1.0
 readme: README.md
 authors:
-  - YOUR NAME (github.com/YOURGITHUB)
+  - Jonathan Davila (!UNKNOWN) <jdavila(at)ansible.com>
+  - Brian Scholer (@briantist)
 description: null
 license_file: LICENSE
 tags:
