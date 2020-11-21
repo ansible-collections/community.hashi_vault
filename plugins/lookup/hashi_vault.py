@@ -261,7 +261,7 @@ EXAMPLES = """
 - name: Authenticate with a JWT
   ansible.builtin.debug:
       msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://myvault:8200')}}"
-"""
+"""  # noqa: E501
 
 RETURN = """
 _raw:
