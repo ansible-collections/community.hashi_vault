@@ -25,5 +25,5 @@ sections:
   - Bugfixes
 - - known_issues
   - Known Issues
-title: CHANGE THIS IN changelogs/config.yaml!
+title: community.hashi_vault
 trivial_section_name: trivial
