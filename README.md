@@ -10,14 +10,16 @@
 
 ## External requirements
 
-<!-- List any external resources the collection depends on, for example minimum versions of an OS, libraries, or utilities. Do not list other Ansible collections here. -->
-
-### Supported connections
-<!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->
+  - `hvac` (python library)
+    - `hvac` 0.7.0+ (for namespace support)
+    - `hvac` 0.9.6+ (to avoid all deprecation warnings)
+  - `botocore` (only if inferring aws params from boto)
+  - `boto3` (only if using a boto profile)
 
 ## Included content
 
-<!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
+- Lookup Plugins
+  - `hashi_vault`
 
 ## Using this collection
 
