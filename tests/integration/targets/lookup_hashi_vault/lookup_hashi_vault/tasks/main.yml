@@ -40,6 +40,14 @@
             selfsigned_digest: sha256
           register: selfsigned_certificate
 
+    - name: "what"
+      shell: |
+        python3 <<EEE
+        import apt
+        import apt.debfile
+        import apt_pkg
+        EEE
+
     - name: "Unzip??"
       become: yes
       block:
