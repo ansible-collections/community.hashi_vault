@@ -1,8 +1,8 @@
 - hosts: localhost
   tasks:
-    - name: Install openssl
-      import_role:
-        name: setup_openssl
+    # - name: Install openssl
+    #   import_role:
+    #     name: setup_openssl
 
     - name: "RedHat <= 7, select last version compatible with request 2.6.0 (this version doesn't support approle or jwt auth)"
       set_fact:
