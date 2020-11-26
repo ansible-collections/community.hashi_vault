@@ -2,7 +2,7 @@
 
 set -eux
 
-ansible-galaxy -vvv collection install community.crypto
+# ansible-galaxy -vvv collection install community.crypto
 
 # First install pyOpenSSL, then test lookup in a second playbook in order to
 # workaround this error which occurs on OS X 10.11 only:
@@ -17,6 +17,9 @@ ansible-galaxy -vvv collection install community.crypto
 #       _lib.X509_up_ref(x509)
 #   AttributeError: 'module' object has no attribute 'X509_up_ref'
 #   fatal: [testhost]: FAILED! => { "msg": "An unhandled exception occurred while running the lookup plugin 'hashi_vault'. Error was a <class 'requests.exceptions.SSLError'>, original message: HTTPSConnectionPool(host='localhost', port=8201): Max retries exceeded with url: /v1/auth/token/lookup-self (Caused by SSLError(SSLError(\"bad handshake: Error([('SSL routines', 'ssl3_get_server_certificate', 'certificate verify failed')],)\",),))"}
+
+# need unzip to extract vault binary
+apt-get install --no-install-recommends -y unzip
 
 ANSIBLE_ROLES_PATH=../ \
     ansible-playbook playbooks/install_dependencies.yml -v "$@"
