@@ -94,6 +94,9 @@ jobs:
             python: 3.9
 
     steps:
+      - name: Install unzip
+        run: apt-get install --no-install-recommends -y unzip
+
       - name: Check out code
         uses: actions/checkout@v2
         with:
