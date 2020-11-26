@@ -80,7 +80,15 @@ jobs:
           - stable-2.10
           - devel
         python:
+          # right now there's only controller side code in this collection (py 2.6 not supported on controller)
+          # if that changes, may have to revisit this
+          # - 2.6
+          - 2.7
+          - 3.5
           - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
 
     steps:
       - name: Check out code
