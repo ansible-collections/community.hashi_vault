@@ -82,7 +82,7 @@ jobs:
         python:
           # right now there's only controller side code in this collection (py 2.6 not supported on controller)
           # if that changes, may have to revisit this
-          # - 2.6
+          - 2.6
           - 2.7
           # - 3.5
           - 3.6
