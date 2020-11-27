@@ -17,4 +17,4 @@
     - name: 'Install hvac Python package'
       pip:
         name: "{{ hvac_package|default('hvac') }}"
-        executable: "{{ ansible_python_interpreter }}"
+        executable: "{{ ansible_python_interpreter }} -m pip"
