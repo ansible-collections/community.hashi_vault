@@ -82,7 +82,7 @@ jobs:
         python:
           # right now there's only controller side code in this collection (py 2.6 not supported on controller)
           # if that changes, may have to revisit this
-          - 2.6
+          # - 2.6
           - 2.7
           # - 3.5
           - 3.6
@@ -104,6 +104,13 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: "check pips"
+        run: |
+          which pip
+          which pip3
+          which python
+          which python3
+
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
@@ -115,7 +122,7 @@ jobs:
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-        # ansible-test support producing code coverage date
+      # ansible-test support producing code coverage data
       - name: Generate coverage report
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
