@@ -23,7 +23,9 @@
         - "{{ lookup('pipe', 'which pip3') }}"
         - "{{ lookup('pipe', 'which python3') }}"
         - "{{ ansible_python_interpreter }}"
+        - "{{ lookup('env', 'VIRTUAL_ENV') }}"
 
     - name: 'Install hvac Python package'
       pip:
         name: "{{ hvac_package|default('hvac') }}"
+        virtualenv: "{{ lookup('env', 'VIRTUAL_ENV') | default(omit, true)"
