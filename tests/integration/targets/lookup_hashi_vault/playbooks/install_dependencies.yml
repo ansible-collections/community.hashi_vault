@@ -33,4 +33,4 @@
         }}"
       pip:
         name: "{{ hvac_package | default('hvac') }}"
-        virtualenv: "{{ venv | default(ansible_python_interpreter | dirname, true) }}"
+        virtualenv: "{{ ansible_python_interpreter | dirname }}"
