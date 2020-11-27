@@ -80,7 +80,6 @@ jobs:
           - stable-2.10
           - devel
         python:
-          - 2.6
           - 2.7
           - 3.5
           - 3.6
@@ -97,10 +96,10 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python ${{ matrix.ansible }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python }}
+          python-version: 3.8
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
