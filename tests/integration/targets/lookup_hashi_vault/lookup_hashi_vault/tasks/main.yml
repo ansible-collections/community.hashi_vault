@@ -18,7 +18,7 @@
     - set_fact:
         local_temp_dir: '{{ tempfile_result.path }}'
 
-    - when: pyopenssl_version.stdout is version('0.15', '>=')
+    - when: cryptography_version.stdout is version('1.6', '>=')
       block:
         - name: Generate privatekey
           community.crypto.openssl_privatekey:
@@ -40,10 +40,16 @@
             selfsigned_digest: sha256
           register: selfsigned_certificate
 
+    # NOTE: 'package' does not work properly with the 'default' docker image, since
+    #       you're in most cases using the wrong Python versions. The 'default' image
+    #       is based on Ubuntu/Debian, so we use `command:` with `apt-get install`.
+    #
+    #- name: 'Install unzip'
+    #  package:
+    #    name: unzip
+    #  when: ansible_distribution != "MacOSX"  # unzip already installed
     - name: 'Install unzip'
-      package:
-        name: unzip
-      when: ansible_distribution != "MacOSX"  # unzip already installed
+      command: apt-get install unzip
 
     - assert:
         # Linux: x86_64, FreeBSD: amd64

@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 pid_file = "{{ local_temp_dir }}/vault.pid"
-{% if  pyopenssl_version.stdout is version('0.15', '>=') %}
+{% if cryptography_version.stdout is version('1.6', '>=') %}
 listener "tcp" {
   tls_key_file = "{{ local_temp_dir }}/privatekey.pem"
   tls_cert_file = "{{ local_temp_dir }}/cert.pem"
