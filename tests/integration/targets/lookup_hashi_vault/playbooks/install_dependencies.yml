@@ -26,6 +26,11 @@
         - "{{ lookup('env', 'VIRTUAL_ENV') }}"
 
     - name: 'Install hvac Python package'
+      vars:
+        venv: "{{
+          lookup('env', 'VIRTUAL_ENV')
+          | default(omit, true)
+        }}"
       pip:
-        name: "{{ hvac_package|default('hvac') }}"
-        virtualenv: "{{ lookup('env', 'VIRTUAL_ENV') | default(omit, true)"
+        name: "{{ hvac_package | default('hvac') }}"
+        virtualenv: "{{ venv | default(ansible_python_interpreter | dirname, true) }}"
