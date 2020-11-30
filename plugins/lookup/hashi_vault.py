@@ -16,15 +16,16 @@ DOCUMENTATION = """
     - hvac (python library)
     - hvac 0.7.0+ (for namespace support)
     - hvac 0.9.6+ (to avoid all deprecation warnings)
+    - hvac 0.10.5+ (for JWT auth)
     - botocore (only if inferring aws params from boto)
     - boto3 (only if using a boto profile)
   description:
     - Retrieve secrets from HashiCorp's Vault.
   notes:
     - Due to a current limitation in the HVAC library there won't necessarily be an error if a bad endpoint is specified.
-    - As of community.general 0.2.0, only the latest version of a secret is returned when specifying a KV v2 path.
-    - As of community.general 0.2.0, all options can be supplied via term string (space delimited key=value pairs) or by parameters (see examples).
-    - As of community.general 0.2.0, when C(secret) is the first option in the term string, C(secret=) is not required (see examples).
+    - As of community.hashi_vault 0.1.0, only the latest version of a secret is returned when specifying a KV v2 path.
+    - As of community.hashi_vault 0.1.0, all options can be supplied via term string (space delimited key=value pairs) or by parameters (see examples).
+    - As of community.hashi_vault 0.1.0, when I(secret) is the first option in the term string, C(secret=) is not required (see examples).
   options:
     secret:
       description: Vault path to the secret being requested in the format C(path[:field]).
@@ -39,21 +40,17 @@ DOCUMENTATION = """
       description: If no token is specified, will try to read the token file from this path.
       env:
         - name: VAULT_TOKEN_PATH
-          version_added: 1.2.0
       ini:
         - section: lookup_hashi_vault
           key: token_path
-      version_added: '0.2.0'
     token_file:
       description: If no token is specified, will try to read the token from this file in C(token_path).
       env:
         - name: VAULT_TOKEN_FILE
-          version_added: 1.2.0
       ini:
         - section: lookup_hashi_vault
           key: token_file
       default: '.vault-token'
-      version_added: '0.2.0'
     url:
       description: URL to the Vault service.
       env:
@@ -61,7 +58,6 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: url
-          version_added: '0.2.0'
       default: 'http://127.0.0.1:8200'
     username:
       description: Authentication user name.
@@ -74,7 +70,6 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: role_id
-          version_added: '0.2.0'
     secret_id:
       description: Secret ID to be used for Vault AppRole authentication.
       env:
@@ -82,15 +77,11 @@ DOCUMENTATION = """
     auth_method:
       description:
         - Authentication method to be used.
-        - C(userpass) is added in Ansible 2.8.
-        - C(aws_iam_login) is added in community.general 0.2.0.
-        - C(jwt) is added in community.general 1.3.0.
       env:
         - name: VAULT_AUTH_METHOD
       ini:
         - section: lookup_hashi_vault
           key: auth_method
-          version_added: '0.2.0'
       choices:
         - token
         - userpass
@@ -102,31 +93,31 @@ DOCUMENTATION = """
     return_format:
       description:
         - Controls how multiple key/value pairs in a path are treated on return.
-        - C(dict) returns a single dict containing the key/value pairs (same behavior as before community.general 0.2.0).
+        - C(dict) returns a single dict containing the key/value pairs.
         - C(values) returns a list of all the values only. Use when you don't care about the keys.
-        - C(raw) returns the actual API result, which includes metadata and may have the data nested in other keys.
+        - C(raw) returns the actual API result (deserialized), which includes metadata and may have the data nested in other keys.
       choices:
         - dict
         - values
         - raw
       default: dict
       aliases: [ as ]
-      version_added: '0.2.0'
     mount_point:
-      description: Vault mount point, only required if you have a custom mount point. Does not apply to token authentication.
+      description:
+        - Vault mount point.
+        - If not specified, the default mount point for a given auth method is used.
+        - Does not apply to token authentication.
     jwt:
       description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
       env:
         - name: ANSIBLE_HASHI_VAULT_JWT
-      version_added: 1.3.0
     ca_cert:
       description: Path to certificate to use for authentication.
       aliases: [ cacert ]
     validate_certs:
       description:
         - Controls verification and validation of SSL certificates, mostly you only want to turn off with self signed ones.
-        - Will be populated with the inverse of C(VAULT_SKIP_VERIFY) if that is set and I(validate_certs) is not explicitly
-          provided (added in community.general 1.3.0).
+        - Will be populated with the inverse of C(VAULT_SKIP_VERIFY) if that is set and I(validate_certs) is not explicitly provided.
         - Will default to C(true) if neither I(validate_certs) or C(VAULT_SKIP_VERIFY) are set.
       type: boolean
     namespace:
@@ -136,48 +127,42 @@ DOCUMENTATION = """
           (e.g C(mynamespace/secret/mysecret)).
       env:
         - name: VAULT_NAMESPACE
-          version_added: 1.2.0
     aws_profile:
-        description: The AWS profile
-        type: str
-        aliases: [ boto_profile ]
-        env:
+      description: The AWS profile
+      type: str
+      aliases: [ boto_profile ]
+      env:
         - name: AWS_DEFAULT_PROFILE
         - name: AWS_PROFILE
-        version_added: '0.2.0'
     aws_access_key:
-        description: The AWS access key to use.
-        type: str
-        aliases: [ aws_access_key_id ]
-        env:
+      description: The AWS access key to use.
+      type: str
+      aliases: [ aws_access_key_id ]
+      env:
         - name: EC2_ACCESS_KEY
         - name: AWS_ACCESS_KEY
         - name: AWS_ACCESS_KEY_ID
-        version_added: '0.2.0'
     aws_secret_key:
-        description: The AWS secret key that corresponds to the access key.
-        type: str
-        aliases: [ aws_secret_access_key ]
-        env:
+      description: The AWS secret key that corresponds to the access key.
+      type: str
+      aliases: [ aws_secret_access_key ]
+      env:
         - name: EC2_SECRET_KEY
         - name: AWS_SECRET_KEY
         - name: AWS_SECRET_ACCESS_KEY
-        version_added: '0.2.0'
     aws_security_token:
-        description: The AWS security token if using temporary access and secret keys.
-        type: str
-        env:
+      description: The AWS security token if using temporary access and secret keys.
+      type: str
+      env:
         - name: EC2_SECURITY_TOKEN
         - name: AWS_SESSION_TOKEN
         - name: AWS_SECURITY_TOKEN
-        version_added: '0.2.0'
     region:
-        description: The AWS region for which to create the connection.
-        type: str
-        env:
+      description: The AWS region for which to create the connection.
+      type: str
+      env:
         - name: EC2_REGION
         - name: AWS_REGION
-        version_added: '0.2.0'
 """
 
 EXAMPLES = """
@@ -194,7 +179,7 @@ EXAMPLES = """
 
 - name: Vault that requires authentication via username and password
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value auth_method=userpass username=myuser password=psw url=http://myvault:8200') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hola:val auth_method=userpass username=myuser password=psw url=http://vault:8200') }}"
 
 - name: Connect to Vault using TLS
   ansible.builtin.debug:
@@ -202,7 +187,7 @@ EXAMPLES = """
 
 - name: using certificate auth
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hi:value token=xxxx url=https://myvault:8200 validate_certs=True cacert=/cacert/path/ca.pem') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hi:val token=xxxx url=https://vault:8200 validate_certs=True cacert=/cacert/path/ca.pem') }}"
 
 - name: Authenticate with a Vault app role
   ansible.builtin.debug:
@@ -218,7 +203,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/data/hello token=my_vault_token url=http://myvault_url:8200') }}"
 
-# The following examples work in collection releases after community.general 0.2.0
+# The following examples show more modern syntax, with parameters specified separately from the term string.
 
 - name: secret= is not required if secret is first
   ansible.builtin.debug:
@@ -241,7 +226,7 @@ EXAMPLES = """
 - name: return secrets as values only
   ansible.builtin.debug:
     msg: "A secret value: {{ item }}"
-  loop: "{{ query('community.hashi_vault.hashi_vault', 'secret/data/manysecrets', token=my_token_var, url='http://myvault_url:8200', return_format='values') }}"
+  loop: "{{ query('community.hashi_vault.hashi_vault', 'secret/data/manysecrets', token=my_token_var, url='http://vault_url:8200', return_format='values') }}"
 
 - name: return raw secret from API, including metadata
   ansible.builtin.set_fact:
@@ -256,12 +241,10 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='aws_iam_login', role_id='myroleid', profile=my_boto_profile) }}"
 
-# The following examples work in collection releases after community.general 1.3.0
-
 - name: Authenticate with a JWT
   ansible.builtin.debug:
-      msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://myvault:8200')}}"
-"""  # noqa: E501
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
+"""
 
 RETURN = """
 _raw:
@@ -349,6 +332,7 @@ class HashiVault:
         # 0.9.0 -- azure?, radius
         # 0.9.3 -- aws
         # 0.9.6 -- userpass
+        # 0.10.5 -- jwt (new)
         self.hvac_has_auth_methods = hasattr(self.client, 'auth')
 
     # We've already checked to ensure a method exists for a particular auth_method, of the form:

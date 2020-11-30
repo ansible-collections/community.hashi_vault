@@ -13,6 +13,7 @@
   - `hvac` (python library)
     - `hvac` 0.7.0+ (for namespace support)
     - `hvac` 0.9.6+ (to avoid all deprecation warnings)
+    - `hvac` 0.10.5+ (for JWT auth support)
   - `botocore` (only if inferring aws params from boto)
   - `boto3` (only if using a boto profile)
 
