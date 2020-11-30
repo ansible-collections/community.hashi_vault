@@ -1,8 +1,8 @@
 - hosts: localhost
   tasks:
-    - name: register pyOpenSSL version
-      command: "{{ ansible_python.executable }} -c 'import OpenSSL; print(OpenSSL.__version__)'"
-      register: pyopenssl_version
+    - name: register cryptography version
+      command: "{{ ansible_python.executable }} -c 'import cryptography; print(cryptography.__version__)'"
+      register: cryptography_version
 
     - name: Test lookup hashi_vault
       import_role:

@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+# The default container does not seem to have virtualenv installed
+${ANSIBLE_TEST_PYTHON_INTERPRETER} -m pip install virtualenv
+
 set -eux
 
-ansible-galaxy -vvv collection install community.crypto
+source virtualenv.sh
 
 # First install pyOpenSSL, then test lookup in a second playbook in order to
 # workaround this error which occurs on OS X 10.11 only:

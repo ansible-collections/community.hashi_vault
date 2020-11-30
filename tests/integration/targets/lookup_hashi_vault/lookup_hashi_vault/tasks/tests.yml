@@ -12,7 +12,7 @@
       environment:
         VAULT_ADDR: 'http://localhost:8200'
 
-- when: pyopenssl_version.stdout is version('0.15', '>=')
+- when: cryptography_version.stdout is version('1.6', '>=')
   block:
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
