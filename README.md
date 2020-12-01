@@ -43,7 +43,7 @@ See the [changelog](https://github.com/ansible-collections/community.hashi_vault
 
 **A:** This was considered when the `hashi_vault` plugin was first moved from `community.general` to this collection. There are several reasons behind this:
 
-* The only other known HashiCorp plugin at that time was around Consul, and there is no shared code in the implementation or testing between those plugins.
+* The other known HashiCorp content at that time (covering Consul, Nomad, Terraform, etc.) does not share implementation or testing with Vault content.
 * The maintainers are also different. This being a community supported collection means separate maintainers are more likely to focus on goals that make sense for their particular plugins and user base.
 * The HashiCorp products serve different goals, and even when used together, they have their own APIs and interfaces that don't really have anything in common from the point of view of the Ansible codebase as a consumer.
 * It would complicate testing. One of the primary goals of moving to a new collection was the ability to increase the scope of Vault-focused testing without having to balance the impact to unrelated components.
