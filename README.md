@@ -39,7 +39,7 @@ See the [changelog](https://github.com/ansible-collections/community.hashi_vault
 
 ## FAQ
 
-### **Q:** Why not have a single collection of Hashicorp products instead of one just for Vault?
+### **Q:** Why not have a single collection of HashiCorp products instead of one just for Vault?
 
 **A:** This was considered when the `hashi_vault` plugin was first moved from `community.general` to this collection. There are several reasons behind this:
 
