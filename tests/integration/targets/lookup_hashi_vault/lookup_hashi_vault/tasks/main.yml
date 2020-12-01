@@ -46,8 +46,9 @@
     #
     - name: 'Install unzip'
       vars:
+        # by assuming python3 here we're probably condeming this to not work on older Ubuntu/Debian (from like 2014?)
         ansible_python_interpreter: "{{
-          ('/usr/bin/python' ~ ansible_python.version.major) if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+          '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
         }}"
       package:
         name: unzip
