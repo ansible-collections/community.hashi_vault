@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # The default container does not seem to have virtualenv installed
+# https://github.com/ansible/ansible/issues/72738
 ${ANSIBLE_TEST_PYTHON_INTERPRETER} -m pip install virtualenv
 
 set -eux
