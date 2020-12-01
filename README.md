@@ -43,9 +43,9 @@ See the [changelog](https://github.com/ansible-collections/community.hashi_vault
 
 **A:** This was considered when the `hashi_vault` plugin was first moved from `community.general` to this collection. There are several reasons behind this:
 
-* The only other known Hashicorp plugin at that time was around Consul, and there is no shared code in the implementation or testing between those plugins.
+* The only other known HashiCorp plugin at that time was around Consul, and there is no shared code in the implementation or testing between those plugins.
 * The maintainers are also different. This being a community supported collection means separate maintainers are more likely to focus on goals that make sense for their particular plugins and user base.
-* The Hashicorp products serve different goals, and even when used together, they have their own APIs and interfaces that don't really have anything in common from the point of view of the Ansible codebase as a consumer.
+* The HashiCorp products serve different goals, and even when used together, they have their own APIs and interfaces that don't really have anything in common from the point of view of the Ansible codebase as a consumer.
 * It would complicate testing. One of the primary goals of moving to a new collection was the ability to increase the scope of Vault-focused testing without having to balance the impact to unrelated components.
 * It makes for a smaller package for consumers, that can hopefully release more quickly.
 
@@ -53,10 +53,10 @@ See the [changelog](https://github.com/ansible-collections/community.hashi_vault
 
 **A:** This too was considered during formation. In the end, `hashi_vault` is a compromise of various concerns.
 
-* `hashicorp.vault` looks great, but implies the collection is supported by Hashicorp (which it is not). That doesn't follow the convention of denoting community supported namespaces with `community.`
+* `hashicorp.vault` looks great, but implies the collection is supported by HashiCorp (which it is not). That doesn't follow the convention of denoting community supported namespaces with `community.`
 * `community.vault` looks great at first, but "Vault" is a very general and overloaded term, and in Ansible the first "Vault" one thinks of is [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html). So in the naming, and even in the future of this collection and its content, we have to be mindful of avoiding and removing ambiguities between these products (and other Vaults out there).
 * `community.hashicorp_vault` is descriptive and unambiguous but is unfortunately quite long.
-* `community.hashicorp` would be good for a collection that aims to contain community-supported content related to all Hashicorp products, but this collection is only focused on Vault (see above question).
+* `community.hashicorp` would be good for a collection that aims to contain community-supported content related to all HashiCorp products, but this collection is only focused on Vault (see above question).
 * `community.hashicorp.vault` (or any other 3-component name): not supported (also long).
 * `community.hashi_vault` isn't perfect, but has an established convention in the existing plugin name and isn't as long as `hashicorp_vault`.
 
