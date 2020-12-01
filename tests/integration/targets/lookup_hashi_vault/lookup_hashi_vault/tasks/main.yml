@@ -44,12 +44,17 @@
     #       you're in most cases using the wrong Python versions. The 'default' image
     #       is based on Ubuntu/Debian, so we use `command:` with `apt-get install`.
     #
-    #- name: 'Install unzip'
-    #  package:
-    #    name: unzip
-    #  when: ansible_distribution != "MacOSX"  # unzip already installed
     - name: 'Install unzip'
-      command: apt-get install unzip
+      vars:
+        ansible_python_interpreter: "{{
+          ('/usr/bin/python' ~ ansible_python.version.major) if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+        }}"
+      package:
+        name: unzip
+      when: ansible_distribution != "MacOSX"  # unzip already installed
+
+    # - name: 'Install unzip'
+    #   command: apt-get install unzip
 
     - assert:
         # Linux: x86_64, FreeBSD: amd64
