@@ -1,1 +1,11 @@
-releases: {}
+ancestor: null
+releases:
+  0.1.0:
+    changes:
+      release_summary: 'Our first release matches the ``hashi_vault`` lookup functionality
+        provided by ``community.general`` version ``1.3.0``.
+
+'
+    fragments:
+    - 0.1.0.yml
+    release_date: '2020-12-02'

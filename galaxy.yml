@@ -5,15 +5,17 @@ name: hashi_vault
 version: 0.1.0
 readme: README.md
 authors:
-  - Jonathan Davila (!UNKNOWN) <jdavila(at)ansible.com>
+  - Jonathan Davila
   - Brian Scholer (@briantist)
-description: null
+description: Plugins related to HashiCorp Vault
 license_file: LICENSE
 tags:
   # tags so people can search for collections https://galaxy.ansible.com/search
   # tags are all lower-case, no spaces, no dashes.
-  - example1
-  - example2
+  - vault
+  - hashicorp
+  - secret
+  - secrets
 repository: https://github.com/ansible-collections/community.hashi_vault
 #documentation: https://github.com/ansible-collection-migration/community.hashi_vault/tree/main/docs
 homepage: https://github.com/ansible-collections/community.hashi_vault
