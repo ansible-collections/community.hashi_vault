@@ -3,7 +3,7 @@ releases:
   0.1.0:
     changes:
       release_summary: 'Our first release matches the ``hashi_vault`` lookup functionality
-        provided by ``community.general`` ver ``1.3.0``.
+        provided by ``community.general`` version ``1.3.0``.
 
 '
     fragments:

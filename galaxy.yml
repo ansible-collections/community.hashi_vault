@@ -5,7 +5,7 @@ name: hashi_vault
 version: 0.1.0
 readme: README.md
 authors:
-  - Jonathan Davila (!UNKNOWN) <jdavila(at)ansible.com>
+  - Jonathan Davila
   - Brian Scholer (@briantist)
 description: Plugins related to HashiCorp Vault
 license_file: LICENSE
