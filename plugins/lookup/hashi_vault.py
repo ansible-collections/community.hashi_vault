@@ -334,6 +334,10 @@ class HashiVault:
             client_args['token'] = self.options.get('token')
 
         self.client = hvac.Client(**client_args)
+        # logout to prevent accidental use of inferred tokens
+        # https://github.com/ansible-collections/community.hashi_vault/issues/13
+        if 'token' not in client_args:
+            self.client.logout()
 
         # Check for old version, before auth_methods class (added in 0.7.0):
         # https://github.com/hvac/hvac/releases/tag/v0.7.0
