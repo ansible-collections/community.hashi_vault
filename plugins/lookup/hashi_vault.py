@@ -459,7 +459,7 @@ class HashiVault:
         self.client.auth_approle(**params)
 
     def auth_aws_iam_login(self):
-        params = self.options['iam_login_credentials']
+        params = self.options['_auth_aws_iam_login_params']
         if self.hvac_has_auth_methods and hasattr(self.client.auth.aws, 'iam_login'):
             self.client.auth.aws.iam_login(**params)
         else:
@@ -644,8 +644,11 @@ class LookupModule(LookupBase):
     def validate_auth_aws_iam_login(self, auth_method):
         params = {
             'access_key': self.get_option('aws_access_key'),
-            'secret_key': self.get_option('aws_secret_key')
+            'secret_key': self.get_option('aws_secret_key'),
         }
+
+        if self.get_option('mount_point'):
+            params['mount_point'] = self.get_option('mount_point')
 
         if self.get_option('role_id'):
             params['role'] = self.get_option('role_id')
@@ -677,7 +680,7 @@ class LookupModule(LookupBase):
             if session_credentials.token:
                 params['session_token'] = session_credentials.token
 
-        self.set_option('iam_login_credentials', params)
+        self.set_option('_auth_aws_iam_login_params', params)
 
     def validate_auth_jwt(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id', 'jwt')
