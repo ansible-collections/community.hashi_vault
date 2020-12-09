@@ -1,4 +1,19 @@
-- vars:
+- name: "Test token with no default policy (missing lookup-self)"
+  vars:
+    user_token: '{{ user_token_no_default_policy_cmd.stdout }}'
+    lookup_terms: "{{ conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token }}"
+  block:
+    - name: "Fetch a secret with no default policy token (failure expected)"
+      debug:
+        msg: "{{ lookup('community.hashi_vault.hashi_vault', lookup_terms) }}"
+      ignore_errors: yes
+
+    - name: "Fetch a secret with no default policy token - with no validation"
+      debug:
+        msg: "{{ lookup('community.hashi_vault.hashi_vault', lookup_terms ~ ' token_validate=false') }}"
+
+- name: "Normal token tests"
+  vars:
     user_token: '{{ user_token_cmd.stdout }}'
   block:
     - name: 'Fetch secrets using "hashi_vault" lookup'
