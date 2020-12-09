@@ -241,6 +241,8 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='aws_iam_login', role_id='myroleid', profile=my_boto_profile) }}"
 
+# JWT auth
+
 - name: Authenticate with a JWT
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
@@ -283,6 +285,20 @@ try:
     HAS_BOTO3 = True
 except ImportError:
     HAS_BOTO3 = False
+
+# see https://github.com/ansible-collections/community.hashi_vault/issues/10
+#
+# Options which seek to use environment vars that are not Ansible-specific
+# should load those as values of last resort, so that INI values can override them.
+# For default processing, list such options and vars here.
+# Alternatively, process them in another appropriate place like an auth method's
+# validate_ method.
+#
+# key = option_name
+# value = list of env vars (in order of those checked first; process stops when value is found)
+LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
+    'token_path': ['HOME'],
+}
 
 
 class HashiVault:
@@ -393,7 +409,7 @@ class HashiVault:
     #    already have everything they need. This is also the place to check for deprecated auth methods as hvac
     #    continues to move backends into the auth_methods class.
     #
-    # 3. Update the avail_auth_methods list in the LookupModules auth_methods() method (for now this is static).
+    # 3. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
     #
     def auth_token(self):
         if not self.client.is_authenticated():
@@ -482,6 +498,9 @@ class LookupModule(LookupBase):
     def process_options(self):
         '''performs deep validation and value loading for options'''
 
+        # low preference env vars
+        self.low_preference_env_vars()
+
         # ca_cert to verify
         self.boolean_or_cacert()
 
@@ -493,13 +512,25 @@ class LookupModule(LookupBase):
 
     # begin options processing methods
 
+    def set_default_option_env(self, option, var):
+        '''sets an option to the value of an env var if None'''
+        if self.get_option(option) is None:
+            self.set_option(option, os.environ.get(var))
+
+    def low_preference_env_vars(self):
+        '''sets all options that have a low preference env var'''
+        # see definition of LOW_PRECEDENCE_ENV_VAR_OPTIONS near the top of the file
+        for opt, envs in LOW_PRECEDENCE_ENV_VAR_OPTIONS.items():
+            for env in envs:
+                self.set_default_option_env(opt, env)
+
     def boolean_or_cacert(self):
         # This is needed because of this (https://hvac.readthedocs.io/en/stable/source/hvac_v1.html):
         #
         # # verify (Union[bool,str]) - Either a boolean to indicate whether TLS verification should
         # # be performed when sending requests to Vault, or a string pointing at the CA bundle to use for verification.
         #
-        '''' return a bool or cacert '''
+        '''return a bool or cacert'''
         ca_cert = self.get_option('ca_cert')
 
         validate_certs = self.get_option('validate_certs')
@@ -576,11 +607,6 @@ class LookupModule(LookupBase):
 
     def validate_auth_token(self, auth_method):
         if auth_method == 'token':
-            if not self.get_option('token_path'):
-                # generally we want env vars defined in the spec, but in this case we want
-                # the env var HOME to have lower precedence than any other value source,
-                # including ini, so we're doing it here after all other processing has taken place
-                self.set_option('token_path', os.environ.get('HOME'))
             if not self.get_option('token') and self.get_option('token_path'):
                 token_filename = os.path.join(
                     self.get_option('token_path'),
