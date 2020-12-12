@@ -32,10 +32,12 @@ DOCUMENTATION = """
       required: True
     token:
       description:
-        - Vault token. If using token auth and no token is supplied, explicitly or through env, then the plugin will check
-        - for a token file, as determined by C(token_path) and C(token_file).
+        - Vault token. Token may be specified explicitly, through the listed env var, and also through the C(VAULT_TOKEN) env var.
+        - If no token is supplied, explicitly or through env, then the plugin will check for a token file, as determined by I(token_path) and I(token_file).
+        - The order of token loading (first found wins) is C(token param -> ANSIBLE_HASHI_VAULT_TOKEN -> VAULT_TOKEN -> token file).
       env:
-        - name: VAULT_TOKEN
+        - name: ANSIBLE_HASHI_VAULT_TOKEN
+          version_added: '0.2.0'
     token_path:
       description: If no token is specified, will try to read the token file from this path.
       env:
@@ -305,6 +307,7 @@ except ImportError:
 LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'token_path': ['HOME'],
     'namespace': ['VAULT_NAMESPACE'],
+    'token': ['VAULT_TOKEN'],
 }
 
 
