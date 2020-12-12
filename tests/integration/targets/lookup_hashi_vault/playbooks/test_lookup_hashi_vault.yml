@@ -1,4 +1,5 @@
 - hosts: localhost
+  force_handlers: yes
   tasks:
     - name: register cryptography version
       command: "{{ ansible_python.executable }} -c 'import cryptography; print(cryptography.__version__)'"
