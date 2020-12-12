@@ -125,8 +125,14 @@ DOCUMENTATION = """
         - Vault namespace where secrets reside. This option requires HVAC 0.7.0+ and Vault 0.11+.
         - Optionally, this may be achieved by prefixing the authentication mount point and/or secret path with the namespace
           (e.g C(mynamespace/secret/mysecret)).
+        - If environment variable C(VAULT_NAMESPACE) is set, its value will be used last among all ways to specify I(namespace).
       env:
-        - name: VAULT_NAMESPACE
+        - name: ANSIBLE_HASHI_VAULT_NAMESPACE
+          version_added: '0.2.0'
+      ini:
+        - section: lookup_hashi_vault
+          key: namespace
+          version_added: '0.2.0'
     aws_profile:
       description: The AWS profile
       type: str
@@ -298,6 +304,7 @@ except ImportError:
 # value = list of env vars (in order of those checked first; process stops when value is found)
 LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'token_path': ['HOME'],
+    'namespace': ['VAULT_NAMESPACE'],
 }
 
 
