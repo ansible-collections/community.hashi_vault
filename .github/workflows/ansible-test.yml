@@ -128,10 +128,10 @@ jobs:
         with:
           path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
           key: ${{ runner.os }}-vault${{ matrix.vault }}-${{ hashFiles(format('{0}/**', env.LOOKUP_HASHI_VAULT_BIN)) }} # future: include version/arch when configurable
-          # restore-keys: |
-          #   ${{ runner.os }}-vault${{ matrix.vault }}
 
-
+      # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
+      # the files/bin dir will contain the vault binary downloaded a few steps later
+      # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
       - name: Prepare for Vault version and caching
         run: |
           rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
@@ -144,10 +144,9 @@ jobs:
       - name: Install collection dependencies
         run: ansible-galaxy collection install community.crypto -p .
 
+      # this wil populate files/bin with the selected vault version binary
       - name: Pre-download Vault
-        # if: steps.cache.outputs.cache-hit != 'true'
-        # the "if" will be useful when our cache key is more specific
-        # the playbook already won't re-download if the file exists, it would just save a little time
+        if: steps.cache.outputs.cache-hit != 'true'
         env:
           ANSIBLE_ROLES_PATH: ../
         working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
