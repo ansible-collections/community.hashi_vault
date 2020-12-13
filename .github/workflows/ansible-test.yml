@@ -76,7 +76,7 @@ jobs:
       LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
       LOOKUP_HASHI_VAULT_BIN: ${{ needs.vars.outputs.lookup_hashi_vault_bin }}
     runs-on: ubuntu-latest
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
@@ -127,7 +127,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
-          key: vault-${{ runner.os }}-${{ matrix.vault }} # future: include version/arch when configurable
+          key: ${{ runner.os }}-vault${{ matrix.vault }}-${{ hashFiles(format('{0}/**', env.LOOKUP_HASHI_VAULT_BIN)) }} # future: include version/arch when configurable
+          # restore-keys: |
+          #   ${{ runner.os }}-vault${{ matrix.vault }}
+
 
       - name: Prepare for Vault version and caching
         run: |
