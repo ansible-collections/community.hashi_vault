@@ -14,11 +14,25 @@ on:
 env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
-  COLLECTION_PATH: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
-  LOOKUP_HASHI_VAULT_PATH: ${{ env.COLLECTION_PATH }}/test/integration/targets/lookup_hashi_vault
-  LOOKUP_HASHI_VAULT_BIN: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/lookup_hashi_vault/files/bin
 
 jobs:
+  vars:
+    name: Build Env Vars
+    runs-on: ubuntu-latest
+    outputs:
+      collection_path: ${{ steps.envs.outputs.collection_path }}
+      lookup_hashi_vault_path: ${{ steps.envs.outputs.lookup_hashi_vault_path }}
+      lookup_hashi_vault_bin: ${{ steps.envs.outputs.lookup_hashi_vault_bin }}
+    steps:
+      - id: envs
+        run: |
+          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/test/integration/targets/lookup_hashi_vault
+          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+
+          echo "::set-output name=collection_path::${COLLECTION_PATH}"
+          echo "::set-output name=lookup_hashi_vault_path::${LOOKUP_HASHI_VAULT_PATH}"
+          echo "::set-output name=lookup_hashi_vault_bin::${LOOKUP_HASHI_VAULT_BIN}"
 
 ###
 # Sanity tests (REQUIRED)
@@ -26,6 +40,11 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
   sanity:
+    needs: vars
+    env:
+      COLLECTION_PATH: ${{ needs.vars.outputs.collection_path }}
+      LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
+      LOOKUP_HASHI_VAULT_BIN: ${{ needs.vars.outputs.lookup_hashi_vault_bin }}
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       matrix:
@@ -73,6 +92,11 @@ jobs:
 # https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
 
   integration:
+    needs: vars
+    env:
+      COLLECTION_PATH: ${{ needs.vars.outputs.collection_path }}
+      LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
+      LOOKUP_HASHI_VAULT_BIN: ${{ needs.vars.outputs.lookup_hashi_vault_bin }}
     runs-on: ubuntu-latest
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
