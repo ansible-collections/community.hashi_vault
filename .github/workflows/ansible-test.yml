@@ -27,7 +27,7 @@ jobs:
       - id: envs
         run: |
           COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/test/integration/targets/lookup_hashi_vault
+          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
           LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
 
           echo "::set-output name=collection_path::${COLLECTION_PATH}"
