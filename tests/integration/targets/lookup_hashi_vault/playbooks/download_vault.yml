@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  force_handlers: yes
+  gather_facts: yes
+  gather_subset: '!min,!all,distribution'
+  tasks:
+    - import_role:
+        name: lookup_hashi_vault
+        tasks_from: vault_download

@@ -89,23 +89,44 @@ jobs:
         exclude:
           - ansible: stable-2.9
             python: 3.9
-
+    env:
+      COLLECTION_PATH: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+      LOOKUP_HASHI_VAULT_PATH: ${{ env.COLLECTION_PATH }}/test/integration/targets/lookup_hashi_vault
+      LOOKUP_HASHI_VAULT_BIN: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/lookup_hashi_vault/files/bin
     steps:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+          path: ${{ env.COLLECTIN_PATH }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
+      - name: Cache vault binaries
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
+          key: vault-${{ runner.os }} # future: include version/arch when configurable
+
+      - name: Let ansible-test use the cache
+        run: rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
+
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Install collection dependencies
         run: ansible-galaxy collection install community.crypto -p .
+
+      - name: Pre-download Vault
+        # if: steps.cache.outputs.cache-hit != 'true'
+        # this will be useful when our cache key is more specific
+        # the playbook already won't re-download if the file exists, it would just save a little time
+        env:
+          ANSIBLE_ROLES_PATH: ../
+        run: ansible-playbook "${LOOKUP_HASHI_VAULT_PATH}/playbooks/download_vault.yml" -v
 
       # Run the integration tests
       - name: Run integration test
