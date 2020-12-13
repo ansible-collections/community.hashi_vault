@@ -146,11 +146,12 @@ jobs:
 
       - name: Pre-download Vault
         # if: steps.cache.outputs.cache-hit != 'true'
-        # this will be useful when our cache key is more specific
+        # the "if" will be useful when our cache key is more specific
         # the playbook already won't re-download if the file exists, it would just save a little time
         env:
           ANSIBLE_ROLES_PATH: ../
-        run: ansible-playbook "${LOOKUP_HASHI_VAULT_PATH}/playbooks/download_vault.yml" -v
+        working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
+        run: ansible-playbook "download_vault.yml" -v
 
       # Run the integration tests
       - name: Run integration test
