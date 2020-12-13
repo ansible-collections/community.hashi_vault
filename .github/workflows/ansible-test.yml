@@ -14,6 +14,7 @@ on:
 env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
+  ANSIBLE_FORCE_COLOR: true
 
 jobs:
 
