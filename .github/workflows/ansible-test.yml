@@ -23,10 +23,6 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
   sanity:
-    env:
-      COLLECTION_PATH: ${{ needs.vars.outputs.collection_path }}
-      LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
-      LOOKUP_HASHI_VAULT_BIN: ${{ needs.vars.outputs.lookup_hashi_vault_bin }}
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       matrix:
@@ -61,7 +57,7 @@ jobs:
       # and all python versions ansible supports.
       - name: Run sanity tests
         run: ansible-test sanity --docker -v --color
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
 ###
 # Integration tests (RECOMMENDED)
@@ -101,9 +97,13 @@ jobs:
     steps:
       - name: Initialize env vars
         run: |
-          echo "COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}" >> $GITHUB_ENV
-          echo "LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault" >> $GITHUB_ENV
-          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin" >> $GITHUB_ENV
+          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
+          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+
+          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> $GITHUB_ENV
+          echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> $GITHUB_ENV
+          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> $GITHUB_ENV
 
       - name: Check out code
         uses: actions/checkout@v2
