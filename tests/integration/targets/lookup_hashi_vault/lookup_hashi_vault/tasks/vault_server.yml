@@ -1,12 +1,5 @@
 ---
 - name: Install Hashi Vault on controlled node and test
-  # vars:
-  #   vault_bin: '{{ role_path }}/files/bin/{{ vault_slug }}'
-  #   vault_slug: 'vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}'
-  #   #vault_version: '0.11.0'
-  #   vault_version: '1.6.0'
-  #   vault_uri: 'https://ansible-ci-files.s3.amazonaws.com/test/integration/targets/lookup_hashi_vault/vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}.zip'
-  #   vault_cmd: '{{ vault_bin }}/vault'
   block:
 
     - when: cryptography_version.stdout is version('1.6', '>=')
@@ -31,16 +24,6 @@
             selfsigned_digest: sha256
           register: selfsigned_certificate
 
-    # - assert:
-    #     # Linux: x86_64, FreeBSD: amd64
-    #     that: ansible_architecture in ['i386', 'x86_64', 'amd64']
-    # - set_fact:
-    #     vault_arch: '386'
-    #   when: ansible_architecture == 'i386'
-    # - set_fact:
-    #     vault_arch: amd64
-    #   when: ansible_architecture in ['x86_64', 'amd64']
-
     - name: "Check if vault binary exists"
       stat:
         path: '{{ vault_cmd }}'
@@ -49,12 +32,6 @@
         get_checksum: no
         get_mime: no
       register: bin_status
-
-    # - debug:
-    #     var: bin_status
-
-    # - shell: |
-    #     ls -alh {{ role_path }}/files/bin
 
     - name: "Download vault if not local"
       when: not bin_status.stat.exists
@@ -156,15 +133,3 @@
             - name: setup jwt auth
               import_tasks: jwt_setup.yml
               when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-
-
-      # always:
-        # - name: 'Kill vault process'
-        #   shell: "kill $(cat {{ local_temp_dir }}/vault.pid)"
-        #   ignore_errors: true
-
-  # always:
-    # - name: 'Delete temp dir'
-    #   file:
-    #     path: '{{ local_temp_dir }}'
-    #     state: absent
