@@ -71,10 +71,6 @@ jobs:
 # https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
 
   integration:
-    env:
-      COLLECTION_PATH: ${{ needs.vars.outputs.collection_path }}
-      LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
-      LOOKUP_HASHI_VAULT_BIN: ${{ needs.vars.outputs.lookup_hashi_vault_bin }}
     runs-on: ubuntu-latest
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
