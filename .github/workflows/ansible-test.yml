@@ -16,23 +16,6 @@ env:
   COLLECTION_NAME: hashi_vault
 
 jobs:
-  vars:
-    name: Build Env Vars
-    runs-on: ubuntu-latest
-    outputs:
-      collection_path: ${{ steps.envs.outputs.collection_path }}
-      lookup_hashi_vault_path: ${{ steps.envs.outputs.lookup_hashi_vault_path }}
-      lookup_hashi_vault_bin: ${{ steps.envs.outputs.lookup_hashi_vault_bin }}
-    steps:
-      - id: envs
-        run: |
-          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
-          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-
-          echo "::set-output name=collection_path::${COLLECTION_PATH}"
-          echo "::set-output name=lookup_hashi_vault_path::${LOOKUP_HASHI_VAULT_PATH}"
-          echo "::set-output name=lookup_hashi_vault_bin::${LOOKUP_HASHI_VAULT_BIN}"
 
 ###
 # Sanity tests (REQUIRED)
@@ -40,7 +23,6 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
   sanity:
-    needs: vars
     env:
       COLLECTION_PATH: ${{ needs.vars.outputs.collection_path }}
       LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
@@ -61,7 +43,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ${{ env.COLLECTION_PATH }}
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -92,7 +74,6 @@ jobs:
 # https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
 
   integration:
-    needs: vars
     env:
       COLLECTION_PATH: ${{ needs.vars.outputs.collection_path }}
       LOOKUP_HASHI_VAULT_PATH: ${{ needs.vars.outputs.lookup_hashi_vault_path }}
@@ -118,6 +99,12 @@ jobs:
             python: 3.9
 
     steps:
+      - name: Initialize env vars
+        run: |
+          echo "COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}" >> $GITHUB_ENV
+          echo "LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault" >> $GITHUB_ENV
+          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin" >> $GITHUB_ENV
+
       - name: Check out code
         uses: actions/checkout@v2
         with:
@@ -156,12 +143,12 @@ jobs:
       # Run the integration tests
       - name: Run integration test
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
       - uses: codecov/codecov-action@v1
