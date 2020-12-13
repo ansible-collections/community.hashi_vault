@@ -14,6 +14,9 @@ on:
 env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
+  COLLECTION_PATH: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+  LOOKUP_HASHI_VAULT_PATH: ${{ env.COLLECTION_PATH }}/test/integration/targets/lookup_hashi_vault
+  LOOKUP_HASHI_VAULT_BIN: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/lookup_hashi_vault/files/bin
 
 jobs:
 
@@ -39,7 +42,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+          path: ${{ env.COLLECTION_PATH }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -89,15 +92,12 @@ jobs:
         exclude:
           - ansible: stable-2.9
             python: 3.9
-    env:
-      COLLECTION_PATH: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
-      LOOKUP_HASHI_VAULT_PATH: ${{ env.COLLECTION_PATH }}/test/integration/targets/lookup_hashi_vault
-      LOOKUP_HASHI_VAULT_BIN: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/lookup_hashi_vault/files/bin
+
     steps:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ${{ env.COLLECTIN_PATH }}
+          path: ${{ env.COLLECTION_PATH }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
