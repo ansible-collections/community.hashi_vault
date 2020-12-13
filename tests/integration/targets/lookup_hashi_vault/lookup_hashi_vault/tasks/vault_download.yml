@@ -26,9 +26,11 @@
 - name: 'Download vault binary'
   get_url:
     url: '{{ vault_uri }}'
-    dest: '{{ vault_bin }}'
+    dest: '{{ vault_zip }}'
 
 - name: 'Extract vault binary'
   unarchive:
-    src: '{{ vault_bin }}/{{ vault_slug }}.zip'
+    src: '{{ vault_zip }}'
     dest: '{{ vault_bin }}'
+    remote_src: yes
+    creates: '{{ vault_cmd }}'
