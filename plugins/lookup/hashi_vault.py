@@ -179,6 +179,7 @@ DOCUMENTATION = """
         - section: lookup_hashi_vault
           key: aws_iam_server_id
       required: False
+      version_added: '0.2.0'
 """
 
 EXAMPLES = """
