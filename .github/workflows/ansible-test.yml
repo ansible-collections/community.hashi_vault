@@ -103,10 +103,10 @@ jobs:
           LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
           LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
-          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> $GITHUB_ENV
-          echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> $GITHUB_ENV
-          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> $GITHUB_ENV
-          echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> $GITHUB_ENV
+          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
+          echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
+          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
+          echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -140,7 +140,7 @@ jobs:
       - name: Install collection dependencies
         run: ansible-galaxy collection install community.crypto -p .
 
-      # this wil populate files/bin with the selected vault version binary
+      # this will populate files/bin with the selected vault version binary
       - name: Pre-download Vault
         if: steps.cache.outputs.cache-hit != 'true'
         env:
