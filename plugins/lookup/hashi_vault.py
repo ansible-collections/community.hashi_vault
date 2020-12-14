@@ -163,6 +163,14 @@ DOCUMENTATION = """
       env:
         - name: EC2_REGION
         - name: AWS_REGION
+    aws_iam_server_id:
+      description: If specified, sets the value to use for the C(X-Vault-AWS-IAM-Server-ID) header as part of C(GetCallerIdentity) request.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_AWS_IAM_SERVER_ID
+      ini:
+        - section: lookup_hashi_vault
+          key: aws_iam_server_id
+      required: False
 """
 
 EXAMPLES = """
@@ -634,6 +642,9 @@ class LookupModule(LookupBase):
 
         if self.get_option('region'):
             params['region'] = self.get_option('region')
+
+        if self.get_option('aws_iam_server_id'):
+            params['header_value'] = self.get_option('aws_iam_server_id')
 
         if not (params['access_key'] and params['secret_key']):
             profile = self.get_option('aws_profile')
