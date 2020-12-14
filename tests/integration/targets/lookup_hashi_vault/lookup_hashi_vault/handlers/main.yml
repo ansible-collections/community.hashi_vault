@@ -1,0 +1,15 @@
+---
+# notify 'test_managed_vault_cleanup' for tasks related to the
+# vault server that is started by these tests
+# (those tasks should skip if the vault server is external to the test run)
+- name: 'Kill vault process'
+  shell: "kill $(cat {{ local_temp_dir }}/vault.pid)"
+  ignore_errors: true
+  listen: test_managed_vault_cleanup
+
+# notify 'cleanup' for any handlers that should always run at the end of tests
+- name: 'Delete temp dir'
+  file:
+    path: '{{ local_temp_dir }}'
+    state: absent
+  listen: cleanup

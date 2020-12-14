@@ -3,3 +3,19 @@ vault_gen_path: 'gen/testproject'
 vault_kv1_path: 'kv1/testproject'
 vault_kv2_path: 'kv2/data/testproject'
 vault_kv2_multi_path: 'kv2/data/testmulti'
+
+## vars for vault server
+
+vault_ansible_arch_table:
+  'x86_64': 'amd64' # Linux
+  'amd64': 'amd64' # FreeBSD
+  'i386': '386'
+
+vault_arch: "{{ vault_ansible_arch_table[ansible_architecture] }}"
+
+vault_version: '1.6.0'
+vault_bin: '{{ role_path }}/files/bin/{{ vault_slug }}'
+vault_slug: 'vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}'
+vault_zip: '{{ vault_bin }}/{{ vault_slug }}.zip'
+vault_uri: 'https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_slug }}.zip'
+vault_cmd: '{{ vault_bin }}/vault'

@@ -14,6 +14,7 @@ on:
 env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
+  ANSIBLE_FORCE_COLOR: true
 
 jobs:
 
@@ -39,7 +40,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -57,7 +58,7 @@ jobs:
       # and all python versions ansible supports.
       - name: Run sanity tests
         run: ansible-test sanity --docker -v --color
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
 ###
 # Integration tests (RECOMMENDED)
@@ -71,7 +72,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
@@ -86,20 +87,52 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
+        vault:
+          - 1.6.0
+          - 1.5.5
+          - 1.4.7
         exclude:
           - ansible: stable-2.9
             python: 3.9
 
     steps:
+      - name: Initialize env vars
+        run: |
+          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
+          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+          LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
+
+          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
+          echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
+          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
+          echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
+
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+          path: ${{ env.COLLECTION_PATH }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+
+      - name: Cache vault binaries
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
+          key: ${{ runner.os }}-vault${{ matrix.vault }}-${{ hashFiles(format('{0}/**', env.LOOKUP_HASHI_VAULT_BIN)) }} # future: include version/arch when configurable
+
+      # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
+      # the files/bin dir will contain the vault binary downloaded a few steps later
+      # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
+      - name: Prepare for Vault version and caching
+        run: |
+          rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
+          rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
+          echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -107,15 +140,23 @@ jobs:
       - name: Install collection dependencies
         run: ansible-galaxy collection install community.crypto -p .
 
+      # this will populate files/bin with the selected vault version binary
+      - name: Pre-download Vault
+        if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          ANSIBLE_ROLES_PATH: ../
+        working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
+        run: ansible-playbook "download_vault.yml" -v
+
       # Run the integration tests
       - name: Run integration test
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
       - uses: codecov/codecov-action@v1

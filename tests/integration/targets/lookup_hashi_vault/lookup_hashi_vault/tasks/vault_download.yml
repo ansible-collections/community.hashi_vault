@@ -1,0 +1,36 @@
+---
+# NOTE: 'package' does not work properly with Ubuntu/Debian (like the 'default' docker image),
+#       if you're running in a version of Python other than the "system" Python, due to system libraries
+#       needed for the python 'apt' package. See https://stackoverflow.com/q/13708180/3905079
+#       So for those OSes, we'll set the Python interpreter to the symlink in /usr/bin which should
+#       always be the correct one that corresponds to the system libraries.
+#
+#       All this just for unzip, which is only needed to unzip the vault binary to set up for testing.
+#       TODO: revisit how we set up vault in the first place or how we host the binary (.gz?)
+- name: 'Install unzip'
+  vars:
+    # by assuming python3 here we're probably condeming this to not work on older Ubuntu/Debian (from like 2014?)
+    # but the alternative is probably reimplementing parts of interpreter_discovery.py
+    ansible_python_interpreter: "{{
+      '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+    }}"
+  package:
+    name: unzip
+  when: ansible_distribution != "MacOSX"  # unzip already installed (#TODO: get MacOSX tests working again)
+
+- name: "Create bin directory"
+  file:
+    path: '{{ vault_bin }}'
+    state: directory
+
+- name: 'Download vault binary'
+  get_url:
+    url: '{{ vault_uri }}'
+    dest: '{{ vault_zip }}'
+
+- name: 'Extract vault binary'
+  unarchive:
+    src: '{{ vault_zip }}'
+    dest: '{{ vault_bin }}'
+    remote_src: yes
+    creates: '{{ vault_cmd }}'
