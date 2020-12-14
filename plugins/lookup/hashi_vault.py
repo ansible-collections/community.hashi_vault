@@ -32,10 +32,12 @@ DOCUMENTATION = """
       required: True
     token:
       description:
-        - Vault token. If using token auth and no token is supplied, explicitly or through env, then the plugin will check
-        - for a token file, as determined by C(token_path) and C(token_file).
+        - Vault token. Token may be specified explicitly, through the listed env var, and also through the C(VAULT_TOKEN) env var.
+        - If no token is supplied, explicitly or through env, then the plugin will check for a token file, as determined by I(token_path) and I(token_file).
+        - The order of token loading (first found wins) is C(token param -> ANSIBLE_HASHI_VAULT_TOKEN -> VAULT_TOKEN -> token file).
       env:
-        - name: VAULT_TOKEN
+        - name: ANSIBLE_HASHI_VAULT_TOKEN
+          version_added: '0.2.0'
     token_path:
       description: If no token is specified, will try to read the token file from this path.
       env:
@@ -125,8 +127,14 @@ DOCUMENTATION = """
         - Vault namespace where secrets reside. This option requires HVAC 0.7.0+ and Vault 0.11+.
         - Optionally, this may be achieved by prefixing the authentication mount point and/or secret path with the namespace
           (e.g C(mynamespace/secret/mysecret)).
+        - If environment variable C(VAULT_NAMESPACE) is set, its value will be used last among all ways to specify I(namespace).
       env:
-        - name: VAULT_NAMESPACE
+        - name: ANSIBLE_HASHI_VAULT_NAMESPACE
+          version_added: '0.2.0'
+      ini:
+        - section: lookup_hashi_vault
+          key: namespace
+          version_added: '0.2.0'
     aws_profile:
       description: The AWS profile
       type: str
@@ -306,6 +314,8 @@ except ImportError:
 # value = list of env vars (in order of those checked first; process stops when value is found)
 LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'token_path': ['HOME'],
+    'namespace': ['VAULT_NAMESPACE'],
+    'token': ['VAULT_TOKEN'],
 }
 
 
