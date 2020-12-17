@@ -17,59 +17,6 @@ env:
   ANSIBLE_FORCE_COLOR: true
 
 jobs:
-
-###
-# Sanity tests (REQUIRED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
-
-  sanity:
-    name: Sanity (Ⓐ${{ matrix.ansible }})
-    strategy:
-      matrix:
-        ansible:
-          - stable-2.9
-          - stable-2.10
-          - devel
-    runs-on: ubuntu-latest
-    steps:
-
-      # ansible-test requires the collection to be in a directory in the form
-      # .../ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
-
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          # it is just required to run that once as "ansible-test sanity" in the docker image
-          # will run on all python versions it supports.
-          python-version: 3.8
-
-      # Install the head of the given branch (devel, stable-2.10)
-      - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
-
-      # run ansible-test sanity inside of Docker.
-      # The docker container has all the pinned dependencies that are required
-      # and all python versions ansible supports.
-      - name: Run sanity tests
-        run: ansible-test sanity --docker -v --color
-        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
-
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
-
-
-# If the application you are testing is available as a docker container and you want to test
-# multiple versions see the following for an example:
-# https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
-
   integration:
     runs-on: ubuntu-latest
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
@@ -77,8 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.9
-          - stable-2.10
           - devel
         python:
           - 2.7
@@ -135,7 +80,7 @@ jobs:
           echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
 
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: pip install https://github.com/samdoran/ansible/archive/ci/prefer-venv-over-virtualenv.tar.gz --disable-pip-version-check
 
       - name: Install collection dependencies
         run: ansible-galaxy collection install community.crypto -p .
