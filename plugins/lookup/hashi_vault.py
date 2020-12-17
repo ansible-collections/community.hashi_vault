@@ -279,7 +279,7 @@ EXAMPLES = """
 # However you can choose to create tokens without applying the default policy, or you can modify your default policy not to include it.
 # When disabled, your invalid or expired token will be indistinguishable from insufficent permissions.
 
-- name: authenticate with aws_iam_login
+- name: authenticate without token validation
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, token_validate=False) }}"
 """
