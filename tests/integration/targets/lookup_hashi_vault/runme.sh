@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
-# The default container does not seem to have virtualenv installed
-# https://github.com/ansible/ansible/issues/72738
-${ANSIBLE_TEST_PYTHON_INTERPRETER} -m pip install virtualenv
-
 set -eux
 
+export ANSIBLE_TEST_PREFER_VENV=1  # see https://github.com/ansible/ansible/pull/73000#issuecomment-757012395
 source virtualenv.sh
 
 # First install pyOpenSSL, then test lookup in a second playbook in order to
