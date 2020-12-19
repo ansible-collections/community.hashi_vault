@@ -474,6 +474,10 @@ class HashiVault:
     def auth_jwt(self):
         params = self.get_options('role_id', 'jwt', 'mount_point')
         params['role'] = params.pop('role_id')
+
+        if 'mount_point' in params:
+            params['path'] = params.pop('mount_point')
+
         try:
             response = self.client.auth.jwt.jwt_login(**params)
             # must manually set the client token with JWT login
