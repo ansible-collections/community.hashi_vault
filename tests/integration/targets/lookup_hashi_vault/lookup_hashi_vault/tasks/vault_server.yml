@@ -66,40 +66,12 @@
             - name: 'Create a test policy'
               command:
                 cmd: '{{ vault_cmd }} policy write test-policy -'
-                stdin: |
-                  path "{{ vault_gen_path }}/secret1" {
-                    capabilities = ["read"]
-                  }
-                  path "{{ vault_gen_path }}/secret2" {
-                    capabilities = ["read", "update"]
-                  }
-                  path "{{ vault_gen_path }}/secret3" {
-                    capabilities = ["deny"]
-                  }
-                  path "{{ vault_kv1_path }}/secret1" {
-                    capabilities = ["read"]
-                  }
-                  path "{{ vault_kv1_path }}/secret2" {
-                    capabilities = ["read", "update"]
-                  }
-                  path "{{ vault_kv1_path }}/secret3" {
-                    capabilities = ["deny"]
-                  }
-                  path "{{ vault_kv2_path }}/secret1" {
-                    capabilities = ["read"]
-                  }
-                  path "{{ vault_kv2_path }}/secret2" {
-                    capabilities = ["read", "update"]
-                  }
-                  path "{{ vault_kv2_path }}/secret3" {
-                    capabilities = ["deny"]
-                  }
-                  path "{{ vault_kv2_multi_path }}/secrets" {
-                    capabilities = ["read"]
-                  }
-                  path "{{ vault_kv2_path }}/secret4" {
-                    capabilities = ["read", "update"]
-                  }
+                stdin: '{{ vault_test_policy }}'
+
+            - name: 'Create an alternate policy'
+              command:
+                cmd: '{{ vault_cmd }} policy write alt-policy -'
+                stdin: '{{ vault_alt_policy }}'
 
             - name: 'Create generic secrets'
               command: '{{ vault_cmd }} write {{ vault_gen_path }}/secret{{ item }} value=foo{{ item }}'
@@ -111,7 +83,7 @@
 
             - name: 'Create KV v2 secrets'
               command: '{{ vault_cmd }} kv put {{ vault_kv2_path | regex_replace("/data") }}/secret{{ item }} value=foo{{ item }}'
-              loop: [1, 2, 3, 4]
+              loop: [1, 2, 3, 4, 5]
 
             - name: 'Update KV v2 secret4 with new value to create version'
               command: '{{ vault_cmd }} kv put {{ vault_kv2_path | regex_replace("/data") }}/secret4 value=foo5'
@@ -119,17 +91,29 @@
             - name: 'Create multiple KV v2 secrets under one path'
               command: '{{ vault_cmd }} kv put {{ vault_kv2_multi_path | regex_replace("/data") }}/secrets value1=foo1 value2=foo2 value3=foo3'
 
-            - name: setup approle auth
-              import_tasks: approle_setup.yml
-              when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
 
-            - name: setup approle secret_id_less auth
-              import_tasks: approle_secret_id_less_setup.yml
-              when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
 
-            - name: setup token auth
-              import_tasks: token_setup.yml
+            # - name: setup approle auth
+            #   import_tasks: approle_setup.yml
+            #   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
 
-            - name: setup jwt auth
-              import_tasks: jwt_setup.yml
-              when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+            # - name: setup approle secret_id_less auth
+            #   import_tasks: approle_secret_id_less_setup.yml
+            #   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+
+            # - name: setup token auth
+            #   import_tasks: token_setup.yml
+
+            # - name: setup jwt auth
+            #   include_tasks:
+            #     file: jwt_setup.yml
+            #     apply:
+            #       vars:
+            #         default_path: "{{ auth_methods.jwt.default_path }}"
+            #         this_path: "{{ item }}"
+            #   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+            #   loop: "{{ auth_methods.jwt.paths }}"
+            - command: "{{ vault_cmd }} auth list"
+            
+            - name: setup auth methods
+              import_tasks: vault_server_auth_setup.yml
