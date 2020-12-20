@@ -24,7 +24,7 @@
         secret5: "{{ lookup('community.hashi_vault.hashi_vault', common ~ 'secret=' ~ vault_kv2_path ~ '/secret5', auth_method='jwt', jwt=jwt, role_id=role_id) }}"
       debug:
         msg:
-          - "Checking secret5 with jwt auth via mount path '{{ this_path }}'"
+          - "Checking secret5 with {{ auth_type }} auth via mount path '{{ this_path }}'"
           - "{{ secret5 }}"
       register: secret5_status
       ignore_errors: true

@@ -91,29 +91,6 @@
             - name: 'Create multiple KV v2 secrets under one path'
               command: '{{ vault_cmd }} kv put {{ vault_kv2_multi_path | regex_replace("/data") }}/secrets value1=foo1 value2=foo2 value3=foo3'
 
-
-
-            # - name: setup approle auth
-            #   import_tasks: approle_setup.yml
-            #   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-
-            # - name: setup approle secret_id_less auth
-            #   import_tasks: approle_secret_id_less_setup.yml
-            #   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-
-            # - name: setup token auth
-            #   import_tasks: token_setup.yml
-
-            # - name: setup jwt auth
-            #   include_tasks:
-            #     file: jwt_setup.yml
-            #     apply:
-            #       vars:
-            #         default_path: "{{ auth_methods.jwt.default_path }}"
-            #         this_path: "{{ item }}"
-            #   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-            #   loop: "{{ auth_methods.jwt.paths }}"
-            - command: "{{ vault_cmd }} auth list"
-            
+            #### auth method setup
             - name: setup auth methods
               import_tasks: vault_server_auth_setup.yml
