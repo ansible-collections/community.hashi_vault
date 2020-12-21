@@ -16,6 +16,8 @@ tags:
   - hashicorp
   - secret
   - secrets
+  - password
+  - passwords
 repository: https://github.com/ansible-collections/community.hashi_vault
 #documentation: https://github.com/ansible-collection-migration/community.hashi_vault/tree/main/docs
 homepage: https://github.com/ansible-collections/community.hashi_vault
