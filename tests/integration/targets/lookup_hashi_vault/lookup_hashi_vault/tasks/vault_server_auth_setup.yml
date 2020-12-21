@@ -1,0 +1,27 @@
+---
+- name: setup token auth
+  import_tasks: token_setup.yml
+
+- name: setup approle auth
+  include_tasks:
+    file: approle_setup.yml
+    apply:
+      vars:
+        default_path: "{{ auth_methods.approle.default_path }}"
+        this_path: "{{ item }}"
+  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+  loop: "{{ auth_methods.approle.paths }}"
+
+- name: setup approle secret_id_less auth
+  import_tasks: approle_secret_id_less_setup.yml
+  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+
+- name: setup jwt auth
+  include_tasks:
+    file: jwt_setup.yml
+    apply:
+      vars:
+        default_path: "{{ auth_methods.jwt.default_path }}"
+        this_path: "{{ item }}"
+  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+  loop: "{{ auth_methods.jwt.paths }}"

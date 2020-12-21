@@ -1,21 +1,33 @@
-- name: 'Create an approle policy'
-  command:
-    cmd: '{{ vault_cmd }} policy write approle-policy -'
-    stdin: |
-      path "auth/approle/login" {
-       capabilities = [ "create", "read" ]
-      }
+- name: "Setup block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+    path_key: "{{ this_path | replace('-','_') }}"
+  block:
+    - name: 'Enable the AppRole auth method'
+      command: '{{ vault_cmd }} auth enable {{ "" if is_default_path else "-path " ~ this_path }} approle'
 
-- name: 'Enable the AppRole auth method'
-  command: '{{ vault_cmd }} auth enable approle'
+    - name: 'Create an approle policy'
+      command:
+        cmd: '{{ vault_cmd }} policy write approle-policy -'
+        stdin: |
+          path "auth/{{ this_path }}/login" {
+          capabilities = [ "create", "read" ]
+          }
 
-- name: 'Create a named role'
-  command: '{{ vault_cmd }} write auth/approle/role/test-role policies="test-policy,approle-policy"'
+    - name: 'Create a named role'
+      command: |-
+        {{ vault_cmd }} write auth/{{ this_path }}/role/test-role policies="{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
 
-- name: 'Fetch the RoleID of the AppRole'
-  command: '{{ vault_cmd }} read -field=role_id auth/approle/role/test-role/role-id'
-  register: role_id_cmd
+    - name: 'Fetch the RoleID of the AppRole'
+      command: '{{ vault_cmd }} read -field=role_id auth/{{ this_path }}/role/test-role/role-id'
+      register: role_id_cmd
 
-- name: 'Get a SecretID issued against the AppRole'
-  command: '{{ vault_cmd }} write -field=secret_id -f auth/approle/role/test-role/secret-id'
-  register: secret_id_cmd
+
+    - name: 'Get a SecretID issued against the AppRole'
+      command: '{{ vault_cmd }} write -field=secret_id -f auth/{{ this_path }}/role/test-role/secret-id'
+      register: secret_id_cmd
+
+    - name: register path-specific variables
+      set_fact:
+        '{{ path_key }}_role_id': "{{ role_id_cmd.stdout }}"
+        '{{ path_key }}_secret_id': "{{ secret_id_cmd.stdout }}"
