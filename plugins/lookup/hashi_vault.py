@@ -55,9 +55,10 @@ DOCUMENTATION = """
           key: token_file
       default: '.vault-token'
     url:
-      description: URL to the Vault service.
+      description: URL to the Vault service. If not set elsewhere, the value of the C(VAULT_ADDR) env var will be used.
       env:
-        - name: VAULT_ADDR
+        - name: ANSIBLE_HASHI_VAULT_ADDR
+          version_added: '1.0.0'
       ini:
         - section: lookup_hashi_vault
           key: url
@@ -318,6 +319,7 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'token_path': ['HOME'],
     'namespace': ['VAULT_NAMESPACE'],
     'token': ['VAULT_TOKEN'],
+    'url': ['VAULT_ADDR'],
 }
 
 
