@@ -15,8 +15,9 @@ DOCUMENTATION = """
   requirements:
     - hvac (python library)
     - hvac 0.7.0+ (for namespace support)
-    - hvac 0.9.6+ (to avoid all deprecation warnings)
+    - hvac 0.9.6+ (to avoid most deprecation warnings)
     - hvac 0.10.5+ (for JWT auth)
+    - hvac 0.10.6+ (to avoid deprecation warning for AppRole)
     - botocore (only if inferring aws params from boto)
     - boto3 (only if using a boto profile)
   description:
@@ -440,42 +441,45 @@ class HashiVault:
 
     def auth_userpass(self):
         params = self.get_options('username', 'password', 'mount_point')
-        if self.hvac_has_auth_methods and hasattr(self.client.auth.userpass, 'login'):
+        try:
             self.client.auth.userpass.login(**params)
-        else:
+        except (NotImplementedError, AttributeError):
             Display().warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
             self.client.auth_userpass(**params)
 
     def auth_ldap(self):
         params = self.get_options('username', 'password', 'mount_point')
-# not hasattr(self.client, 'auth')
-        if self.hvac_has_auth_methods and hasattr(self.client.auth.ldap, 'login'):
+        try:
             self.client.auth.ldap.login(**params)
-        else:
+        except (NotImplementedError, AttributeError):
             Display().warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
             self.client.auth_ldap(**params)
 
     def auth_approle(self):
         params = self.get_options('role_id', 'secret_id', 'mount_point')
-        self.client.auth_approle(**params)
+        try:
+            self.client.auth.approle.login(**params)
+        except (NotImplementedError, AttributeError):
+            Display().warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
+            self.client.auth_approle(**params)
 
     def auth_aws_iam_login(self):
         params = self.options['_auth_aws_iam_login_params']
-        if self.hvac_has_auth_methods and hasattr(self.client.auth.aws, 'iam_login'):
+        try:
             self.client.auth.aws.iam_login(**params)
-        else:
+        except (NotImplementedError, AttributeError):
             Display().warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
             self.client.auth_aws_iam(**params)
 
     def auth_jwt(self):
         params = self.get_options('role_id', 'jwt', 'mount_point')
         params['role'] = params.pop('role_id')
-        if self.hvac_has_auth_methods and hasattr(self.client.auth, 'jwt') and hasattr(self.client.auth.jwt, 'jwt_login'):
+        try:
             response = self.client.auth.jwt.jwt_login(**params)
             # must manually set the client token with JWT login
             # see https://github.com/hvac/hvac/issues/644
             self.client.token = response['auth']['client_token']
-        else:
+        except (NotImplementedError, AttributeError):
             raise AnsibleError("JWT authentication requires HVAC version 0.10.5 or higher.")
 
     # end auth implementation methods
