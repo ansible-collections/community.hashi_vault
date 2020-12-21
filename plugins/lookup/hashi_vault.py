@@ -42,14 +42,16 @@ DOCUMENTATION = """
     token_path:
       description: If no token is specified, will try to read the token file from this path.
       env:
-        - name: VAULT_TOKEN_PATH
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
+          version_added: '1.0.0'
       ini:
         - section: lookup_hashi_vault
           key: token_path
     token_file:
       description: If no token is specified, will try to read the token from this file in C(token_path).
       env:
-        - name: VAULT_TOKEN_FILE
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_FILE
+          version_added: '1.0.0'
       ini:
         - section: lookup_hashi_vault
           key: token_file
