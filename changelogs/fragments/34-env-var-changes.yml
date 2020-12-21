@@ -1,0 +1,8 @@
+---
+breaking_changes:
+  - hashi_vault - ``url`` parameter's env var ``VAULT_ADDR`` now has lower precedence than INI value (https://github.com/ansible-collections/community.hashi_vault/issues/8).
+  - hashi_vault - ``auth_method`` parameter's env var ``VAULT_AUTH_METHOD`` has been replaced by ``ANSIBLE_HASHI_VAULT_AUTH_METHOD`` (https://github.com/ansible-collections/community.hashi_vault/issues/17).
+  - hashi_vault - ``token_file`` and ``token_path`` parameters' env vars ``VAULT_TOKEN_FILE`` and ``VAULT_TOKEN_PATH`` have been replaced by ``ANSIBLE_HASHI_VAULT_TOKEN_FILE`` and ``ANSIBLE_HASHI_VAULT_TOKEN_PATH`` (https://github.com/ansible-collections/community.hashi_vault/issues/15).
+  - hashi_vault - ``role_id`` and ``secret_id`` parameters' env vars ``VAULT_ROLE_ID`` and ``VAULT_SECRET_ID`` have been replaced with ``ANSIBLE_HASHI_VAULT_ROLE_ID`` and ``ANSIBLE_HASHI_VAULT_SECRET_ID`` (https://github.com/ansible-collections/community.hashi_vault/issues/20).
+minor_changes:
+  - hashi_vault - ``url`` can be specified via new ``ANSIBLE_HASHI_VAULT_ADDR`` env var (https://github.com/ansible-collections/community.hashi_vault/issues/8).
