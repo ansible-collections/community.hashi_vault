@@ -82,7 +82,8 @@ DOCUMENTATION = """
       description:
         - Authentication method to be used.
       env:
-        - name: VAULT_AUTH_METHOD
+        - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+          version_added: '1.0.0'
       ini:
         - section: lookup_hashi_vault
           key: auth_method
