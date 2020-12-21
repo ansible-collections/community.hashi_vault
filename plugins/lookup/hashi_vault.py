@@ -72,14 +72,16 @@ DOCUMENTATION = """
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
-        - name: VAULT_ROLE_ID
+        - name: ANSIBLE_HASHI_VAULT_ROLE_ID
+          version_added: '1.0.0'
       ini:
         - section: lookup_hashi_vault
           key: role_id
     secret_id:
       description: Secret ID to be used for Vault AppRole authentication.
       env:
-        - name: VAULT_SECRET_ID
+        - name: ANSIBLE_HASHI_VAULT_SECRET_ID
+          version_added: '1.0.0'
     auth_method:
       description:
         - Authentication method to be used.
