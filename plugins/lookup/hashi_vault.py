@@ -705,6 +705,8 @@ class LookupModule(LookupBase):
 
     def validate_auth_approle(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id')
+
+        # This lone superfluous get_option() is intentional, see:
         # https://github.com/ansible-collections/community.hashi_vault/issues/35
         self.get_option('secret_id')
 
