@@ -82,6 +82,13 @@ DOCUMENTATION = """
         - Authentication method to be used.
       env:
         - name: VAULT_AUTH_METHOD
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            plugin_name: hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+        - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
       ini:
         - section: lookup_hashi_vault
           key: auth_method
