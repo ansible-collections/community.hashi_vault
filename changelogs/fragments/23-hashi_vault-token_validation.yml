@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - hashi_vault - tokens without ``lookup-self`` ability can't be used because of validation (https://github.com/ansible-collections/community.hashi_vault/issues/18).
+minor_changes:
+  - hashi_vault - add ``token_validate`` option to control token validation (https://github.com/ansible-collections/community.hashi_vault/pull/23).

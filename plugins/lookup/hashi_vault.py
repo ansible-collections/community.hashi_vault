@@ -54,6 +54,18 @@ DOCUMENTATION = """
         - section: lookup_hashi_vault
           key: token_file
       default: '.vault-token'
+    token_validate:
+      description:
+        - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
+        - Disable if your token doesn't have the C(lookup-self) capability.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_VALIDATE
+      ini:
+        - section: lookup_hashi_vault
+          key: token_validate
+      type: boolean
+      default: true
+      version_added: 0.2.0
     url:
       description: URL to the Vault service.
       env:
@@ -264,6 +276,15 @@ EXAMPLES = """
 - name: Authenticate with a JWT
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
+
+# Disabling Token Validation
+# Use this when your token does not have the lookup-self capability. Usually this is applied to all tokens via the default policy.
+# However you can choose to create tokens without applying the default policy, or you can modify your default policy not to include it.
+# When disabled, your invalid or expired token will be indistinguishable from insufficent permissions.
+
+- name: authenticate without token validation
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, token_validate=False) }}"
 """
 
 RETURN = """
@@ -436,7 +457,7 @@ class HashiVault:
     # 3. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
     #
     def auth_token(self):
-        if not self.client.is_authenticated():
+        if self.options.get('token_validate') and not self.client.is_authenticated():
             raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup.")
 
     def auth_userpass(self):
