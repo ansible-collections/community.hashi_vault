@@ -63,7 +63,8 @@ DOCUMENTATION = """
         - section: lookup_hashi_vault
           key: token_validate
       type: boolean
-      default: True
+      default: true
+      version_added: 0.2.0
     url:
       description: URL to the Vault service.
       env:
