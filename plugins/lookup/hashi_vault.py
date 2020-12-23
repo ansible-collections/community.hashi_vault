@@ -40,16 +40,30 @@ DOCUMENTATION = """
         - name: ANSIBLE_HASHI_VAULT_TOKEN
           version_added: '0.2.0'
     token_path:
-      description: If no token is specified, will try to read the token file from this path.
+      description: If no token is specified, will try to read the I(token_file) from this path.
       env:
         - name: VAULT_TOKEN_PATH
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            plugin_name: hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_TOKEN_PATH
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
       ini:
         - section: lookup_hashi_vault
           key: token_path
     token_file:
-      description: If no token is specified, will try to read the token from this file in C(token_path).
+      description: If no token is specified, will try to read the token from this file in I(token_path).
       env:
         - name: VAULT_TOKEN_FILE
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            plugin_name: hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_TOKEN_FILE
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_FILE
       ini:
         - section: lookup_hashi_vault
           key: token_file
