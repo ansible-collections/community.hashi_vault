@@ -704,6 +704,8 @@ class LookupModule(LookupBase):
 
     def validate_auth_approle(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id')
+        # https://github.com/ansible-collections/community.hashi_vault/issues/35
+        self.get_option('secret_id')
 
     def validate_auth_token(self, auth_method):
         if auth_method == 'token':
