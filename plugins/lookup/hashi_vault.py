@@ -47,9 +47,9 @@ DOCUMENTATION = """
             why: standardizing environment variables
             version: 2.0.0
             collection_name: community.hashi_vault
-            plugin_name: hashi_vault
             alternatives: ANSIBLE_HASHI_VAULT_TOKEN_PATH
         - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: token_path
@@ -61,9 +61,9 @@ DOCUMENTATION = """
             why: standardizing environment variables
             version: 2.0.0
             collection_name: community.hashi_vault
-            plugin_name: hashi_vault
             alternatives: ANSIBLE_HASHI_VAULT_TOKEN_FILE
         - name: ANSIBLE_HASHI_VAULT_TOKEN_FILE
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: token_file
@@ -73,6 +73,7 @@ DOCUMENTATION = """
       env:
         - name: VAULT_ADDR
         - name: ANSIBLE_HASHI_VAULT_ADDR
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: url
@@ -89,9 +90,9 @@ DOCUMENTATION = """
             why: standardizing environment variables
             version: 2.0.0
             collection_name: community.hashi_vault
-            plugin_name: hashi_vault
             alternatives: ANSIBLE_HASHI_VAULT_ROLE_ID
         - name: ANSIBLE_HASHI_VAULT_ROLE_ID
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: role_id
@@ -103,9 +104,9 @@ DOCUMENTATION = """
             why: standardizing environment variables
             version: 2.0.0
             collection_name: community.hashi_vault
-            plugin_name: hashi_vault
             alternatives: ANSIBLE_HASHI_VAULT_SECRET_ID
         - name: ANSIBLE_HASHI_VAULT_SECRET_ID
+          version_added: '0.2.0'
     auth_method:
       description:
         - Authentication method to be used.
@@ -115,9 +116,9 @@ DOCUMENTATION = """
             why: standardizing environment variables
             version: 2.0.0
             collection_name: community.hashi_vault
-            plugin_name: hashi_vault
             alternatives: ANSIBLE_HASHI_VAULT_AUTH_METHOD
         - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: auth_method
@@ -365,18 +366,18 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
 # Fix: https://github.com/ansible/ansible/pull/73058
 #
 # If #73058 or another fix is backported, this should be removed.
-def deprecate(plugin_name='hashi_vault'):
+def deprecate(collection_name='community.hashi_vault'):
 
     # nicked from cli/__init__.py
     # with slight customizations to help filter out relevant messages
-    # (must add `plugin_name:` to the `deprecation:` dict)
+    # (relying on the collection name since it's a valid attrib and we only have 1 plugin at this time)
 
     # warn about deprecated config options
 
     for deprecated in list(C.config.DEPRECATED):
         name = deprecated[0]
         why = deprecated[1]['why']
-        if deprecated[1].get('plugin_name') != plugin_name:
+        if deprecated[1].get('collection_name') != collection_name:
             continue
 
         if 'alternatives' in deprecated[1]:
