@@ -72,6 +72,7 @@ DOCUMENTATION = """
       description: URL to the Vault service.
       env:
         - name: VAULT_ADDR
+        - name: ANSIBLE_HASHI_VAULT_ADDR
       ini:
         - section: lookup_hashi_vault
           key: url
