@@ -1,3 +1,0 @@
----
-bugfixes:
-  - hashi_vault - ``mount_point`` parameter did not work with ``aws_iam_login`` auth method (https://github.com/ansible-collections/community.hashi_vault/issues/7)
