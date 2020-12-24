@@ -40,16 +40,30 @@ DOCUMENTATION = """
         - name: ANSIBLE_HASHI_VAULT_TOKEN
           version_added: '0.2.0'
     token_path:
-      description: If no token is specified, will try to read the token file from this path.
+      description: If no token is specified, will try to read the I(token_file) from this path.
       env:
         - name: VAULT_TOKEN_PATH
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_TOKEN_PATH
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: token_path
     token_file:
-      description: If no token is specified, will try to read the token from this file in C(token_path).
+      description: If no token is specified, will try to read the token from this file in I(token_path).
       env:
         - name: VAULT_TOKEN_FILE
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_TOKEN_FILE
+        - name: ANSIBLE_HASHI_VAULT_TOKEN_FILE
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: token_file
@@ -70,6 +84,8 @@ DOCUMENTATION = """
       description: URL to the Vault service.
       env:
         - name: VAULT_ADDR
+        - name: ANSIBLE_HASHI_VAULT_ADDR
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: url
@@ -82,6 +98,13 @@ DOCUMENTATION = """
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
         - name: VAULT_ROLE_ID
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_ROLE_ID
+        - name: ANSIBLE_HASHI_VAULT_ROLE_ID
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: role_id
@@ -89,11 +112,25 @@ DOCUMENTATION = """
       description: Secret ID to be used for Vault AppRole authentication.
       env:
         - name: VAULT_SECRET_ID
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_SECRET_ID
+        - name: ANSIBLE_HASHI_VAULT_SECRET_ID
+          version_added: '0.2.0'
     auth_method:
       description:
         - Authentication method to be used.
       env:
         - name: VAULT_AUTH_METHOD
+          deprecated:
+            why: standardizing environment variables
+            version: 2.0.0
+            collection_name: community.hashi_vault
+            alternatives: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+        - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+          version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: auth_method
@@ -299,8 +336,11 @@ import os
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible.utils.display import Display
 from ansible.module_utils.parsing.convert_bool import boolean
+from ansible import constants as C
+from ansible.utils.display import Display
+
+display = Display()
 
 HAS_HVAC = False
 try:
@@ -340,6 +380,38 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'namespace': ['VAULT_NAMESPACE'],
     'token': ['VAULT_TOKEN'],
 }
+
+
+# TODO: this is a workaround for deprecations not being shown in lookups
+# See: https://github.com/ansible/ansible/issues/73051
+# Fix: https://github.com/ansible/ansible/pull/73058
+#
+# If #73058 or another fix is backported, this should be removed.
+def deprecate(collection_name='community.hashi_vault'):
+
+    # nicked from cli/__init__.py
+    # with slight customizations to help filter out relevant messages
+    # (relying on the collection name since it's a valid attrib and we only have 1 plugin at this time)
+
+    # warn about deprecated config options
+
+    for deprecated in list(C.config.DEPRECATED):
+        name = deprecated[0]
+        why = deprecated[1]['why']
+        if deprecated[1].get('collection_name') != collection_name:
+            continue
+
+        if 'alternatives' in deprecated[1]:
+            alt = ', use %s instead' % deprecated[1]['alternatives']
+        else:
+            alt = ''
+        ver = deprecated[1].get('version')
+        date = deprecated[1].get('date')
+        collection_name = deprecated[1].get('collection_name')
+        display.deprecated("%s option, %s%s" % (name, why, alt), version=ver, date=date, collection_name=collection_name)
+
+        # remove this item from the list so it won't get processed again by something else
+        C.config.DEPRECATED.remove(deprecated)
 
 
 class HashiVault:
@@ -465,7 +537,7 @@ class HashiVault:
         try:
             self.client.auth.userpass.login(**params)
         except (NotImplementedError, AttributeError):
-            Display().warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
+            display.warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
             self.client.auth_userpass(**params)
 
     def auth_ldap(self):
@@ -473,7 +545,7 @@ class HashiVault:
         try:
             self.client.auth.ldap.login(**params)
         except (NotImplementedError, AttributeError):
-            Display().warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
+            display.warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
             self.client.auth_ldap(**params)
 
     def auth_approle(self):
@@ -481,7 +553,7 @@ class HashiVault:
         try:
             self.client.auth.approle.login(**params)
         except (NotImplementedError, AttributeError):
-            Display().warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
+            display.warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
             self.client.auth_approle(**params)
 
     def auth_aws_iam_login(self):
@@ -489,7 +561,7 @@ class HashiVault:
         try:
             self.client.auth.aws.iam_login(**params)
         except (NotImplementedError, AttributeError):
-            Display().warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
+            display.warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
             self.client.auth_aws_iam(**params)
 
     def auth_jwt(self):
@@ -521,6 +593,8 @@ class LookupModule(LookupBase):
             opts = kwargs.copy()
             opts.update(self.parse_term(term))
             self.set_options(direct=opts)
+            # TODO: remove deprecate() if backported fix is available (see method definition)
+            deprecate()
             self.process_options()
             # FUTURE: Create one object, authenticate once, and re-use it,
             # for gets, for better use during with_ loops.
@@ -656,6 +730,10 @@ class LookupModule(LookupBase):
 
     def validate_auth_approle(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id')
+
+        # This lone superfluous get_option() is intentional, see:
+        # https://github.com/ansible-collections/community.hashi_vault/issues/35
+        self.get_option('secret_id')
 
     def validate_auth_token(self, auth_method):
         if auth_method == 'token':
