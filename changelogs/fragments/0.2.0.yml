@@ -1,4 +1,0 @@
----
-release_summary: |-
-  Several backwards-compatible bugfixes and enhancements in this release.
-  Some environment variables are deprecated and have standardized replacements.
