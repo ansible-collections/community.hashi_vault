@@ -2,7 +2,7 @@
 
 namespace: community
 name: hashi_vault
-version: 0.2.0
+version: 1.0.0
 readme: README.md
 authors:
   - Jonathan Davila
