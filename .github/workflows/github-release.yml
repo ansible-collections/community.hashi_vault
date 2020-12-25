@@ -1,0 +1,64 @@
+name: GitHub Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number to release'
+        required: true
+
+jobs:
+
+  release:
+    name: Create Release From Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install PyYaml
+        run: pip install pyyaml
+
+      - name: Validate version is published
+        run: curl --head -s -f -o /dev/null https://galaxy.ansible.com/download/community-hashi_vault-{{ github.event.inputs.version }}.tar.gz
+
+      - name: Build release description
+        shell: python
+        run: |
+          import os
+          import pyyaml
+
+          with open('changelogs/fragments/changelog.yml', 'r') as s:
+              ri = yaml.safe_load(s)
+
+          summary = ri['{{ github.event.inputs.version }}']['changes']['summary']
+
+          description = '''## Summary
+
+          %s
+
+          ---
+
+          View the [complete changelog](https://github.com/ansible-collections/community.hashi_vault/blob/main/CHANGELOG.rst) to see all changes.
+          ''' % summary
+
+          with open(os.environ['GITHUB_ENV'], 'a') as e:
+              e.write("RELEASE_DESCRIPTION<<EOF\n%s\nEOF" % description)
+
+      - name: Test
+        run: echo $RELEASE_DESCRIPTION
+
+      - name: Create Release
+        if: 'false'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: ${{ github.event.inputs.version }}
+          body: ${{ env.RELEASE_DESCRIPTION }}
