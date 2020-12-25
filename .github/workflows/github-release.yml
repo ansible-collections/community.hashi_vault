@@ -32,11 +32,14 @@ jobs:
           import os
           import yaml
 
+          ver = '${{ github.event.inputs.version }}'
+          ver_anchor = str.replace(ver, '.', '-')
+
           with open('changelogs/changelog.yaml', 'r') as s:
               ri = yaml.safe_load(s)
 
-          summary = ri['releases']['${{ github.event.inputs.version }}']['changes']['release_summary']
-          reldate = ri['releases']['${{ github.event.inputs.version }}']['release_date']
+          summary = ri['releases'][ver]['changes']['release_summary']
+          reldate = ri['releases'][ver]['release_date']
 
           description = '''## Summary
           Released: %s
@@ -45,8 +48,8 @@ jobs:
 
           ---
 
-          View the [complete changelog](https://github.com/ansible-collections/community.hashi_vault/blob/main/CHANGELOG.rst) to see all changes.
-          ''' % (reldate, summary)
+          View the [complete changelog](https://github.com/ansible-collections/community.hashi_vault/blob/main/CHANGELOG.rst#v%s) to see all changes.
+          ''' % (reldate, summary, ver_anchor)
 
           with open(os.environ['GITHUB_ENV'], 'a') as e:
               e.write("RELEASE_DESCRIPTION<<EOF\n%s\nEOF" % description)
