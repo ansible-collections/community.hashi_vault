@@ -53,7 +53,7 @@ releases:
         ``ANSIBLE_HASHI_VAULT_NAMESPACE`` (new) and ``VAULT_NAMESPACE`` (lower preference)  (https://github.com/ansible-collections/community.hashi_vault/issues/14).
       - hashi_vault - ``token`` parameter can now be specified via ``ANSIBLE_HASHI_VAULT_TOKEN``
         as well as via ``VAULT_TOKEN`` (the latter with lower preference) (https://github.com/ansible-collections/community.hashi_vault/issues/16).
-      - hashi_vault - add ``token_validate`` option to control token validation (https://github.com/ansible-collections/community.hashi_vault/pull/23).
+      - hashi_vault - add ``token_validate`` option to control token validation (https://github.com/ansible-collections/community.hashi_vault/pull/24).
       - hashi_vault - uses new AppRole method in hvac 0.10.6 with fallback to deprecated
         method with warning (https://github.com/ansible-collections/community.hashi_vault/pull/33).
       release_summary: 'Several backwards-compatible bugfixes and enhancements in
@@ -63,7 +63,7 @@ releases:
     fragments:
     - 0.2.0.yml
     - 22-hashi_vault-aws_iam_login-mount_point.yml
-    - 23-hashi_vault-token_validation.yml
+    - 24-hashi_vault-token_validation.yml
     - 25-non-breaking-env-parameter-changes.yml
     - 27-add-hashi_vault-header_value-param.yml
     - 31-jwt-mount_point.yml
