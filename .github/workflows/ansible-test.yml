@@ -144,7 +144,10 @@ jobs:
               basename $(curl -fs -o/dev/null -w %{redirect_url} $1/releases/latest)
           }
 
-          echo "CC_LATEST=$(latestversion https://github.com/ansible-collections/community.crypto)" >> $GITHUB_ENV
+          ccl=latestversion https://github.com/ansible-collections/community.crypto
+          echo ccl
+
+          echo "CC_LATEST=${ccl}" >> $GITHUB_ENV
 
       - name: Cache for community.crypto
         id: cache-cc
