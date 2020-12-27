@@ -78,19 +78,19 @@ jobs:
       matrix:
         ansible:
           - stable-2.9
-          - stable-2.10
-          - devel
+          # - stable-2.10
+          # - devel
         python:
-          - 2.7
-          - 3.5
-          - 3.6
-          - 3.7
+          # - 2.7
+          # - 3.5
+          # - 3.6
+          # - 3.7
           - 3.8
-          - 3.9
+          # - 3.9
         vault:
           - 1.6.0
-          - 1.5.5
-          - 1.4.7
+          # - 1.5.5
+          # - 1.4.7
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -144,9 +144,11 @@ jobs:
               basename $(curl -fs -o/dev/null -w %{redirect_url} $1/releases/latest)
           }
 
-          curl -fs --verbose -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest
+          curl -fs -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest
 
-          fail
+          ccl=curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest
+
+
           echo "CC_LATEST=${ccl}" >> $GITHUB_ENV
 
       - name: Cache for community.crypto
