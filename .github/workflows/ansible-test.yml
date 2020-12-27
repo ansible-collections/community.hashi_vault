@@ -144,7 +144,7 @@ jobs:
               basename $(curl -fs -o/dev/null -w %{redirect_url} $1/releases/latest)
           }
 
-          ccl=latestversion https://github.com/ansible-collections/community.crypto
+          ccl=curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest
           echo ccl
 
           echo "CC_LATEST=${ccl}" >> $GITHUB_ENV
