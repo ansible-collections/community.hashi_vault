@@ -118,15 +118,15 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Cache vault binaries
-        id: cache
+      - name: Cache for vault binaries
+        id: cache-vault
         uses: actions/cache@v2
         with:
           path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
-          key: ${{ runner.os }}-vault${{ matrix.vault }}-${{ hashFiles(format('{0}/**', env.LOOKUP_HASHI_VAULT_BIN)) }} # future: include version/arch when configurable
+          key: ${{ runner.os }}-vault${{ matrix.vault }} # future: include version/arch when configurable
 
       # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
-      # the files/bin dir will contain the vault binary downloaded a few steps later
+      # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
       # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
       - name: Prepare for Vault version and caching
         run: |
@@ -137,12 +137,36 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      - name: Find the latest version of community.crypto
+        run: |
+          # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
+          lastversion() {
+              basename $(curl -fs -o/dev/null -w %{redirect_url} $1/releases/latest)
+          }
+
+          echo "CC_LATEST=$(latestversion https://github.com/ansible-collections/community.crypto)" >> $GITHUB_ENV
+
+      - name: Cache for community.crypto
+        id: cache-cc
+        uses: actions/cache@v2
+        with:
+          path: ansible_collections/community/crypto
+          key: collection-community.crypto-${{ env.CC_LATEST }}
+
       - name: Install collection dependencies
-        run: ansible-galaxy collection install community.crypto -p .
+        if: steps.cache-cc.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: ansible-collections/community.crypto
+          ref: refs/tags/${{ env.CC_LATEST }}
+          path: ansible_collections/community/crypto
+
+
+        #run: ansible-galaxy collection install community.crypto -p .
 
       # this will populate files/bin with the selected vault version binary
       - name: Pre-download Vault
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache-vault.outputs.cache-hit != 'true'
         env:
           ANSIBLE_ROLES_PATH: ../
         working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
