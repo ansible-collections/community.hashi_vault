@@ -81,9 +81,10 @@ DOCUMENTATION = """
       default: true
       version_added: 0.2.0
     url:
-      description: URL to the Vault service.
+      description:
+        - URL to the Vault service.
+        - If not specified by any other means, the value of the C(VAULT_ADDR) environment variable will be used.
       env:
-        - name: VAULT_ADDR
         - name: ANSIBLE_HASHI_VAULT_ADDR
           version_added: '0.2.0'
       ini:
@@ -379,6 +380,7 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'token_path': ['HOME'],
     'namespace': ['VAULT_NAMESPACE'],
     'token': ['VAULT_TOKEN'],
+    'url': ['VAULT_ADDR'],
 }
 
 
