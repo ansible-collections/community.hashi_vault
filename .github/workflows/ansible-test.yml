@@ -140,15 +140,8 @@ jobs:
       - name: Find the latest version of community.crypto
         run: |
           # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
-          lastversion() {
-              basename $(curl -fs -o/dev/null -w %{redirect_url} $1/releases/latest)
-          }
 
-          curl -fs -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest
-
-          ccl=curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest
-
-
+          ccl=$(basename curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
           echo "CC_LATEST=${ccl}" >> $GITHUB_ENV
 
       - name: Cache for community.crypto
