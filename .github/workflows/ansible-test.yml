@@ -141,8 +141,8 @@ jobs:
         run: |
           # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
 
-          ccl=$(basename curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
-          echo "CC_LATEST=${ccl}" >> $GITHUB_ENV
+          cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
+          echo "CC_LATEST=$(basename cclu)" >> $GITHUB_ENV
 
       - name: Cache for community.crypto
         id: cache-cc
