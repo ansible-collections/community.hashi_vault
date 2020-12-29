@@ -78,19 +78,19 @@ jobs:
       matrix:
         ansible:
           - stable-2.9
-          # - stable-2.10
-          # - devel
+          - stable-2.10
+          - devel
         python:
-          # - 2.7
-          # - 3.5
-          # - 3.6
-          # - 3.7
+          - 2.7
+          - 3.5
+          - 3.6
+          - 3.7
           - 3.8
-          # - 3.9
+          - 3.9
         vault:
           - 1.6.0
-          # - 1.5.5
-          # - 1.4.7
+          - 1.5.5
+          - 1.4.7
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -137,6 +137,7 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      #TODO: remove dependency on community.crypto
       - name: Find the latest version of community.crypto
         run: |
           # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
@@ -158,9 +159,6 @@ jobs:
           repository: ansible-collections/community.crypto
           ref: refs/tags/${{ env.CC_LATEST }}
           path: ansible_collections/community/crypto
-
-
-        #run: ansible-galaxy collection install community.crypto -p .
 
       # this will populate files/bin with the selected vault version binary
       - name: Pre-download Vault
