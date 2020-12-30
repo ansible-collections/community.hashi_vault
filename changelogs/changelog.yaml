@@ -70,3 +70,17 @@ releases:
     - 33-approle-deprecation.yml
     - 35-env-var-deprecations.yml
     release_date: '2020-12-24'
+  1.0.0:
+    changes:
+      breaking_changes:
+      - hashi_vault - the ``VAULT_ADDR`` environment variable is now checked last
+        for the ``url`` parameter. For details on which use cases are impacted, see
+        (https://github.com/ansible-collections/community.hashi_vault/issues/8).
+      release_summary: Our first major release contains a single breaking change that
+        will affect only a small subset of users. No functionality is removed. See
+        the details in the changelog to determine if you're affected and if so how
+        to transition to remediate.
+    fragments:
+    - 1.0.0.yml
+    - 41-lower-url-env-precedence.yml
+    release_date: '2020-12-30'
