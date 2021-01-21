@@ -95,6 +95,11 @@ DOCUMENTATION = """
       description: Authentication user name.
     password:
       description: Authentication password.
+    proxy:
+      description:
+        - URL to the proxy (eg. 'socks5://user:pass@host:port') to access the Vault service.
+        - If not specified, standard environment variables are used.
+      type: str
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
@@ -447,6 +452,12 @@ class HashiVault:
         # this is the only auth_method-specific thing here, because if we're using a token, we need it now
         if self.options['auth_method'] == 'token':
             client_args['token'] = self.options.get('token')
+
+        if self.options.get('proxy'):
+            client_args['proxies'] = {
+                    'http': self.options['proxy'],
+                    'https': self.options['proxy']
+                    }
 
         self.client = hvac.Client(**client_args)
         # logout to prevent accidental use of inferred tokens
