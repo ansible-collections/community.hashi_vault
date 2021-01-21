@@ -455,9 +455,9 @@ class HashiVault:
 
         if self.options.get('proxy'):
             client_args['proxies'] = {
-                    'http': self.options['proxy'],
-                    'https': self.options['proxy']
-                    }
+                'http': self.options['proxy'],
+                'https': self.options['proxy']
+            }
 
         self.client = hvac.Client(**client_args)
         # logout to prevent accidental use of inferred tokens
