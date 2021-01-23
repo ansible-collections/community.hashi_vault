@@ -5,6 +5,12 @@
     DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install tinyproxy
   changed_when: false
 
+- name: Configure tinyproxy
+  lineinfile:
+    path: /etc/tinyproxy/tinyproxy.conf
+    line: Allow 127.0.0.1
+    state: absent
+
 - name: Start tinyproxy (systemd services does not work in container)
   shell: tinyproxy
   changed_when: false
