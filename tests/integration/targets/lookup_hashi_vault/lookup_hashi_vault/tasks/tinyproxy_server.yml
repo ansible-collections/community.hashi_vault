@@ -5,25 +5,15 @@
     DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install tinyproxy
   changed_when: false
 
-- name: Configure good tinyproxy
+- name: Configure tinyproxy
   copy:
     content: |
       Port 8001
       MaxClients 100
       StartServers 10
-    dest: /tinyproxy_ok.conf
-
-- name: Configure wrong tinyproxy
-  copy:
-    content: |
-      Port 8002
-      MaxClients 100
-      StartServers 10
-      Allow 1.1.1.1
-    dest: /tinyproxy_ko.conf
+    dest: /tinyproxy.conf
 
 - name: Start tinyproxy
   shell: |
-    tinyproxy -c /tinyproxy_ok.conf
-    tinyproxy -c /tinyproxy_ko.conf
+    tinyproxy -c /tinyproxy.conf
   changed_when: false
