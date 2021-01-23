@@ -3,6 +3,7 @@
   shell: |
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install tinyproxy
+    pkill tinyproxy
   changed_when: false
 
 - name: Configure tinyproxy
