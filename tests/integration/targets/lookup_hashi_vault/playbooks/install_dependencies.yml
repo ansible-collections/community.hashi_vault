@@ -20,4 +20,4 @@
 
     - name: Install python-apt
       pip:
-        name: python-apt
+        name: python3-apt
