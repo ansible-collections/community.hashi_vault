@@ -18,6 +18,8 @@
       pip:
         name: "{{ hvac_package|default('hvac') }}"
 
-    - name: Install python-apt
-      pip:
-        name: python3-apt
+    - name: install python3-apt
+      shell: |
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get install python3-apt
+      changed_when: false
