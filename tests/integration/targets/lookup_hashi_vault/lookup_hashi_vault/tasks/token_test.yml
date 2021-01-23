@@ -98,7 +98,7 @@
       vars:
         secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', (conn_params|regex_replace('proxy=\\S*')) ~ 'proxy=http://127.0.0.1:4567 secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
       debug:
-        msg: 'Failure is expected (wrong proxy)'
+        msg: 'Failure is expected ({{secret_wrong_proxy}})'
       register: test_wrong_proxy
       ignore_errors: true
 
