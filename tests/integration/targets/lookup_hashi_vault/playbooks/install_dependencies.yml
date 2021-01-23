@@ -17,3 +17,7 @@
     - name: 'Install hvac Python package'
       pip:
         name: "{{ hvac_package|default('hvac') }}"
+
+    - name: Install python-apt
+      pip:
+        name: python-apt
