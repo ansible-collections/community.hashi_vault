@@ -17,20 +17,6 @@
 
 - import_tasks: tinyproxy_server.yml
 
-- name: 'Failure expected when wrong proxy is used'
-  vars:
-    secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', 'proxy=http://127.0.0.1:8123 url=http://localhost:8200 secret=' ~ vault_kv1_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
-  debug:
-    msg: 'Failure is expected (wrong proxy)'
-  register: test_wrong_proxy
-  ignore_errors: true
-
-- name: 'Check expected failures'
-  assert:
-    msg: "an expected failure didn't occur"
-    that:
-      - test_wrong_proxy is failed
-
 - import_tasks: tests.yml
   vars:
     auth_type: token
