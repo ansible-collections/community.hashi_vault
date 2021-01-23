@@ -11,8 +11,8 @@
       Port 8888
       MaxClients 100
       StartServers 10
-    dest: /etc/tinyproxy/tinyproxy.conf
+    dest: /tinyproxy.conf
 
 - name: Start tinyproxy (systemd services does not work in container)
-  shell: tinyproxy
+  shell: tinyproxy -c /tinyproxy.conf
   changed_when: false
