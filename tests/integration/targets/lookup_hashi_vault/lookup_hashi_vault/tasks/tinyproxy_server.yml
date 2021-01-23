@@ -3,17 +3,27 @@
   shell: |
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install tinyproxy
-    pkill tinyproxy
   changed_when: false
 
-- name: Configure tinyproxy
+- name: Configure good tinyproxy
   copy:
     content: |
-      Port 8888
+      Port 8001
       MaxClients 100
       StartServers 10
-    dest: /tinyproxy.conf
+    dest: /tinyproxy_ok.conf
 
-- name: Start tinyproxy (systemd services does not work in container)
-  shell: tinyproxy -c /tinyproxy.conf
+- name: Configure wrong tinyproxy
+  copy:
+    content: |
+      Port 8002
+      MaxClients 100
+      StartServers 10
+      Allow 1.1.1.1
+    dest: /tinyproxy_ko.conf
+
+- name: Start tinyproxy
+  shell: |
+    tinyproxy -c /tinyproxy_ok.conf
+    tinyproxy -c /tinyproxy_ko.conf
   changed_when: false

@@ -25,7 +25,7 @@
 - import_tasks: tests.yml
   vars:
     auth_type: token
-    conn_param_proxy: 'proxy=http://127.0.0.1:8888'
+    conn_param_proxy: 'proxy=http://127.0.0.1:8001'
 
 - name: approle tests without proxy
   include_tasks:
@@ -45,7 +45,7 @@
     apply:
       vars:
         auth_type: approle
-        conn_param_proxy: 'proxy=http://127.0.0.1:8888'
+        conn_param_proxy: 'proxy=http://127.0.0.1:8001'
         default_path: "{{ auth_methods.approle.default_path }}"
         this_path: "{{ item }}"
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
@@ -60,7 +60,7 @@
 - import_tasks: tests.yml
   vars:
     auth_type: approle_secret_id_less
-    conn_param_proxy: 'proxy=http://127.0.0.1:8888'
+    conn_param_proxy: 'proxy=http://127.0.0.1:8001'
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
 
 - name: jwt tests without proxy
@@ -81,15 +81,15 @@
     apply:
       vars:
         auth_type: jwt
-        conn_param_proxy: 'proxy=http://127.0.0.1:8888'
+        conn_param_proxy: 'proxy=http://127.0.0.1:8001'
         default_path: "{{ auth_methods.jwt.default_path }}"
         this_path: "{{ item }}"
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
   loop: "{{ auth_methods.jwt.paths }}"
 
-- name: 'Failure expected when erroneous credentials are used'
+- name: 'Failure expected when wrong proxy is used'
   vars:
-    secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', 'proxy=http://127.0.0.1:9999 url=http://localhost:8200 secret=' ~ vault_kv1_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
+    secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', 'proxy=http://127.0.0.1:8002 url=http://localhost:8200 secret=' ~ vault_kv1_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
   debug:
     msg: 'Failure is expected (wrong proxy)'
   register: test_wrong_proxy
