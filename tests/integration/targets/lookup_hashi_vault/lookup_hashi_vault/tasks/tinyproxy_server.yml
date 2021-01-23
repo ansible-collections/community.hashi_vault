@@ -1,0 +1,8 @@
+---
+- name: Install tinyproxy
+  package:
+    name: tinyproxy
+
+- name: Start tinyproxy (systemd services does not work in container)
+  shell: tinyproxy
+  changed_when: false

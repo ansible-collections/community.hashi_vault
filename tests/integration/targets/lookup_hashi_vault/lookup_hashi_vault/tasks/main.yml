@@ -15,16 +15,37 @@
 
 - import_tasks: vault_server.yml
 
+- import_tasks: tinyproxy_server.yml
+
 - import_tasks: tests.yml
   vars:
     auth_type: token
+    conn_param_proxy: ''
 
-- name: approle tests
+- import_tasks: tests.yml
+  vars:
+    auth_type: token
+    conn_param_proxy: 'proxy=http://localhost:8888'
+
+- name: approle tests without proxy
   include_tasks:
     file: tests.yml
     apply:
       vars:
         auth_type: approle
+        conn_param_proxy: ''
+        default_path: "{{ auth_methods.approle.default_path }}"
+        this_path: "{{ item }}"
+  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+  loop: "{{ auth_methods.approle.paths }}"
+
+- name: approle tests with proxy
+  include_tasks:
+    file: tests.yml
+    apply:
+      vars:
+        auth_type: approle
+        conn_param_proxy: 'proxy=http://localhost:8888'
         default_path: "{{ auth_methods.approle.default_path }}"
         this_path: "{{ item }}"
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
@@ -35,13 +56,46 @@
     auth_type: approle_secret_id_less
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
 
-- name: jwt tests
+- import_tasks: tests.yml
+  vars:
+    auth_type: approle_secret_id_less
+    conn_param_proxy: 'proxy=http://localhost:8888'
+  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+
+- name: jwt tests without proxy
   include_tasks:
     file: tests.yml
     apply:
       vars:
         auth_type: jwt
+        conn_param_proxy: ''
         default_path: "{{ auth_methods.jwt.default_path }}"
         this_path: "{{ item }}"
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
   loop: "{{ auth_methods.jwt.paths }}"
+
+- name: jwt tests with proxy
+  include_tasks:
+    file: tests.yml
+    apply:
+      vars:
+        auth_type: jwt
+        conn_param_proxy: 'proxy=http://localhost:8888'
+        default_path: "{{ auth_methods.jwt.default_path }}"
+        this_path: "{{ item }}"
+  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
+  loop: "{{ auth_methods.jwt.paths }}"
+
+- name: 'Failure expected when erroneous credentials are used'
+  vars:
+    secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', 'proxy=http://localhost:9999 url=http://localhost:8200 secret=' ~ vault_kv1_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
+  debug:
+    msg: 'Failure is expected (wrong proxy)'
+  register: test_wrong_proxy
+  ignore_errors: true
+
+- name: 'Check expected failures'
+  assert:
+    msg: "an expected failure didn't occur"
+    that:
+      - test_wrong_proxy is failed
