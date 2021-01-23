@@ -1,7 +1,9 @@
 ---
 - name: Install tinyproxy
-  apt:
-    name: tinyproxy
+  shell: |
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install tinyproxy
+  changed_when: false
 
 - name: Start tinyproxy (systemd services does not work in container)
   shell: tinyproxy
