@@ -339,15 +339,15 @@ EXAMPLES = """
 
 - name: use a simple proxy
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200 proxy=http://myproxy:8080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-... url=http://myvault:8200 proxy=http://myproxy:8080') }}"
 
 - name: use a proxy with login/password
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200 proxy=https://user:pass@myproxy:8080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-... url=http://myvault:8200 proxy=https://user:pass@myproxy:8080') }}"
 
 - name: 'use a socks proxy (need some additional dependencies, see: https://requests.readthedocs.io/en/master/user/advanced/#socks )'
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200 proxy=socks5://myproxy:1080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-... url=http://myvault:8200 proxy=socks5://myproxy:1080') }}"
 """
 
 RETURN = """
