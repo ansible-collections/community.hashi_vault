@@ -20,6 +20,6 @@
 
 - name: Start tinyproxy
   shell:
-    cmd: tinyproxy -c /tmp/tinyproxy.conf
+    cmd: tinyproxy -c "{{ local_temp_dir }}/tinyproxy.conf"
     creates: "{{ local_temp_dir }}/tinyproxy.pid"
   notify: Stop tinyproxy
