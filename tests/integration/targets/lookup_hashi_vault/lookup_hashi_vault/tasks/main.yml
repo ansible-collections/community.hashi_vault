@@ -20,32 +20,13 @@
 - import_tasks: tests.yml
   vars:
     auth_type: token
-    conn_param_proxy: ''
 
-- import_tasks: tests.yml
-  vars:
-    auth_type: token
-    conn_param_proxy: 'proxy=http://127.0.0.1:8001'
-
-- name: approle tests without proxy
+- name: approle tests
   include_tasks:
     file: tests.yml
     apply:
       vars:
         auth_type: approle
-        conn_param_proxy: ''
-        default_path: "{{ auth_methods.approle.default_path }}"
-        this_path: "{{ item }}"
-  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-  loop: "{{ auth_methods.approle.paths }}"
-
-- name: approle tests with proxy
-  include_tasks:
-    file: tests.yml
-    apply:
-      vars:
-        auth_type: approle
-        conn_param_proxy: 'proxy=http://127.0.0.1:8001'
         default_path: "{{ auth_methods.approle.default_path }}"
         this_path: "{{ item }}"
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
@@ -54,34 +35,14 @@
 - import_tasks: tests.yml
   vars:
     auth_type: approle_secret_id_less
-    conn_param_proxy: ''
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
 
-- import_tasks: tests.yml
-  vars:
-    auth_type: approle_secret_id_less
-    conn_param_proxy: 'proxy=http://127.0.0.1:8001'
-  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-
-- name: jwt tests without proxy
+- name: jwt tests
   include_tasks:
     file: tests.yml
     apply:
       vars:
         auth_type: jwt
-        conn_param_proxy: ''
-        default_path: "{{ auth_methods.jwt.default_path }}"
-        this_path: "{{ item }}"
-  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-  loop: "{{ auth_methods.jwt.paths }}"
-
-- name: jwt tests with proxy
-  include_tasks:
-    file: tests.yml
-    apply:
-      vars:
-        auth_type: jwt
-        conn_param_proxy: 'proxy=http://127.0.0.1:8001'
         default_path: "{{ auth_methods.jwt.default_path }}"
         this_path: "{{ item }}"
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')

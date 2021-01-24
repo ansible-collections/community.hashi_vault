@@ -109,4 +109,4 @@
           - test_wrong_cred is failed
           - test_unauthorized is failed
           - test_inexistent is failed
-          - test_wrong_proxy is failed
+          - test_wrong_proxy is failed and test_wrong_proxy.msg is search('Cannot connect to proxy')

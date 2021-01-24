@@ -97,9 +97,15 @@ DOCUMENTATION = """
       description: Authentication password.
     proxy:
       description:
-        - URL to the proxy (eg. 'socks5://user:pass@host:port') to access the Vault service.
-        - If not specified, standard environment variables are used.
+        - URL to the proxy (eg. 'https://user:pass@host:port') to access the Vault service.
+        - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_PROXY
+      ini:
+        - section: lookup_hashi_vault
+          key: proxy
       type: str
+      version_added: '1.1.0'
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
@@ -328,6 +334,20 @@ EXAMPLES = """
 - name: authenticate without token validation
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, token_validate=False) }}"
+
+# Use a proxy
+
+- name: use a simple proxy
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200 proxy=http://myproxy:8080') }}"
+
+- name: use a proxy with login/password
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200 proxy=https://user:pass@myproxy:8080') }}"
+
+- name: 'use a socks proxy (need some additional dependencies, see: https://requests.readthedocs.io/en/master/user/advanced/#socks )'
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200 proxy=socks5://myproxy:1080') }}"
 """
 
 RETURN = """

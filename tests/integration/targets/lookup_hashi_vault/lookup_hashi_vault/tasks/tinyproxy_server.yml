@@ -1,9 +1,13 @@
 ---
 - name: Install tinyproxy
-  shell: |
-    apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install tinyproxy
-  changed_when: false
+  vars:
+    # check 'Install unzip' task to know why we set ansible_python_interpreter
+    ansible_python_interpreter: "{{
+      '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+    }}"
+  package:
+    name: tinyproxy
+  notify: Uninstall tinyproxy
 
 - name: Configure tinyproxy
   copy:
@@ -11,9 +15,11 @@
       Port 8001
       MaxClients 100
       StartServers 10
-    dest: /tinyproxy.conf
+      PidFile "{{ local_temp_dir }}/tinyproxy.pid"
+    dest: "{{ local_temp_dir }}/tinyproxy.conf"
 
 - name: Start tinyproxy
-  shell: |
-    tinyproxy -c /tinyproxy.conf
-  changed_when: false
+  shell:
+    cmd: tinyproxy -c /tmp/tinyproxy.conf
+    creates: "{{ local_temp_dir }}/tinyproxy.pid"
+  notify: Stop tinyproxy
