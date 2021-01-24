@@ -95,15 +95,26 @@ DOCUMENTATION = """
       description: Authentication user name.
     password:
       description: Authentication password.
-    proxy:
+    proxy_http:
       description:
-        - URL to the proxy (eg. 'https://user:pass@host:port') to access the Vault service.
+        - URL to the proxy (eg. 'http://user:pass@host:port') used to access HTTP resources (if you access your Vault service through HTTP).
         - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
       env:
-        - name: ANSIBLE_HASHI_VAULT_PROXY
+        - name: ANSIBLE_HASHI_VAULT_PROXY_HTTP
       ini:
         - section: lookup_hashi_vault
-          key: proxy
+          key: proxy_http
+      type: str
+      version_added: '1.1.0'
+    proxy_https:
+      description:
+        - URL to the proxy (eg. 'http://user:pass@host:port') used to access HTTPS resources (if you access your Vault service through HTTPS).
+        - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_PROXY_HTTPS
+      ini:
+        - section: lookup_hashi_vault
+          key: proxy_https
       type: str
       version_added: '1.1.0'
     role_id:
@@ -339,15 +350,15 @@ EXAMPLES = """
 
 - name: use a simple proxy
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=... proxy=http://myproxy:8080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=http://... proxy_http=http://myproxy:8080') }}"
 
 - name: use a proxy with login/password
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=... proxy=https://user:pass@myproxy:8080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxy_https=https://user:pass@myproxy:8080') }}"
 
 - name: 'use a socks proxy (need some additional dependencies, see: https://requests.readthedocs.io/en/master/user/advanced/#socks )'
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=... proxy=socks5://myproxy:1080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxy_https=socks5://myproxy:1080') }}"
 """
 
 RETURN = """
@@ -473,11 +484,10 @@ class HashiVault:
         if self.options['auth_method'] == 'token':
             client_args['token'] = self.options.get('token')
 
-        if self.options.get('proxy'):
-            client_args['proxies'] = {
-                'http': self.options['proxy'],
-                'https': self.options['proxy']
-            }
+        if self.options.get('proxy_http'):
+            client_args.setdefault('proxies', {})['http'] = self.options.get('proxy_http')
+        if self.options.get('proxy_https'):
+            client_args.setdefault('proxies', {})['https'] = self.options.get('proxy_https')
 
         self.client = hvac.Client(**client_args)
         # logout to prevent accidental use of inferred tokens

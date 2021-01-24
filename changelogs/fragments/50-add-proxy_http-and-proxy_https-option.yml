@@ -1,0 +1,2 @@
+minor_changes:
+  - hashi_vault - add ``proxy_http`` and ``proxy_https`` option (https://github.com/ansible-collections/community.hashi_vault/pull/50).

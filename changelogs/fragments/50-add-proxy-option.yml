@@ -1,2 +1,0 @@
-minor_changes:
-  - hashi_vault - add ``proxy`` option (https://github.com/ansible-collections/community.hashi_vault/pull/50).
