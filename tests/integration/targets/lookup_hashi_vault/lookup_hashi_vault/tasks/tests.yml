@@ -6,7 +6,7 @@
 - name: 'test {{ auth_type }} auth without SSL (lookup parameters, with proxy)'
   include_tasks: '{{ auth_type }}_test.yml'
   vars:
-    conn_params: 'url=http://localhost:8200 proxy=http://127.0.0.1:8001'
+    conn_params: 'url=http://localhost:8200 proxy=http://127.0.0.1:8001 '
 
 - name: 'test {{ auth_type }} auth without SSL (environment variable)'
   include_tasks: '{{ auth_type }}_test.yml'
