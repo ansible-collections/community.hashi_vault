@@ -95,27 +95,19 @@ DOCUMENTATION = """
       description: Authentication user name.
     password:
       description: Authentication password.
-    proxy_http:
+    proxies:
       description:
-        - URL to the proxy (eg. 'http://user:pass@host:port') used to access HTTP resources (if you access your Vault service through HTTP).
+        - URL(s) to the proxies used to access the Vault service.
+        - It can be a string or a dict.
+        - If it's a string (eg. 'proxies=http://user:pass@host:port') it is used to access HTTP and HTTPS resources.
+        - If it's a dict (eg. "proxies={'http': 'http://host1', 'https': 'https://host2'}") you can specify a different proxy for HTTP and HTTPS resources.
         - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
       env:
-        - name: ANSIBLE_HASHI_VAULT_PROXY_HTTP
+        - name: ANSIBLE_HASHI_VAULT_PROXIES
       ini:
         - section: lookup_hashi_vault
-          key: proxy_http
-      type: str
-      version_added: '1.1.0'
-    proxy_https:
-      description:
-        - URL to the proxy (eg. 'http://user:pass@host:port') used to access HTTPS resources (if you access your Vault service through HTTPS).
-        - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_PROXY_HTTPS
-      ini:
-        - section: lookup_hashi_vault
-          key: proxy_https
-      type: str
+          key: proxies
+      type: raw
       version_added: '1.1.0'
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
@@ -348,17 +340,25 @@ EXAMPLES = """
 
 # Use a proxy
 
-- name: use a simple proxy
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=http://... proxy_http=http://myproxy:8080') }}"
-
 - name: use a proxy with login/password
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxy_https=https://user:pass@myproxy:8080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxies=https://user:pass@myproxy:8080') }}"
 
 - name: 'use a socks proxy (need some additional dependencies, see: https://requests.readthedocs.io/en/master/user/advanced/#socks )'
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxy_https=socks5://myproxy:1080') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxies=socks5://myproxy:1080') }}"
+
+- name: use proxies with a dict (as param)
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://...', proxies={'http': 'http://myproxy1', 'https': 'http://myproxy2'}) }}"
+
+- name: use proxies with a dict (in the term string, ansible syntax)
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxies=http=http://myproxy1,https=http://myproxy2') }}"
+
+- name: use proxies with a dict (in the term string, plain syntax)
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=... token=... url=https://... proxies={\"http\":\"http://myproxy1\",\"https\":\"http://myproxy2\"}') }}"
 """
 
 RETURN = """
@@ -376,6 +376,7 @@ from ansible.plugins.lookup import LookupBase
 from ansible.module_utils.parsing.convert_bool import boolean
 from ansible import constants as C
 from ansible.utils.display import Display
+from ansible.module_utils.common.validation import check_type_dict, check_type_str
 
 display = Display()
 
@@ -484,10 +485,8 @@ class HashiVault:
         if self.options['auth_method'] == 'token':
             client_args['token'] = self.options.get('token')
 
-        if self.options.get('proxy_http'):
-            client_args.setdefault('proxies', {})['http'] = self.options.get('proxy_http')
-        if self.options.get('proxy_https'):
-            client_args.setdefault('proxies', {})['https'] = self.options.get('proxy_https')
+        if self.options.get('proxy') is not None:
+            client_args['proxies'] = self.options.get('proxies')
 
         self.client = hvac.Client(**client_args)
         # logout to prevent accidental use of inferred tokens
@@ -679,6 +678,9 @@ class LookupModule(LookupBase):
         # secret field splitter
         self.field_ops()
 
+        # proxies (dict or str)
+        self.process_option_proxies()
+
     # begin options processing methods
 
     def set_default_option_env(self, option, var):
@@ -754,6 +756,31 @@ class LookupModule(LookupBase):
         auth_validator = 'validate_auth_' + auth_method
         if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
             getattr(self, auth_validator)(auth_method)
+
+    def process_option_proxies(self):
+        # check if 'proxies' option is dict or str
+
+        proxies_opt = self.get_option('proxies')
+
+        if proxies_opt is None:
+            return
+
+        try:
+            # if it can be interpreted as dict
+            # do it
+            proxies = check_type_dict(proxies_opt)
+        except TypeError:
+            # if it can't be interpreted as dict
+            proxy = check_type_str(proxies_opt)
+            # but can be interpreted as str
+            # use this str as http and https proxy
+            proxies = {
+                'http': proxy,
+                'https': proxy
+            }
+
+        # record the new/interpreted value for 'proxies' option
+        self.set_option('proxies', proxies)
 
     # end options processing methods
 
