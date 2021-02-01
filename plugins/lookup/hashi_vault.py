@@ -358,7 +358,7 @@ EXAMPLES = """
 
 - name: use proxies with a dict (in the term string, plain syntax)
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies={\"http\":\"http://myproxy1\",\"https\":\"http://myproxy2\"}') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies={\\"http\\":\\"http://myproxy1\\",\\"https\\":\\"http://myproxy2\\"}') }}"
 """
 
 RETURN = """
