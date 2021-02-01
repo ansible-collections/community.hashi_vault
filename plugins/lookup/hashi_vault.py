@@ -485,7 +485,7 @@ class HashiVault:
         if self.options['auth_method'] == 'token':
             client_args['token'] = self.options.get('token')
 
-        if self.options.get('proxy') is not None:
+        if self.options.get('proxies') is not None:
             client_args['proxies'] = self.options.get('proxies')
 
         self.client = hvac.Client(**client_args)
