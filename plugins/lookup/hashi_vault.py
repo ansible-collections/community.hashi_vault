@@ -382,11 +382,12 @@ _raw:
 import os
 
 from ansible.errors import AnsibleError
-from ansible.plugins.lookup import LookupBase
 from ansible.module_utils.parsing.convert_bool import boolean
 from ansible import constants as C
 from ansible.utils.display import Display
 from ansible.module_utils.common.validation import check_type_dict, check_type_str
+
+from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
 
 display = Display()
 
@@ -431,36 +432,36 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
 }
 
 
-# TODO: this is a workaround for deprecations not being shown in lookups
-# See: https://github.com/ansible/ansible/issues/73051
-# Fix: https://github.com/ansible/ansible/pull/73058
-#
-# If #73058 or another fix is backported, this should be removed.
-def deprecate(collection_name='community.hashi_vault'):
+# # TODO: this is a workaround for deprecations not being shown in lookups
+# # See: https://github.com/ansible/ansible/issues/73051
+# # Fix: https://github.com/ansible/ansible/pull/73058
+# #
+# # If #73058 or another fix is backported, this should be removed.
+# def __deprecate(collection_name='community.hashi_vault'):
 
-    # nicked from cli/__init__.py
-    # with slight customizations to help filter out relevant messages
-    # (relying on the collection name since it's a valid attrib and we only have 1 plugin at this time)
+#     # nicked from cli/__init__.py
+#     # with slight customizations to help filter out relevant messages
+#     # (relying on the collection name since it's a valid attrib and we only have 1 plugin at this time)
 
-    # warn about deprecated config options
+#     # warn about deprecated config options
 
-    for deprecated in list(C.config.DEPRECATED):
-        name = deprecated[0]
-        why = deprecated[1]['why']
-        if deprecated[1].get('collection_name') != collection_name:
-            continue
+#     for deprecated in list(C.config.DEPRECATED):
+#         name = deprecated[0]
+#         why = deprecated[1]['why']
+#         if deprecated[1].get('collection_name') != collection_name:
+#             continue
 
-        if 'alternatives' in deprecated[1]:
-            alt = ', use %s instead' % deprecated[1]['alternatives']
-        else:
-            alt = ''
-        ver = deprecated[1].get('version')
-        date = deprecated[1].get('date')
-        collection_name = deprecated[1].get('collection_name')
-        display.deprecated("%s option, %s%s" % (name, why, alt), version=ver, date=date, collection_name=collection_name)
+#         if 'alternatives' in deprecated[1]:
+#             alt = ', use %s instead' % deprecated[1]['alternatives']
+#         else:
+#             alt = ''
+#         ver = deprecated[1].get('version')
+#         date = deprecated[1].get('date')
+#         collection_name = deprecated[1].get('collection_name')
+#         display.deprecated("%s option, %s%s" % (name, why, alt), version=ver, date=date, collection_name=collection_name)
 
-        # remove this item from the list so it won't get processed again by something else
-        C.config.DEPRECATED.remove(deprecated)
+#         # remove this item from the list so it won't get processed again by something else
+#         C.config.DEPRECATED.remove(deprecated)
 
 
 class HashiVault:
@@ -634,7 +635,7 @@ class HashiVault:
     # end auth implementation methods
 
 
-class LookupModule(LookupBase):
+class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
         if not HAS_HVAC:
             raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
@@ -643,10 +644,10 @@ class LookupModule(LookupBase):
 
         for term in terms:
             opts = kwargs.copy()
-            opts.update(self.parse_term(term))
+            opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
             self.set_options(direct=opts)
             # TODO: remove deprecate() if backported fix is available (see method definition)
-            deprecate()
+            self.deprecate()  # pylint: disable=ansible-deprecated-no-version
             self.process_options()
             # FUTURE: Create one object, authenticate once, and re-use it,
             # for gets, for better use during with_ loops.
@@ -656,22 +657,22 @@ class LookupModule(LookupBase):
 
         return ret
 
-    def parse_term(self, term):
-        '''parses a term string into options'''
-        param_dict = {}
+    # def parse_term(self, term):
+    #     '''parses a term string into options'''
+    #     param_dict = {}
 
-        for i, param in enumerate(term.split()):
-            try:
-                key, value = param.split('=', 1)
-            except ValueError:
-                if (i == 0):
-                    # allow secret to be specified as value only if it's first
-                    key = 'secret'
-                    value = param
-                else:
-                    raise AnsibleError("hashi_vault lookup plugin needs key=value pairs, but received %s" % term)
-            param_dict[key] = value
-        return param_dict
+    #     for i, param in enumerate(term.split()):
+    #         try:
+    #             key, value = param.split('=', 1)
+    #         except ValueError:
+    #             if (i == 0):
+    #                 # allow secret to be specified as value only if it's first
+    #                 key = 'secret'
+    #                 value = param
+    #             else:
+    #                 raise AnsibleError("hashi_vault lookup plugin needs key=value pairs, but received %s" % term)
+    #         param_dict[key] = value
+    #     return param_dict
 
     def process_options(self):
         '''performs deep validation and value loading for options'''
