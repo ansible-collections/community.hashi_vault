@@ -362,11 +362,11 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '...', proxies=prox }}"
 
-- name: use proxies with a dict (in the term string, ansible syntax)
+- name: use proxies with a dict (in the term string, Ansible key=value syntax)
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies=http=http://myproxy1,https=http://myproxy2') }}"
 
-- name: use proxies with a dict (in the term string, plain syntax)
+- name: use proxies with a dict (in the term string, JSON syntax)
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies={\\"http\\":\\"http://myproxy1\\",\\"https\\":\\"http://myproxy2\\"}') }}"
 """
