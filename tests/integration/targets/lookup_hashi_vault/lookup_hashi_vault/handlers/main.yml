@@ -7,6 +7,23 @@
   ignore_errors: true
   listen: test_managed_vault_cleanup
 
+- name: Stop tinyproxy
+  shell:
+    cmd: |
+      kill $(cat "{{ local_temp_dir }}/tinyproxy.pid")
+      rm -f "{{ local_temp_dir }}/tinyproxy.pid"
+    removes: "{{ local_temp_dir }}/tinyproxy.pid"
+
+- name: Uninstall tinyproxy
+  vars:
+    # check 'Install unzip' task to know why we set ansible_python_interpreter
+    ansible_python_interpreter: "{{
+      '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+    }}"
+  package:
+    name: tinyproxy
+    state: absent
+
 # notify 'cleanup' for any handlers that should always run at the end of tests
 - name: 'Delete temp dir'
   file:

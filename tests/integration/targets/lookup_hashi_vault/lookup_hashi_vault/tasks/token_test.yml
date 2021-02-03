@@ -94,6 +94,14 @@
       register: test_inexistent
       ignore_errors: true
 
+    - name: 'Failure expected when wrong proxy is used'
+      vars:
+        secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', (conn_params|regex_replace('proxies=\\S*')) ~ 'proxies=' ~ (conn_params is search('url=https://') | ternary('https', 'http')) ~ '=http://127.0.0.1:4567 secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
+      debug:
+        msg: 'Failure is expected ({{secret_wrong_proxy}})'
+      register: test_wrong_proxy
+      ignore_errors: true
+
     - name: 'Check expected failures'
       assert:
         msg: "an expected failure didn't occur"
@@ -101,3 +109,4 @@
           - test_wrong_cred is failed
           - test_unauthorized is failed
           - test_inexistent is failed
+          - test_wrong_proxy is failed and test_wrong_proxy.msg is search('Cannot connect to proxy')

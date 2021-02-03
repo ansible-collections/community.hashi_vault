@@ -3,6 +3,11 @@
   vars:
     conn_params: 'url=http://localhost:8200 '
 
+- name: 'test {{ auth_type }} auth without SSL (lookup parameters, with string proxy)'
+  include_tasks: '{{ auth_type }}_test.yml'
+  vars:
+    conn_params: 'url=http://localhost:8200 proxies=http://127.0.0.1:8001 '
+
 - name: 'test {{ auth_type }} auth without SSL (environment variable)'
   include_tasks: '{{ auth_type }}_test.yml'
   args:
@@ -18,6 +23,11 @@
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
         conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True '
+
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with dict proxy)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True proxies=https=http://127.0.0.1:8001 '
 
     - name: 'test {{ auth_type }} auth with certs (validation enabled, environment variables)'
       include_tasks: '{{ auth_type }}_test.yml'
@@ -73,4 +83,3 @@
           environment:
             VAULT_ADDR: 'https://localhost:8201'
             VAULT_SKIP_VERIFY: False
-      
