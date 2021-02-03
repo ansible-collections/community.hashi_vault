@@ -99,9 +99,10 @@ DOCUMENTATION = """
       description:
         - URL(s) to the proxies used to access the Vault service.
         - It can be a string or a dict.
-        - If it's a string (eg. 'proxies=http://user:pass@host:port') it is used to access HTTP and HTTPS resources.
-        - "If it's a dict (eg. 'proxies={\\"http\\": \\"http://host1\\", \\"https\\": \\"https://host2\\"}')"
-        - you can specify a different proxy for HTTP and HTTPS resources.
+        - If it's a dict, provide the scheme (eg. C(http) or C(https)) as the key, and the URL as the value.
+        - If it's a string, provide a single URL that will be used as the proxy for both C(http) and C(https) schemes.
+        - A string that can be interpreted as a dictionary will be converted to one (see examples).
+        - You can specify a different proxy for HTTP and HTTPS resources.
         - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
       env:
         - name: ANSIBLE_HASHI_VAULT_PROXIES
