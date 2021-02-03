@@ -354,6 +354,14 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '...', proxies={'http': 'http://myproxy1', 'https': 'http://myproxy2'}) }}"
 
+- name: use proxies with a dict (as param, pre-defined var)
+  vars:
+    prox:
+      http: http://myproxy1
+      https: https://myproxy2
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', '...', proxies=prox }}"
+
 - name: use proxies with a dict (in the term string, ansible syntax)
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies=http=http://myproxy1,https=http://myproxy2') }}"
