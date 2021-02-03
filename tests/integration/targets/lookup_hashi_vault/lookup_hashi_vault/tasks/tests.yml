@@ -83,3 +83,4 @@
           environment:
             VAULT_ADDR: 'https://localhost:8201'
             VAULT_SKIP_VERIFY: False
+
