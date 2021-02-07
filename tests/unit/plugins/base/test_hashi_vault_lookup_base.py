@@ -26,3 +26,14 @@ class TestHashiVaultLookupBase(object):
 
     def test_is_ansible_lookup_base(self, hashi_vault_lookup_module):
         assert issubclass(type(hashi_vault_lookup_module), LookupBase)
+
+    def test_parse_kev_term(self, hashi_vault_lookup_module):
+        EXPECTED = {
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': 'val_w/=in_it',
+            'key4': 'value4',
+        }
+        parsed = hashi_vault_lookup_module.parse_kev_term('value1 key2=value2 key3=val_w/=in_it key4=value4', first_unqualified='key1')
+
+        assert parsed == EXPECTED
