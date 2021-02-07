@@ -624,23 +624,6 @@ class LookupModule(HashiVaultLookupBase):
 
         return ret
 
-    # def parse_term(self, term):
-    #     '''parses a term string into options'''
-    #     param_dict = {}
-
-    #     for i, param in enumerate(term.split()):
-    #         try:
-    #             key, value = param.split('=', 1)
-    #         except ValueError:
-    #             if (i == 0):
-    #                 # allow secret to be specified as value only if it's first
-    #                 key = 'secret'
-    #                 value = param
-    #             else:
-    #                 raise AnsibleError("hashi_vault lookup plugin needs key=value pairs, but received %s" % term)
-    #         param_dict[key] = value
-    #     return param_dict
-
     def process_options(self):
         '''performs deep validation and value loading for options'''
 
