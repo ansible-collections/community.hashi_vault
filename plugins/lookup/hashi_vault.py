@@ -383,7 +383,6 @@ import os
 
 from ansible.errors import AnsibleError
 from ansible.module_utils.parsing.convert_bool import boolean
-from ansible import constants as C
 from ansible.utils.display import Display
 from ansible.module_utils.common.validation import check_type_dict, check_type_str
 
@@ -430,38 +429,6 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
     'token': ['VAULT_TOKEN'],
     'url': ['VAULT_ADDR'],
 }
-
-
-# # TODO: this is a workaround for deprecations not being shown in lookups
-# # See: https://github.com/ansible/ansible/issues/73051
-# # Fix: https://github.com/ansible/ansible/pull/73058
-# #
-# # If #73058 or another fix is backported, this should be removed.
-# def __deprecate(collection_name='community.hashi_vault'):
-
-#     # nicked from cli/__init__.py
-#     # with slight customizations to help filter out relevant messages
-#     # (relying on the collection name since it's a valid attrib and we only have 1 plugin at this time)
-
-#     # warn about deprecated config options
-
-#     for deprecated in list(C.config.DEPRECATED):
-#         name = deprecated[0]
-#         why = deprecated[1]['why']
-#         if deprecated[1].get('collection_name') != collection_name:
-#             continue
-
-#         if 'alternatives' in deprecated[1]:
-#             alt = ', use %s instead' % deprecated[1]['alternatives']
-#         else:
-#             alt = ''
-#         ver = deprecated[1].get('version')
-#         date = deprecated[1].get('date')
-#         collection_name = deprecated[1].get('collection_name')
-#         display.deprecated("%s option, %s%s" % (name, why, alt), version=ver, date=date, collection_name=collection_name)
-
-#         # remove this item from the list so it won't get processed again by something else
-#         C.config.DEPRECATED.remove(deprecated)
 
 
 class HashiVault:
