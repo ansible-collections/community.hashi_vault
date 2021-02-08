@@ -28,6 +28,7 @@ def vault_token_via_env(vault_token):
     with mock.patch.dict(os.environ, {'VAULT_TOKEN': vault_token}):
         yield
 
+
 @pytest.mark.skipif(sys.version_info < (2, 7), reason="Python 2.7 or higher is required.")
 class TestHashiVaultHelper(object):
 
