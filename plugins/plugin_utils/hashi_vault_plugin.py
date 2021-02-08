@@ -18,7 +18,7 @@ class HashiVaultPlugin(AnsiblePlugin):
     def __init__(self, loader=None, templar=None, **kwargs):
         super(HashiVaultPlugin, self).__init__()
 
-        self._helper = HashiVaultHelper()
+        self.helper = HashiVaultHelper()
 
     def deprecate(self, collection_name='community.hashi_vault'):
         '''processes deprecations related to the collection'''

@@ -387,6 +387,7 @@ from ansible.utils.display import Display
 from ansible.module_utils.common.validation import check_type_dict, check_type_str
 
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
 
 display = Display()
 
@@ -444,6 +445,8 @@ class HashiVault:
     def __init__(self, **kwargs):
         self.options = kwargs
 
+        self.helper = HashiVaultHelper()
+
         # check early that auth method is actually available
         self.auth_function = 'auth_' + self.options['auth_method']
         if not (hasattr(self, self.auth_function) and callable(getattr(self, self.auth_function))):
@@ -466,33 +469,14 @@ class HashiVault:
         if self.options.get('proxies') is not None:
             client_args['proxies'] = self.options.get('proxies')
 
-        self.client = hvac.Client(**client_args)
-        # logout to prevent accidental use of inferred tokens
-        # https://github.com/ansible-collections/community.hashi_vault/issues/13
-        if 'token' not in client_args:
-            self.client.logout()
+        self.client = self.helper.get_vault_client(**client_args)
 
-        # Check for old version, before auth_methods class (added in 0.7.0):
-        # https://github.com/hvac/hvac/releases/tag/v0.7.0
-        #
-        # hvac is moving auth methods into the auth_methods class
-        # which lives in the client.auth member.
-        #
-        # Attempting to find which backends were moved into the class when (this is primarily for warnings):
-        # 0.7.0 -- github, ldap, mfa, azure?, gcp
-        # 0.7.1 -- okta
-        # 0.8.0 -- kubernetes
-        # 0.9.0 -- azure?, radius
-        # 0.9.3 -- aws
-        # 0.9.6 -- userpass
-        # 0.10.5 -- jwt (new)
-        self.hvac_has_auth_methods = hasattr(self.client, 'auth')
-
-    # We've already checked to ensure a method exists for a particular auth_method, of the form:
-    #
-    # auth_<method_name>
-    #
     def authenticate(self):
+        # We've already checked to ensure a method exists for a particular auth_method, of the form:
+        #
+        # auth_<method_name>
+        #
+        # so just call it
         getattr(self, self.auth_function)()
 
     def get(self):
@@ -542,11 +526,25 @@ class HashiVault:
     # 1. Add a new validate_auth_<method_name> method to the LookupModule, which is responsible for validating
     #    that it has the necessary options and whatever else it needs.
     #
-    # 2. Add a new auth_<method_name> method to this class. These implementations are faily minimal as they should
+    # 2. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
+    #
+    # 3. Add a new auth_<method_name> method to this class. These implementations are faily minimal as they should
     #    already have everything they need. This is also the place to check for deprecated auth methods as hvac
     #    continues to move backends into the auth_methods class.
     #
-    # 3. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
+    #    hvac is moving auth methods into the auth_methods class (added in 0.7.0)
+    #    which lives in the client.auth member.
+    #    https://github.com/hvac/hvac/releases/tag/v0.7.0
+    #
+    #    Attempting to find which backends were moved into the class when (this is primarily for warnings):
+    #    0.7.0 -- github, ldap, mfa, azure?, gcp
+    #    0.7.1 -- okta
+    #    0.8.0 -- kubernetes
+    #    0.9.0 -- azure?, radius
+    #    0.9.3 -- aws
+    #    0.9.6 -- userpass
+    #    0.10.5 -- jwt (new)
+    #    0.10.6 -- approle
     #
     def auth_token(self):
         if self.options.get('token_validate') and not self.client.is_authenticated():
