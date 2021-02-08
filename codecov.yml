@@ -1,0 +1,3 @@
+---
+fixes:
+  - "ansible_collections/community/hashi_vault/::"
