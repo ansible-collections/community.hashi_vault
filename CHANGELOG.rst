@@ -5,6 +5,19 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.1.0
+======
+
+Release Summary
+---------------
+
+This release contains a new ``proxies`` option for the ``hashi_vault`` lookup.
+
+Minor Changes
+-------------
+
+- hashi_vault - add ``proxies`` option (https://github.com/ansible-collections/community.hashi_vault/pull/50).
+
 v1.0.0
 ======
 
