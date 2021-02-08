@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This release contains a new ``proxies`` option for the ``hashi_vault`` lookup.
