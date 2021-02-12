@@ -18,7 +18,7 @@ display = Display()
 
 class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
 
-    def parse_kev_term(self, term, first_unqualified=None, plugin_name=None):
+    def parse_kev_term(self, term, plugin_name, first_unqualified=None):
         '''parses a term string into a dictionary'''
         param_dict = {}
 

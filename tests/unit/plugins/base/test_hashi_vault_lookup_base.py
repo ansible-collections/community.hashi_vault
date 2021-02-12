@@ -38,6 +38,6 @@ class TestHashiVaultLookupBase(object):
             'key3': 'val_w/=in_it',
             'key4': 'value4',
         }
-        parsed = hashi_vault_lookup_module.parse_kev_term('value1 key2=value2 key3=val_w/=in_it key4=value4', first_unqualified='key1')
+        parsed = hashi_vault_lookup_module.parse_kev_term('value1 key2=value2 key3=val_w/=in_it key4=value4', first_unqualified='key1', plugin_name='fake')
 
         assert parsed == EXPECTED
