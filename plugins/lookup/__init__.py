@@ -20,11 +20,6 @@ class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
         '''parses a term string into a dictionary'''
         param_dict = {}
 
-        if plugin_name is not None:
-            plugin = plugin_name
-        else:
-            plugin = 'this'
-
         for i, param in enumerate(term.split()):
             try:
                 key, value = param.split('=', 1)
@@ -34,7 +29,7 @@ class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
                     key = first_unqualified
                     value = param
                 else:
-                    raise AnsibleError("%s lookup plugin needs key=value pairs, but received %s" % (plugin, term))
+                    raise AnsibleError("%s lookup plugin needs key=value pairs, but received %s" % (plugin_name, term))
 
             param_dict[key] = value
 
