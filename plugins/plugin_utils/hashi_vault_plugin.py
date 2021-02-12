@@ -21,7 +21,7 @@ class HashiVaultPlugin(AnsiblePlugin):
 
         self.helper = HashiVaultHelper()
 
-    def deprecate(self, collection_name='community.hashi_vault'):
+    def process_deprecations(self, collection_name='community.hashi_vault'):
         '''processes deprecations related to the collection'''
 
         # TODO: this is a workaround for deprecations not being shown in lookups

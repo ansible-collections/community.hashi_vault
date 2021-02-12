@@ -23,5 +23,5 @@ class TestHashiVaultPlugin(object):
         assert issubclass(type(hashi_vault_plugin), AnsiblePlugin)
 
     # TODO: remove when deprecate() is no longer needed
-    def test_has_deprecate(self, hashi_vault_plugin):
-        assert hasattr(hashi_vault_plugin, 'deprecate') and callable(hashi_vault_plugin.deprecate)
+    def test_has_process_deprecations(self, hashi_vault_plugin):
+        assert hasattr(hashi_vault_plugin, 'process_deprecations') and callable(hashi_vault_plugin.process_deprecations)

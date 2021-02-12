@@ -612,7 +612,7 @@ class LookupModule(HashiVaultLookupBase):
             opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
             self.set_options(direct=opts)
             # TODO: remove deprecate() if backported fix is available (see method definition)
-            self.deprecate()  # pylint: disable=ansible-deprecated-no-version
+            self.process_deprecations()
             self.process_options()
             # FUTURE: Create one object, authenticate once, and re-use it,
             # for gets, for better use during with_ loops.
