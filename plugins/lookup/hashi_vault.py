@@ -382,11 +382,12 @@ _raw:
 import os
 
 from ansible.errors import AnsibleError
-from ansible.plugins.lookup import LookupBase
 from ansible.module_utils.parsing.convert_bool import boolean
-from ansible import constants as C
 from ansible.utils.display import Display
 from ansible.module_utils.common.validation import check_type_dict, check_type_str
+
+from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
 
 display = Display()
 
@@ -431,38 +432,6 @@ LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
 }
 
 
-# TODO: this is a workaround for deprecations not being shown in lookups
-# See: https://github.com/ansible/ansible/issues/73051
-# Fix: https://github.com/ansible/ansible/pull/73058
-#
-# If #73058 or another fix is backported, this should be removed.
-def deprecate(collection_name='community.hashi_vault'):
-
-    # nicked from cli/__init__.py
-    # with slight customizations to help filter out relevant messages
-    # (relying on the collection name since it's a valid attrib and we only have 1 plugin at this time)
-
-    # warn about deprecated config options
-
-    for deprecated in list(C.config.DEPRECATED):
-        name = deprecated[0]
-        why = deprecated[1]['why']
-        if deprecated[1].get('collection_name') != collection_name:
-            continue
-
-        if 'alternatives' in deprecated[1]:
-            alt = ', use %s instead' % deprecated[1]['alternatives']
-        else:
-            alt = ''
-        ver = deprecated[1].get('version')
-        date = deprecated[1].get('date')
-        collection_name = deprecated[1].get('collection_name')
-        display.deprecated("%s option, %s%s" % (name, why, alt), version=ver, date=date, collection_name=collection_name)
-
-        # remove this item from the list so it won't get processed again by something else
-        C.config.DEPRECATED.remove(deprecated)
-
-
 class HashiVault:
     def get_options(self, *option_names, **kwargs):
         ret = {}
@@ -475,6 +444,8 @@ class HashiVault:
 
     def __init__(self, **kwargs):
         self.options = kwargs
+
+        self.helper = HashiVaultHelper()
 
         # check early that auth method is actually available
         self.auth_function = 'auth_' + self.options['auth_method']
@@ -498,33 +469,14 @@ class HashiVault:
         if self.options.get('proxies') is not None:
             client_args['proxies'] = self.options.get('proxies')
 
-        self.client = hvac.Client(**client_args)
-        # logout to prevent accidental use of inferred tokens
-        # https://github.com/ansible-collections/community.hashi_vault/issues/13
-        if 'token' not in client_args:
-            self.client.logout()
+        self.client = self.helper.get_vault_client(**client_args)
 
-        # Check for old version, before auth_methods class (added in 0.7.0):
-        # https://github.com/hvac/hvac/releases/tag/v0.7.0
-        #
-        # hvac is moving auth methods into the auth_methods class
-        # which lives in the client.auth member.
-        #
-        # Attempting to find which backends were moved into the class when (this is primarily for warnings):
-        # 0.7.0 -- github, ldap, mfa, azure?, gcp
-        # 0.7.1 -- okta
-        # 0.8.0 -- kubernetes
-        # 0.9.0 -- azure?, radius
-        # 0.9.3 -- aws
-        # 0.9.6 -- userpass
-        # 0.10.5 -- jwt (new)
-        self.hvac_has_auth_methods = hasattr(self.client, 'auth')
-
-    # We've already checked to ensure a method exists for a particular auth_method, of the form:
-    #
-    # auth_<method_name>
-    #
     def authenticate(self):
+        # We've already checked to ensure a method exists for a particular auth_method, of the form:
+        #
+        # auth_<method_name>
+        #
+        # so just call it
         getattr(self, self.auth_function)()
 
     def get(self):
@@ -574,11 +526,25 @@ class HashiVault:
     # 1. Add a new validate_auth_<method_name> method to the LookupModule, which is responsible for validating
     #    that it has the necessary options and whatever else it needs.
     #
-    # 2. Add a new auth_<method_name> method to this class. These implementations are faily minimal as they should
+    # 2. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
+    #
+    # 3. Add a new auth_<method_name> method to this class. These implementations are faily minimal as they should
     #    already have everything they need. This is also the place to check for deprecated auth methods as hvac
     #    continues to move backends into the auth_methods class.
     #
-    # 3. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
+    #    hvac is moving auth methods into the auth_methods class (added in 0.7.0)
+    #    which lives in the client.auth member.
+    #    https://github.com/hvac/hvac/releases/tag/v0.7.0
+    #
+    #    Attempting to find which backends were moved into the class when (this is primarily for warnings):
+    #    0.7.0 -- github, ldap, mfa, azure?, gcp
+    #    0.7.1 -- okta
+    #    0.8.0 -- kubernetes
+    #    0.9.0 -- azure?, radius
+    #    0.9.3 -- aws
+    #    0.9.6 -- userpass
+    #    0.10.5 -- jwt (new)
+    #    0.10.6 -- approle
     #
     def auth_token(self):
         if self.options.get('token_validate') and not self.client.is_authenticated():
@@ -634,7 +600,7 @@ class HashiVault:
     # end auth implementation methods
 
 
-class LookupModule(LookupBase):
+class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
         if not HAS_HVAC:
             raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
@@ -643,10 +609,10 @@ class LookupModule(LookupBase):
 
         for term in terms:
             opts = kwargs.copy()
-            opts.update(self.parse_term(term))
+            opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
             self.set_options(direct=opts)
             # TODO: remove deprecate() if backported fix is available (see method definition)
-            deprecate()
+            self.process_deprecations()
             self.process_options()
             # FUTURE: Create one object, authenticate once, and re-use it,
             # for gets, for better use during with_ loops.
@@ -655,23 +621,6 @@ class LookupModule(LookupBase):
             ret.extend(client.get())
 
         return ret
-
-    def parse_term(self, term):
-        '''parses a term string into options'''
-        param_dict = {}
-
-        for i, param in enumerate(term.split()):
-            try:
-                key, value = param.split('=', 1)
-            except ValueError:
-                if (i == 0):
-                    # allow secret to be specified as value only if it's first
-                    key = 'secret'
-                    value = param
-                else:
-                    raise AnsibleError("hashi_vault lookup plugin needs key=value pairs, but received %s" % term)
-            param_dict[key] = value
-        return param_dict
 
     def process_options(self):
         '''performs deep validation and value loading for options'''
