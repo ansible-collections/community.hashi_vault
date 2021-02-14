@@ -90,7 +90,7 @@ class HashiVaultOptionAdapter(object):
             # AnsiblePlugin.has_option was added in 2.10, see https://github.com/ansible/ansible/pull/61078
         )
 
-    def __init__(self, getter, setter, haver=None, updater=None, getitems=None, getitemsdefault=None, defaultsetter=None, defaultgetter=None):
+    def __init__(self, getter, setter, haver=None, updater=None, getitems=None, defaultsetter=None, defaultgetter=None):
         def _default_default_setter(key, default=None):
             try:
                 value = self.get_option(key)
@@ -113,9 +113,6 @@ class HashiVaultOptionAdapter(object):
         def _default_getitems(*args):
             return dict((key, self.get_option(key)) for key in args)
 
-        def _default_getitems_default(default=None, *args):
-            return dict((key, self.get_option_default(key, default)) for key in args)
-
         def _default_default_getter(key, default):
             try:
                 return self.get_option(key)
@@ -128,7 +125,6 @@ class HashiVaultOptionAdapter(object):
         self._haver = haver or _default_haver
         self._updater = updater or _default_updater
         self._getitems = getitems or _default_getitems
-        self._getitemsdefault = getitemsdefault or _default_getitems_default
         self._defaultsetter = defaultsetter or _default_default_setter
         self._defaultgetter = defaultgetter or _default_default_getter
 
@@ -152,9 +148,6 @@ class HashiVaultOptionAdapter(object):
 
     def get_options(self, *args):
         return self._getitems(*args)
-
-    def get_options_default(self, default=None, *args):
-        return self._getitemsdefault(default, *args)
 
 
 class HashiVaultConnectionOptions:

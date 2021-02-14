@@ -27,6 +27,7 @@ SAMPLE_KEYS = sorted(list(SAMPLE_DICT.keys()))
 
 MISSING_KEYS = ['no', 'nein', 'iie']
 
+
 class FakePlugin(AnsiblePlugin):
     _load_name = 'community.hashi_vault.fake'
 
@@ -37,9 +38,11 @@ class SentinelMarker():
 
 MARKER = SentinelMarker()
 
+
 @pytest.fixture()
 def sample_dict():
     return SAMPLE_DICT.copy()
+
 
 @pytest.fixture
 def ansible_plugin(sample_dict):
@@ -47,13 +50,16 @@ def ansible_plugin(sample_dict):
     plugin._options = sample_dict
     return plugin
 
+
 @pytest.fixture
 def adapter_from_dict(sample_dict):
     return HashiVaultOptionAdapter.from_dict(sample_dict)
 
+
 @pytest.fixture
 def adapter_from_ansible_plugin(ansible_plugin):
     return HashiVaultOptionAdapter.from_ansible_plugin(ansible_plugin)
+
 
 @pytest.fixture(params=['dict', 'ansible_plugin'])
 def adapter(request, adapter_from_dict, adapter_from_ansible_plugin):
@@ -62,18 +68,14 @@ def adapter(request, adapter_from_dict, adapter_from_ansible_plugin):
         'ansible_plugin': adapter_from_ansible_plugin,
     }[request.param]
 
-# @pytest.fixture
-# def hashi_vault_option_adapter():
-#     return HashiVaultHelper()
 
-    #| _getter = None
-    #| _setter = None
-    #| _haver = None
-    #| _updater = None
-    #| _getitems = None
-    # _getitemsdefault
-    #| _defaultsetter = None
-    #| _defaultgetter
+    # #| _getter = None
+    # #| _setter = None
+    # #| _haver = None
+    # #| _updater = None
+    # #| _getitems = None
+    # #| _defaultsetter = None
+    # #| _defaultgetter
 
 
 # @pytest.mark.skipif(sys.version_info < (2, 7), reason="Python 2.7 or higher is required.")
@@ -108,12 +110,12 @@ class TestHashiVaultOptionAdapter(object):
 
         assert isinstance(value, SentinelMarker)
 
-    @pytest.mark.parametrize('option,expected', [(o, False) for o in MISSING_KEYS]+[(o, True) for o in SAMPLE_KEYS])
+    @pytest.mark.parametrize('option,expected', [(o, False) for o in MISSING_KEYS] + [(o, True) for o in SAMPLE_KEYS])
     def test_has_option(self, adapter, option, expected):
         assert adapter.has_option(option) == expected
 
     @pytest.mark.parametrize('value', ['__VALUE'])
-    @pytest.mark.parametrize('option', (SAMPLE_KEYS+MISSING_KEYS))
+    @pytest.mark.parametrize('option', (SAMPLE_KEYS + MISSING_KEYS))
     def test_set_option(self, adapter, option, value, sample_dict):
         adapter.set_option(option, value)
 
@@ -122,7 +124,7 @@ class TestHashiVaultOptionAdapter(object):
         assert adapter.get_option(option) == value
 
     @pytest.mark.parametrize('default', [MARKER])
-    @pytest.mark.parametrize('option,expected', [(o, SAMPLE_DICT[o]) for o in SAMPLE_KEYS]+[(o, MARKER) for o in MISSING_KEYS])
+    @pytest.mark.parametrize('option,expected', [(o, SAMPLE_DICT[o]) for o in SAMPLE_KEYS] + [(o, MARKER) for o in MISSING_KEYS])
     def test_set_option_default(self, adapter, option, default, expected, sample_dict):
         value = adapter.set_option_default(option, default)
 
@@ -167,51 +169,3 @@ class TestHashiVaultOptionAdapter(object):
         result = adapter.get_options(*options)
 
         assert result == expected
-
-    @pytest.mark.parametrize('options', [SAMPLE_KEYS[0:2]])
-    def test_get_options_default_exists(self, adapter, options):
-        expected = dict([(k, SAMPLE_DICT[k]) for k in options])
-
-        result = adapter.get_options_default(MARKER, *options)
-
-        assert result == expected
-
-    @pytest.mark.parametrize('options', [MISSING_KEYS[0:2]])
-    def test_get_options_default_missing(self, adapter, options):
-        expected = dict.fromkeys(options, MARKER)
-
-        result = adapter.get_options_default(MARKER, *options)
-
-        assert result == expected
-
-    @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
-    def test_get_options_default_mixed(self, adapter, options):
-        result = adapter.get_options_default(MARKER, *options)
-
-        for o in options:
-            assert result[o] == SAMPLE_DICT.get(o, MARKER)
-            assert result[o] == adapter.get_option_default(o, MARKER)
-
-    @pytest.mark.parametrize('options', [SAMPLE_KEYS[0:2]])
-    def test_get_options_default_exists_no_default(self, adapter, options):
-        expected = dict([(k, SAMPLE_DICT[k]) for k in options])
-
-        result = adapter.get_options_default(*options)
-
-        assert result == expected
-
-    @pytest.mark.parametrize('options', [MISSING_KEYS[0:2]])
-    def test_get_options_default_missing_no_default(self, adapter, options):
-        expected = dict.fromkeys(options, None)
-
-        result = adapter.get_options_default(*options)
-
-        assert result == expected
-
-    @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
-    def test_get_options_default_mixed_no_default(self, adapter, options):
-        result = adapter.get_options_default(*options)
-
-        for o in options:
-            assert result[o] == SAMPLE_DICT.get(o, None)
-            assert result[o] == adapter.get_option_default(o, None)
