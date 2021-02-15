@@ -7,6 +7,7 @@ __metaclass__ = type
 
 import pytest
 
+from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils.hashi_vault_plugin import HashiVaultPlugin
@@ -31,13 +32,37 @@ class TestHashiVaultLookupBase(object):
     def test_is_ansible_lookup_base(self, hashi_vault_lookup_module):
         assert issubclass(type(hashi_vault_lookup_module), LookupBase)
 
-    def test_parse_kev_term(self, hashi_vault_lookup_module):
+    @pytest.mark.parametrize(
+        'term,unqualified',
+        [
+            ('value1 key2=value2 key3=val_w/=in_it key4=value4', 'key1'),
+            ('key1=value1 key2=value2 key3=val_w/=in_it key4=value4', None),
+            ('key1=value1 key2=value2 key3=val_w/=in_it key4=value4', 'NotReal'),
+        ]
+    )
+    def test_parse_kev_term_success(self, term, unqualified, hashi_vault_lookup_module):
         EXPECTED = {
             'key1': 'value1',
             'key2': 'value2',
             'key3': 'val_w/=in_it',
             'key4': 'value4',
         }
-        parsed = hashi_vault_lookup_module.parse_kev_term('value1 key2=value2 key3=val_w/=in_it key4=value4', first_unqualified='key1', plugin_name='fake')
+        parsed = hashi_vault_lookup_module.parse_kev_term(term, plugin_name='fake', first_unqualified=unqualified)
 
         assert parsed == EXPECTED
+
+    @pytest.mark.parametrize(
+        'term,unqualified',
+        [
+            ('value1 key2=value2 key3=val_w/=in_it key4=value4', None),
+            ('key1=value1 value2 key3=val_w/=in_it key4=value4', None),
+            ('key1=value1 value2 key3=val_w/=in_it key4=value4', 'key2'),
+        ]
+    )
+    def test_parse_kev_term_invalid_term_strings(self, term, unqualified, hashi_vault_lookup_module):
+        with pytest.raises(AnsibleError):
+            parsed = hashi_vault_lookup_module.parse_kev_term(term, plugin_name='fake', first_unqualified=unqualified)
+
+    def test_parse_kev_term_plugin_name_required(self, hashi_vault_lookup_module):
+        with pytest.raises(TypeError):
+            parsed = hashi_vault_lookup_module.parse_kev_term('key1=value1', first_unqualified='fake')
