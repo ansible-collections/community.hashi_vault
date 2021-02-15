@@ -53,12 +53,18 @@ def ansible_plugin(sample_dict):
 
 @pytest.fixture
 def adapter_from_dict(sample_dict):
-    return HashiVaultOptionAdapter.from_dict(sample_dict)
+    def _create_adapter_from_dict():
+        return HashiVaultOptionAdapter.from_dict(sample_dict)
+
+    return _create_adapter_from_dict
 
 
 @pytest.fixture
 def adapter_from_ansible_plugin(ansible_plugin):
-    return HashiVaultOptionAdapter.from_ansible_plugin(ansible_plugin)
+    def _create_adapter_from_ansible_plugin():
+        return HashiVaultOptionAdapter.from_ansible_plugin(ansible_plugin)
+
+    return _create_adapter_from_ansible_plugin
 
 
 @pytest.fixture(params=['dict', 'ansible_plugin'])
@@ -66,7 +72,7 @@ def adapter(request, adapter_from_dict, adapter_from_ansible_plugin):
     return {
         'dict': adapter_from_dict,
         'ansible_plugin': adapter_from_ansible_plugin,
-    }[request.param]
+    }[request.param]()
 
 
     # #| _getter = None
