@@ -5,14 +5,10 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
-import os
 import pytest
 
 from ansible.plugins import AnsiblePlugin
-# from ansible.plugins.loader import lookup_loader
 
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultOptionAdapter
 
 
@@ -21,6 +17,7 @@ SAMPLE_DICT = {
     'key2': 2,
     'key3': 'three',
     'key4': 'iiii',
+    'key5': None,
 }
 
 SAMPLE_KEYS = sorted(list(SAMPLE_DICT.keys()))
@@ -75,16 +72,26 @@ def adapter(request, adapter_from_dict, adapter_from_ansible_plugin):
     }[request.param]()
 
 
-    # #| _getter = None
-    # #| _setter = None
-    # #| _haver = None
-    # #| _updater = None
-    # #| _getitems = None
-    # #| _defaultsetter = None
-    # #| _defaultgetter
+@pytest.fixture
+def filter_all():
+    return lambda k, v: True
 
 
-# @pytest.mark.skipif(sys.version_info < (2, 7), reason="Python 2.7 or higher is required.")
+@pytest.fixture
+def filter_none():
+    return lambda k, v: False
+
+
+@pytest.fixture
+def filter_value_not_none():
+    return lambda k, v: v is not None
+
+
+@pytest.fixture
+def filter_key_in_range():
+    return lambda k, v: k in SAMPLE_KEYS[1:3]
+
+
 class TestHashiVaultOptionAdapter(object):
 
     @pytest.mark.parametrize('option', SAMPLE_KEYS)
@@ -173,5 +180,56 @@ class TestHashiVaultOptionAdapter(object):
         expected = dict([(k, SAMPLE_DICT[k]) for k in options])
 
         result = adapter.get_options(*options)
+
+        assert result == expected
+
+    @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
+    def test_get_filtered_options_mixed(self, adapter, options, filter_all):
+        with pytest.raises(KeyError):
+            adapter.get_filtered_options(filter_all, *options)
+
+    @pytest.mark.parametrize('options', [MISSING_KEYS[0:2]])
+    def test_get_filtered_options_missing(self, adapter, options, filter_all):
+        with pytest.raises(KeyError):
+            adapter.get_filtered_options(filter_all, *options)
+
+    @pytest.mark.parametrize('options', [SAMPLE_KEYS])
+    def test_get_filtered_options_all(self, adapter, options, filter_all):
+        expected = dict([(k, SAMPLE_DICT[k]) for k in options])
+
+        result = adapter.get_filtered_options(filter_all, *options)
+
+        assert result == expected
+        assert result == adapter.get_options(*options)
+
+    @pytest.mark.parametrize('options', [SAMPLE_KEYS])
+    def test_get_filtered_options_none(self, adapter, options, filter_none):
+        expected = {}
+
+        result = adapter.get_filtered_options(filter_none, *options)
+
+        assert result == expected
+
+    @pytest.mark.parametrize('options', [SAMPLE_KEYS])
+    def test_get_filtered_options_by_value(self, adapter, options, filter_value_not_none):
+        expected = dict([(k, SAMPLE_DICT[k]) for k in options if SAMPLE_DICT[k] is not None])
+
+        result = adapter.get_filtered_options(filter_value_not_none, *options)
+
+        assert result == expected
+
+    @pytest.mark.parametrize('options', [SAMPLE_KEYS])
+    def test_get_filtered_options_by_value(self, adapter, options, filter_key_in_range):
+        expected = dict([(k, SAMPLE_DICT[k]) for k in options if k in SAMPLE_KEYS[1:3]])
+
+        result = adapter.get_filtered_options(filter_key_in_range, *options)
+
+        assert result == expected
+
+    @pytest.mark.parametrize('options', [SAMPLE_KEYS])
+    def test_get_filled_options(self, adapter, options):
+        expected = dict([(k, SAMPLE_DICT[k]) for k in options if SAMPLE_DICT[k] is not None])
+
+        result = adapter.get_filled_options(*options)
 
         assert result == expected

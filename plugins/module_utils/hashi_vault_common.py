@@ -90,7 +90,11 @@ class HashiVaultOptionAdapter(object):
             # AnsiblePlugin.has_option was added in 2.10, see https://github.com/ansible/ansible/pull/61078
         )
 
-    def __init__(self, getter, setter, haver=None, updater=None, getitems=None, defaultsetter=None, defaultgetter=None):
+    def __init__(
+            self,
+            getter, setter,
+            haver=None, updater=None, getitems=None, getfiltereditems=None, getfilleditems=None, defaultsetter=None, defaultgetter=None):
+
         def _default_default_setter(key, default=None):
             try:
                 value = self.get_option(key)
@@ -113,6 +117,12 @@ class HashiVaultOptionAdapter(object):
         def _default_getitems(*args):
             return dict((key, self.get_option(key)) for key in args)
 
+        def _default_getfiltereditems(filter, *args):
+            return dict((key, value) for key, value in self.get_options(*args).items() if filter(key, value))
+
+        def _default_getfilleditems(*args):
+            return self.get_filtered_options(lambda k, v: v is not None, *args)
+
         def _default_default_getter(key, default):
             try:
                 return self.get_option(key)
@@ -125,6 +135,8 @@ class HashiVaultOptionAdapter(object):
         self._haver = haver or _default_haver
         self._updater = updater or _default_updater
         self._getitems = getitems or _default_getitems
+        self._getfiltereditems = getfiltereditems or _default_getfiltereditems
+        self._getfilleditems = getfilleditems or _default_getfilleditems
         self._defaultsetter = defaultsetter or _default_default_setter
         self._defaultgetter = defaultgetter or _default_default_getter
 
@@ -149,12 +161,12 @@ class HashiVaultOptionAdapter(object):
     def get_options(self, *args):
         return self._getitems(*args)
 
+    def get_filtered_options(self, filter, *args):
+        return self._getfiltereditems(filter, *args)
 
-class HashiVaultConnectionOptions:
-    # url
-    # proxies
-    # ca_cert
-    # validate_certs
+    def get_filled_options(self, *args):
+        return self._getfilleditems(*args)
+
 
     def __init__(self, option_adapter):
         self._options = option_adapter
