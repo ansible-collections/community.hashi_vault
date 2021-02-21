@@ -25,10 +25,15 @@ class HashiVaultPlugin(AnsiblePlugin):
         '''processes deprecations related to the collection'''
 
         # TODO: this is a workaround for deprecations not being shown in lookups
-        # See: https://github.com/ansible/ansible/issues/73051
-        # Fix: https://github.com/ansible/ansible/pull/73058
+        # See:
+        #  - https://github.com/ansible/ansible/issues/73051
+        #  - https://github.com/ansible/ansible/pull/73058
+        #  - https://github.com/ansible/ansible/pull/73239
+        #  - https://github.com/ansible/ansible/pull/73240
         #
-        # If #73058 or another fix is backported, this should be removed.
+        # If a fix is backported to 2.9, this should be removed.
+        # Otherwise, we'll have to test with fixes that are available and see how we
+        # can determine whether to execute this conditionally.
 
         # nicked from cli/__init__.py
         # with slight customizations to help filter out relevant messages
