@@ -100,12 +100,6 @@ class TestHashiVaultOptionAdapter(object):
 
         assert value == SAMPLE_DICT[option]
 
-    @pytest.mark.parametrize('option', SAMPLE_KEYS)
-    def test_get_option_default_succeeds(self, adapter, option):
-        value = adapter.get_option_default(option, MARKER)
-
-        assert value == SAMPLE_DICT[option]
-
     @pytest.mark.parametrize('option', MISSING_KEYS)
     def test_get_option_missing_raises(self, adapter, option):
         with pytest.raises(KeyError):
