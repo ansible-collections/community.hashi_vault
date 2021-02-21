@@ -10,7 +10,11 @@ from ansible.plugins import AnsiblePlugin
 from ansible import constants as C
 from ansible.utils.display import Display
 
-from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
+from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import (
+    HashiVaultHelper,
+    HashiVaultOptionAdapter,
+    HashiVaultConnectionOptions,
+)
 
 display = Display()
 
@@ -20,6 +24,8 @@ class HashiVaultPlugin(AnsiblePlugin):
         super(HashiVaultPlugin, self).__init__()
 
         self.helper = HashiVaultHelper()
+        self._options_adapter = HashiVaultOptionAdapter.from_ansible_plugin(self)
+        self.connection_options = HashiVaultConnectionOptions(self._options_adapter)
 
     def process_deprecations(self, collection_name='community.hashi_vault'):
         '''processes deprecations related to the collection'''
