@@ -47,7 +47,10 @@ def option_group_base(adapter):
 
 
 @pytest.fixture(params=[
-    # env, expected
+    # first dict is used to patch the environment vars
+    # second dict is used to patch the current options to get them to the expected state
+    #
+    # envpatch, expatch
     ({}, {}),
     ({'_ENV_1A': 'alt1a'}, {}),
     ({'_ENV_3X': 'noop3x'}, {}),
@@ -58,9 +61,12 @@ def option_group_base(adapter):
     ({'_ENV_5A': 'noop5a', '_ENV_4C': 'alt4c', '_ENV_2A': 'alt2a'}, {'opt2': 'alt2a', 'opt4': 'alt4c'}),
 ])
 def with_env(request, preread_options):
+    envpatch, expatch = request.param
+
     expected = preread_options.copy()
-    expected.update(request.param[1])
-    with mock.patch.dict(os.environ, request.param[0]):
+    expected.update(expatch)
+
+    with mock.patch.dict(os.environ, envpatch):
         yield expected
 
 
@@ -69,4 +75,4 @@ class TestHashiVaultOptionGroupBase(object):
     def test_process_low_preference_env_vars(self, option_group_base, with_env, preread_options):
         option_group_base.process_low_preference_env_vars(LOW_PREF_DEF)
 
-        assert preread_options == with_env , "Expected: %r\nGot: %r" % (with_env, preread_options)
+        assert preread_options == with_env, "Expected: %r\nGot: %r" % (with_env, preread_options)
