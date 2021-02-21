@@ -57,6 +57,8 @@ class TestHashiVaultLookupBase(object):
             ('value1 key2=value2 key3=val_w/=in_it key4=value4', None),
             ('key1=value1 value2 key3=val_w/=in_it key4=value4', None),
             ('key1=value1 value2 key3=val_w/=in_it key4=value4', 'key2'),
+            ('key1=val1 invalid key3=val3', None),
+            ('key1=val1 invalid key3=val3', 'key1'),
         ]
     )
     def test_parse_kev_term_invalid_term_strings(self, term, unqualified, hashi_vault_lookup_module):
