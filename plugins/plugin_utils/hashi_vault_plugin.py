@@ -16,7 +16,7 @@ display = Display()
 
 
 class HashiVaultPlugin(AnsiblePlugin):
-    def __init__(self, loader=None, templar=None, **kwargs):
+    def __init__(self):
         super(HashiVaultPlugin, self).__init__()
 
         self.helper = HashiVaultHelper()
