@@ -168,11 +168,34 @@ class HashiVaultOptionAdapter(object):
         return self._getfilleditems(*args)
 
 
+class HashiVaultOptionGroupBase:
+    '''A base class for class option group classes'''
+
+    # for now copying here
+    # going to re-think where to specify these
+    _LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
+        'token_path': ['HOME'],
+        'namespace': ['VAULT_NAMESPACE'],
+        'token': ['VAULT_TOKEN'],
+        'url': ['VAULT_ADDR'],
+    }
+
     def __init__(self, option_adapter):
         self._options = option_adapter
 
-    def get_connection_options(self):
-        pass
+    def process_low_preference_env_vars(self, option_vars=None):
+        ov = option_vars or self._LOW_PRECEDENCE_ENV_VAR_OPTIONS
+        for opt, envs in ov.items():
+            for env in envs:
+                if self._options.has_option(opt) and self._options.get_option(opt) is None:
+                    self._options.set_option(opt, os.environ.get(env))
+
+
+class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
+    '''HashiVault option group class for connection options'''
+
+    def __init__(self, option_adapter):
+        super(HashiVaultConnectionOptions, self).__init__(option_adapter)
 
     def _boolean_or_cacert(self):
         # This is needed because of this (https://hvac.readthedocs.io/en/stable/source/hvac_v1.html):
