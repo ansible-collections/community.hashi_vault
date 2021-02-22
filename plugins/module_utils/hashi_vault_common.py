@@ -197,6 +197,31 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     def __init__(self, option_adapter):
         super(HashiVaultConnectionOptions, self).__init__(option_adapter)
 
+    def _process_option_proxies(self):
+        '''check if 'proxies' option is dict or str and set it appropriately'''
+
+        proxies_opt = self._options.get_option('proxies')
+
+        if proxies_opt is None:
+            return
+
+        try:
+            # if it can be interpreted as dict
+            # do it
+            proxies = check_type_dict(proxies_opt)
+        except TypeError:
+            # if it can't be interpreted as dict
+            proxy = check_type_str(proxies_opt)
+            # but can be interpreted as str
+            # use this str as http and https proxy
+            proxies = {
+                'http': proxy,
+                'https': proxy,
+            }
+
+        # record the new/interpreted value for 'proxies' option
+        self._options.set_option('proxies', proxies)
+
     def _boolean_or_cacert(self):
         # This is needed because of this (https://hvac.readthedocs.io/en/stable/source/hvac_v1.html):
         #

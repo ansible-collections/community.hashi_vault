@@ -25,6 +25,7 @@ CONNECTION_OPTIONS = {
     'ca_cert': None,
 }
 
+
 @pytest.fixture
 def predefined_options():
     return CONNECTION_OPTIONS.copy()
@@ -86,3 +87,30 @@ class TestHashiVaultConnectionOptions(object):
             connection_options._boolean_or_cacert()
 
         assert predefined_options['ca_cert'] == expected
+
+    # _process_option_proxies
+    # proxies can be specified as a dictionary where key is protocol/scheme
+    # and value is the proxy address. A dictionary can also be supplied as a string
+    # representation of a dictionary in JSON format.
+    # If a string is supplied that cannot be interpreted as a JSON dictionary, then it
+    # is assumed to be a proxy address, and will be used as proxy for both the
+    # http and https protocols.
+
+    @pytest.mark.parametrize(
+        'optproxies,expected',
+        [
+            (None, None),
+            ('socks://thecat', {'http': 'socks://thecat', 'https': 'socks://thecat'}),
+            ('{"http": "gopher://it"}', {'http': 'gopher://it'}),
+            ({'https': "smtp://mail.aol.com"}, {'https': "smtp://mail.aol.com"}),
+            ({'protoa': 'proxya', 'protob': 'proxyb', 'protoc': 'proxyc'}, {'protoa': 'proxya', 'protob': 'proxyb', 'protoc': 'proxyc'}),
+            ('{"protoa": "proxya", "protob": "proxyb", "protoc": "proxyc"}', {'protoa': 'proxya', 'protob': 'proxyb', 'protoc': 'proxyc'}),
+            ('{"protoa":"proxya","protob":"proxyb","protoc":"proxyc"}', {'protoa': 'proxya', 'protob': 'proxyb', 'protoc': 'proxyc'}),
+        ]
+    )
+    def test_process_option_proxies(self, connection_options, predefined_options, adapter, optproxies, expected):
+        adapter.set_option('proxies', optproxies)
+
+        connection_options._process_option_proxies()
+
+        assert predefined_options['proxies'] == expected
