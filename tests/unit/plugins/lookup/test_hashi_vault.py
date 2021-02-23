@@ -46,12 +46,11 @@ class TestHashiVaultLookup(object):
         host = url.hostname
         port = url.port if url.port is not None else {'http': 80, 'https': 443}[url.scheme]
 
-        envpatch.update({'VAULT_TOKEN': 'fake'})
-
         with mock.patch.dict(os.environ, envpatch):
             with pytest.raises(ConnectionError) as e:
-                hashi_vault_lookup_module.run(['secret/fake'])
+                hashi_vault_lookup_module.run(['secret/fake'], token='fake')
 
-        s_err = str(e)
+        s_err = str(e.value)
 
-        assert host in s_err and str(port) in s_err, "host '%s' and port '%i' not found in exception: %r" % (host, port, e.value)
+        assert str(host) in s_err, "host '%s' not found in exception: %r" % (host, str(e.value))
+        assert str(port) in s_err, "port '%i' not found in exception: %r" % (port, str(e.value))
