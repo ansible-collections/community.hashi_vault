@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - hashi_vault - restore use of ``VAULT_ADDR`` environment variable as a low preference env var (https://github.com/ansible-collections/community.hashi_vault/pull/61).

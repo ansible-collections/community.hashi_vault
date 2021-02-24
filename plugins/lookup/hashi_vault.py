@@ -84,13 +84,13 @@ DOCUMENTATION = """
       description:
         - URL to the Vault service.
         - If not specified by any other means, the value of the C(VAULT_ADDR) environment variable will be used.
+        - If C(VAULT_ADDR) is also not defined then a default of C(http://127.0.0.1:8200) will be used.
       env:
         - name: ANSIBLE_HASHI_VAULT_ADDR
           version_added: '0.2.0'
       ini:
         - section: lookup_hashi_vault
           key: url
-      default: 'http://127.0.0.1:8200'
     username:
       description: Authentication user name.
     password:
@@ -640,7 +640,18 @@ class LookupModule(HashiVaultLookupBase):
         # proxies (dict or str)
         self.process_option_proxies()
 
+        # apply additional defaults
+        self.apply_additional_defaults(url='http://127.0.0.1:8200')
+
     # begin options processing methods
+
+    # this is a temporary method
+    # https://github.com/ansible-collections/community.hashi_vault/pull/61
+    # low preference env vars will be updated to take defaults into account
+    def apply_additional_defaults(self, **kwargs):
+        for k, v in kwargs.items():
+            if self.get_option(k) is None:
+                self.set_option(k, v)
 
     def set_default_option_env(self, option, var):
         '''sets an option to the value of an env var if None'''
