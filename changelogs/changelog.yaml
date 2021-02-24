@@ -94,3 +94,17 @@ releases:
     - 1.1.0.yml
     - 50-add-proxies-option.yml
     release_date: '2021-02-08'
+  1.1.1:
+    changes:
+      bugfixes:
+      - hashi_vault - restore use of ``VAULT_ADDR`` environment variable as a low
+        preference env var (https://github.com/ansible-collections/community.hashi_vault/pull/61).
+      release_summary: 'This bugfix release restores the use of the ``VAULT_ADDR``
+        environment variable for setting the ``url`` option.
+
+        See the PR linked from the changelog entry for details and workarounds if
+        you cannot upgrade.'
+    fragments:
+    - 1.1.1.yml
+    - 41-fix-vault-addr.yml
+    release_date: '2021-02-24'

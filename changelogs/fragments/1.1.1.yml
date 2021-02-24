@@ -1,4 +1,0 @@
----
-release_summary: |-
-  This bugfix release restores the use of the ``VAULT_ADDR`` environment variable for setting the ``url`` option.
-  See the PR linked from the changelog entry for details and workarounds if you cannot upgrade.

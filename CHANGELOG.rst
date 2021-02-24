@@ -5,6 +5,20 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.1.1
+======
+
+Release Summary
+---------------
+
+This bugfix release restores the use of the ``VAULT_ADDR`` environment variable for setting the ``url`` option.
+See the PR linked from the changelog entry for details and workarounds if you cannot upgrade.
+
+Bugfixes
+--------
+
+- hashi_vault - restore use of ``VAULT_ADDR`` environment variable as a low preference env var (https://github.com/ansible-collections/community.hashi_vault/pull/61).
+
 v1.1.0
 ======
 
