@@ -613,17 +613,14 @@ class LookupModule(HashiVaultLookupBase):
         # eventually each option group will handle these
         self.connection_options.process_low_preference_env_vars()
 
-        # ca_cert to verify
-        self.boolean_or_cacert()
+        # process connection options
+        self.connection_options.process_connection_options()
 
         # auth methods
         self.auth_methods()
 
         # secret field splitter
         self.field_ops()
-
-        # proxies (dict or str)
-        self.process_option_proxies()
 
         # apply additional defaults
         self.apply_additional_defaults(url='http://127.0.0.1:8200')
@@ -637,39 +634,6 @@ class LookupModule(HashiVaultLookupBase):
         for k, v in kwargs.items():
             if self.get_option(k) is None:
                 self.set_option(k, v)
-
-    def boolean_or_cacert(self):
-        # This is needed because of this (https://hvac.readthedocs.io/en/stable/source/hvac_v1.html):
-        #
-        # # verify (Union[bool,str]) - Either a boolean to indicate whether TLS verification should
-        # # be performed when sending requests to Vault, or a string pointing at the CA bundle to use for verification.
-        #
-        '''return a bool or cacert'''
-        ca_cert = self.get_option('ca_cert')
-
-        validate_certs = self.get_option('validate_certs')
-
-        if validate_certs is None:
-            # Validate certs option was not explicitly set
-
-            # Check if VAULT_SKIP_VERIFY is set
-            vault_skip_verify = os.environ.get('VAULT_SKIP_VERIFY')
-
-            if vault_skip_verify is not None:
-                # VAULT_SKIP_VERIFY is set
-                try:
-                    # Check that we have a boolean value
-                    vault_skip_verify = boolean(vault_skip_verify)
-                    # Use the inverse of VAULT_SKIP_VERIFY
-                    validate_certs = not vault_skip_verify
-                except TypeError:
-                    # Not a boolean value fallback to default value (True)
-                    validate_certs = True
-            else:
-                validate_certs = True
-
-        if not (validate_certs and ca_cert):
-            self.set_option('ca_cert', validate_certs)
 
     def field_ops(self):
         # split secret and field
@@ -699,31 +663,6 @@ class LookupModule(HashiVaultLookupBase):
         auth_validator = 'validate_auth_' + auth_method
         if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
             getattr(self, auth_validator)(auth_method)
-
-    def process_option_proxies(self):
-        # check if 'proxies' option is dict or str
-
-        proxies_opt = self.get_option('proxies')
-
-        if proxies_opt is None:
-            return
-
-        try:
-            # if it can be interpreted as dict
-            # do it
-            proxies = check_type_dict(proxies_opt)
-        except TypeError:
-            # if it can't be interpreted as dict
-            proxy = check_type_str(proxies_opt)
-            # but can be interpreted as str
-            # use this str as http and https proxy
-            proxies = {
-                'http': proxy,
-                'https': proxy
-            }
-
-        # record the new/interpreted value for 'proxies' option
-        self.set_option('proxies', proxies)
 
     # end options processing methods
 
