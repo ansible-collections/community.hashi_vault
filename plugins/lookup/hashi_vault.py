@@ -382,9 +382,7 @@ _raw:
 import os
 
 from ansible.errors import AnsibleError
-from ansible.module_utils.parsing.convert_bool import boolean
 from ansible.utils.display import Display
-from ansible.module_utils.common.validation import check_type_dict, check_type_str
 
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
 from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
