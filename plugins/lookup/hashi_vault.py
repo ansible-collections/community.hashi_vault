@@ -414,6 +414,8 @@ except ImportError:
 
 
 class HashiVault:
+    # NOTE: the HashiVault class here is in the process of being removed, as functionality moves to shared classes
+
     def get_options(self, *option_names, **kwargs):
         ret = {}
         include_falsey = kwargs.get('include_falsey', False)
@@ -423,7 +425,11 @@ class HashiVault:
                 ret[option] = val
         return ret
 
-    def __init__(self, **kwargs):
+    def __init__(self, connection_options, adapter, **kwargs):
+        # taking adapter during transition period
+        self.adapter = adapter
+        self.connection_options = connection_options
+
         self.options = kwargs
 
         self.helper = HashiVaultHelper()
@@ -435,16 +441,7 @@ class HashiVault:
                 "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
             )
 
-        client_args = {
-            'url': self.options['url'],
-            'verify': self.options['ca_cert']
-        }
-
-        if self.options.get('namespace'):
-            client_args['namespace'] = self.options['namespace']
-
-        if self.options.get('proxies') is not None:
-            client_args['proxies'] = self.options.get('proxies')
+        client_args = self.connection_options.get_hvac_connection_options()
 
         self.client = self.helper.get_vault_client(**client_args)
 
@@ -594,9 +591,9 @@ class LookupModule(HashiVaultLookupBase):
             # TODO: remove deprecate() if backported fix is available (see method definition)
             self.process_deprecations()
             self.process_options()
-            # FUTURE: Create one object, authenticate once, and re-use it,
-            # for gets, for better use during with_ loops.
-            client = HashiVault(**self._options)
+            # passing connection_options and adapter to the HashiVault class to make transition easier
+            # while the things in this class get moved to shared classes
+            client = HashiVault(self.connection_options, self._options_adapter, **self._options)
             client.authenticate()
             ret.extend(client.get())
 
