@@ -414,23 +414,6 @@ try:
 except ImportError:
     HAS_BOTO3 = False
 
-# see https://github.com/ansible-collections/community.hashi_vault/issues/10
-#
-# Options which seek to use environment vars that are not Ansible-specific
-# should load those as values of last resort, so that INI values can override them.
-# For default processing, list such options and vars here.
-# Alternatively, process them in another appropriate place like an auth method's
-# validate_ method.
-#
-# key = option_name
-# value = list of env vars (in order of those checked first; process stops when value is found)
-LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
-    'token_path': ['HOME'],
-    'namespace': ['VAULT_NAMESPACE'],
-    'token': ['VAULT_TOKEN'],
-    'url': ['VAULT_ADDR'],
-}
-
 
 class HashiVault:
     def get_options(self, *option_names, **kwargs):
@@ -626,7 +609,9 @@ class LookupModule(HashiVaultLookupBase):
         '''performs deep validation and value loading for options'''
 
         # low preference env vars
-        self.low_preference_env_vars()
+        # doing this as a function of connection options is temporary
+        # eventually each option group will handle these
+        self.connection_options.process_low_preference_env_vars()
 
         # ca_cert to verify
         self.boolean_or_cacert()
@@ -652,18 +637,6 @@ class LookupModule(HashiVaultLookupBase):
         for k, v in kwargs.items():
             if self.get_option(k) is None:
                 self.set_option(k, v)
-
-    def set_default_option_env(self, option, var):
-        '''sets an option to the value of an env var if None'''
-        if self.get_option(option) is None:
-            self.set_option(option, os.environ.get(var))
-
-    def low_preference_env_vars(self):
-        '''sets all options that have a low preference env var'''
-        # see definition of LOW_PRECEDENCE_ENV_VAR_OPTIONS near the top of the file
-        for opt, envs in LOW_PRECEDENCE_ENV_VAR_OPTIONS.items():
-            for env in envs:
-                self.set_default_option_env(opt, env)
 
     def boolean_or_cacert(self):
         # This is needed because of this (https://hvac.readthedocs.io/en/stable/source/hvac_v1.html):

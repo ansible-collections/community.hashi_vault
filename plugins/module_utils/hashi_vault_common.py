@@ -171,6 +171,17 @@ class HashiVaultOptionAdapter(object):
 class HashiVaultOptionGroupBase:
     '''A base class for class option group classes'''
 
+    # see https://github.com/ansible-collections/community.hashi_vault/issues/10
+    #
+    # Options which seek to use environment vars that are not Ansible-specific
+    # should load those as values of last resort, so that INI values can override them.
+    # For default processing, list such options and vars here.
+    # Alternatively, process them in another appropriate place like an auth method's
+    # validate_ method.
+    #
+    # key = option_name
+    # value = list of env vars (in order of those checked first; process stops when value is found)
+
     # for now copying here
     # going to re-think where to specify these
     _LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
