@@ -445,10 +445,6 @@ class HashiVault:
         if self.options.get('namespace'):
             client_args['namespace'] = self.options['namespace']
 
-        # this is the only auth_method-specific thing here, because if we're using a token, we need it now
-        if self.options['auth_method'] == 'token':
-            client_args['token'] = self.options.get('token')
-
         if self.options.get('proxies') is not None:
             client_args['proxies'] = self.options.get('proxies')
 
@@ -530,6 +526,9 @@ class HashiVault:
     #    0.10.6 -- approle
     #
     def auth_token(self):
+        if self.options['auth_method'] == 'token':
+            self.client.token = self.options.get('token')
+
         if self.options.get('token_validate') and not self.client.is_authenticated():
             raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup.")
 
