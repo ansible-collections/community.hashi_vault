@@ -114,3 +114,56 @@ class TestHashiVaultConnectionOptions(object):
         connection_options._process_option_proxies()
 
         assert predefined_options['proxies'] == expected
+
+    def test_process_connection_options(self, mocker, connection_options, adapter):
+        # mock the internal methods we expect to be called
+        f_boolean_or_cacert = mocker.patch.object(connection_options, '_boolean_or_cacert')
+        f_process_option_proxies = mocker.patch.object(connection_options, '_process_option_proxies')
+
+        # mock the adapter itself, so we can spy on adqpter interactions
+        # since we're mocking out the methods we expect to call, we shouldn't see any
+        mock_adapter = mock.create_autospec(adapter)
+        connection_options._options = mock_adapter
+
+        connection_options.process_connection_options()
+
+        # assert the expected methods have been called once
+        f_boolean_or_cacert.assert_called_once()
+        f_process_option_proxies.assert_called_once()
+
+        # aseert that the adapter had no interactions (because we mocked out everything we knew about)
+        # the intention here is to catch a situation where process_connection_options has been modified
+        # to do some new behavior, without modifying this test.
+        assert mock_adapter.method_calls == [], 'Unexpected adapter interaction: %r' % mock_adapter.method_calls
+
+    # get_hvac_connection_options
+    # gets the dict of params to pass to the hvac Client constructor
+    # based on the connection options we have in Ansible
+
+    @pytest.mark.parametrize('opt_ca_cert', [None, '/tmp/fake'])
+    @pytest.mark.parametrize('opt_validate_certs', [None, True, False])
+    @pytest.mark.parametrize('opt_namespace', [None, 'namepsace1'])
+    @pytest.mark.parametrize('opt_proxies', [
+        None, 'socks://noshow', '{"https": "https://prox", "http": "http://other"}', {'http': 'socks://one', 'https': 'socks://two'}
+    ])
+    def test_get_hvac_connection_options(self, connection_options, predefined_options, adapter, opt_ca_cert, opt_validate_certs, opt_proxies, opt_namespace):
+        adapter.set_options(**{
+            'ca_cert': opt_ca_cert,
+            'validate_certs': opt_validate_certs,
+            'proxies': opt_proxies,
+            'namespace': opt_namespace,
+        })
+
+        connection_options.process_connection_options()
+        opts = connection_options.get_hvac_connection_options()
+
+        # these two will get swallowed up to become 'verify'
+        assert 'validate_certs' not in opts
+        assert 'ca_cert' not in opts
+
+        assert 'url' in opts and opts['url'] == predefined_options['url']
+        assert 'verify' in opts and opts['verify'] == predefined_options['ca_cert']
+
+        # these are optional
+        assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']
+        assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']

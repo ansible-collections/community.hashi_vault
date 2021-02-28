@@ -194,8 +194,26 @@ class HashiVaultOptionGroupBase:
 class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     '''HashiVault option group class for connection options'''
 
+    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace']
+
     def __init__(self, option_adapter):
         super(HashiVaultConnectionOptions, self).__init__(option_adapter)
+
+    def get_hvac_connection_options(self):
+        # validate_certs is only used to optonally change the value of ca_cert
+        def _filter(k, v):
+            return v is not None and k != 'validate_certs'
+
+        # our transformed ca_cert value will become the verify parameter for the hvac client
+        hvopts = self._options.get_filtered_options(_filter, *self.OPTIONS)
+        hvopts['verify'] = hvopts.pop('ca_cert')
+
+        return hvopts
+
+    def process_connection_options(self):
+        '''executes special processing required for certain options'''
+        self._boolean_or_cacert()
+        self._process_option_proxies()
 
     def _process_option_proxies(self):
         '''check if 'proxies' option is dict or str and set it appropriately'''
