@@ -140,7 +140,7 @@ class TestHashiVaultOptionAdapter(object):
         assert sample_dict[option] == expected
         assert adapter.get_option(option) == expected
 
-    @pytest.mark.parametrize('options', [SAMPLE_KEYS[0], MISSING_KEYS[0]])
+    @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
     def test_set_options(self, adapter, options, sample_dict):
         update = dict([(o, '__VALUE_%i' % i) for i, o in enumerate(options)])
 
@@ -154,7 +154,7 @@ class TestHashiVaultOptionAdapter(object):
         for k in MISSING_KEYS:
             if k in update:
                 assert sample_dict[k] == update[k]
-                assert adapter.get_option(k) == expected
+                assert adapter.get_option(k) == update[k]
             else:
                 assert k not in sample_dict
                 assert not adapter.has_option(k)
