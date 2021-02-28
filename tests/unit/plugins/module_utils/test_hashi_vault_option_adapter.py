@@ -213,7 +213,7 @@ class TestHashiVaultOptionAdapter(object):
         assert result == expected
 
     @pytest.mark.parametrize('options', [SAMPLE_KEYS])
-    def test_get_filtered_options_by_value(self, adapter, options, filter_key_in_range):
+    def test_get_filtered_options_by_key(self, adapter, options, filter_key_in_range):
         expected = dict([(k, SAMPLE_DICT[k]) for k in options if k in SAMPLE_KEYS[1:3]])
 
         result = adapter.get_filtered_options(filter_key_in_range, *options)
