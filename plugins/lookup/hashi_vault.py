@@ -27,6 +27,7 @@ DOCUMENTATION = """
     - As of community.hashi_vault 0.1.0, only the latest version of a secret is returned when specifying a KV v2 path.
     - As of community.hashi_vault 0.1.0, all options can be supplied via term string (space delimited key=value pairs) or by parameters (see examples).
     - As of community.hashi_vault 0.1.0, when I(secret) is the first option in the term string, C(secret=) is not required (see examples).
+  extends_documentation_fragment: community.hashi_vault.connection
   options:
     secret:
       description: Vault path to the secret being requested in the format C(path[:field]).
@@ -80,37 +81,10 @@ DOCUMENTATION = """
       type: boolean
       default: true
       version_added: 0.2.0
-    url:
-      description:
-        - URL to the Vault service.
-        - If not specified by any other means, the value of the C(VAULT_ADDR) environment variable will be used.
-        - If C(VAULT_ADDR) is also not defined then a default of C(http://127.0.0.1:8200) will be used.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_ADDR
-          version_added: '0.2.0'
-      ini:
-        - section: lookup_hashi_vault
-          key: url
     username:
       description: Authentication user name.
     password:
       description: Authentication password.
-    proxies:
-      description:
-        - URL(s) to the proxies used to access the Vault service.
-        - It can be a string or a dict.
-        - If it's a dict, provide the scheme (eg. C(http) or C(https)) as the key, and the URL as the value.
-        - If it's a string, provide a single URL that will be used as the proxy for both C(http) and C(https) schemes.
-        - A string that can be interpreted as a dictionary will be converted to one (see examples).
-        - You can specify a different proxy for HTTP and HTTPS resources.
-        - If not specified, L(environment variables from the Requests library,https://requests.readthedocs.io/en/master/user/advanced/#proxies) are used.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_PROXIES
-      ini:
-        - section: lookup_hashi_vault
-          key: proxies
-      type: raw
-      version_added: '1.1.0'
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
@@ -180,28 +154,6 @@ DOCUMENTATION = """
       description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
       env:
         - name: ANSIBLE_HASHI_VAULT_JWT
-    ca_cert:
-      description: Path to certificate to use for authentication.
-      aliases: [ cacert ]
-    validate_certs:
-      description:
-        - Controls verification and validation of SSL certificates, mostly you only want to turn off with self signed ones.
-        - Will be populated with the inverse of C(VAULT_SKIP_VERIFY) if that is set and I(validate_certs) is not explicitly provided.
-        - Will default to C(true) if neither I(validate_certs) or C(VAULT_SKIP_VERIFY) are set.
-      type: boolean
-    namespace:
-      description:
-        - Vault namespace where secrets reside. This option requires HVAC 0.7.0+ and Vault 0.11+.
-        - Optionally, this may be achieved by prefixing the authentication mount point and/or secret path with the namespace
-          (e.g C(mynamespace/secret/mysecret)).
-        - If environment variable C(VAULT_NAMESPACE) is set, its value will be used last among all ways to specify I(namespace).
-      env:
-        - name: ANSIBLE_HASHI_VAULT_NAMESPACE
-          version_added: '0.2.0'
-      ini:
-        - section: lookup_hashi_vault
-          key: namespace
-          version_added: '0.2.0'
     aws_profile:
       description: The AWS profile
       type: str
@@ -382,9 +334,7 @@ _raw:
 import os
 
 from ansible.errors import AnsibleError
-from ansible.module_utils.parsing.convert_bool import boolean
 from ansible.utils.display import Display
-from ansible.module_utils.common.validation import check_type_dict, check_type_str
 
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
 from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
@@ -414,25 +364,10 @@ try:
 except ImportError:
     HAS_BOTO3 = False
 
-# see https://github.com/ansible-collections/community.hashi_vault/issues/10
-#
-# Options which seek to use environment vars that are not Ansible-specific
-# should load those as values of last resort, so that INI values can override them.
-# For default processing, list such options and vars here.
-# Alternatively, process them in another appropriate place like an auth method's
-# validate_ method.
-#
-# key = option_name
-# value = list of env vars (in order of those checked first; process stops when value is found)
-LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
-    'token_path': ['HOME'],
-    'namespace': ['VAULT_NAMESPACE'],
-    'token': ['VAULT_TOKEN'],
-    'url': ['VAULT_ADDR'],
-}
-
 
 class HashiVault:
+    # NOTE: the HashiVault class here is in the process of being removed, as functionality moves to shared classes
+
     def get_options(self, *option_names, **kwargs):
         ret = {}
         include_falsey = kwargs.get('include_falsey', False)
@@ -442,7 +377,11 @@ class HashiVault:
                 ret[option] = val
         return ret
 
-    def __init__(self, **kwargs):
+    def __init__(self, connection_options, adapter, **kwargs):
+        # taking adapter during transition period
+        self.adapter = adapter
+        self.connection_options = connection_options
+
         self.options = kwargs
 
         self.helper = HashiVaultHelper()
@@ -454,20 +393,7 @@ class HashiVault:
                 "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
             )
 
-        client_args = {
-            'url': self.options['url'],
-            'verify': self.options['ca_cert']
-        }
-
-        if self.options.get('namespace'):
-            client_args['namespace'] = self.options['namespace']
-
-        # this is the only auth_method-specific thing here, because if we're using a token, we need it now
-        if self.options['auth_method'] == 'token':
-            client_args['token'] = self.options.get('token')
-
-        if self.options.get('proxies') is not None:
-            client_args['proxies'] = self.options.get('proxies')
+        client_args = self.connection_options.get_hvac_connection_options()
 
         self.client = self.helper.get_vault_client(**client_args)
 
@@ -547,6 +473,9 @@ class HashiVault:
     #    0.10.6 -- approle
     #
     def auth_token(self):
+        if self.options['auth_method'] == 'token':
+            self.client.token = self.options.get('token')
+
         if self.options.get('token_validate') and not self.client.is_authenticated():
             raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup.")
 
@@ -614,9 +543,9 @@ class LookupModule(HashiVaultLookupBase):
             # TODO: remove deprecate() if backported fix is available (see method definition)
             self.process_deprecations()
             self.process_options()
-            # FUTURE: Create one object, authenticate once, and re-use it,
-            # for gets, for better use during with_ loops.
-            client = HashiVault(**self._options)
+            # passing connection_options and adapter to the HashiVault class to make transition easier
+            # while the things in this class get moved to shared classes
+            client = HashiVault(self.connection_options, self._options_adapter, **self._options)
             client.authenticate()
             ret.extend(client.get())
 
@@ -626,19 +555,18 @@ class LookupModule(HashiVaultLookupBase):
         '''performs deep validation and value loading for options'''
 
         # low preference env vars
-        self.low_preference_env_vars()
+        # doing this as a function of connection options is temporary
+        # eventually each option group will handle these
+        self.connection_options.process_low_preference_env_vars()
 
-        # ca_cert to verify
-        self.boolean_or_cacert()
+        # process connection options
+        self.connection_options.process_connection_options()
 
         # auth methods
         self.auth_methods()
 
         # secret field splitter
         self.field_ops()
-
-        # proxies (dict or str)
-        self.process_option_proxies()
 
         # apply additional defaults
         self.apply_additional_defaults(url='http://127.0.0.1:8200')
@@ -652,51 +580,6 @@ class LookupModule(HashiVaultLookupBase):
         for k, v in kwargs.items():
             if self.get_option(k) is None:
                 self.set_option(k, v)
-
-    def set_default_option_env(self, option, var):
-        '''sets an option to the value of an env var if None'''
-        if self.get_option(option) is None:
-            self.set_option(option, os.environ.get(var))
-
-    def low_preference_env_vars(self):
-        '''sets all options that have a low preference env var'''
-        # see definition of LOW_PRECEDENCE_ENV_VAR_OPTIONS near the top of the file
-        for opt, envs in LOW_PRECEDENCE_ENV_VAR_OPTIONS.items():
-            for env in envs:
-                self.set_default_option_env(opt, env)
-
-    def boolean_or_cacert(self):
-        # This is needed because of this (https://hvac.readthedocs.io/en/stable/source/hvac_v1.html):
-        #
-        # # verify (Union[bool,str]) - Either a boolean to indicate whether TLS verification should
-        # # be performed when sending requests to Vault, or a string pointing at the CA bundle to use for verification.
-        #
-        '''return a bool or cacert'''
-        ca_cert = self.get_option('ca_cert')
-
-        validate_certs = self.get_option('validate_certs')
-
-        if validate_certs is None:
-            # Validate certs option was not explicitly set
-
-            # Check if VAULT_SKIP_VERIFY is set
-            vault_skip_verify = os.environ.get('VAULT_SKIP_VERIFY')
-
-            if vault_skip_verify is not None:
-                # VAULT_SKIP_VERIFY is set
-                try:
-                    # Check that we have a boolean value
-                    vault_skip_verify = boolean(vault_skip_verify)
-                    # Use the inverse of VAULT_SKIP_VERIFY
-                    validate_certs = not vault_skip_verify
-                except TypeError:
-                    # Not a boolean value fallback to default value (True)
-                    validate_certs = True
-            else:
-                validate_certs = True
-
-        if not (validate_certs and ca_cert):
-            self.set_option('ca_cert', validate_certs)
 
     def field_ops(self):
         # split secret and field
@@ -726,31 +609,6 @@ class LookupModule(HashiVaultLookupBase):
         auth_validator = 'validate_auth_' + auth_method
         if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
             getattr(self, auth_validator)(auth_method)
-
-    def process_option_proxies(self):
-        # check if 'proxies' option is dict or str
-
-        proxies_opt = self.get_option('proxies')
-
-        if proxies_opt is None:
-            return
-
-        try:
-            # if it can be interpreted as dict
-            # do it
-            proxies = check_type_dict(proxies_opt)
-        except TypeError:
-            # if it can't be interpreted as dict
-            proxy = check_type_str(proxies_opt)
-            # but can be interpreted as str
-            # use this str as http and https proxy
-            proxies = {
-                'http': proxy,
-                'https': proxy
-            }
-
-        # record the new/interpreted value for 'proxies' option
-        self.set_option('proxies', proxies)
 
     # end options processing methods
 

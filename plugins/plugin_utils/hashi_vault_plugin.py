@@ -10,25 +10,36 @@ from ansible.plugins import AnsiblePlugin
 from ansible import constants as C
 from ansible.utils.display import Display
 
-from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
+from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import (
+    HashiVaultHelper,
+    HashiVaultOptionAdapter,
+    HashiVaultConnectionOptions,
+)
 
 display = Display()
 
 
 class HashiVaultPlugin(AnsiblePlugin):
-    def __init__(self, loader=None, templar=None, **kwargs):
+    def __init__(self):
         super(HashiVaultPlugin, self).__init__()
 
         self.helper = HashiVaultHelper()
+        self._options_adapter = HashiVaultOptionAdapter.from_ansible_plugin(self)
+        self.connection_options = HashiVaultConnectionOptions(self._options_adapter)
 
     def process_deprecations(self, collection_name='community.hashi_vault'):
         '''processes deprecations related to the collection'''
 
         # TODO: this is a workaround for deprecations not being shown in lookups
-        # See: https://github.com/ansible/ansible/issues/73051
-        # Fix: https://github.com/ansible/ansible/pull/73058
+        # See:
+        #  - https://github.com/ansible/ansible/issues/73051
+        #  - https://github.com/ansible/ansible/pull/73058
+        #  - https://github.com/ansible/ansible/pull/73239
+        #  - https://github.com/ansible/ansible/pull/73240
         #
-        # If #73058 or another fix is backported, this should be removed.
+        # If a fix is backported to 2.9, this should be removed.
+        # Otherwise, we'll have to test with fixes that are available and see how we
+        # can determine whether to execute this conditionally.
 
         # nicked from cli/__init__.py
         # with slight customizations to help filter out relevant messages

@@ -16,6 +16,10 @@ display = Display()
 
 class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
 
+    def __init__(self, loader=None, templar=None, **kwargs):
+        HashiVaultPlugin.__init__(self)
+        LookupBase.__init__(self, loader=loader, templar=templar, **kwargs)
+
     def parse_kev_term(self, term, plugin_name, first_unqualified=None):
         '''parses a term string into a dictionary'''
         param_dict = {}

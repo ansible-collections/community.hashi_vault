@@ -10,6 +10,7 @@ import pytest
 from ansible.plugins import AnsiblePlugin
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils.hashi_vault_plugin import HashiVaultPlugin
+from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultOptionAdapter
 
 
 @pytest.fixture
@@ -21,6 +22,9 @@ class TestHashiVaultPlugin(object):
 
     def test_is_ansible_plugin(self, hashi_vault_plugin):
         assert issubclass(type(hashi_vault_plugin), AnsiblePlugin)
+
+    def test_has_option_adapter(self, hashi_vault_plugin):
+        assert hasattr(hashi_vault_plugin, '_options_adapter') and issubclass(type(hashi_vault_plugin._options_adapter), HashiVaultOptionAdapter)
 
     # TODO: remove when deprecate() is no longer needed
     def test_has_process_deprecations(self, hashi_vault_plugin):
