@@ -57,6 +57,16 @@ def adapter_from_dict(sample_dict):
 
 
 @pytest.fixture
+def adapter_from_dict_defaults(sample_dict):
+    # the point of this one is to test the "default" methods provided by the adapter
+    # for everything except getter and setter, so we only supply those two required methods
+    def _create_adapter_from_dict_defaults():
+        return HashiVaultOptionAdapter(getter=sample_dict.__getitem__, setter=sample_dict.__setitem__)
+
+    return _create_adapter_from_dict_defaults
+
+
+@pytest.fixture
 def adapter_from_ansible_plugin(ansible_plugin):
     def _create_adapter_from_ansible_plugin():
         return HashiVaultOptionAdapter.from_ansible_plugin(ansible_plugin)
@@ -64,10 +74,11 @@ def adapter_from_ansible_plugin(ansible_plugin):
     return _create_adapter_from_ansible_plugin
 
 
-@pytest.fixture(params=['dict', 'ansible_plugin'])
-def adapter(request, adapter_from_dict, adapter_from_ansible_plugin):
+@pytest.fixture(params=['dict', 'dict_defaults', 'ansible_plugin'])
+def adapter(request, adapter_from_dict, adapter_from_dict_defaults, adapter_from_ansible_plugin):
     return {
         'dict': adapter_from_dict,
+        'dict_defaults': adapter_from_dict_defaults,
         'ansible_plugin': adapter_from_ansible_plugin,
     }[request.param]()
 
