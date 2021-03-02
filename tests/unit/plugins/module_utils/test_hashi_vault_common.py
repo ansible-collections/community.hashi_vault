@@ -10,7 +10,7 @@ import os
 import pytest
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
-from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultHelper
 
 
 @pytest.fixture

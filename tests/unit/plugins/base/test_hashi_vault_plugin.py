@@ -10,7 +10,7 @@ import pytest
 from ansible.plugins import AnsiblePlugin
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils.hashi_vault_plugin import HashiVaultPlugin
-from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultOptionAdapter
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
 
 
 @pytest.fixture
