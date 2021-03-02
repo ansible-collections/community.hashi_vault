@@ -10,7 +10,7 @@ import pytest
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
-from ansible_collections.community.hashi_vault.plugins.plugin_utils.hashi_vault_plugin import HashiVaultPlugin
+from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_plugin import HashiVaultPlugin
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
 
 
