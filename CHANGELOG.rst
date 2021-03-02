@@ -5,6 +5,14 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.1.2
+======
+
+Release Summary
+---------------
+
+This release contains the same functionality as 1.1.1. The only change is to mark some code as internal to the collection. If you are already using 1.1.1 as an end user you do not need to update.
+
 v1.1.1
 ======
 
@@ -94,4 +102,3 @@ Release Summary
 ---------------
 
 Our first release matches the ``hashi_vault`` lookup functionality provided by ``community.general`` version ``1.3.0``.
-
