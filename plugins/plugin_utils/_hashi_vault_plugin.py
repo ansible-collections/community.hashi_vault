@@ -2,6 +2,11 @@
 # Copyright (c) 2021 Brian Scholer (@briantist)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+# FOR INTERNAL COLLECTION USE ONLY
+# The interfaces in this file are meant for use within the community.hashi_vault collection
+# and may not remain stable to outside uses. Changes may be made in ANY release, even a bugfix release.
+# See also: https://github.com/ansible/community/issues/539#issuecomment-780839686
+# Please open an issue if you have questions about this.
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -10,7 +15,7 @@ from ansible.plugins import AnsiblePlugin
 from ansible import constants as C
 from ansible.utils.display import Display
 
-from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import (
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultHelper,
     HashiVaultOptionAdapter,
     HashiVaultConnectionOptions,

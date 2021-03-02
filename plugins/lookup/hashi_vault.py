@@ -337,7 +337,7 @@ from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
-from ansible_collections.community.hashi_vault.plugins.module_utils.hashi_vault_common import HashiVaultHelper
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultHelper
 
 display = Display()
 
