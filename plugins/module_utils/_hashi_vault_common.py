@@ -6,7 +6,7 @@
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
-# and may not remain stable to outside uses. Changes made be made in ANY release, even a bugfix release.
+# and may not remain stable to outside uses. Changes may be made in ANY release, even a bugfix release.
 # See also: https://github.com/ansible/community/issues/539#issuecomment-780839686
 # Please open an issue if you have questions about this.
 
