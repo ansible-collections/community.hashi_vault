@@ -154,12 +154,17 @@ class TestHashiVaultConnectionOptions(object):
     ):
 
         adapter.set_options(**{
+        # it's redundant to add url here, but it's for the last test that looks for unexpected options, so it doesn't flag url
+        option_set = {
+            'url': predefined_options['url'],
             'ca_cert': opt_ca_cert,
             'validate_certs': opt_validate_certs,
             'proxies': opt_proxies,
             'namespace': opt_namespace,
             'timeout': opt_timeout,
-        })
+            'retries': opt_retries,
+        }
+        adapter.set_options(**option_set)
 
         connection_options.process_connection_options()
         opts = connection_options.get_hvac_connection_options()
@@ -175,3 +180,11 @@ class TestHashiVaultConnectionOptions(object):
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']
         assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']
         assert 'timeout' not in opts or opts['timeout'] == predefined_options['timeout']
+
+        # ensure there's nothing in here we don't expect to see
+        # this is to capture unanticipated things
+        # specific items expected to be missing should have their own asserts like validate_certs and ca_cert
+        # add "generated" options to the array so they don't get flagged
+        generated_opts = ['verify']
+        for k, v in opts.items():
+            assert k in option_set or k in generated_opts, "Unexpected option '%s' with value %r is present" % (k, v)
