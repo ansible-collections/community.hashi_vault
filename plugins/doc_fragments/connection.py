@@ -99,4 +99,16 @@ class ModuleDocFragment(object):
           - name: ansible_hashi_vault_timeout
         type: int
         version_added: '1.3.0'
+      retries:
+        description:
+          - Allows for retrying on errors.
+        env:
+          - name: ANSIBLE_HASHI_VAULT_RETRIES
+        ini:
+          - section: lookup_hashi_vault
+            key: retries
+        vars:
+          - name: ansible_hashi_vault_retries
+        type: raw
+        version_added: '1.3.0'
     '''

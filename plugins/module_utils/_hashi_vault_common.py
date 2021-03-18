@@ -15,14 +15,39 @@ __metaclass__ = type
 
 import os
 
-from ansible.module_utils.common.validation import check_type_dict, check_type_str, check_type_bool
+from ansible.module_utils.common.validation import (
+    check_type_dict,
+    check_type_str,
+    check_type_bool,
+    check_type_int,
+    check_type_float,
+)
 
-HAS_HVAC = False
 try:
     import hvac
     HAS_HVAC = True
 except ImportError:
     HAS_HVAC = False
+
+# we implement retries via the urllib3 Retry class
+# https://github.com/ansible-collections/community.hashi_vault/issues/58
+HAS_RETRIES = False
+try:
+    from requests import Session
+    from requests.adapters import HTTPAdapter
+    try:
+        # try for a standalone urllib3
+        from urllib3.util import Retry
+        HAS_RETRIES = True
+    except ImportError:
+        try:
+            # failing that try for a vendored version within requests
+            from requests.packages.urllib3.util import Retry
+            HAS_RETRIES = True
+        except ImportError:
+            pass
+except ImportError:
+    pass
 
 
 class HashiVaultHelper():
@@ -214,13 +239,24 @@ class HashiVaultOptionGroupBase:
 class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     '''HashiVault option group class for connection options'''
 
-    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout']
+    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries']
+
+    _RETRIES_DEFAULT_PARAMS = {
+        'total': 3,
+        'status_forcelist': [429, 500, 502, 503, 504, 404],
+        ("allowed_methods" if HAS_RETRIES and hasattr(Retry.DEFAULT, "allowed_methods") else "method_whitelist"): ['HEAD', 'GET', 'OPTIONS'],
+        # allowed_methods=["HEAD", "GET", "OPTIONS"],
+        # method_whitelist=["HEAD", "GET", "OPTIONS"],
+        'backoff_factor': 1,
+    }
 
     def __init__(self, option_adapter):
         super(HashiVaultConnectionOptions, self).__init__(option_adapter)
 
     def get_hvac_connection_options(self):
-        # validate_certs is only used to optonally change the value of ca_cert
+        '''returns kwargs to be used for constructing an hvac.Client'''
+
+        # validate_certs is only used to optionally change the value of ca_cert
         def _filter(k, v):
             return v is not None and k != 'validate_certs'
 
@@ -228,12 +264,106 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         hvopts = self._options.get_filtered_options(_filter, *self.OPTIONS)
         hvopts['verify'] = hvopts.pop('ca_cert')
 
+        if 'retries' in hvopts:
+            hvopts['session'] = self._get_custom_requests_session(**hvopts.pop('retries'))
+
         return hvopts
 
     def process_connection_options(self):
         '''executes special processing required for certain options'''
         self._boolean_or_cacert()
         self._process_option_proxies()
+        self._process_option_retries()
+
+    def _get_custom_requests_session(self, **retry_kwargs):
+        '''returns a requests.Session to pass to hvac (or None)'''
+
+        # retries = self._options.get_option('retries')
+
+        # if retries is None:
+        #     return None
+
+        if not HAS_RETRIES:
+            # unsure if not being able to do retries should be a fatal error, or just a warning
+            # if it's a warning, I'm also not sure how to properly convey that from module_util code
+            # that will work for both modules and plugins
+            raise NotImplementedError("Retries are unavailable; please install urllib3 (?)")
+
+        # retry = Retry(**retries)
+        retry = Retry(**retry_kwargs)
+
+        adapter = HTTPAdapter(max_retries=retry)
+        sess = Session()
+        sess.mount("https://", adapter)
+        sess.mount("http://", adapter)
+
+        return sess
+
+    def _process_option_retries(self):
+        '''check if retries option is int, bool, or dict and interpret it appropriately'''
+        # this method focuses on validating the option, and setting a valid Retry object construction dict
+        # it intentionally does not build the Session object, which will be done elsewhere
+
+        retries_opt = self._options.get_option('retries')
+
+        if retries_opt is None:
+            return
+
+        # we'll start with a copy of our defaults
+        retries = self._RETRIES_DEFAULT_PARAMS.copy()
+
+        try:
+            # bool is a subclass of int in Python, so we must check for actual bools first.
+            # if we check_type_int first, bool values will be interpreted as int values.
+            # if we check_type_bool first, then integers will be interpreted as bools.
+            # https://stackoverflow.com/q/37888620/3905079
+            if isinstance(retries_opt, bool):
+                # just let it fall into the next section
+                raise TypeError
+
+            # check for floats first, because check_type_int won't accept them, but check_type_bool will
+            # so if we have a float let's just convert it to int so we don't give users unexpected results
+            # on different floats (otherwise 1.0 would act like True, 0.0 acts like False, 1.1 is an exception)
+            try:
+                retries_opt = int(check_type_float(retries_opt))
+            except TypeError:
+                pass
+
+            # try int
+            # on int, use the defaults but override the number of retries with the value
+            # on zero, disable retries
+            retries_int = check_type_int(retries_opt)
+
+            if retries_int == 0:
+                retries = None
+            else:
+                retries['total'] = retries_int
+
+        except TypeError:
+            try:
+                # try bool
+                # on True, use defaults, on False disable retries
+                retries_bool = check_type_bool(retries_opt)
+
+                if not retries_bool:
+                    retries = None
+
+            except TypeError:
+                try:
+                    # try dict
+                    # on dict, use the value directly (will be used as the kwargs to initialize the Retry instance)
+                    retries = check_type_dict(retries_opt)
+                except TypeError:
+                    raise TypeError("retries option must be interpretable as int, bool, or dict. Got: %r" % retries_opt)
+
+        # if we got here, retries ought to be set with valid options
+        # if retries is None:
+        #     retry_object = Retry(**retries)
+        # else:
+        #     retry_object = None
+
+        # self._options.set_option('retries', retry_object)
+        self._options.set_option('retries', retries)
 
     def _process_option_proxies(self):
         '''check if 'proxies' option is dict or str and set it appropriately'''

@@ -604,7 +604,7 @@ class LookupModule(HashiVaultLookupBase):
             opts = kwargs.copy()
             opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
             self.set_options(direct=opts, var_options=variables)
-            # TODO: remove deprecate() if backported fix is available (see method definition)
+            # TODO: remove process_deprecations() if backported fix is available (see method definition)
             self.process_deprecations()
             self.process_options()
             # passing connection_options and adapter to the HashiVault class to make transition easier
