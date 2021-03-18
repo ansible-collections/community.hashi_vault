@@ -1,1 +1,2 @@
+# we also need requests and urllib3 but those will be brought in by hvac
 hvac ; python_version >= '2.7'
