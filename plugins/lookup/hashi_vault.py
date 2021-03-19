@@ -482,7 +482,10 @@ class HashiVault:
     def auth_userpass(self):
         params = self.get_options('username', 'password', 'mount_point')
         try:
-            self.client.auth.userpass.login(**params)
+            response = self.client.auth.userpass.login(**params)
+            # must manually set the client token with userpass login
+            # see https://github.com/hvac/hvac/issues/644
+            self.client.token = response['auth']['client_token']
         except (NotImplementedError, AttributeError):
             display.warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
             self.client.auth_userpass(**params)
