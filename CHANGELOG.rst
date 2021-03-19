@@ -5,6 +5,19 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.1.3
+======
+
+Release Summary
+---------------
+
+This release fixes a bug with ``userpass`` authentication and ``hvac`` versions 0.9.6 and higher.
+
+Bugfixes
+--------
+
+- hashi_vault - userpass authentication did not work with hvac 0.9.6 or higher (https://github.com/ansible-collections/community.hashi_vault/pull/68).
+
 v1.1.2
 ======
 
@@ -102,3 +115,4 @@ Release Summary
 ---------------
 
 Our first release matches the ``hashi_vault`` lookup functionality provided by ``community.general`` version ``1.3.0``.
+

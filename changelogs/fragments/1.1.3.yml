@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This release fixes a bug with ``userpass`` authentication and ``hvac`` versions 0.9.6 and higher.
