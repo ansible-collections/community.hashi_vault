@@ -265,7 +265,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         hvopts['verify'] = hvopts.pop('ca_cert')
 
         if 'retries' in hvopts:
-            hvopts['session'] = self._get_custom_requests_session(**hvopts.pop('retries'))
+            hvopts['session'] = self._get_custom_requests_session(hvopts.pop('retries'))
 
         return hvopts
 
@@ -275,7 +275,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         self._process_option_proxies()
         self._process_option_retries()
 
-    def _get_custom_requests_session(self, **retry_kwargs):
+    def _get_custom_requests_session(self, retry_kwargs):
         '''returns a requests.Session to pass to hvac (or None)'''
 
         # retries = self._options.get_option('retries')
@@ -288,6 +288,16 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
             # if it's a warning, I'm also not sure how to properly convey that from module_util code
             # that will work for both modules and plugins
             raise NotImplementedError("Retries are unavailable; please install urllib3 (?)")
+
+        # We don't want the Retry class raising its own exceptions because that will prevent
+        # hvac from raising its own on various response codes.
+        # We set this here, rather than in the defaults, because if the caller sets their own
+        # dict for retries, we use directly, but we don't want them to have to remember to always
+        # set raise_on_status=False themselves to get proper error handling.
+        # On the off chance someone does set it, we leave it alone, even though it's probably a mistake.
+        # That will be mentioned in the parameter docs.
+        if 'raise_on_status' not in retry_kwargs:
+            retry_kwargs['raise_on_status'] = False
 
         # retry = Retry(**retries)
         retry = Retry(**retry_kwargs)
