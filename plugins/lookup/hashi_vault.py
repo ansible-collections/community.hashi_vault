@@ -81,6 +81,19 @@ DOCUMENTATION = """
       type: boolean
       default: true
       version_added: 0.2.0
+    allow_failure:
+      description:
+        - Vault will return permission denied if a secret does not exist, making the plugin fail and throw an exception
+        - The plugin will also fail if the returned data is None
+        - Enable this if you want to get an empty output and continue with the execution of the plugin when this happens.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_ALLOW_FAILURE
+      ini:
+        - section: lookup_hashi_vault
+          key: allow_failure
+      type: boolean
+      default: false
+      version_added: 1.1.4
     username:
       description: Authentication user name.
     password:
@@ -292,6 +305,13 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, token_validate=False) }}"
 
+# Disabling plugin failure, for example, on permission denied
+# Use this when you still want to receive a result from the plugin (empty) when Vault returns a permission denied error.
+
+- name: ignore permission denied errors
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, allow_failure=True) }}"
+
 # Use a proxy
 
 - name: use a proxy with login/password
@@ -414,10 +434,18 @@ class HashiVault:
         try:
             data = self.client.read(secret)
         except hvac.exceptions.Forbidden:
-            raise AnsibleError("Forbidden: Permission Denied to secret '%s'." % secret)
+            if self.options.get('allow_failure', False):
+                data = None
+            else:
+                raise AnsibleError("Forbidden: Permission Denied to secret '%s'." % secret)
 
         if data is None:
-            raise AnsibleError("The secret '%s' doesn't seem to exist." % secret)
+            if self.options.get('allow_failure', False):
+                data = {
+                    "data": {}
+                }
+            else:
+                raise AnsibleError("The secret '%s' doesn't seem to exist." % secret)
 
         if return_as == 'raw':
             return [data]
