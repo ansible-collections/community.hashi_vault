@@ -208,12 +208,12 @@ jobs:
           path: ansible_collections/community/crypto
 
       # this will populate files/bin with the selected vault version binary
-      - name: Pre-download Vault
-        if: steps.cache-vault.outputs.cache-hit != 'true'
-        env:
-          ANSIBLE_ROLES_PATH: ../
-        working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
-        run: ansible-playbook "download_vault.yml" -v
+      # - name: Pre-download Vault
+      #   if: steps.cache-vault.outputs.cache-hit != 'true'
+      #   env:
+      #     ANSIBLE_ROLES_PATH: ../
+      #   working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
+      #   run: ansible-playbook "download_vault.yml" -v
 
       # Run the integration tests
       - name: Run integration test
