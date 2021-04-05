@@ -1,4 +1,4 @@
 ---
-- command: 'touch /tmp/abc'
+# - command: 'touch /tmp/abc'
 
-- command: "bash -c 'test -f /tmp/xyz && fail || touch /tmp/xyz'"
+- command: "bash -c 'test -f /tmp/xyz && false || touch /tmp/xyz'"
