@@ -1,7 +1,7 @@
 ---
 # - command: 'touch /tmp/abc'
 
-- command: "bash -c 'test -f /tmp/xyz && false || touch /tmp/xyz'"
+- command: "bash -c 'test -f /tmp/xyz && exit 1 || touch /tmp/xyz'"
 
 - command: "touch /tmp/{{ item }}"
-  with_sequence: count=20
+  with_sequence: count=50
