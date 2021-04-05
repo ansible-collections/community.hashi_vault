@@ -1,0 +1,5 @@
+---
+- command: 'touch /tmp/abc'
+  creates: /tmp/abc
+
+- command: "bash -c 'test -f /tmp/xyz && fail || touch /tmp/xyz'"
