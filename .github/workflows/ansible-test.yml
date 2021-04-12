@@ -175,16 +175,6 @@ jobs:
           path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
           key: ${{ runner.os }}-vault${{ matrix.vault }} # future: include version/arch when configurable
 
-      # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
-      # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
-      # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
-      - name: Prepare for Vault version and caching
-        run: |
-          rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
-          #rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
-          #echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
-          ansible localhost -m template -a "src=tests/integration/integration_config.yml.ci.j2 dest=tests/integration/integration_config.yml" -e vault_version=${{ matrix.vault }}
-
       # - name: Integration config
       #   uses: cuchi/jinja2-action@v1.2.0
       #   with:
@@ -196,6 +186,16 @@ jobs:
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
+      # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
+      # XXX the vars/ dir will be used to write a file overriding role defaults (for Vault version)
+      - name: Prepare for Vault version and caching
+        run: |
+          rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
+          #rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
+          #echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
+          ansible localhost -m template -a "src=${{ collection_path }}/tests/integration/integration_config.yml.ci.j2 dest=${{ collection_path }}/tests/integration/integration_config.yml" -e vault_version=${{ matrix.vault }}
 
       #TODO: remove dependency on community.crypto
       # - name: Find the latest version of community.crypto
