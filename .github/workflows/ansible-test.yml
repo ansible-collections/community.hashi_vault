@@ -183,15 +183,16 @@ jobs:
           rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
           #rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
           #echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
+          ansible localhost -m template -a "src=tests/integration/integration_config.yml.ci.j2 dest=tests/integration/integration_config.yml" -e vault_version=${{ matrix.vault }}
 
-      - name: Integration config
-        uses: cuchi/jinja2-action@v1.2.0
-        with:
-          template: tests/integration/integration_config.yml.ci.j2
-          output_file: tests/integration/integration_config.yml
-          strict: true
-          variables: |
-            vault_version=${{ matrix.vault }}
+      # - name: Integration config
+      #   uses: cuchi/jinja2-action@v1.2.0
+      #   with:
+      #     template: tests/integration/integration_config.yml.ci.j2
+      #     output_file: tests/integration/integration_config.yml
+      #     strict: true
+      #     variables: |
+      #       vault_version=${{ matrix.vault }}
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
