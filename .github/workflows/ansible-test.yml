@@ -181,34 +181,43 @@ jobs:
       - name: Prepare for Vault version and caching
         run: |
           rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
-          rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
-          echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
+          #rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
+          #echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
+
+      - name: Integration config
+        uses: cuchi/jinja2-action@v1.2.0
+        with:
+          template: tests/integration/integration_config.yml.ci.j2
+          output_file: tests/integration/integration_config.yml
+          strict: true
+          variables: |
+            vault_version=${{ matrix.vault }}
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       #TODO: remove dependency on community.crypto
-      - name: Find the latest version of community.crypto
-        run: |
-          # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
+      # - name: Find the latest version of community.crypto
+      #   run: |
+      #     # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
 
-          cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
-          echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
+      #     cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
+      #     echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
 
-      - name: Cache for community.crypto
-        id: cache-cc
-        uses: actions/cache@v2
-        with:
-          path: ansible_collections/community/crypto
-          key: collection-community.crypto-${{ env.CC_LATEST }}
+      # - name: Cache for community.crypto
+      #   id: cache-cc
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ansible_collections/community/crypto
+      #     key: collection-community.crypto-${{ env.CC_LATEST }}
 
-      - name: Install collection dependencies
-        if: steps.cache-cc.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
-        with:
-          repository: ansible-collections/community.crypto
-          ref: refs/tags/${{ env.CC_LATEST }}
-          path: ansible_collections/community/crypto
+      # - name: Install collection dependencies
+      #   if: steps.cache-cc.outputs.cache-hit != 'true'
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: ansible-collections/community.crypto
+      #     ref: refs/tags/${{ env.CC_LATEST }}
+      #     path: ansible_collections/community/crypto
 
       # this will populate files/bin with the selected vault version binary
       - name: Pre-download Vault

@@ -1,0 +1,12 @@
+- name: "Check if vault binary exists"
+  stat:
+    path: '{{ vault_cmd }}'
+    follow: yes
+    get_attributes: no
+    get_checksum: no
+    get_mime: no
+  register: bin_status
+
+- name: "Download vault if not local"
+  when: not bin_status.stat.exists
+  import_tasks: vault_download.yml

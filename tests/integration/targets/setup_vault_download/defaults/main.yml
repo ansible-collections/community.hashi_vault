@@ -1,0 +1,5 @@
+---
+vault_zip: '{{ vault_bin }}/{{ vault_slug }}.zip'
+vault_uri: 'https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_slug }}.zip'
+
+vault_download_force: False

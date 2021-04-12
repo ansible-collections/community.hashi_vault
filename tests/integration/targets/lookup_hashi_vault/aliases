@@ -1,6 +1,7 @@
-shippable/posix/group2
+gha/vault
 destructive
 needs/file/tests/utils/constraints.txt
 skip/aix
 skip/python2.6  # lookups are controller only, and we no longer support Python 2.6 on the controller
 skip/macos  # FIXME seems to be always unstable
+needs/file/tests/integration/targets/lookup_hashi_vault/files/bin/vault_1.6.0_linux_amd64/vault

@@ -1,0 +1,15 @@
+---
+vault_ansible_arch_table:
+  'x86_64': 'amd64' # Linux
+  'amd64': 'amd64' # FreeBSD
+  'i386': '386'
+
+vault_arch: "{{ vault_ansible_arch_table[ansible_architecture] }}"
+
+vault_version: "1.7.0"
+vault_base_path: '{{ role_path | dirname }}/lookup_hashi_vault'
+# vault_base_path: '{{ role_path }}'
+# vault_base_path: '{{ remote_tmp_dir }}'
+vault_bin: '{{ vault_base_path }}/files/bin/{{ vault_slug }}'
+vault_slug: 'vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}'
+vault_cmd: '{{ vault_bin }}/vault'
