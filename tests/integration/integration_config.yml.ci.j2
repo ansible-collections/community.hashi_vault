@@ -1,2 +1,7 @@
 ---
 vault_version: '{{ vault_version }}'
+
+# set this to the same as vault_bin in CI so that the external download/cache process
+# will ensure the vault binary is within the target path, and will therefore be copied
+# into the container and used directly, without needing to be re-downloaded/extracted
+vault_cmd_base_path: '{{ vault_bin }}'

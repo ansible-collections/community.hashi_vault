@@ -18,19 +18,23 @@
     name: unzip
   when: ansible_distribution != "MacOSX"  # unzip already installed (#TODO: get MacOSX tests working again)
 
-- name: "Create bin directory"
+- name: "Create directories"
   file:
-    path: '{{ vault_bin }}'
+    path: '{{ item }}'
     state: directory
+  loop:
+    - '{{ vault_bin }}'
+    - '{{ vault_target }}'
 
 - name: 'Download vault binary'
   get_url:
     url: '{{ vault_uri }}'
     dest: '{{ vault_zip }}'
+    force: '{{ vault_download_force }}'
 
 - name: 'Extract vault binary'
   unarchive:
     src: '{{ vault_zip }}'
-    dest: '{{ vault_bin }}'
+    dest: '{{ vault_target }}'
     remote_src: yes
     creates: '{{ vault_cmd }}'

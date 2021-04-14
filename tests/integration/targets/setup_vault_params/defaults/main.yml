@@ -7,9 +7,11 @@ vault_ansible_arch_table:
 vault_arch: "{{ vault_ansible_arch_table[ansible_architecture] }}"
 
 vault_version: "1.7.0"
-vault_base_path: '{{ role_path | dirname }}/lookup_hashi_vault'
+# vault_base_path: '{{ role_path | dirname }}/lookup_hashi_vault'
 # vault_base_path: '{{ role_path }}'
 # vault_base_path: '{{ remote_tmp_dir }}'
-vault_bin: '{{ vault_base_path }}/files/bin/{{ vault_slug }}'
+vault_bin: '{{ vault_base_path }}/{{ vault_slug }}'
+vault_cmd_base_path: /tmp
+vault_target: '{{ vault_cmd_base_path }}/{{ vault_slug }}'
 vault_slug: 'vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}'
-vault_cmd: '{{ vault_bin }}/vault'
+vault_cmd: '{{ vault_target }}/vault'
