@@ -12,8 +12,10 @@
       # - '{{ vault_zip }}'
   roles:
     - setup_vault_params
-    - setup_vault_download
   tasks:
+    - import_role:
+        name: setup_vault_download
+
     - name: "Template integration config"
       template:
         src: '{{ integration_config_template }}'
