@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  force_handlers: yes
+  gather_facts: yes
+  gather_subset: '!min,!all,distribution'
+  vars:
+    vault_cmd_base_path: '{{ vault_bin }}'
+    integration_config: '{{ playbook_dir | dirname | dirname | dirname }}/integration_config.yml'
+    integration_config_template: '{{ integration_config }}.ci.j2'
+    deletables:
+      - '{{ vault_base_path }}/.gitignore'
+      # - '{{ vault_zip }}'
+  roles:
+    - setup_vault_params
+    - setup_vault_download
+  tasks:
+    - name: "Template integration config"
+      template:
+        src: '{{ integration_config_template }}'
+        dest: '{{ integration_config }}'
+
+    - name: "Delete unwanted files and paths"
+      file:
+        state: absent
+        path: '{{ item }}'
+      loop: '{{ deletables }}'

@@ -150,13 +150,20 @@ jobs:
         run: |
           COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
           LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
-          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-          LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
+
+          LOOKUP_HASHI_VAULT_BIN=${COLLECTION_PATH}/tests/integration/targets/setup_vault_download/files/bin
+          HASHI_VAULT_UTIL_PLAYBOOKS=${COLLECTION_PATH}/tests/integration/targets/setup_utility/playbooks
+          HASHI_VAULT_CI_PREP=${HASHI_VAULT_UTIL_PLAYBOOKS}/vault_ci_prepare.yml
+          #LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+          #LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
           echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
           echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
           echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
           echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
+
+          echo "HASHI_VAULT_UTIL_PLAYBOOKS=${HASHI_VAULT_UTIL_PLAYBOOKS}" >> ${GITHUB_ENV}
+          echo "HASHI_VAULT_CI_PREP=${HASHI_VAULT_CI_PREP}" >> ${GITHUB_ENV}
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -191,11 +198,13 @@ jobs:
       # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
       # XXX the vars/ dir will be used to write a file overriding role defaults (for Vault version)
       - name: Prepare for Vault version and caching
+        working-directory: ${{ env.HASHI_VAULT_UTIL_PLAYBOOKS }}
         run: |
-          rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
+          #rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
           #rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
           #echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
-          ansible localhost -m template -a "src=${COLLECTION_PATH}/tests/integration/integration_config.yml.ci.j2 dest=${COLLECTION_PATH}/tests/integration/integration_config.yml" -e vault_version=${{ matrix.vault }}
+          #ansible localhost -m template -a "src=${COLLECTION_PATH}/tests/integration/integration_config.yml.ci.j2 dest=${COLLECTION_PATH}/tests/integration/integration_config.yml" -e vault_version=${{ matrix.vault }}
+          ansible-playbook vault_ci_prepare.yml -e vault_version=${{ matrix.vault }}
 
       #TODO: remove dependency on community.crypto
       # - name: Find the latest version of community.crypto
@@ -221,12 +230,12 @@ jobs:
       #     path: ansible_collections/community/crypto
 
       # this will populate files/bin with the selected vault version binary
-      - name: Pre-download Vault
-        if: steps.cache-vault.outputs.cache-hit != 'true'
-        env:
-          ANSIBLE_ROLES_PATH: ../
-        working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
-        run: ansible-playbook "download_vault.yml" -v
+      # - name: Pre-download Vault
+      #   if: steps.cache-vault.outputs.cache-hit != 'true'
+      #   env:
+      #     ANSIBLE_ROLES_PATH: ../
+      #   working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
+      #   run: ansible-playbook "download_vault.yml" -v
 
       # Run the integration tests
       - name: Run integration test
