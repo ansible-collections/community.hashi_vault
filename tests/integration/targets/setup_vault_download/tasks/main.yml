@@ -17,3 +17,4 @@
     vault_cmd: '{{ vault_cmd }}'
     vault_target: '{{ vault_target }}'
     vault_zip: '{{ vault_zip }}'
+    vault_cmd_base_path: '{{ vault_cmd_base_path }}'
