@@ -204,7 +204,7 @@ jobs:
           #rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
           #echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
           #ansible localhost -m template -a "src=${COLLECTION_PATH}/tests/integration/integration_config.yml.ci.j2 dest=${COLLECTION_PATH}/tests/integration/integration_config.yml" -e vault_version=${{ matrix.vault }}
-          ansible-playbook vault_ci_prepare.yml -v -e vault_version=${{ matrix.vault }}
+          ansible-playbook vault_ci_prepare.yml -vvv -e vault_version=${{ matrix.vault }}
 
       #TODO: remove dependency on community.crypto
       # - name: Find the latest version of community.crypto

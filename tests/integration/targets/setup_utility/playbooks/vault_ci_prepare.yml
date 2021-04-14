@@ -12,14 +12,22 @@
       # - '{{ vault_zip }}'
   roles:
     - setup_vault_params
+    - setup_vault_download
   tasks:
-    - import_role:
-        name: setup_vault_download
+    - block:
+        - name: "Template integration config"
+          template:
+            src: '{{ integration_config_template }}'
+            dest: '{{ integration_config }}'
 
-    - name: "Template integration config"
-      template:
-        src: '{{ integration_config_template }}'
-        dest: '{{ integration_config }}'
+      rescue:
+        - set_fact:
+            vault_cmd_base_path: '{{ vault_cmd_base_path }}'
+
+        - name: "Template integration config (again)"
+          template:
+            src: '{{ integration_config_template }}'
+            dest: '{{ integration_config }}'
 
     - name: "Delete unwanted files and paths"
       file:
