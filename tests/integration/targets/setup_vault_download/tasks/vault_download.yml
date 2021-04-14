@@ -16,7 +16,9 @@
     }}"
   package:
     name: unzip
-  when: ansible_distribution != "MacOSX"  # unzip already installed (#TODO: get MacOSX tests working again)
+  when:
+    - vault_install_unzip | bool
+    - ansible_distribution != "MacOSX"  # unzip already installed (#TODO: get MacOSX tests working again)
 
 - name: "Create directories"
   file:

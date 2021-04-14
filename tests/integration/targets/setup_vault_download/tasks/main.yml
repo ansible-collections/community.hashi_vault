@@ -9,4 +9,11 @@
 
 - name: "Download vault if not local"
   when: not bin_status.stat.exists
-  import_tasks: vault_download.yml
+  include_tasks: vault_download.yml
+
+- name: 'Export variables'
+  set_fact:
+    vault_bin: '{{ vault_bin }}'
+    vault_cmd: '{{ vault_cmd }}'
+    vault_target: '{{ vault_target }}'
+    vault_zip: '{{ vault_zip }}'

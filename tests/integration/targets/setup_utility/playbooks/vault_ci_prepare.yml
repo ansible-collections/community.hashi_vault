@@ -4,27 +4,18 @@
   gather_facts: yes
   gather_subset: '!min,!all,distribution'
   vars:
-    vault_cmd_base_path: '{{ vault_bin }}'
+    vault_install_unzip: False
+    vault_cmd_base_path: '{{ vault_base_path }}'
     integration_config: '{{ playbook_dir | dirname | dirname | dirname }}/integration_config.yml'
     integration_config_template: '{{ integration_config }}.ci.j2'
     deletables:
       - '{{ vault_base_path }}/.gitignore'
       # - '{{ vault_zip }}'
   roles:
-    - setup_vault_params
     - setup_vault_download
   tasks:
     - block:
         - name: "Template integration config"
-          template:
-            src: '{{ integration_config_template }}'
-            dest: '{{ integration_config }}'
-
-      rescue:
-        - set_fact:
-            vault_cmd_base_path: '{{ vault_cmd_base_path }}'
-
-        - name: "Template integration config (again)"
           template:
             src: '{{ integration_config_template }}'
             dest: '{{ integration_config }}'
