@@ -7,8 +7,6 @@ __metaclass__ = type
 
 import pytest
 
-from ansible.plugins import AnsiblePlugin
-
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
 
 
@@ -25,10 +23,6 @@ SAMPLE_KEYS = sorted(list(SAMPLE_DICT.keys()))
 MISSING_KEYS = ['no', 'nein', 'iie']
 
 
-class FakePlugin(AnsiblePlugin):
-    _load_name = 'community.hashi_vault.fake'
-
-
 class SentinelMarker():
     pass
 
@@ -39,13 +33,6 @@ MARKER = SentinelMarker()
 @pytest.fixture()
 def sample_dict():
     return SAMPLE_DICT.copy()
-
-
-@pytest.fixture
-def ansible_plugin(sample_dict):
-    plugin = FakePlugin()
-    plugin._options = sample_dict
-    return plugin
 
 
 @pytest.fixture
@@ -64,23 +51,6 @@ def adapter_from_dict_defaults(sample_dict):
         return HashiVaultOptionAdapter(getter=sample_dict.__getitem__, setter=sample_dict.__setitem__)
 
     return _create_adapter_from_dict_defaults
-
-
-@pytest.fixture
-def adapter_from_ansible_plugin(ansible_plugin):
-    def _create_adapter_from_ansible_plugin():
-        return HashiVaultOptionAdapter.from_ansible_plugin(ansible_plugin)
-
-    return _create_adapter_from_ansible_plugin
-
-
-@pytest.fixture(params=['dict', 'dict_defaults', 'ansible_plugin'])
-def adapter(request, adapter_from_dict, adapter_from_dict_defaults, adapter_from_ansible_plugin):
-    return {
-        'dict': adapter_from_dict,
-        'dict_defaults': adapter_from_dict_defaults,
-        'ansible_plugin': adapter_from_ansible_plugin,
-    }[request.param]()
 
 
 @pytest.fixture
