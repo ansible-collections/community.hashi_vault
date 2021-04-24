@@ -143,17 +143,20 @@ jobs:
           - 1.4.7
         container:
           - default
+          - quay.io/ansible/default-test-container:3.2.2
         exclude:
           - ansible: stable-2.9
             python: 3.9
-          - ansible: devel
-            container: default
-        include:
           # temporarily(?) pinning version to workaround a python3-apt issue after the default test container changed to py3.9
           # https://github.com/ansible/default-test-container/issues/59
           - ansible: devel
+            container: default
+          - ansible: stable-2.9
             container: quay.io/ansible/default-test-container:3.2.2
-
+          - ansible: stable-2.10
+            container: quay.io/ansible/default-test-container:3.2.2
+          - ansible: stable-2.11
+            container: quay.io/ansible/default-test-container:3.2.2
 
     steps:
       - name: Initialize env vars
