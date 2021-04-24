@@ -40,6 +40,9 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Integration test
+tests/integration/integration_config.yml
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
