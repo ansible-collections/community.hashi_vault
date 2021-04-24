@@ -121,7 +121,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} on ${{ matrix.platform }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
@@ -141,6 +141,8 @@ jobs:
           - 1.6.0
           - 1.5.5
           - 1.4.7
+        platform:
+          - ubuntu1804
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -220,7 +222,7 @@ jobs:
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker ${{ matrix.platform }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
