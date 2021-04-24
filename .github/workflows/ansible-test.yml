@@ -141,9 +141,19 @@ jobs:
           - 1.6.0
           - 1.5.5
           - 1.4.7
+        container:
+          - default
         exclude:
           - ansible: stable-2.9
             python: 3.9
+          - ansible: devel
+            container: default
+        include:
+          # temporarily(?) pinning version to workaround a python3-apt issue after the default test container changed to py3.9
+          # https://github.com/ansible/default-test-container/issues/59
+          - ansible: devel
+            container: quay.io/ansible/default-test-container:3.2.2
+
 
     steps:
       - name: Initialize env vars
@@ -222,9 +232,7 @@ jobs:
       - name: Run integration test
         env:
           # set to any container alias usable by ansible-test --docker
-          # temporarily(?) pinning version to workaround a python3-apt issue after the default test container changed to py3.9
-          # https://github.com/ansible/default-test-container/issues/59
-          ANSIBLE_TEST_CONTAINER: quay.io/ansible/default-test-container:3.2.2
+          ANSIBLE_TEST_CONTAINER: ${{ matrix.container }}
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker $ANSIBLE_TEST_CONTAINER --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
