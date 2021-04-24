@@ -6,11 +6,9 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 # this file must define the "adapter" fixture at a minimum,
-# and anything else that it needs or depends on that isn't already defined in
-# in the test files themselves.
+# and anything else that it needs or depends on that isn't already defined in in the test files themselves.
 
-# Keep in mind that this one is for module_utils and so it cannot depend on
-# or import any controller-sode code.
+# Keep in mind that this one is for module_utils and so it cannot depend on or import any controller-side code.
 
 import pytest
 
