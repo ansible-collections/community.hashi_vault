@@ -1,5 +1,9 @@
+/tests/integration/integration_config.yml
 /tests/output/
 /changelogs/.plugin-cache.yaml
+
+# editors
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

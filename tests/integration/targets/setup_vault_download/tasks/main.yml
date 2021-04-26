@@ -1,0 +1,21 @@
+- name: "Check if vault binary exists"
+  stat:
+    path: '{{ vault_cmd }}'
+    follow: yes
+    get_attributes: no
+    get_checksum: no
+    get_mime: no
+  register: bin_status
+
+- name: "Download vault if not local"
+  when: not bin_status.stat.exists
+  include_tasks: vault_download.yml
+
+- name: 'Export variables'
+  set_fact:
+    vault_bin: '{{ vault_bin }}'
+    vault_cmd: '{{ vault_cmd }}'
+    vault_target: '{{ vault_target }}'
+    vault_zip: '{{ vault_zip }}'
+    vault_cmd_base_path: '{{ vault_cmd_base_path }}'
+    vault_base_path: '{{ vault_base_path }}'

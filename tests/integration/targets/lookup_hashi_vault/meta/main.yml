@@ -1,0 +1,5 @@
+---
+dependencies:
+  - setup_remote_tmp_dir
+  - setup_vault_params
+  - setup_vault_download
