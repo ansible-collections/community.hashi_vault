@@ -6,14 +6,49 @@
 
 ## Tested with Ansible
 
+* 2.9
+* 2.10
+* 2.11
+* devel (latest development commit)
+
+See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
 <!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
 
+## Tested with Vault
+
+We currently test against the latest two minor versions of Vault major version `1`. The patch version within each minor will be updated periodically.
+
+We do not test against any versions of Vault with major version `0`.
+
+If/when a new major version of Vault is released, we'll revisit which versions to test against.
+
+The decision of which version(s) of Vault to test against is still somewhat in flux, as we try to balance wide testing with CI execution time and resources.
+
+See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
+
+## Python Requirements
+
+**[Support for Python 2 will be dropped in `v2.0.0` of the collection.](https://github.com/ansible-collections/community.hashi_vault/issues/81)**
+
+Currently we test against Python versions:
+* 2.7
+* 3.5
+* 3.6
+* 3.7
+* 3.8
+* 3.9
+* 3.10 (support not yet guaranteed)
+
+
 ## External requirements
+
+**NOTE:** `hvac` versions `0.10.12` and `0.10.13` inadvertently did not work with Python 2.
 
   - `hvac` (python library)
     - `hvac` 0.7.0+ (for namespace support)
     - `hvac` 0.9.6+ (to avoid all deprecation warnings)
     - `hvac` 0.10.5+ (for JWT auth support)
+    - `hvac` 0.10.6+ (to avoid deprecation warning for AppRole)
   - `botocore` (only if inferring aws params from boto)
   - `boto3` (only if using a boto profile)
 
