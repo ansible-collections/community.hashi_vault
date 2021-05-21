@@ -138,12 +138,15 @@ jobs:
           - 3.8
           - 3.9
         vault:
-          - 1.6.0
-          - 1.5.5
-          - 1.4.7
+          - 1.7.2
+          - 1.6.5
         exclude:
           - ansible: stable-2.9
             python: 3.9
+        include:
+          - ansible: devel
+            vault: 1.7.2
+            python: '3.10'
 
     steps:
       - name: Initialize env vars
