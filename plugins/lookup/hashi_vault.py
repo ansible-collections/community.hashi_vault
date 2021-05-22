@@ -512,6 +512,7 @@ class HashiVault:
     #    0.9.6 -- userpass
     #    0.10.5 -- jwt (new)
     #    0.10.6 -- approle
+    #    1.2.0 -- agent
     #
     def auth_token(self):
         if self.options['auth_method'] == 'token':
