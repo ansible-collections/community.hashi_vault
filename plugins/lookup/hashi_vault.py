@@ -315,7 +315,7 @@ EXAMPLES = """
 
 - name: authenticate with vault agent
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method=agent, url='http://127.0.0.1:8100') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='agent', url='http://127.0.0.1:8100') }}"
 
 # Use a proxy
 
@@ -512,7 +512,6 @@ class HashiVault:
     #    0.9.6 -- userpass
     #    0.10.5 -- jwt (new)
     #    0.10.6 -- approle
-    #    1.2.0 -- agent
     #
     def auth_token(self):
         if self.options['auth_method'] == 'token':
