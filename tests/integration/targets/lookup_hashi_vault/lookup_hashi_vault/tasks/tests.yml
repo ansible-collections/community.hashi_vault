@@ -8,78 +8,42 @@
   vars:
     conn_params: 'url=http://localhost:8200 proxies=http://127.0.0.1:8001 '
 
-- name: 'test {{ auth_type }} auth without SSL (environment variable)'
+- name: 'test {{ auth_type }} auth without SSL (ansible variable)'
   include_tasks: '{{ auth_type }}_test.yml'
   args:
     apply:
       vars:
         conn_params: ''
-      environment:
-        VAULT_ADDR: 'http://localhost:8200'
+        ansible_hashi_vault_url: 'http://localhost:8200'
 
-- when: cryptography_version.stdout is version('1.6', '>=')
-  block:
+- block:
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
         conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True '
 
-    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with dict proxy)'
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with string proxy)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
         conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True proxies=https=http://127.0.0.1:8001 '
 
-    - name: 'test {{ auth_type }} auth with certs (validation enabled, environment variables)'
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with dict proxy via ansible vars)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True '
+        ansible_hashi_vault_proxies:
+          http: 'http://127.0.0.1:8001'
+          https: 'http://127.0.0.1:8001'
+
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, ansible variables)'
       include_tasks: '{{ auth_type }}_test.yml'
       args:
         apply:
           vars:
-            conn_params: ''
-          environment:
-            VAULT_ADDR: 'https://localhost:8201'
-            VAULT_CACERT: '{{ local_temp_dir }}/cert.pem'
+            conn_params: 'ca_cert={{ local_temp_dir }}/cert.pem '
+            ansible_hashi_vault_addr: 'https://localhost:8201'
 
     - name: 'test {{ auth_type }} auth with certs (validation disabled, lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
         conn_params: 'url=https://localhost:8201 validate_certs=False '
-
-    - name: 'test {{ auth_type }} auth with certs (validation using env VAR, lookup parameters)'
-      include_tasks: '{{ auth_type }}_test.yml'
-      args:
-        apply:
-          vars:
-            conn_params: ''
-          environment:
-            VAULT_ADDR: 'https://localhost:8201'
-            VAULT_SKIP_VERIFY: 1
-
-    - name: 'test {{ auth_type }} auth with certs (validation using env VAR (True), lookup parameters)'
-      include_tasks: '{{ auth_type }}_test.yml'
-      args:
-        apply:
-          vars:
-            conn_params: ''
-          environment:
-            VAULT_ADDR: 'https://localhost:8201'
-            VAULT_SKIP_VERIFY: True
-
-    - name: 'test {{ auth_type }} auth with certs (validation using env VAR (y), lookup parameters)'
-      include_tasks: '{{ auth_type }}_test.yml'
-      args:
-        apply:
-          vars:
-            conn_params: ''
-          environment:
-            VAULT_ADDR: 'https://localhost:8201'
-            VAULT_SKIP_VERIFY: y
-
-    - name: 'test {{ auth_type }} auth with certs (precedence of validate_certs over env VAR, lookup parameters)'
-      include_tasks: '{{ auth_type }}_test.yml'
-      args:
-        apply:
-          vars:
-            conn_params: 'validate_certs=False '
-          environment:
-            VAULT_ADDR: 'https://localhost:8201'
-            VAULT_SKIP_VERIFY: False

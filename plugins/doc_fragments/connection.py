@@ -22,6 +22,11 @@ class ModuleDocFragment(object):
         ini:
           - section: lookup_hashi_vault
             key: url
+        vars:
+          - name: ansible_hashi_vault_url
+            version_added: '1.2.0'
+          - name: ansible_hashi_vault_addr
+            version_added: '1.2.0'
       proxies:
         description:
           - URL(s) to the proxies used to access the Vault service.
@@ -36,6 +41,9 @@ class ModuleDocFragment(object):
         ini:
           - section: lookup_hashi_vault
             key: proxies
+        vars:
+          - name: ansible_hashi_vault_proxies
+            version_added: '1.2.0'
         type: raw
         version_added: '1.1.0'
       ca_cert:
@@ -60,4 +68,7 @@ class ModuleDocFragment(object):
           - section: lookup_hashi_vault
             key: namespace
             version_added: '0.2.0'
+        vars:
+          - name: ansible_hashi_vault_namespace
+            version_added: '1.2.0'
     '''
