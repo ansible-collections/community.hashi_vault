@@ -1,7 +1,8 @@
 # README FIRST
 # 1. If you don't have unit tests remove that section
 # 2. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
-# If you need help please ask in #ansible-devel on Freenode IRC
+# If you need help please ask in the #ansible-community channel on Libera.Chat IRC (https://libera.chat/)
+# Refer to https://libera.chat/guides/registration to learn how to register
 
 name: CI
 on:
