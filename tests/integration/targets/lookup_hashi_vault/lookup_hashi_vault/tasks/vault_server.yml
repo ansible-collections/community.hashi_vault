@@ -40,6 +40,8 @@
     - environment:
         # used by vault command
         VAULT_DEV_ROOT_TOKEN_ID: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
+      vars:
+        vault_dev_root_token_id: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
       block:
         - name: 'Create configuration file'
           template:
@@ -49,19 +51,37 @@
         - name: 'Start vault service'
           environment:
             VAULT_ADDR: 'http://localhost:8200'
+          vars:
+            vault_addr: 'http://localhost:8200'
           block:
             - name: 'Start vault server (dev mode enabled)'
               shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl </dev/null >/dev/null 2>&1 &'
               notify: test_managed_vault_cleanup
 
             - name: 'Create generic secrets engine'
-              command: '{{ vault_cmd }} secrets enable -path=gen generic'
+              vault_ci_enable_engine:
+                url: "{{ vault_addr }}"
+                token: "{{ vault_dev_root_token_id }}"
+                backend_type: generic
+                path: gen
 
             - name: 'Create KV v1 secrets engine'
-              command: '{{ vault_cmd }} secrets enable -path=kv1 -version=1 kv'
+              vault_ci_enable_engine:
+                url: "{{ vault_addr }}"
+                token: "{{ vault_dev_root_token_id }}"
+                backend_type: kv
+                path: kv1
+                options:
+                  version: 1
 
             - name: 'Create KV v2 secrets engine'
-              command: '{{ vault_cmd }} secrets enable -path=kv2 -version=2 kv'
+              vault_ci_enable_engine:
+                url: "{{ vault_addr }}"
+                token: "{{ vault_dev_root_token_id }}"
+                backend_type: kv
+                path: kv2
+                options:
+                  version: 2
 
             - name: 'Create a test policy'
               command:
