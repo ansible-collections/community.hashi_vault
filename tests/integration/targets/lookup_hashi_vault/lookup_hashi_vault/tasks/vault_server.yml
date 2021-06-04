@@ -84,14 +84,18 @@
                   version: 2
 
             - name: 'Create a test policy'
-              command:
-                cmd: '{{ vault_cmd }} policy write test-policy -'
-                stdin: '{{ vault_test_policy }}'
+              vault_ci_policy_put:
+                url: "{{ vault_addr }}"
+                token: "{{ vault_dev_root_token_id }}"
+                name: test-policy
+                policy: "{{ vault_test_policy }}"
 
             - name: 'Create an alternate policy'
-              command:
-                cmd: '{{ vault_cmd }} policy write alt-policy -'
-                stdin: '{{ vault_alt_policy }}'
+              vault_ci_policy_put:
+                url: "{{ vault_addr }}"
+                token: "{{ vault_dev_root_token_id }}"
+                name: alt-policy
+                policy: "{{ vault_alt_policy }}"
 
             - name: 'Create generic secrets'
               loop: [1, 2, 3]
