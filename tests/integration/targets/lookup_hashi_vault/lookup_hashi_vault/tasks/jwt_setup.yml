@@ -3,7 +3,11 @@
     is_default_path: "{{ this_path == default_path }}"
   block:
     - name: 'Enable the JWT auth method'
-      command: '{{ vault_cmd }} auth enable {{ "" if is_default_path else "-path " ~ this_path }} jwt'
+      vault_ci_enable_auth:
+        url: "{{ vault_addr }}"
+        token: "{{ vault_dev_root_token_id }}"
+        method_type: jwt
+        path: '{{ omit if is_default_path else this_path }}'
 
     - name: 'Configure the JWT auth method'
       command: '{{ vault_cmd }} write auth/{{ this_path }}/config jwt_validation_pubkeys={{ jwt_public_key | quote }}'
