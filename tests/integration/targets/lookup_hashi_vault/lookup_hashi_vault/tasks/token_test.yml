@@ -1,16 +1,28 @@
 - name: "Test token with no default policy (missing lookup-self)"
   vars:
     user_token: '{{ user_token_no_default_policy_cmd.stdout }}'
-    lookup_terms: "{{ conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token }}"
+    lookup_terms: "{{ conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1' }}"
+    ansible_hashi_vault_auth_method: token
   block:
+    # task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+    # see: https://github.com/ansible/ansible/issues/73268
+    - set_fact:
+        ansible_hashi_vault_token: '{{ user_token }}'
+
     - name: "Fetch a secret with no default policy token (failure expected)"
       debug:
         msg: "{{ lookup('community.hashi_vault.hashi_vault', lookup_terms) }}"
+      register: test_no_policy_failure
       ignore_errors: yes
 
+    - assert:
+        that: test_no_policy_failure is failed and test_no_policy_failure.msg is search('Invalid Hashicorp Vault Token')
+
     - name: "Fetch a secret with no default policy token - with no validation"
+      vars:
+        ansible_hashi_vault_token_validate: False
       debug:
-        msg: "{{ lookup('community.hashi_vault.hashi_vault', lookup_terms ~ ' token_validate=false') }}"
+        msg: "{{ lookup('community.hashi_vault.hashi_vault', lookup_terms) }}"
 
 - name: "Normal token tests"
   vars:
@@ -55,19 +67,19 @@
     - name: "Check multiple secrets as dict"
       fail:
         msg: 'Return value was not dict or items do not match.'
-      when: (kv2_secrets_as_dict | type_debug != 'dict') or (kv2_secrets_as_dict['value{{ item }}'] != 'foo{{ item }}')
+      when: (kv2_secrets_as_dict | type_debug != 'dict') or (kv2_secrets_as_dict['value' ~ item] != ('foo' ~ item))
       loop: [1, 2, 3]
 
     - name: "Check multiple secrets as values"
       fail:
         msg: 'Return value was not list or items do not match.'
-      when: (kv2_secrets_as_values | type_debug != 'list') or ('foo{{ item }}' not in kv2_secrets_as_values)
+      when: (kv2_secrets_as_values | type_debug != 'list') or (('foo' ~ item) not in kv2_secrets_as_values)
       loop: [1, 2, 3]
 
     - name: "Check multiple secrets as dict"
       fail:
         msg: 'Return value was not dict or items do not match.'
-      when: (kv2_secrets_as_dict | type_debug != 'dict') or (kv2_secrets_as_dict['value{{ item }}'] != 'foo{{ item }}')
+      when: (kv2_secrets_as_dict | type_debug != 'dict') or (kv2_secrets_as_dict['value' ~ item] != ('foo' ~ item))
       loop: [1, 2, 3]
 
     - name: 'Failure expected when erroneous credentials are used'
@@ -96,9 +108,10 @@
 
     - name: 'Failure expected when wrong proxy is used'
       vars:
-        secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', (conn_params|regex_replace('proxies=\\S*')) ~ 'proxies=' ~ (conn_params is search('url=https://') | ternary('https', 'http')) ~ '=http://127.0.0.1:4567 secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
+        lookerup: "{{ (conn_params|regex_replace('proxies=\\S*')) ~ 'proxies=http://127.0.0.1:4567 secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token }}"
+        secret_wrong_proxy: "{{ lookup('community.hashi_vault.hashi_vault', lookerup) }}"
       debug:
-        msg: 'Failure is expected ({{secret_wrong_proxy}})'
+        msg: 'Failure is expected ({{secret_wrong_proxy}} -- {{ lookerup }})'
       register: test_wrong_proxy
       ignore_errors: true
 

@@ -34,12 +34,15 @@ DOCUMENTATION = """
       required: True
     token:
       description:
-        - Vault token. Token may be specified explicitly, through the listed env var, and also through the C(VAULT_TOKEN) env var.
+        - Vault token. Token may be specified explicitly, through the listed [env] vars, and also through the C(VAULT_TOKEN) env var.
         - If no token is supplied, explicitly or through env, then the plugin will check for a token file, as determined by I(token_path) and I(token_file).
-        - The order of token loading (first found wins) is C(token param -> ANSIBLE_HASHI_VAULT_TOKEN -> VAULT_TOKEN -> token file).
+        - The order of token loading (first found wins) is C(token param -> ansible var -> ANSIBLE_HASHI_VAULT_TOKEN -> VAULT_TOKEN -> token file).
       env:
         - name: ANSIBLE_HASHI_VAULT_TOKEN
           version_added: '0.2.0'
+      vars:
+        - name: ansible_hashi_vault_token
+          version_added: '1.2.0'
     token_path:
       description: If no token is specified, will try to read the I(token_file) from this path.
       env:
@@ -78,6 +81,9 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: token_validate
+      vars:
+        - name: ansible_hashi_vault_token_validate
+          version_added: '1.2.0'
       type: boolean
       default: true
       version_added: 0.2.0
@@ -99,6 +105,9 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: role_id
+      vars:
+        - name: ansible_hashi_vault_role_id
+          version_added: '1.2.0'
     secret_id:
       description: Secret ID to be used for Vault AppRole authentication.
       env:
@@ -110,6 +119,9 @@ DOCUMENTATION = """
             alternatives: ANSIBLE_HASHI_VAULT_SECRET_ID
         - name: ANSIBLE_HASHI_VAULT_SECRET_ID
           version_added: '0.2.0'
+      vars:
+        - name: ansible_hashi_vault_secret_id
+          version_added: '1.2.0'
     auth_method:
       description:
         - Authentication method to be used.
@@ -125,6 +137,9 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: auth_method
+      vars:
+        - name: ansible_hashi_vault_auth_method
+          version_added: '1.2.0'
       choices:
         - token
         - userpass
@@ -314,6 +329,14 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '...', proxies=prox }}"
 
+- name: use proxies with a dict (as direct ansible var)
+  vars:
+    ansible_hashi_vault_proxies:
+      http: http://myproxy1
+      https: https://myproxy2
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', '...' }}"
+
 - name: use proxies with a dict (in the term string, Ansible key=value syntax)
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies=http=http://myproxy1,https=http://myproxy2') }}"
@@ -321,6 +344,14 @@ EXAMPLES = """
 - name: use proxies with a dict (in the term string, JSON syntax)
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies={\\"http\\":\\"http://myproxy1\\",\\"https\\":\\"http://myproxy2\\"}') }}"
+
+- name: use ansible vars to supply some options
+  vars:
+    ansible_hashi_vault_url: 'https://myvault:8282'
+    ansible_hashi_vault_auth_method: token
+  set_fact:
+    secret1: "{{ lookup('secret/data/secret1') }}"
+    secret2: "{{ lookup('secret/data/secret2') }}"
 """
 
 RETURN = """
@@ -542,7 +573,7 @@ class LookupModule(HashiVaultLookupBase):
         for term in terms:
             opts = kwargs.copy()
             opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
-            self.set_options(direct=opts)
+            self.set_options(direct=opts, var_options=variables)
             # TODO: remove deprecate() if backported fix is available (see method definition)
             self.process_deprecations()
             self.process_options()
