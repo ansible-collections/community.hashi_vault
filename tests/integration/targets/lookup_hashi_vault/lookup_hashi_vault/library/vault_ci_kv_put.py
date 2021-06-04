@@ -10,7 +10,6 @@ import hvac
 
 
 def main():
-    # corresponds to https://hvac.readthedocs.io/en/stable/usage/system_backend/mount.html#enable-secrets-engine
     module = AnsibleModule(
         argument_spec=dict(
             url=dict(type='str', required=True),
