@@ -1,7 +1,14 @@
 - name: 'Create a test credentials (token)'
-  command: '{{ vault_cmd }} token create -policy test-policy -field token'
+  vault_ci_token_create:
+    url: "{{ vault_addr }}"
+    token: "{{ vault_dev_root_token_id }}"
+    policies: test-policy
   register: user_token_cmd
 
 - name: 'Create a test credentials (token)'
-  command: '{{ vault_cmd }} token create -policy test-policy -field token -no-default-policy'
+  vault_ci_token_create:
+    url: "{{ vault_addr }}"
+    token: "{{ vault_dev_root_token_id }}"
+    policies: test-policy
+    no_default_policy: True
   register: user_token_no_default_policy_cmd
