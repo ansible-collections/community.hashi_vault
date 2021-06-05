@@ -25,7 +25,7 @@ def main():
 
     client.sys.create_or_update_policy(
         name=p['name'],
-        policy=p['policy']
+        policy=p['policy'],
     )
 
     module.exit_json(changed=True)

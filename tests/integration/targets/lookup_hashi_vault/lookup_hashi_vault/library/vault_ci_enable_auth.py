@@ -32,7 +32,7 @@ def main():
             method_type=p['method_type'],
             path=p['path'],
             config=p['config'],
-            kwargs=p['kwargs']
+            kwargs=p['kwargs'],
         )
 
     except hvac.exceptions.InvalidRequest as e:
@@ -54,7 +54,7 @@ def main():
         client.sys.tune_auth_method(
             path=path,
             config=p['config'],
-            kwargs=p['kwargs']
+            kwargs=p['kwargs'],
         )
 
     module.exit_json(changed=True)

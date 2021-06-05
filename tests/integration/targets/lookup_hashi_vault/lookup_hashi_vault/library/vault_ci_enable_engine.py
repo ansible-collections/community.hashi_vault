@@ -33,7 +33,7 @@ def main():
             path=p['path'],
             config=p['config'],
             options=p['options'],
-            kwargs=p['kwargs']
+            kwargs=p['kwargs'],
         )
 
     except hvac.exceptions.InvalidRequest as e:
@@ -51,7 +51,7 @@ def main():
             path=p['path'],
             config=p['config'],
             options=p['options'],
-            kwargs=p['kwargs']
+            kwargs=p['kwargs'],
         )
 
     module.exit_json(changed=True)
