@@ -1,36 +1,47 @@
-- name: 'test {{ auth_type }} auth without SSL (lookup parameters)'
-  include_tasks: '{{ auth_type }}_test.yml'
+- name: HTTP connection
   vars:
-    conn_params: 'url=http://localhost:8200 '
+    conn_params: ''
+  block:
+    - name: Set the HTTP connection address
+      set_fact:
+        ansible_hashi_vault_url: '{{ vault_test_server_http }}'
 
-- name: 'test {{ auth_type }} auth without SSL (lookup parameters, with string proxy)'
-  include_tasks: '{{ auth_type }}_test.yml'
-  vars:
-    conn_params: 'url=http://localhost:8200 proxies=http://127.0.0.1:8001 '
+    - name: 'test {{ auth_type }} auth without SSL (lookup parameters)'
+      include_tasks: '{{ auth_type }}_test.yml'
 
-- name: 'test {{ auth_type }} auth without SSL (ansible variable)'
-  include_tasks: '{{ auth_type }}_test.yml'
-  args:
-    apply:
+    - name: 'test {{ auth_type }} auth without SSL (lookup parameters, with string proxy)'
+      include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: ''
-        ansible_hashi_vault_url: 'http://localhost:8200'
+        conn_params: 'proxies=http://127.0.0.1:8001 '
 
-- block:
+    - name: 'test {{ auth_type }} auth without SSL (ansible variable)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      args:
+        apply:
+          vars:
+            conn_params: ''
+
+- name: HTTPS connection
+  when: vault_run_https_tests | bool
+  block:
+    - name: Set the HTTPS connection address
+      set_fact:
+        ansible_hashi_vault_url: '{{ vault_test_server_https }}'
+
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True '
+        conn_params: 'ca_cert={{ vault_cert_file }} validate_certs=True '
 
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with string proxy)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True proxies=https=http://127.0.0.1:8001 '
+        conn_params: 'ca_cert={{ vault_cert_file }} validate_certs=True proxies=https=http://127.0.0.1:8001 '
 
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with dict proxy via ansible vars)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'url=https://localhost:8201 ca_cert={{ local_temp_dir }}/cert.pem validate_certs=True '
+        conn_params: 'url={{ vault_test_server_https }} ca_cert={{ vault_cert_file }} validate_certs=True '
         ansible_hashi_vault_proxies:
           http: 'http://127.0.0.1:8001'
           https: 'http://127.0.0.1:8001'
@@ -40,10 +51,9 @@
       args:
         apply:
           vars:
-            conn_params: 'ca_cert={{ local_temp_dir }}/cert.pem '
-            ansible_hashi_vault_addr: 'https://localhost:8201'
+            conn_params: 'ca_cert={{ vault_cert_file }} '
 
     - name: 'test {{ auth_type }} auth with certs (validation disabled, lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'url=https://localhost:8201 validate_certs=False '
+        conn_params: 'validate_certs=False '

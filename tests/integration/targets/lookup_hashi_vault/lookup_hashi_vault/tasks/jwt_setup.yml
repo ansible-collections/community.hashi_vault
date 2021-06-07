@@ -17,8 +17,10 @@
         token: "{{ vault_dev_root_token_id }}"
         path: 'auth/{{ this_path }}/config'
         data:
-          jwt_validation_pubkeys: '{{ jwt_public_key }}'
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
           policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          jwt_validation_pubkeys: '{{ jwt_public_key }}'
 
     - name: 'Create a named role'
       vault_ci_write:
@@ -26,7 +28,9 @@
         token: "{{ vault_dev_root_token_id }}"
         path: 'auth/{{ this_path }}/role/test-role'
         data:
-          role_type: jwt
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
           policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          role_type: jwt
           user_claim: sub
           bound_audiences: test

@@ -26,7 +26,10 @@
         token: "{{ vault_dev_root_token_id }}"
         path: 'auth/{{ this_path }}/role/test-role'
         data:
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
           policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          secret_id_ttl: 60m
 
     - name: 'Fetch the RoleID of the AppRole'
       vault_ci_read:

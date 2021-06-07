@@ -1,10 +1,10 @@
 # {{ ansible_managed }}
 pid_file = "{{ local_temp_dir }}/vault.pid"
-{% if cryptography_version.stdout is version('1.6', '>=') %}
+{% if vault_run_https_tests | bool %}
 listener "tcp" {
-  tls_key_file = "{{ local_temp_dir }}/privatekey.pem"
-  tls_cert_file = "{{ local_temp_dir }}/cert.pem"
+  tls_key_file = "{{ vault_key_file }}"
+  tls_cert_file = "{{ vault_cert_file }}"
   tls_disable  = false
-  address = "localhost:8201"
+  address = "{{ vault_test_server_https | regex_replace('^https://([^:]+):(\\d+).*?$', '\\1:\\2') }}"
 }
 {% endif %}
