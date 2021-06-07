@@ -1,6 +1,6 @@
 - name: "Test token with no default policy (missing lookup-self)"
   vars:
-    user_token: '{{ user_token_no_default_policy_cmd.stdout }}'
+    user_token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
     lookup_terms: "{{ conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1' }}"
     ansible_hashi_vault_auth_method: token
   block:
@@ -26,7 +26,7 @@
 
 - name: "Normal token tests"
   vars:
-    user_token: '{{ user_token_cmd.stdout }}'
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
   block:
     - name: 'Fetch secrets using "hashi_vault" lookup'
       set_fact:
