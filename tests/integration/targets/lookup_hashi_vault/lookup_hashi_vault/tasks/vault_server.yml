@@ -2,24 +2,26 @@
 - name: Install Hashi Vault on controlled node and test
   block:
 
-    - when: cryptography_version.stdout is version('1.6', '>=')
+    - when: vault_run_https_tests | bool
+      vars:
+        vault_csr_file: '{{ vault_key_file | dirname }}/csr.csr'
       block:
         - name: Generate privatekey
           community.crypto.openssl_privatekey:
-            path: '{{ local_temp_dir }}/privatekey.pem'
+            path: '{{ vault_key_file }}'
 
         - name: Generate CSR
           community.crypto.openssl_csr:
-            path: '{{ local_temp_dir }}/csr.csr'
-            privatekey_path: '{{ local_temp_dir }}/privatekey.pem'
+            path: '{{ vault_csr_file }}'
+            privatekey_path: '{{ vault_key_file }}'
             subject:
               commonName: localhost
 
         - name: Generate selfsigned certificate
           community.crypto.openssl_certificate:
-            path: '{{ local_temp_dir }}/cert.pem'
-            csr_path: '{{ local_temp_dir }}/csr.csr'
-            privatekey_path: '{{ local_temp_dir }}/privatekey.pem'
+            path: '{{ vault_cert_file }}'
+            csr_path: '{{ vault_csr_file }}'
+            privatekey_path: '{{ vault_key_file }}'
             provider: selfsigned
             selfsigned_digest: sha256
           register: selfsigned_certificate
@@ -39,119 +41,13 @@
 
     - environment:
         # used by vault command
-        VAULT_DEV_ROOT_TOKEN_ID: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
-      vars:
-        vault_dev_root_token_id: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
+        VAULT_DEV_ROOT_TOKEN_ID: '{{ vault_dev_root_token_id }}'
       block:
         - name: 'Create configuration file'
           template:
             src: vault_config.hcl.j2
             dest: '{{ local_temp_dir }}/vault_config.hcl'
 
-        - name: 'Start vault service'
-          environment:
-            VAULT_ADDR: 'http://localhost:8200'
-          vars:
-            vault_addr: 'http://localhost:8200'
-          block:
-            - name: 'Start vault server (dev mode enabled)'
-              shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl </dev/null >/dev/null 2>&1 &'
-              notify: test_managed_vault_cleanup
-
-            - name: 'Create generic secrets engine'
-              vault_ci_enable_engine:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                backend_type: generic
-                path: gen
-
-            - name: 'Create KV v1 secrets engine'
-              vault_ci_enable_engine:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                backend_type: kv
-                path: kv1
-                options:
-                  version: 1
-
-            - name: 'Create KV v2 secrets engine'
-              vault_ci_enable_engine:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                backend_type: kv
-                path: kv2
-                options:
-                  version: 2
-
-            - name: 'Create a test policy'
-              vault_ci_policy_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                name: test-policy
-                policy: "{{ vault_test_policy }}"
-
-            - name: 'Create an alternate policy'
-              vault_ci_policy_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                name: alt-policy
-                policy: "{{ vault_alt_policy }}"
-
-            - name: 'Create generic secrets'
-              loop: [1, 2, 3]
-              vault_ci_kv_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                path: "{{ vault_gen_path | regex_replace('^gen/') }}/secret{{ item }}"
-                version: 1
-                mount_point: gen
-                secret:
-                  value: 'foo{{ item }}'
-
-            - name: 'Create KV v1 secrets'
-              loop: [1, 2, 3]
-              vault_ci_kv_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                path: "{{ vault_kv1_path | regex_replace('^kv1/') }}/secret{{ item }}"
-                version: 1
-                mount_point: kv1
-                secret:
-                  value: 'foo{{ item }}'
-
-            - name: 'Create KV v2 secrets'
-              loop: [1, 2, 3, 4, 5]
-              vault_ci_kv_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                path: "{{ vault_kv2_path | regex_replace('^kv2/data/') }}/secret{{ item }}"
-                version: 2
-                mount_point: kv2
-                secret:
-                  value: 'foo{{ item }}'
-
-            - name: 'Update KV v2 secret4 with new value to create version'
-              vault_ci_kv_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                path: "{{ vault_kv2_path | regex_replace('^kv2/data/') }}/secret4"
-                version: 2
-                mount_point: kv2
-                secret:
-                  value: 'foo5'
-
-            - name: 'Create multiple KV v2 secrets under one path'
-              vault_ci_kv_put:
-                url: "{{ vault_addr }}"
-                token: "{{ vault_dev_root_token_id }}"
-                path: "{{ vault_kv2_multi_path | regex_replace('^kv2/data/') }}/secrets"
-                version: 2
-                mount_point: kv2
-                secret:
-                  value1: foo1
-                  value2: foo2
-                  value3: foo3
-
-            #### auth method setup
-            - name: setup auth methods
-              import_tasks: vault_server_auth_setup.yml
+        - name: 'Start vault server (dev mode enabled)'
+          shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl </dev/null >/dev/null 2>&1 &'
+          notify: test_managed_vault_cleanup
