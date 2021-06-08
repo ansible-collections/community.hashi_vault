@@ -108,3 +108,6 @@ vault_run_https_tests: True
 
 vault_cert_file: '{{ local_temp_dir }}/cert.pem'
 vault_key_file: '{{ local_temp_dir }}/privatekey.pem'
+
+vault_proxy_server: 'http://127.0.0.1:8001'
+vault_proxy_external: False
