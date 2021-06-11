@@ -12,7 +12,7 @@
     - name: 'test {{ auth_type }} auth without SSL (lookup parameters, with string proxy)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'proxies=http://127.0.0.1:8001 '
+        conn_params: 'proxies={{ vault_proxy_server }} '
 
     - name: 'test {{ auth_type }} auth without SSL (ansible variable)'
       include_tasks: '{{ auth_type }}_test.yml'
@@ -36,15 +36,22 @@
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with string proxy)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'ca_cert={{ vault_cert_file }} validate_certs=True proxies=https=http://127.0.0.1:8001 '
+        conn_params: 'ca_cert={{ vault_cert_file }} validate_certs=True proxies={{ vault_proxy_server }} '
+
+    - name: Set proxies variable
+      set_fact:
+        ansible_hashi_vault_proxies:
+          http: '{{ vault_proxy_server }}'
+          https: '{{ vault_proxy_server }}'
 
     - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with dict proxy via ansible vars)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
         conn_params: 'url={{ vault_test_server_https }} ca_cert={{ vault_cert_file }} validate_certs=True '
-        ansible_hashi_vault_proxies:
-          http: 'http://127.0.0.1:8001'
-          https: 'http://127.0.0.1:8001'
+
+    - name: Reset proxies variable
+      set_fact:
+        ansible_hashi_vault_proxies: null
 
     - name: 'test {{ auth_type }} auth with certs (validation enabled, ansible variables)'
       include_tasks: '{{ auth_type }}_test.yml'
