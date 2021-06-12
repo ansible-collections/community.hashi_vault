@@ -309,9 +309,8 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, token_validate=False) }}"
 
-# None auth
-
-# For use with Vault Agent running with a TCP listener on port 8100.  Where the agent will handle authentication to Vault.
+# "none" auth method does no authentication and does not send a token to the Vault address.
+# One example of where this could be used is with a Vault agent where the agent will handle authentication to Vault.
 # https://www.vaultproject.io/docs/agent
 
 - name: authenticate with vault agent
