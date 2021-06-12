@@ -155,6 +155,7 @@ DOCUMENTATION = """
         - C(dict) returns a single dict containing the key/value pairs.
         - C(values) returns a list of all the values only. Use when you don't care about the keys.
         - C(raw) returns the actual API result (deserialized), which includes metadata and may have the data nested in other keys.
+        - C(none) auth method was added in collection version C(1.2.0).
       choices:
         - dict
         - values
