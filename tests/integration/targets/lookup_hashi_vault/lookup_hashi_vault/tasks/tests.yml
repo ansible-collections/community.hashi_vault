@@ -63,4 +63,5 @@
     - name: 'test {{ auth_type }} auth with certs (validation disabled, lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
       vars:
-        conn_params: 'validate_certs=False '
+        ansible_hashi_vault_validate_certs: False
+        conn_params: ''

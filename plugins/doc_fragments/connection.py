@@ -55,6 +55,9 @@ class ModuleDocFragment(object):
           - Will be populated with the inverse of C(VAULT_SKIP_VERIFY) if that is set and I(validate_certs) is not explicitly provided.
           - Will default to C(true) if neither I(validate_certs) or C(VAULT_SKIP_VERIFY) are set.
         type: boolean
+        vars:
+          - name: ansible_hashi_vault_validate_certs
+            version_added: '1.2.0'
       namespace:
         description:
           - Vault namespace where secrets reside. This option requires HVAC 0.7.0+ and Vault 0.11+.

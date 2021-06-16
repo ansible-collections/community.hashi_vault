@@ -57,6 +57,9 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: token_path
+      vars:
+        - name: ansible_hashi_vault_token_path
+          version_added: '1.2.0'
     token_file:
       description: If no token is specified, will try to read the token from this file in I(token_path).
       env:
@@ -71,6 +74,9 @@ DOCUMENTATION = """
       ini:
         - section: lookup_hashi_vault
           key: token_file
+      vars:
+        - name: ansible_hashi_vault_token_file
+          version_added: '1.2.0'
       default: '.vault-token'
     token_validate:
       description:
