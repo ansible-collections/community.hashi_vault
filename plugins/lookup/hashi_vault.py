@@ -125,6 +125,7 @@ DOCUMENTATION = """
     auth_method:
       description:
         - Authentication method to be used.
+        - C(none) auth method was added in collection version C(1.2.0).
       env:
         - name: VAULT_AUTH_METHOD
           deprecated:
@@ -147,6 +148,7 @@ DOCUMENTATION = """
         - approle
         - aws_iam_login
         - jwt
+        - none
       default: token
     return_format:
       description:
@@ -306,6 +308,14 @@ EXAMPLES = """
 - name: authenticate without token validation
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', token=my_token, token_validate=False) }}"
+
+# "none" auth method does no authentication and does not send a token to the Vault address.
+# One example of where this could be used is with a Vault agent where the agent will handle authentication to Vault.
+# https://www.vaultproject.io/docs/agent
+
+- name: authenticate with vault agent
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='none', url='http://127.0.0.1:8100') }}"
 
 # Use a proxy
 
@@ -560,6 +570,8 @@ class HashiVault:
         except (NotImplementedError, AttributeError):
             raise AnsibleError("JWT authentication requires HVAC version 0.10.5 or higher.")
 
+    def auth_none(self):
+        pass
     # end auth implementation methods
 
 
@@ -630,7 +642,7 @@ class LookupModule(HashiVaultLookupBase):
     def auth_methods(self):
         # enforce and set the list of available auth methods
         # TODO: can this be read from the choices: field in documentation?
-        avail_auth_methods = ['token', 'approle', 'userpass', 'ldap', 'aws_iam_login', 'jwt']
+        avail_auth_methods = ['token', 'approle', 'userpass', 'ldap', 'aws_iam_login', 'jwt', 'none']
         self.set_option('avail_auth_methods', avail_auth_methods)
         auth_method = self.get_option('auth_method')
 
@@ -725,4 +737,6 @@ class LookupModule(HashiVaultLookupBase):
     def validate_auth_jwt(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id', 'jwt')
 
+    def validate_auth_none(self, auth_method):
+        pass
     # end auth method validators

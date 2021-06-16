@@ -24,6 +24,10 @@
 
 - import_tasks: tests.yml
   vars:
+    auth_type: none
+
+- import_tasks: tests.yml
+  vars:
     auth_type: token
 
 - name: approle tests

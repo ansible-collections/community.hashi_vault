@@ -1,0 +1,17 @@
+---
+# TODO: consider setting up a Vault agent in CI to provide a better test of the none method
+# TODO: unit tests can probably check easily that the none method results in a client with no token
+- name: "Test that a request with none auth_type is not successful"
+  vars:
+    ansible_hashi_vault_auth_method: none
+  debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1') }}"
+  register: status
+  ignore_errors: yes
+
+- name: "Assert failure of expected type"
+  assert:
+    that:
+      - status is failed
+      - status.msg is search('missing client token')
+        # msg may need updating over time
