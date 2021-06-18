@@ -95,8 +95,20 @@ DOCUMENTATION = """
       version_added: 0.2.0
     username:
       description: Authentication user name.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_USERNAME
+          version_added: '1.2.0'
+      vars:
+        - name: ansible_hashi_vault_username
+          version_added: '1.2.0'
     password:
       description: Authentication password.
+      env:
+        - name: ANSIBLE_HASHI_VAULT_PASSWORD
+          version_added: '1.2.0'
+      vars:
+        - name: ansible_hashi_vault_password
+          version_added: '1.2.0'
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
