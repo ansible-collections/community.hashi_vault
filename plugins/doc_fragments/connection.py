@@ -51,6 +51,10 @@ class ModuleDocFragment(object):
         env:
           - name: ANSIBLE_HASHI_VAULT_CA_CERT
             version_added: '1.2.0'
+        ini:
+          - section: lookup_hashi_vault
+            key: ca_cert
+            version_added: '1.2.0'
         vars:
           - name: ansible_hashi_vault_ca_cert
             version_added: '1.2.0'
