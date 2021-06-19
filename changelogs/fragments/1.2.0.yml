@@ -1,5 +1,0 @@
----
-release_summary: |-
-  This release brings several new ways of accessing options, like using Ansible vars, and addng new environment variables and INI config entries.
-  A special ``none`` auth type is also added, for working with certain Vault Agent configurations.
-  This release also announces the deprecation of Python 2 support in version ``2.0.0`` of the collection.
