@@ -197,6 +197,7 @@ class HashiVaultOptionGroupBase:
         'namespace': ['VAULT_NAMESPACE'],
         'token': ['VAULT_TOKEN'],
         'url': ['VAULT_ADDR'],
+        'ca_cert': ['VAULT_CACERT'],
     }
 
     def __init__(self, option_adapter):
