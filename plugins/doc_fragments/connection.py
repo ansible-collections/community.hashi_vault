@@ -47,7 +47,9 @@ class ModuleDocFragment(object):
         type: raw
         version_added: '1.1.0'
       ca_cert:
-        description: Path to certificate to use for authentication.
+        description:
+          - Path to certificate to use for authentication.
+          - If not specified by any other means, the C(VAULT_CACERT) environment variable will be used.
         env:
           - name: ANSIBLE_HASHI_VAULT_CA_CERT
             version_added: '1.2.0'
