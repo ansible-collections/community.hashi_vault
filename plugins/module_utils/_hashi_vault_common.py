@@ -284,7 +284,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         #     return None
 
         if not HAS_RETRIES:
-            # unsure if not being able to do retries should be a fatal error, or just a warning
+            # FIXME: unsure if not being able to do retries should be a fatal error, or just a warning
             # if it's a warning, I'm also not sure how to properly convey that from module_util code
             # that will work for both modules and plugins
             raise NotImplementedError("Retries are unavailable; please install urllib3 (?)")
@@ -292,7 +292,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         # We don't want the Retry class raising its own exceptions because that will prevent
         # hvac from raising its own on various response codes.
         # We set this here, rather than in the defaults, because if the caller sets their own
-        # dict for retries, we use directly, but we don't want them to have to remember to always
+        # dict for retries, we use it directly, but we don't want them to have to remember to always
         # set raise_on_status=False themselves to get proper error handling.
         # On the off chance someone does set it, we leave it alone, even though it's probably a mistake.
         # That will be mentioned in the parameter docs.
