@@ -174,3 +174,4 @@ class TestHashiVaultConnectionOptions(object):
         # these are optional
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']
         assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']
+        assert 'timeout' not in opts or opts['timeout'] == predefined_options['timeout']
