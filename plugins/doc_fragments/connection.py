@@ -86,4 +86,17 @@ class ModuleDocFragment(object):
         vars:
           - name: ansible_hashi_vault_namespace
             version_added: '1.2.0'
+      timeout:
+        description:
+          - Sets the connection timeout in seconds.
+          - If not set, then the C(hvac) library's default is used.
+        env:
+          - name: ANSIBLE_HASHI_VAULT_TIMEOUT
+        ini:
+          - section: lookup_hashi_vault
+            key: timeout
+        vars:
+          - name: ansible_hashi_vault_timeout
+        type: int
+        version_added: '1.3.0'
     '''

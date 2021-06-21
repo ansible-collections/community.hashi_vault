@@ -111,3 +111,7 @@ vault_key_file: '{{ local_temp_dir }}/privatekey.pem'
 
 vault_proxy_server: 'http://127.0.0.1:8001'
 vault_proxy_external: False
+
+# if any connections are taking longer than this to complete there's probably something really wrong
+# with the integration tests, so it'd be better to fail faster than the 30s default
+ansible_hashi_vault_timeout: 5

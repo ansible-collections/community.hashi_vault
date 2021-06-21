@@ -214,7 +214,7 @@ class HashiVaultOptionGroupBase:
 class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     '''HashiVault option group class for connection options'''
 
-    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace']
+    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout']
 
     def __init__(self, option_adapter):
         super(HashiVaultConnectionOptions, self).__init__(option_adapter)
