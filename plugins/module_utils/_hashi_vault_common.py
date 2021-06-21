@@ -235,23 +235,38 @@ class HashiVaultOptionGroupBase:
                 if self._options.has_option(opt) and self._options.get_option(opt) is None:
                     self._options.set_option(opt, os.environ.get(env))
 
+class CallbackRetry(Retry):
+    def __init__(self, *args, **kwargs):
+        self._newcb = kwargs.pop('new_callback')
+        super(CallbackRetry, self).__init__(*args, **kwargs)
+
+    def new(self, **kwargs):
+        if self._newcb is not None:
+            self._newcb(self)
+
+        kwargs['new_callback'] = self._newcb
+        return super(CallbackRetry, self).new(**kwargs)
 
 class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     '''HashiVault option group class for connection options'''
 
-    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries']
+    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries', 'retry_action']
 
     _RETRIES_DEFAULT_PARAMS = {
         'total': 3,
         'status_forcelist': [429, 500, 502, 503, 504, 404],
-        ("allowed_methods" if HAS_RETRIES and hasattr(Retry.DEFAULT, "allowed_methods") else "method_whitelist"): ['HEAD', 'GET', 'OPTIONS'],
+        (
+            "allowed_methods" if HAS_RETRIES and hasattr(Retry.DEFAULT, "allowed_methods")
+            else "method_whitelist"
+        ): ['HEAD', 'GET', 'OPTIONS'],
         # allowed_methods=["HEAD", "GET", "OPTIONS"],
         # method_whitelist=["HEAD", "GET", "OPTIONS"],
         'backoff_factor': 1,
     }
 
-    def __init__(self, option_adapter):
+    def __init__(self, option_adapter, retry_callback_generator=None):
         super(HashiVaultConnectionOptions, self).__init__(option_adapter)
+        self._retry_callback_generator = retry_callback_generator
 
     def get_hvac_connection_options(self):
         '''returns kwargs to be used for constructing an hvac.Client'''
@@ -265,6 +280,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         hvopts['verify'] = hvopts.pop('ca_cert')
 
         if 'retries' in hvopts:
+            hvopts['retries']['new_callback'] = self._retry_callback_generator(hvopts.pop('retry_action'))
             hvopts['session'] = self._get_custom_requests_session(hvopts.pop('retries'))
 
         return hvopts
@@ -300,7 +316,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
             retry_kwargs['raise_on_status'] = False
 
         # retry = Retry(**retries)
-        retry = Retry(**retry_kwargs)
+        retry = CallbackRetry(**retry_kwargs)
 
         adapter = HTTPAdapter(max_retries=retry)
         sess = Session()
