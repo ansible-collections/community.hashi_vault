@@ -23,6 +23,7 @@ CONNECTION_OPTIONS = {
     'namespace': None,
     'validate_certs': None,
     'ca_cert': None,
+    'timeout': None,
 }
 
 
@@ -146,12 +147,18 @@ class TestHashiVaultConnectionOptions(object):
     @pytest.mark.parametrize('opt_proxies', [
         None, 'socks://noshow', '{"https": "https://prox", "http": "http://other"}', {'http': 'socks://one', 'https': 'socks://two'}
     ])
-    def test_get_hvac_connection_options(self, connection_options, predefined_options, adapter, opt_ca_cert, opt_validate_certs, opt_proxies, opt_namespace):
+    @pytest.mark.parametrize('opt_timeout', [None, 30])
+    def test_get_hvac_connection_options(
+        self, connection_options, predefined_options, adapter,
+        opt_ca_cert, opt_validate_certs, opt_proxies, opt_namespace, opt_timeout,
+    ):
+
         adapter.set_options(**{
             'ca_cert': opt_ca_cert,
             'validate_certs': opt_validate_certs,
             'proxies': opt_proxies,
             'namespace': opt_namespace,
+            'timeout': opt_timeout,
         })
 
         connection_options.process_connection_options()
@@ -167,3 +174,4 @@ class TestHashiVaultConnectionOptions(object):
         # these are optional
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']
         assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']
+        assert 'timeout' not in opts or opts['timeout'] == predefined_options['timeout']
