@@ -477,12 +477,6 @@ class HashiVault:
                 "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
             )
 
-        # TODO: this should be defined within HashiVaultPlugin, along with much of this client instantiation.
-        # That will happen as we work to get rid of this superfluous HashiVault class in this particular plugin.
-        # def cb(self):
-        #     if self.total > 0:
-        #         display.warning('community.hashi_vault: %i %s remaining.' % (self.total, 'retry' if self.total == 1 else 'retries'))
-
         client_args = self.connection_options.get_hvac_connection_options()
 
         self.client = self.helper.get_vault_client(**client_args)
