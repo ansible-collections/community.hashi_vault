@@ -101,7 +101,15 @@ class ModuleDocFragment(object):
         version_added: '1.3.0'
       retries:
         description:
-          - Allows for retrying on errors.
+          - "Allows for retrying on errors, based on
+            the L(Retry class in the urllib3 library,https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry)."
+          - This collection defines recommended defaults for working with Vault.
+          - This option can be specified as a boolean, number, or dictionary.
+          - If this option is not specified or has a value of C(False) or C(0), then retries are disabled.
+          - C(True) means to use the collection defaults.
+          - A number uses the collection defaults but overrides only the total number of retries.
+          - A dictionary value is used directly to initialize the C(Retry) class, so it can be used to fully customize retries.
+          - For detailed information on retries, see the collection User Guide.
         env:
           - name: ANSIBLE_HASHI_VAULT_RETRIES
         ini:
