@@ -123,9 +123,17 @@ class ModuleDocFragment(object):
         description:
           - Controls whether and how to show messages on I(retries).
           - This has no effect if a request is not retried.
+        env:
+          - name: ANSIBLE_HASHI_VAULT_RETRY_ACTION
+        ini:
+          - section: lookup_hashi_vault
+            key: retry_action
+        vars:
+          - name: ansible_hashi_vault_retry_action
         type: str
         choices:
           - ignore
           - warn
         default: warn
+        version_added: '1.3.0'
     '''
