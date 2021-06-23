@@ -316,7 +316,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         if 'raise_on_status' not in retry_kwargs:
             retry_kwargs['raise_on_status'] = False
 
-        # retry = Retry(**retries)
         retry = CallbackRetry(**retry_kwargs)
 
         adapter = HTTPAdapter(max_retries=retry)
@@ -383,13 +382,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
                 except TypeError:
                     raise TypeError("retries option must be interpretable as int, bool, or dict. Got: %r" % retries_opt)
 
-        # if we got here, retries ought to be set with valid options
-        # if retries is None:
-        #     retry_object = Retry(**retries)
-        # else:
-        #     retry_object = None
-
-        # self._options.set_option('retries', retry_object)
         self._options.set_option('retries', retries)
 
     def _process_option_proxies(self):
