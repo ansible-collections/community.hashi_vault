@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - hashi_vault lookup - add ``retries`` and ``retry_action`` to enable built-in retry on failure (https://github.com/ansible-collections/community.hashi_vault/pull/71).
