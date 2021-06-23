@@ -243,14 +243,22 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
     _RETRIES_DEFAULT_PARAMS = {
         'total': 3,
-        'status_forcelist': [429, 500, 502, 503, 504, 404],
+        'status_forcelist': [
+            # https://www.vaultproject.io/api#http-status-codes
+            # 429 is usually a "too many requests" status, but in Vault it's the default health status response for standby nodes.
+            500,  # Internal server error. An internal error has occurred, try again later. If the error persists, report a bug.
+            502,  # A request to Vault required Vault making a request to a third party; the third party responded with an error of some kind.
+            503,  # Vault is down for maintenance or is currently sealed. Try again later.
+        ],
         (
-            "allowed_methods" if HAS_RETRIES and hasattr(Retry.DEFAULT, "allowed_methods")
-            else "method_whitelist"
-        ): ['HEAD', 'GET', 'OPTIONS'],
-        # allowed_methods=["HEAD", "GET", "OPTIONS"],
-        # method_whitelist=["HEAD", "GET", "OPTIONS"],
-        'backoff_factor': 1,
+            # this field name changed in 1.26.0, and in the interest of supporting a wider range of urllib3 versions
+            # we'll use the new name whenever possible, but fall back seamlessly when needed.
+            # See also:
+            # - https://github.com/urllib3/urllib3/issues/2092
+            # - https://github.com/urllib3/urllib3/blob/main/CHANGES.rst#1260-2020-11-10
+            "allowed_methods" if HAS_RETRIES and hasattr(Retry.DEFAULT, "allowed_methods") else "method_whitelist"
+        ): None,  # None allows retries on all methods, including those which may not be considered idempotent, like POST
+        'backoff_factor': 0.3,
     }
 
     def __init__(self, option_adapter, retry_callback_generator=None):
