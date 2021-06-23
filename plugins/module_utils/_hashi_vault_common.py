@@ -316,6 +316,8 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         # That will be mentioned in the parameter docs.
         if 'raise_on_status' not in retry_kwargs:
             retry_kwargs['raise_on_status'] = False
+            # needs urllib 1.15+ https://github.com/urllib3/urllib3/blob/main/CHANGES.rst#115-2016-04-06
+            # but we should always have newer ones via requests, via hvac
 
         retry = CallbackRetry(**retry_kwargs)
 
