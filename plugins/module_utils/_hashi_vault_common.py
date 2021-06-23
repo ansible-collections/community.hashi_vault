@@ -235,17 +235,6 @@ class HashiVaultOptionGroupBase:
                 if self._options.has_option(opt) and self._options.get_option(opt) is None:
                     self._options.set_option(opt, os.environ.get(env))
 
-class CallbackRetry(Retry):
-    def __init__(self, *args, **kwargs):
-        self._newcb = kwargs.pop('new_callback')
-        super(CallbackRetry, self).__init__(*args, **kwargs)
-
-    def new(self, **kwargs):
-        if self._newcb is not None:
-            self._newcb(self)
-
-        kwargs['new_callback'] = self._newcb
-        return super(CallbackRetry, self).new(**kwargs)
 
 class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     '''HashiVault option group class for connection options'''
@@ -300,10 +289,22 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         #     return None
 
         if not HAS_RETRIES:
-            # FIXME: unsure if not being able to do retries should be a fatal error, or just a warning
-            # if it's a warning, I'm also not sure how to properly convey that from module_util code
-            # that will work for both modules and plugins
-            raise NotImplementedError("Retries are unavailable; please install urllib3 (?)")
+            # because hvac requires requests which requires urllib3 it's unlikely we'll ever reach this condition.
+            raise NotImplementedError("Retries are unavailable. This may indicate very old versions of one or more of the following: hvac, requests, urllib3.")
+
+        # This is defined here because Retry may not be defined if its import failed.
+        # As mentioned above, that's very unlikely, but it'll fail sanity tests nonetheless if defined with other classes.
+        class CallbackRetry(Retry):
+            def __init__(self, *args, **kwargs):
+                self._newcb = kwargs.pop('new_callback')
+                super(CallbackRetry, self).__init__(*args, **kwargs)
+
+            def new(self, **kwargs):
+                if self._newcb is not None:
+                    self._newcb(self)
+
+                kwargs['new_callback'] = self._newcb
+                return super(CallbackRetry, self).new(**kwargs)
 
         # We don't want the Retry class raising its own exceptions because that will prevent
         # hvac from raising its own on various response codes.
