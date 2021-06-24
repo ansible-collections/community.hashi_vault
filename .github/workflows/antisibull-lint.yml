@@ -33,5 +33,5 @@ jobs:
         run: pip install antsibull
 
       - name: Lint Collection Docs
-        run: antisbull-lint collection-docs -v .
+        run: antsibull-lint collection-docs -v .
         working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
