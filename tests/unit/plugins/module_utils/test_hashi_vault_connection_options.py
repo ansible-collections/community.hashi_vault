@@ -16,25 +16,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultOptionAdapter,
 )
 
-# we implement retries via the urllib3 Retry class
-# https://github.com/ansible-collections/community.hashi_vault/issues/58
-HAS_RETRIES = False
-try:
-    from requests import Session
-    from requests.adapters import HTTPAdapter
-    try:
-        # try for a standalone urllib3
-        from urllib3.util import Retry
-        HAS_RETRIES = True
-    except ImportError:
-        try:
-            # failing that try for a vendored version within requests
-            from requests.packages.urllib3.util import Retry
-            HAS_RETRIES = True
-        except ImportError:
-            pass
-except ImportError:
-    pass
+from requests import Session
 
 
 CONNECTION_OPTIONS = {

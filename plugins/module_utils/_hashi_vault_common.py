@@ -23,6 +23,7 @@ from ansible.module_utils.common.validation import (
     check_type_float,
 )
 
+HAS_HVAC = False
 try:
     import hvac
     HAS_HVAC = True
