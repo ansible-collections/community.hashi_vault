@@ -242,7 +242,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries', 'retry_action']
 
     _RETRIES_DEFAULT_PARAMS = {
-        'total': 3,
         'status_forcelist': [
             # https://www.vaultproject.io/api#http-status-codes
             # 429 is usually a "too many requests" status, but in Vault it's the default health status response for standby nodes.
@@ -350,14 +349,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         retries = self._RETRIES_DEFAULT_PARAMS.copy()
 
         try:
-            # bool is a subclass of int in Python, so we must check for actual bools first.
-            # if we check_type_int first, bool values will be interpreted as int values.
-            # if we check_type_bool first, then integers will be interpreted as bools.
-            # https://stackoverflow.com/q/37888620/3905079
-            if isinstance(retries_opt, bool):
-                # just let it fall into the next section
-                raise TypeError
-
             # check for floats first, because check_type_int won't accept them, but check_type_bool will
             # so if we have a float let's just convert it to int so we don't give users unexpected results
             # on different floats (otherwise 1.0 would act like True, 0.0 acts like False, 1.1 is an exception)
@@ -378,20 +369,11 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
         except TypeError:
             try:
-                # try bool
-                # on True, use defaults, on False disable retries
-                retries_bool = check_type_bool(retries_opt)
-
-                if not retries_bool:
-                    retries = None
-
+                # try dict
+                # on dict, use the value directly (will be used as the kwargs to initialize the Retry instance)
+                retries = check_type_dict(retries_opt)
             except TypeError:
-                try:
-                    # try dict
-                    # on dict, use the value directly (will be used as the kwargs to initialize the Retry instance)
-                    retries = check_type_dict(retries_opt)
-                except TypeError:
-                    raise TypeError("retries option must be interpretable as int, bool, or dict. Got: %r" % retries_opt)
+                raise TypeError("retries option must be interpretable as int or dict. Got: %r" % retries_opt)
 
         self._options.set_option('retries', retries)
 

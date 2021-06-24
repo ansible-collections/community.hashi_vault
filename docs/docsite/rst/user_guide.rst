@@ -29,9 +29,8 @@ Via the ``retries`` parameter, we can control what happens when a request to Vau
 
 Retries are disabled by default.
 
-In ``community.hashi_vault`` you can specify the ``retries`` parameter in three ways:
+In ``community.hashi_vault`` you can specify the ``retries`` parameter in two ways:
 
-* Set a boolean value, where ``true`` means retries are enabled with the collection's defaults, and ``false`` means disabled.
 * Set a number, where ``0`` disables retries and any positive number sets the number of tries, with the rest of the retry parameters using the collection defaults.
 * Set a dictionary, where you can set any field that the ``Retry`` class can be initialized with, in order to fully customize your retry experience.
 
@@ -45,7 +44,6 @@ Current Defaults (always check the source code to confirm the defaults in your s
 
 .. code-block:: yaml
 
-    total: 3
     status_forcelist:
       # https://www.vaultproject.io/api#http-status-codes
       # 429 is usually a "too many requests" status, but in Vault it's the default health status response for standby nodes.

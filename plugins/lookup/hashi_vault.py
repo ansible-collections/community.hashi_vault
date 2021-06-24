@@ -381,20 +381,14 @@ EXAMPLES = """
   debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1', timeout=120) }}"
 
-- name: use a custom timeout and retry on failure (with collection retry defaults)
+- name: use a custom timeout and retry on failure 3 times (with collection retry defaults)
   vars:
     ansible_hashi_vault_timeout: 5
-    ansible_hashi_vault_retries: true
+    ansible_hashi_vault_retries: 3
   debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1') }}"
 
-- name: retry on failure with no warnings (with 6 retries and other collection defaults)
-  vars:
-    ansible_hashi_vault_retries: 6
-  debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1', retry_action='ignore') }}"
-
-- name: retry on failure (with custom settings)
+- name: retry on failure (with custom retry settings and no warnings)
   vars:
     ansible_hashi_vault_retries:
       total: 6
@@ -404,7 +398,7 @@ EXAMPLES = """
         - GET
         - PUT
   debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1', retry_action='warn') }}"
 """
 
 RETURN = """

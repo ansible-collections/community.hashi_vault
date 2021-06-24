@@ -156,21 +156,13 @@ class TestHashiVaultConnectionOptions(object):
         with pytest.raises(TypeError):
             connection_options._process_option_retries()
 
-    @pytest.mark.parametrize('opt_retries', [None, 0, 0.0, '0', '0.0', False, 'false', 'no'])
+    @pytest.mark.parametrize('opt_retries', [None, 0, 0.0, '0', '0.0'])
     def test_process_option_retries_none_result(self, connection_options, predefined_options, adapter, opt_retries):
         adapter.set_option('retries', opt_retries)
 
         connection_options._process_option_retries()
 
         assert predefined_options['retries'] is None
-
-    @pytest.mark.parametrize('opt_retries', [True, 'true', 'yes'])
-    def test_process_option_retries_default_result(self, connection_options, predefined_options, adapter, opt_retries):
-        adapter.set_option('retries', opt_retries)
-
-        connection_options._process_option_retries()
-
-        assert predefined_options['retries'] == connection_options._RETRIES_DEFAULT_PARAMS
 
     @pytest.mark.parametrize('opt_retries', [1, 1.0, '1', '1.0', 2, 10, '30'])
     def test_process_option_retries_from_number(self, connection_options, predefined_options, adapter, opt_retries):
@@ -233,7 +225,7 @@ class TestHashiVaultConnectionOptions(object):
     @pytest.mark.parametrize('opt_validate_certs', [None, True, False])
     @pytest.mark.parametrize('opt_namespace', [None, 'namepsace1'])
     @pytest.mark.parametrize('opt_timeout', [None, 30])
-    @pytest.mark.parametrize('opt_retries', [None, 0, 2, True, False, {'total': 3}, '{"total": 3}'])
+    @pytest.mark.parametrize('opt_retries', [None, 0, 2, {'total': 3}, '{"total": 3}'])
     @pytest.mark.parametrize('opt_retry_action', ['ignore', 'warn'])
     @pytest.mark.parametrize('opt_proxies', [
         None, 'socks://noshow', '{"https": "https://prox", "http": "http://other"}', {'http': 'socks://one', 'https': 'socks://two'}
