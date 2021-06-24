@@ -8,7 +8,11 @@ name: CI
 on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
+    paths-ignore:
+      - 'docs/**'
   pull_request:
+    paths-ignore:
+      - 'docs/**'
   schedule:
     - cron: '0 14 * * *'
 env:
