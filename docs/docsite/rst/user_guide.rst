@@ -31,7 +31,7 @@ Retries are disabled by default.
 
 In ``community.hashi_vault`` you can specify the ``retries`` parameter in three ways:
 
-* Set a boolean value, where ``True`` means retries are enabled with the collection's defaults, and ``False`` means disabled.
+* Set a boolean value, where ``true`` means retries are enabled with the collection's defaults, and ``false`` means disabled.
 * Set a number, where ``0`` disables retries and any positive number sets the number of tries, with the rest of the retry parameters using the collection defaults.
 * Set a dictionary, where you can set any field that the ``Retry`` class can be initialized with, in order to fully customize your retry experience.
 
@@ -55,7 +55,7 @@ Current Defaults (always check the source code to confirm the defaults in your s
     allowed_methods: null # None allows retries on all methods, including those which may not be considered idempotent, like POST
     backoff_factor: 0.3
 
-Any of the ``Retry`` class's parameters that are not specified in the collection defaults or in your custom dictionary, are initialized using the class's defaults, with one exception: the ``raise_on_status`` parameter is always set to ``False`` unless you explicitly added it your custom dictionary. The reason is that this lets our error handling look for the expected ``hvac`` exceptions, instead of the ``Retry``-specfic exceptions. It is recommended that you don't override this as it may cause unexpected error messages on common failures if they are retried.
+Any of the ``Retry`` class's parameters that are not specified in the collection defaults or in your custom dictionary, are initialized using the class's defaults, with one exception: the ``raise_on_status`` parameter is always set to ``false`` unless you explicitly added it your custom dictionary. The reason is that this lets our error handling look for the expected ``hvac`` exceptions, instead of the ``Retry``-specfic exceptions. It is recommended that you don't override this as it may cause unexpected error messages on common failures if they are retried.
 
 Retry messages
 ..............

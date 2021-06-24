@@ -384,7 +384,7 @@ EXAMPLES = """
 - name: use a custom timeout and retry on failure (with collection retry defaults)
   vars:
     ansible_hashi_vault_timeout: 5
-    ansible_hashi_vault_retries: True
+    ansible_hashi_vault_retries: true
   debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1') }}"
 
