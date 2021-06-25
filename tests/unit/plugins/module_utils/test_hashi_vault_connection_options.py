@@ -128,17 +128,17 @@ class TestHashiVaultConnectionOptions(object):
         assert predefined_options['proxies'] == expected
 
     # _process_option_retries
-    # can be specified as a number (float or int), a bool, or a dict
+    # can be specified as a positive int or a dict
     # (or any string that can be interpreted as one of those)
 
-    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True]])
+    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.0])
     def test_process_option_retries_invalid(self, connection_options, predefined_options, adapter, opt_retries):
         adapter.set_option('retries', opt_retries)
 
-        with pytest.raises(TypeError):
+        with pytest.raises((TypeError, ValueError)):
             connection_options._process_option_retries()
 
-    @pytest.mark.parametrize('opt_retries', [None, 0, 0.0, '0', '0.0'])
+    @pytest.mark.parametrize('opt_retries', [None, 0, '0'])
     def test_process_option_retries_none_result(self, connection_options, predefined_options, adapter, opt_retries):
         adapter.set_option('retries', opt_retries)
 
@@ -146,7 +146,7 @@ class TestHashiVaultConnectionOptions(object):
 
         assert predefined_options['retries'] is None
 
-    @pytest.mark.parametrize('opt_retries', [1, 1.0, '1', '1.0', 2, 10, '30'])
+    @pytest.mark.parametrize('opt_retries', [1, '1', 10, '30'])
     def test_process_option_retries_from_number(self, connection_options, predefined_options, adapter, opt_retries):
         expected = connection_options._RETRIES_DEFAULT_PARAMS.copy()
         expected['total'] = int(float(opt_retries))

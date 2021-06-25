@@ -31,14 +31,14 @@ Retries are disabled by default.
 
 In ``community.hashi_vault`` you can specify the ``retries`` parameter in two ways:
 
-* Set a number, where ``0`` disables retries and any positive number sets the number of tries, with the rest of the retry parameters using the collection defaults.
+* Set a positive number (integer), where ``0`` disables retries and any positive number sets the number of tries, with the rest of the retry parameters using the collection defaults.
 * Set a dictionary, where you can set any field that the ``Retry`` class can be initialized with, in order to fully customize your retry experience.
 
 
 About the Collection Defaults
 .............................
 
-The collection uses its own set of recommended defaults for retries, including which HTTP status codes to retry, which HTTP methods are subject to retries, how many retries to perform, and the backoff factor used. **These defaults are subject to change at any time (in any release) and won't be considered breaking changes.** By setting ``retries`` to a boolean or a number you are opting in to trust the defaults in the collection. To enable retries with full control over its behavior, be sure to specify a dictionary.
+The collection uses its own set of recommended defaults for retries, including which HTTP status codes to retry, which HTTP methods are subject to retries, and the backoff factor used. **These defaults are subject to change at any time (in any release) and won't be considered breaking changes.** By setting ``retries`` to a number you are opting in to trust the defaults in the collection. To enable retries with full control over its behavior, be sure to specify a dictionary.
 
 Current Defaults (always check the source code to confirm the defaults in your specific collection version):
 

@@ -337,7 +337,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         return sess
 
     def _process_option_retries(self):
-        '''check if retries option is int, bool, or dict and interpret it appropriately'''
+        '''check if retries option is int or dict and interpret it appropriately'''
         # this method focuses on validating the option, and setting a valid Retry object construction dict
         # it intentionally does not build the Session object, which will be done elsewhere
 
@@ -350,20 +350,14 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         retries = self._RETRIES_DEFAULT_PARAMS.copy()
 
         try:
-            # check for floats first, because check_type_int won't accept them, but check_type_bool will
-            # so if we have a float let's just convert it to int so we don't give users unexpected results
-            # on different floats (otherwise 1.0 would act like True, 0.0 acts like False, 1.1 is an exception)
-            try:
-                retries_opt = int(check_type_float(retries_opt))
-            except TypeError:
-                pass
-
             # try int
-            # on int, use the defaults but override the number of retries with the value
+            # on int, retry the specified number of times, and use the defaults for everything else
             # on zero, disable retries
             retries_int = check_type_int(retries_opt)
 
-            if retries_int == 0:
+            if retries_int < 0:
+                raise ValueError("Number of retries must be >= 0 (got %i)" % retries_int)
+            elif retries_int == 0:
                 retries = None
             else:
                 retries['total'] = retries_int

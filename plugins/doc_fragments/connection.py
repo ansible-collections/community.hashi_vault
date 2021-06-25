@@ -104,9 +104,9 @@ class ModuleDocFragment(object):
           - "Allows for retrying on errors, based on
             the L(Retry class in the urllib3 library,https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry)."
           - This collection defines recommended defaults for retrying connections to Vault.
-          - This option can be specified as a number or dictionary.
+          - This option can be specified as a positive number (integer) or dictionary.
           - If this option is not specified or the number is C(0), then retries are disabled.
-          - A number uses the collection defaults but overrides only the total number of retries.
+          - A number sets the total number of retries, and uses collection defaults for the other settings.
           - A dictionary value is used directly to initialize the C(Retry) class, so it can be used to fully customize retries.
           - For detailed information on retries, see the collection User Guide.
         env:
