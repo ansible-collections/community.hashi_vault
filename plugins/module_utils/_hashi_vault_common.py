@@ -292,11 +292,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     def _get_custom_requests_session(self, retry_kwargs):
         '''returns a requests.Session to pass to hvac (or None)'''
 
-        # retries = self._options.get_option('retries')
-
-        # if retries is None:
-        #     return None
-
         if not HAS_RETRIES:
             # because hvac requires requests which requires urllib3 it's unlikely we'll ever reach this condition.
             raise NotImplementedError("Retries are unavailable. This may indicate very old versions of one or more of the following: hvac, requests, urllib3.")
