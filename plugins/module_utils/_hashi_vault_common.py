@@ -20,7 +20,6 @@ from ansible.module_utils.common.validation import (
     check_type_str,
     check_type_bool,
     check_type_int,
-    check_type_float,
 )
 
 HAS_HVAC = False
