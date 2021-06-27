@@ -1,0 +1,37 @@
+---
+name: Collection Docs
+on:
+  push:
+    paths:
+      - 'docs/**'
+  pull_request:
+    paths:
+      - 'docs/**'
+  schedule:
+    - cron: '0 13 * * *'
+
+env:
+  NAMESPACE: community
+  COLLECTION_NAME: hashi_vault
+
+jobs:
+  docs:
+    name: Collection Docs Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install antsibull
+        run: pip install antsibull
+
+      - name: Lint Collection Docs
+        run: antsibull-lint collection-docs -v .
+        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}

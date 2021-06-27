@@ -99,4 +99,40 @@ class ModuleDocFragment(object):
           - name: ansible_hashi_vault_timeout
         type: int
         version_added: '1.3.0'
+      retries:
+        description:
+          - "Allows for retrying on errors, based on
+            the L(Retry class in the urllib3 library,https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry)."
+          - This collection defines recommended defaults for retrying connections to Vault.
+          - This option can be specified as a positive number (integer) or dictionary.
+          - If this option is not specified or the number is C(0), then retries are disabled.
+          - A number sets the total number of retries, and uses collection defaults for the other settings.
+          - A dictionary value is used directly to initialize the C(Retry) class, so it can be used to fully customize retries.
+          - For detailed information on retries, see the collection User Guide.
+        env:
+          - name: ANSIBLE_HASHI_VAULT_RETRIES
+        ini:
+          - section: lookup_hashi_vault
+            key: retries
+        vars:
+          - name: ansible_hashi_vault_retries
+        type: raw
+        version_added: '1.3.0'
+      retry_action:
+        description:
+          - Controls whether and how to show messages on I(retries).
+          - This has no effect if a request is not retried.
+        env:
+          - name: ANSIBLE_HASHI_VAULT_RETRY_ACTION
+        ini:
+          - section: lookup_hashi_vault
+            key: retry_action
+        vars:
+          - name: ansible_hashi_vault_retry_action
+        type: str
+        choices:
+          - ignore
+          - warn
+        default: warn
+        version_added: '1.3.0'
     '''

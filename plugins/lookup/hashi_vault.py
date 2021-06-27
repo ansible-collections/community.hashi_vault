@@ -365,10 +365,6 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '...' }}"
 
-- name: use proxies with a dict (in the term string, Ansible key=value syntax)
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies=http=http://myproxy1,https=http://myproxy2') }}"
-
 - name: use proxies with a dict (in the term string, JSON syntax)
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', '... proxies={\\"http\\":\\"http://myproxy1\\",\\"https\\":\\"http://myproxy2\\"}') }}"
@@ -378,8 +374,31 @@ EXAMPLES = """
     ansible_hashi_vault_url: 'https://myvault:8282'
     ansible_hashi_vault_auth_method: token
   set_fact:
-    secret1: "{{ lookup('secret/data/secret1') }}"
-    secret2: "{{ lookup('secret/data/secret2') }}"
+    secret1: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1') }}"
+    secret2: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret2') }}"
+
+- name: use a custom timeout
+  debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1', timeout=120) }}"
+
+- name: use a custom timeout and retry on failure 3 times (with collection retry defaults)
+  vars:
+    ansible_hashi_vault_timeout: 5
+    ansible_hashi_vault_retries: 3
+  debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1') }}"
+
+- name: retry on failure (with custom retry settings and no warnings)
+  vars:
+    ansible_hashi_vault_retries:
+      total: 6
+      backoff_factor: 0.9
+      status_forcelist: [500, 502]
+      allowed_methods:
+        - GET
+        - PUT
+  debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/secret1', retry_action='warn') }}"
 """
 
 RETURN = """
@@ -604,7 +623,7 @@ class LookupModule(HashiVaultLookupBase):
             opts = kwargs.copy()
             opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
             self.set_options(direct=opts, var_options=variables)
-            # TODO: remove deprecate() if backported fix is available (see method definition)
+            # TODO: remove process_deprecations() if backported fix is available (see method definition)
             self.process_deprecations()
             self.process_options()
             # passing connection_options and adapter to the HashiVault class to make transition easier

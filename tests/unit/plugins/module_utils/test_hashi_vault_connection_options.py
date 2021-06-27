@@ -16,14 +16,18 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultOptionAdapter,
 )
 
+from requests import Session
+
 
 CONNECTION_OPTIONS = {
-    'url': 'https://127.0.0.1',
+    'url': 'https://127.0.0.1:8200',
     'proxies': None,
     'namespace': None,
     'validate_certs': None,
     'ca_cert': None,
     'timeout': None,
+    'retries': None,
+    'retry_action': 'warn',
 }
 
 
@@ -38,8 +42,15 @@ def adapter(predefined_options):
 
 
 @pytest.fixture
-def connection_options(adapter):
-    return HashiVaultConnectionOptions(adapter)
+def retry_callback_generator():
+    def _cb(retry_action):
+        pass
+    return _cb
+
+
+@pytest.fixture
+def connection_options(adapter, retry_callback_generator):
+    return HashiVaultConnectionOptions(adapter, retry_callback_generator)
 
 
 class TestHashiVaultConnectionOptions(object):
@@ -116,12 +127,62 @@ class TestHashiVaultConnectionOptions(object):
 
         assert predefined_options['proxies'] == expected
 
+    # _process_option_retries
+    # can be specified as a positive int or a dict
+    # (or any string that can be interpreted as one of those)
+
+    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.0])
+    def test_process_option_retries_invalid(self, connection_options, predefined_options, adapter, opt_retries):
+        adapter.set_option('retries', opt_retries)
+
+        with pytest.raises((TypeError, ValueError)):
+            connection_options._process_option_retries()
+
+    @pytest.mark.parametrize('opt_retries', [None, 0, '0'])
+    def test_process_option_retries_none_result(self, connection_options, predefined_options, adapter, opt_retries):
+        adapter.set_option('retries', opt_retries)
+
+        connection_options._process_option_retries()
+
+        assert predefined_options['retries'] is None
+
+    @pytest.mark.parametrize('opt_retries', [1, '1', 10, '30'])
+    def test_process_option_retries_from_number(self, connection_options, predefined_options, adapter, opt_retries):
+        expected = connection_options._RETRIES_DEFAULT_PARAMS.copy()
+        expected['total'] = int(float(opt_retries))
+
+        adapter.set_option('retries', opt_retries)
+
+        connection_options._process_option_retries()
+
+        assert predefined_options['retries'] == expected
+
+    @pytest.mark.parametrize(
+        'opt_retries,expected',
+        [
+            ({}, {}),
+            ('{}', {}),
+            ({'total': 5}, {'total': 5}),
+            ('{"total": 9}', {'total': 9}),
+        ]
+    )
+    def test_process_option_retries_from_dict(self, connection_options, predefined_options, adapter, opt_retries, expected):
+        adapter.set_option('retries', opt_retries)
+
+        connection_options._process_option_retries()
+
+        assert predefined_options['retries'] == expected
+
+    # process_connection_options
+    # this is the public function of the class meant to ensure all option processing is complete
+
     def test_process_connection_options(self, mocker, connection_options, adapter):
         # mock the internal methods we expect to be called
         f_boolean_or_cacert = mocker.patch.object(connection_options, '_boolean_or_cacert')
         f_process_option_proxies = mocker.patch.object(connection_options, '_process_option_proxies')
+        f_process_option_retries = mocker.patch.object(connection_options, '_process_option_retries')
 
-        # mock the adapter itself, so we can spy on adqpter interactions
+        # mock the adapter itself, so we can spy on adapter interactions
         # since we're mocking out the methods we expect to call, we shouldn't see any
         mock_adapter = mock.create_autospec(adapter)
         connection_options._options = mock_adapter
@@ -131,6 +192,7 @@ class TestHashiVaultConnectionOptions(object):
         # assert the expected methods have been called once
         f_boolean_or_cacert.assert_called_once()
         f_process_option_proxies.assert_called_once()
+        f_process_option_retries.assert_called_once()
 
         # aseert that the adapter had no interactions (because we mocked out everything we knew about)
         # the intention here is to catch a situation where process_connection_options has been modified
@@ -144,22 +206,27 @@ class TestHashiVaultConnectionOptions(object):
     @pytest.mark.parametrize('opt_ca_cert', [None, '/tmp/fake'])
     @pytest.mark.parametrize('opt_validate_certs', [None, True, False])
     @pytest.mark.parametrize('opt_namespace', [None, 'namepsace1'])
+    @pytest.mark.parametrize('opt_timeout', [None, 30])
+    @pytest.mark.parametrize('opt_retries', [None, 0, 2, {'total': 3}, '{"total": 3}'])
+    @pytest.mark.parametrize('opt_retry_action', ['ignore', 'warn'])
     @pytest.mark.parametrize('opt_proxies', [
         None, 'socks://noshow', '{"https": "https://prox", "http": "http://other"}', {'http': 'socks://one', 'https': 'socks://two'}
     ])
-    @pytest.mark.parametrize('opt_timeout', [None, 30])
     def test_get_hvac_connection_options(
         self, connection_options, predefined_options, adapter,
-        opt_ca_cert, opt_validate_certs, opt_proxies, opt_namespace, opt_timeout,
+        opt_ca_cert, opt_validate_certs, opt_proxies, opt_namespace, opt_timeout, opt_retries, opt_retry_action,
     ):
 
-        adapter.set_options(**{
+        option_set = {
             'ca_cert': opt_ca_cert,
             'validate_certs': opt_validate_certs,
             'proxies': opt_proxies,
             'namespace': opt_namespace,
             'timeout': opt_timeout,
-        })
+            'retries': opt_retries,
+            'retry_action': opt_retry_action,
+        }
+        adapter.set_options(**option_set)
 
         connection_options.process_connection_options()
         opts = connection_options.get_hvac_connection_options()
@@ -168,6 +235,13 @@ class TestHashiVaultConnectionOptions(object):
         assert 'validate_certs' not in opts
         assert 'ca_cert' not in opts
 
+        # retry_action is used/removed in the configuration of retries (session)
+        assert 'retry_action' not in opts
+
+        # retries will become session
+        assert 'retries' not in opts
+
+        # these should always be returned
         assert 'url' in opts and opts['url'] == predefined_options['url']
         assert 'verify' in opts and opts['verify'] == predefined_options['ca_cert']
 
@@ -175,3 +249,4 @@ class TestHashiVaultConnectionOptions(object):
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']
         assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']
         assert 'timeout' not in opts or opts['timeout'] == predefined_options['timeout']
+        assert 'session' not in opts or isinstance(opts['session'], Session)

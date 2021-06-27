@@ -6,6 +6,13 @@
       set_fact:
         ansible_hashi_vault_url: '{{ vault_test_server_http }}'
 
+    - name: 'test {{ auth_type }} auth with retries'
+      include_tasks: '{{ auth_type }}_test.yml'
+      args:
+        apply:
+          vars:
+            ansible_hashi_vault_retries: 2
+
     - name: 'test {{ auth_type }} auth without SSL (lookup parameters)'
       include_tasks: '{{ auth_type }}_test.yml'
 

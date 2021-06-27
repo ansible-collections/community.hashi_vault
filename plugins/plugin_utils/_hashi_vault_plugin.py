@@ -30,7 +30,18 @@ class HashiVaultPlugin(AnsiblePlugin):
 
         self.helper = HashiVaultHelper()
         self._options_adapter = HashiVaultOptionAdapter.from_ansible_plugin(self)
-        self.connection_options = HashiVaultConnectionOptions(self._options_adapter)
+        self.connection_options = HashiVaultConnectionOptions(self._options_adapter, self._generate_retry_callback)
+
+    def _generate_retry_callback(self, retry_action):
+        '''returns a Retry callback function for plugins'''
+        def _on_retry(retry_obj):
+            if retry_obj.total > 0:
+                if retry_action == 'warn':
+                    display.warning('community.hashi_vault: %i %s remaining.' % (retry_obj.total, 'retry' if retry_obj.total == 1 else 'retries'))
+                else:
+                    pass
+
+        return _on_retry
 
     def process_deprecations(self, collection_name='community.hashi_vault'):
         '''processes deprecations related to the collection'''
