@@ -1,12 +1,18 @@
 ---
 name: Collection Docs
 on:
+  # we want to ensure the docs are still good before doing a release
+  # so we try to catch that with the changelog changes
   push:
     paths:
       - 'docs/**'
+      - 'CHANGELOG.rst'
+      - 'changelogs/changelog.yaml'
   pull_request:
     paths:
       - 'docs/**'
+      - 'CHANGELOG.rst'
+      - 'changelogs/changelog.yaml'
   schedule:
     - cron: '0 13 * * *'
 
