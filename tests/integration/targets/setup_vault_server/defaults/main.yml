@@ -1,0 +1,34 @@
+---
+## vars for vault server
+
+vault_ansible_arch_table:
+  'x86_64': 'amd64' # Linux
+  'amd64': 'amd64' # FreeBSD
+  'i386': '386'
+
+vault_arch: "{{ vault_ansible_arch_table[ansible_architecture] }}"
+
+vault_version: '1.7.3'
+vault_bin: '{{ role_path }}/files/bin/{{ vault_slug }}'
+vault_slug: 'vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}'
+vault_zip: '{{ vault_bin }}/{{ vault_slug }}.zip'
+vault_uri: 'https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_slug }}.zip'
+vault_cmd: '{{ vault_bin }}/vault'
+
+vault_dev_root_token_id: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
+vault_test_server_https: 'https://localhost:8201'
+vault_test_server_http: 'http://localhost:8200'
+
+# this means "don't download and start a Vault server", instead
+# just use the addresses above to connect to one that's already running
+vault_test_server_external: False
+
+# WIP
+vault_test_server_configure: True
+
+# when False the tests requiring a valid SSL connection to Vault will be skipped
+vault_run_https_tests: True
+
+local_temp_dir: /tmp
+vault_cert_file: '{{ local_temp_dir }}/cert.pem'
+vault_key_file: '{{ local_temp_dir }}/privatekey.pem'

@@ -13,8 +13,11 @@
 - set_fact:
     local_temp_dir: '{{ tempfile_result.path }}'
 
-- include_tasks: vault_server.yml
-  when: not vault_test_server_external | bool
+# - include_tasks: vault_server.yml
+#   when: not vault_test_server_external | bool
+- include_role:
+    name: setup_vault_server
+  when: vault_server_legacy | default(True) | bool
 
 - import_tasks: vault_server_configure.yml
   when: vault_test_server_configure | bool
