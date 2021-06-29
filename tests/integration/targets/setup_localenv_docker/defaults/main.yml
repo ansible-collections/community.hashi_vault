@@ -1,0 +1,23 @@
+---
+vault_version: '1.7.3'
+
+docker_compose: clean
+# up
+# down
+
+docker_compose_project_name: hashi_vault
+
+vault_port_http: 8200
+vault_port_https: 8300
+vault_container_name: vault
+vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+proxy_port: 8888
+proxy_container_name: tinyproxy
+
+output_dir: '{{ role_path }}/files/.output'
+
+docker_compose_output: '{{ output_dir }}/{{ docker_compose_project_name }}'
+vault_config_output: '{{ output_dir }}/vault_config'
+
+vault_cert_file: '{{ vault_config_output }}/cert.pem'
+vault_key_file: '{{ vault_config_output }}/key.pem'

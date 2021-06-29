@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+---
+# can be uncommented once vault configuration has been run once (WIP/broken)
+# vault_server_configure: False
+{{ integration_config | to_nice_yaml }}

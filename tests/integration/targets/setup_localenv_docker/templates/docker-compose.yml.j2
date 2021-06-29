@@ -1,0 +1,21 @@
+# {{ ansible_managed }}
+---
+version: '3'
+services:
+  vault:
+    image: 'vault:{{ vault_version }}'
+    container_name: '{{ vault_container_name }}'
+    ports:
+      - '{{ vault_port_http }}:{{ vault_port_http }}'
+      - '{{ vault_port_https }}:{{ vault_port_https }}'
+    volumes:
+      - '{{ vault_config_output }}:/vault/config'
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: '{{ vault_dev_root_token_id }}'
+      SKIP_CHOWN: 1
+  tinyproxy:
+    image: 'monokal/tinyproxy'
+    container_name: '{{ proxy_container_name }}'
+    ports:
+      - '{{ proxy_port }}:{{ proxy_port }}'
+    command: ANY
