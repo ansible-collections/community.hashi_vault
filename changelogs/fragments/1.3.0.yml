@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This release adds two connection-based options for controlling timeouts and retrying failed Vault requests.
