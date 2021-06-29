@@ -106,8 +106,8 @@ vault_test_server_configure: True
 # when False the tests requiring a valid SSL connection to Vault will be skipped
 vault_run_https_tests: True
 
-vault_cert_file: '{{ local_temp_dir }}/cert.pem'
-vault_key_file: '{{ local_temp_dir }}/privatekey.pem'
+# vault_cert_file: '{{ local_temp_dir }}/cert.pem'
+# vault_key_file: '{{ local_temp_dir }}/privatekey.pem'
 
 vault_proxy_server: 'http://127.0.0.1:8001'
 vault_proxy_external: False

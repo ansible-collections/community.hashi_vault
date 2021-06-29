@@ -1,0 +1,27 @@
+---
+- name: "Cert generation tasks"
+  vars:
+    vault_csr_file: '{{ vault_key_file | dirname }}/csr.csr'
+  block:
+    - name: Generate privatekey
+      community.crypto.openssl_privatekey:
+        mode: 'o=r'
+        path: '{{ vault_key_file }}'
+
+    - name: Generate CSR
+      community.crypto.openssl_csr:
+        mode: 'o=r'
+        path: '{{ vault_csr_file }}'
+        privatekey_path: '{{ vault_key_file }}'
+        subject:
+          commonName: '{{ vault_hostname }}'
+
+    - name: Generate selfsigned certificate
+      community.crypto.x509_certificate:
+        mode: 'o=r'
+        path: '{{ vault_cert_file }}'
+        csr_path: '{{ vault_csr_file }}'
+        privatekey_path: '{{ vault_key_file }}'
+        provider: selfsigned
+        selfsigned_digest: sha256
+      register: selfsigned_certificate
