@@ -291,7 +291,7 @@ jobs:
         if: ${{ matrix.runner }} == 'macos-latest'
         run: |
           brew install docker-machine docker
-          sudo docker -–version
+          sudo docker --version
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
