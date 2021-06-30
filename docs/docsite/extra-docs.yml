@@ -1,4 +1,5 @@
 ---
 sections:
   - title: User Guide
-    toctree: user_guide
+    toctree:
+      - user_guide
