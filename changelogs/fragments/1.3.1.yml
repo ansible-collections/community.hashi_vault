@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This release fixes an error in the documentation. No functionality is changed so it's not necessary to upgrade from ``1.3.0``.
