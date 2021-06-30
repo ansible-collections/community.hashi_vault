@@ -5,6 +5,14 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.3.1
+======
+
+Release Summary
+---------------
+
+This release fixes an error in the documentation. No functionality is changed so it's not necessary to upgrade from ``1.3.0``.
+
 v1.3.0
 ======
 
