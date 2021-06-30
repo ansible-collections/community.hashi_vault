@@ -292,6 +292,9 @@ jobs:
         run: |
           brew install docker-machine docker
           sudo docker --version
+          docker-machine create --driver virtualbox default
+          docker-machine env default
+          docker-machine env default >> $GITHUB_ENV
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -321,7 +324,9 @@ jobs:
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker #--coverage
+        run: |
+          docker ps || true
+          ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
