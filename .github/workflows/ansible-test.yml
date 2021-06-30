@@ -296,7 +296,7 @@ jobs:
           sudo docker --version
           docker-machine create --driver virtualbox default
           docker-machine env default
-          docker-machine env default >> $GITHUB_ENV
+          docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' >> $GITHUB_ENV
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
