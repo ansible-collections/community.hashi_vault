@@ -19,7 +19,7 @@ tags:
   - password
   - passwords
 repository: https://github.com/ansible-collections/community.hashi_vault
-#documentation: https://github.com/ansible-collection-migration/community.hashi_vault/tree/main/docs
+documentation: https://docs.ansible.com/ansible/devel/collections/community/hashi_vault
 homepage: https://github.com/ansible-collections/community.hashi_vault
 issues: https://github.com/ansible-collections/community.hashi_vault/issues
 build_ignore:
