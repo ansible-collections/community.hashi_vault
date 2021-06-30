@@ -199,3 +199,10 @@ releases:
     - 100-add-timeout-option.yml
     - 71-add-retries.yml
     release_date: '2021-06-28'
+  1.3.1:
+    changes:
+      release_summary: This release fixes an error in the documentation. No functionality
+        is changed so it's not necessary to upgrade from ``1.3.0``.
+    fragments:
+    - 1.3.1.yml
+    release_date: '2021-06-30'
