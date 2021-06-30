@@ -3,7 +3,13 @@
 [![CI](https://github.com/ansible-collections/community.hashi_vault/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.hashi_vault/actions) [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.hashi_vault)](https://codecov.io/gh/ansible-collections/community.hashi_vault)
 
 <!-- Describe the collection and why a user would want to use it. What does the collection do? -->
+## Collection Documentation
 
+Browsing the [**latest** collection documentation](https://docs.ansible.com/ansible/latest/collections/community/hashi_vault) will show docs for the _latest version released in the Ansible package_ not the latest version of the collection released on Galaxy.
+
+Browsing the [**devel** collection documentation](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault) shows docs for the _latest version released on Galaxy_.
+
+If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**.
 ## Tested with Ansible
 
 * 2.9
