@@ -8,5 +8,6 @@ integration_config:
   vault_test_server_external: True
   vault_proxy_external: True
   vault_cert_content: "{{ lookup('file', vault_cert_file) }}"
+  vault_server_legacy: False
   # vault_cert_file: '{{ vault_cert_file }}'
   # vault_key_file: '{{ vault_key_file }}'
