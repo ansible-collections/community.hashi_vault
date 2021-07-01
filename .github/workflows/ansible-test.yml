@@ -267,7 +267,7 @@ jobs:
 
       - name: Run integration test
         run: |
-          cp "${{ github.workspace }}/${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/.output/integration_config.yml" "${COLLECTION_INTEGRATION_TARGETS}"
+          cp "${{ github.workspace }}/${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/.output/integration_config.yml" "${{ github.workspace }}/${COLLECTION_INTEGRATION_TARGETS}"
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker default --coverage --docker-network ${{ job.services.vault.network }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
