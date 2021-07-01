@@ -152,16 +152,28 @@ jobs:
           - ansible: devel
             vault: 1.7.3
             python: '3.10'
+    services:
+      vault:
+        image: vault:${{ matrix.vault }}
+        volumes:
+          - ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}/tests/integration/targets/setup_localenv_gha/files/.output/vault_config:/vault/config
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
+          SKIP_CHOWN: 1
+      tinyproxy:
+        image: monokal/tinyproxy
 
     steps:
       - name: Initialize env vars
         run: |
           COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
+          COLLECTION_INTEGRATION_TARGETS=${COLLECTION_PATH}/tests/integration/targets
+          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
           LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
           LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
           echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
+          echo "COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_TARGETS}" >> ${GITHUB_ENV}
           echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
           echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
           echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
@@ -176,59 +188,61 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Cache for vault binaries
-        id: cache-vault
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
-          key: ${{ runner.os }}-vault${{ matrix.vault }} # future: include version/arch when configurable
+      # - name: Cache for vault binaries
+      #   id: cache-vault
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
+      #     key: ${{ runner.os }}-vault${{ matrix.vault }} # future: include version/arch when configurable
 
-      # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
-      # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
-      # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
-      - name: Prepare for Vault version and caching
-        run: |
-          rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
-          rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
-          echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
+      # # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
+      # # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
+      # # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
+      # - name: Prepare for Vault version and caching
+      #   run: |
+      #     rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
+      #     rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
+      #     echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      #TODO: remove dependency on community.crypto
-      - name: Find the latest version of community.crypto
-        run: |
-          # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
+      # #TODO: remove dependency on community.crypto
+      # - name: Find the latest version of community.crypto
+      #   run: |
+      #     # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
 
-          cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
-          echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
+      #     cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
+      #     echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
 
-      - name: Cache for community.crypto
-        id: cache-cc
-        uses: actions/cache@v2
-        with:
-          path: ansible_collections/community/crypto
-          key: collection-community.crypto-${{ env.CC_LATEST }}
+      # - name: Cache for community.crypto
+      #   id: cache-cc
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ansible_collections/community/crypto
+      #     key: collection-community.crypto-${{ env.CC_LATEST }}
 
-      - name: Install collection dependencies
-        if: steps.cache-cc.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
-        with:
-          repository: ansible-collections/community.crypto
-          ref: refs/tags/${{ env.CC_LATEST }}
-          path: ansible_collections/community/crypto
+      # - name: Install collection dependencies
+      #   if: steps.cache-cc.outputs.cache-hit != 'true'
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: ansible-collections/community.crypto
+      #     ref: refs/tags/${{ env.CC_LATEST }}
+      #     path: ansible_collections/community/crypto
 
       # this will populate files/bin with the selected vault version binary
-      - name: Pre-download Vault
-        if: steps.cache-vault.outputs.cache-hit != 'true'
-        env:
-          ANSIBLE_ROLES_PATH: ../
-        working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
-        run: ansible-playbook "download_vault.yml" -v
+      # - name: Pre-download Vault
+      #   if: steps.cache-vault.outputs.cache-hit != 'true'
+      #   env:
+      #     ANSIBLE_ROLES_PATH: ../
+      #   working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
+      #   run: ansible-playbook "download_vault.yml" -v
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
+        run: |
+          cp "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_gha/files/.output/integration_config.yml" "${COLLECTION_INTEGRATION_TARGETS}"
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker default --coverage --docker-network ${{ job.services.vault.network }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
@@ -325,7 +339,7 @@ jobs:
           path: ansible_collections/community/crypto
 
       # Run the integration tests
-      - name: Run integration test
+      - name: Run integration test in docker
         run: |
           docker ps || true
           ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker #--coverage
