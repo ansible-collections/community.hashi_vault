@@ -156,7 +156,7 @@ jobs:
       vault:
         image: vault:${{ matrix.vault }}
         volumes:
-          - ansible_collections/community/hashi_vault/tests/integration/targets/setup_localenv_gha/files/.output/vault_config:/vault/config
+          - ${{ github.workspace }}/ansible_collections/community/hashi_vault/tests/integration/targets/setup_localenv_gha/files/.output/vault_config:/vault/config
         env:
           VAULT_DEV_ROOT_TOKEN_ID: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
           SKIP_CHOWN: 1
