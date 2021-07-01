@@ -260,6 +260,7 @@ jobs:
       - name: Prepare docker dependencies
         env:
           ANSIBLE_ROLES_PATH: ${{ env.COLLECTION_INTEGRATION_TARGETS }}
+          ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
         run: |
           ansible localhost -m include_role -a "name=setup_localenv_docker"
 
