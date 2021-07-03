@@ -378,6 +378,7 @@ jobs:
       - name: Run the integration tests in a venv
         run: |
           ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --venv --requirements #--coverage
+        working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
       # - name: Generate coverage report
