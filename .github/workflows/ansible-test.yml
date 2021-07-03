@@ -372,12 +372,12 @@ jobs:
         run: |
           docker ps || true
           cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
-          ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker #--coverage
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Run the integration tests in a venv
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --venv --requirements #--coverage
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
