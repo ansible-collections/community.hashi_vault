@@ -184,7 +184,7 @@ jobs:
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Initialize other env vars
-        uses: briantist/hashi_vault/.github/actions/easyenv@tests/breakup
+        uses: briantist/community.hashi_vault/.github/actions/easyenv@tests/breakup
         with:
           env: |
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_PATH}/tests/integration/targets
