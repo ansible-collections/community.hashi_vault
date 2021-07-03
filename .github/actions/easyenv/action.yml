@@ -1,0 +1,13 @@
+---
+name: Easy Env Vars
+description: Set many persistent env vars, which can reference previous vars
+inputs:
+  env:
+      description: Multi-line string ENV_NAME=VALUE
+      required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |-
+        '${{ inputs.env }}' | easyenv.sh
