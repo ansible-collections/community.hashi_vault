@@ -1,0 +1,13 @@
+#
+---
+vault_integration_legacy: true
+vault_version: 1.7.2
+
+vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+
+vault_proxy_server: 'http://127.0.0.1:8001'
+vault_proxy_external: false
+
+vault_test_server_external: false
+vault_test_server_http: http://localhost:8200
+vault_test_server_https: https://localhost:8300

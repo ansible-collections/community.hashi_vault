@@ -17,7 +17,7 @@
 #   when: not vault_test_server_external | bool
 - include_role:
     name: setup_vault_server
-  when: vault_server_legacy | default(True) | bool
+  when: vault_integration_legacy | bool
 
 - import_tasks: vault_server_configure.yml
   when: vault_test_server_configure | bool

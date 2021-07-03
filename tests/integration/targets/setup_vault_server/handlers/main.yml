@@ -6,4 +6,4 @@
   shell: "kill $(cat {{ local_temp_dir }}/vault.pid)"
   ignore_errors: true
   listen: test_managed_vault_cleanup
-  when: vault_server_legacy | default(True) | bool
+  when: vault_integration_legacy | bool
