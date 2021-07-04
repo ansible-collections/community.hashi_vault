@@ -10,4 +10,4 @@ runs:
   steps:
     - shell: bash
       run: |-
-        '${{ inputs.env }}' | ${{ github.action_path }}/easyenv.sh
+        ${{ github.action_path }}/easyenv.sh <<<'${{ inputs.env }}'
