@@ -9,4 +9,4 @@ runs:
   using: composite
   steps:
     - shell: bash
-      run: echo '${{ inputs.env }}' | ${{ github.action_path }}/easyenv.sh
+      run: ${{ github.action_path }}/easyenv.sh <<<'${{ inputs.env }}'
