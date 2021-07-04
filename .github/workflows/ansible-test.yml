@@ -184,7 +184,7 @@ jobs:
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Initialize other env vars
-        uses: briantist/ezenv@main
+        uses: briantist/ezenv@v1
         with:
           env: |
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_PATH}/tests/integration/targets
