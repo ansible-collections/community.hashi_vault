@@ -143,7 +143,7 @@ jobs:
           - 3.8
           - 3.9
         vault:
-          - 1.7.3
+          # - 1.7.3
           - 1.6.5
         exclude:
           - ansible: stable-2.9
@@ -165,34 +165,36 @@ jobs:
 
     steps:
       - name: Initialize env vars
-        run: |
-          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-          # COLLECTION_INTEGRATION_TARGETS=${COLLECTION_PATH}/tests/integration/targets
-          # LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
-          # LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-          # LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
-
-          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
-          # echo "COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_TARGETS}" >> ${GITHUB_ENV}
-          # echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
-          # echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
-          # echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
-
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          path: ${{ env.COLLECTION_PATH }}
-
-      - name: Initialize other env vars
         uses: briantist/ezenv@v1
         with:
           env: |
-            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_PATH}/tests/integration/targets
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
+            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
             LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
             LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
             LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
-      - run: env sort
+        # run: |
+        #   COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+        #   # COLLECTION_INTEGRATION_TARGETS=${COLLECTION_PATH}/tests/integration/targets
+        #   # LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
+        #   # LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+        #   # LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
+
+        #   echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
+        #   # echo "COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_TARGETS}" >> ${GITHUB_ENV}
+        #   # echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
+        #   # echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
+        #   # echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
+
+      - name: Check out code
+        uses: actions/checkout@v2
+        # with:
+        #   path: ${{ env.COLLECTION_PATH }}
+
+      - name: Linkit
+        run: ln -s "${COLLECTION_PATH}" $(pwd)
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -320,16 +322,13 @@ jobs:
 
     steps:
       - name: Initialize env vars
-        run: |
-          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
-          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-          LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
-
-          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
-          echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
-          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
-          echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
+            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
       - name: Check out code
         uses: actions/checkout@v2
