@@ -1,5 +1,6 @@
 ---
 - name: Install tinyproxy
+  become: yes
   vars:
     # check 'Install unzip' task to know why we set ansible_python_interpreter
     ansible_python_interpreter: "{{
