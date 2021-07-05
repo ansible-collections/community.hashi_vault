@@ -65,6 +65,8 @@
         - name: 'Ensure it succeeded'
           block:
             - name: 'Check Vault status'
+              environment:
+                VAULT_ADDR: '{{ vault_test_server_http }}'
               shell: '{{ vault_cmd }} status'
 
           rescue:
