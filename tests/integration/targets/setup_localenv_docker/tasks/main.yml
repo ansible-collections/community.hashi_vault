@@ -10,15 +10,34 @@
 - name: "Create the docker-compose definition"
   template:
     src: docker-compose.yml.j2
-    dest: '{{ docker_compose_output }}/docker-compose.yml'
+    dest: '{{ docker_compose_file }}'
 
 - name: "Persist vars (role_path is relative)"
   set_fact:
     vault_cert_file: '{{ vault_cert_file }}'
     vault_key_file: '{{ vault_key_file }}'
 
+- name: "Check if cert already exists"
+  stat:
+    path: '{{ vault_cert_file }}'
+    follow: yes
+    get_attributes: no
+    get_checksum: no
+    get_mime: no
+  register: cert_status
+
+- name: "Check if key already exists"
+  stat:
+    path: '{{ vault_key_file }}'
+    follow: yes
+    get_attributes: no
+    get_checksum: no
+    get_mime: no
+  register: key_status
+
 - name: "Generate certs"
-  import_role:
+  when: not (key_status.stat.exists and cert_status.stat.exists)
+  include_role:
     name: setup_vault_server_cert
   vars:
     vault_hostname: '{{ vault_container_name }}'
@@ -28,20 +47,8 @@
     src: vault_config.hcl.j2
     dest: '{{ vault_config_output }}/vault_config.hcl'
 
-- name: "Shut down"
-  when: docker_compose in ['clean', 'down']
-  community.docker.docker_compose:
-    project_name: hashi_vault
-    state: absent
-    # definition: '{{ docker_compose_definition }}'
-    project_src: '{{ docker_compose_output }}'
-
-- name: "Bring up"
-  when: docker_compose in ['clean', 'up']
-  community.docker.docker_compose:
-    project_name: hashi_vault
-    # definition: '{{ docker_compose_definition }}'
-    project_src: '{{ docker_compose_output }}'
+- include_tasks: docker.yml
+  when: docker_compose != 'none'
 
 - name: "Template integration_config"
   template:

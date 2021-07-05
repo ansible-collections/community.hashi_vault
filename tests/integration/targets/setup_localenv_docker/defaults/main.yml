@@ -4,6 +4,7 @@ vault_version: '1.7.3'
 docker_compose: clean
 # up
 # down
+# none
 
 docker_compose_project_name: hashi_vault
 
@@ -17,6 +18,8 @@ proxy_container_name: tinyproxy
 output_dir: '{{ role_path }}/files/.output'
 
 docker_compose_output: '{{ output_dir }}/{{ docker_compose_project_name }}'
+docker_compose_file: '{{ docker_compose_output }}/docker-compose.yml'
+
 vault_config_output: '{{ output_dir }}/vault_config'
 
 vault_cert_file: '{{ vault_config_output }}/cert.pem'
