@@ -15,7 +15,7 @@
     removes: "{{ local_temp_dir }}/tinyproxy.pid"
 
 - name: Uninstall tinyproxy
-  become: yes
+  become: '{{ ansible_distribution != "MacOSX" }}'
   vars:
     # check 'Install unzip' task to know why we set ansible_python_interpreter
     ansible_python_interpreter: "{{
