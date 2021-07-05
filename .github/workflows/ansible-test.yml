@@ -362,6 +362,9 @@ jobs:
           cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
           echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
 
+          cglu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.general/releases/latest)
+          echo "CG_LATEST=$(basename ${cglu})" >> $GITHUB_ENV
+
       - name: Cache for community.crypto
         id: cache-cc
         uses: actions/cache@v2
@@ -376,6 +379,14 @@ jobs:
           repository: ansible-collections/community.crypto
           ref: refs/tags/${{ env.CC_LATEST }}
           path: ansible_collections/community/crypto
+
+      - name: Install collection dependencies
+        # if: steps.cache-cc.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: ansible-collections/community.general
+          ref: refs/tags/${{ env.CG_LATEST }}
+          path: ansible_collections/community/general
 
       # Run the integration tests
       - name: Run integration tests in docker
