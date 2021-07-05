@@ -20,6 +20,7 @@
     #       All this just for unzip, which is only needed to unzip the vault binary to set up for testing.
     #       TODO: revisit how we set up vault in the first place or how we host the binary (.gz?)
     - name: 'Install unzip'
+      become: yes
       vars:
         # by assuming python3 here we're probably condeming this to not work on older Ubuntu/Debian (from like 2014?)
         # but the alternative is probably reimplementing parts of interpreter_discovery.py
@@ -28,7 +29,7 @@
         }}"
       package:
         name: unzip
-      # when: ansible_distribution != "MacOSX"  # unzip already installed (#TODO: get MacOSX tests working again)
+      when: ansible_distribution != "MacOSX"  # unzip already installed (#TODO: get MacOSX tests working again)
 
     - name: "Create bin directory"
       file:
