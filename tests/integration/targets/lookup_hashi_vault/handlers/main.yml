@@ -15,6 +15,7 @@
     removes: "{{ local_temp_dir }}/tinyproxy.pid"
 
 - name: Uninstall tinyproxy
+  become: yes
   vars:
     # check 'Install unzip' task to know why we set ansible_python_interpreter
     ansible_python_interpreter: "{{
@@ -23,6 +24,7 @@
   package:
     name: tinyproxy
     state: absent
+  ignore_errors: yes
 
 # notify 'cleanup' for any handlers that should always run at the end of tests
 - name: 'Delete temp dir'

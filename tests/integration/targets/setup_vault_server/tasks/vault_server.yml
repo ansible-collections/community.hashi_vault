@@ -61,3 +61,18 @@
         - name: 'Start vault server (dev mode enabled)'
           shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl </dev/null >/dev/null 2>&1 &'
           notify: test_managed_vault_cleanup
+
+        - name: 'Ensure it succeeded'
+          block:
+            - name: 'Check Vault status'
+              shell: '{{ vault_cmd }} status'
+
+          rescue:
+            - name: 'dump the config'
+              debug:
+                msg: "{{ lookup('file', local_temp_dir ~ '/vault_config.hcl') }}"
+
+            # vault wasn't up, let's run the launch command with output, which we expect to fail
+            - name: 'Re-launch Vault'
+              shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl'
+              notify: test_managed_vault_cleanup
