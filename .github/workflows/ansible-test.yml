@@ -300,6 +300,8 @@ jobs:
   classic_integration:
     runs-on: ${{ matrix.runner }}
     name: Local I - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    env:
+      OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
     strategy:
       fail-fast: false
       matrix:
@@ -340,49 +342,49 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Fix forks/maxfiles on MacOS
-        if: ${{ matrix.runner == 'macos-latest' }}
-        env:
-          PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
-          MAXFILES: 524288
-        run: |
-          ulimit -n
-          ulimit -Hn
-          ulimit -Sn
+      # - name: Fix forks/maxfiles on MacOS
+      #   if: ${{ matrix.runner == 'macos-latest' }}
+      #   env:
+      #     PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
+      #     MAXFILES: 524288
+      #   run: |
+      #     ulimit -n
+      #     ulimit -Hn
+      #     ulimit -Sn
 
-          sudo launchctl limit maxfiles $MAXFILES $MAXFILES
+      #     sudo launchctl limit maxfiles $MAXFILES $MAXFILES
 
-          ulimit -n
-          ulimit -Hn
-          ulimit -Sn
+      #     ulimit -n
+      #     ulimit -Hn
+      #     ulimit -Sn
 
-          ulimit -S -n $MAXFILES $MAXFILES
+      #     ulimit -S -n $MAXFILES $MAXFILES
 
-          # cat >${PLIST} <<EOF
-          # <?xml version="1.0" encoding="UTF-8"?>
-          # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-          #         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          # <plist version="1.0">
-          # <dict>
-          #     <key>Label</key>
-          #     <string>limit.maxfiles</string>
-          #     <key>ProgramArguments</key>
-          #     <array>
-          #     <string>launchctl</string>
-          #     <string>limit</string>
-          #     <string>maxfiles</string>
-          #     <string>524288</string>
-          #     <string>524288</string>
-          #     </array>
-          #     <key>RunAtLoad</key>
-          #     <true/>
-          #     <key>ServiceIPC</key>
-          #     <false/>
-          # </dict>
-          # </plist>
-          # EOF
+      #     # cat >${PLIST} <<EOF
+      #     # <?xml version="1.0" encoding="UTF-8"?>
+      #     # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+      #     #         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      #     # <plist version="1.0">
+      #     # <dict>
+      #     #     <key>Label</key>
+      #     #     <string>limit.maxfiles</string>
+      #     #     <key>ProgramArguments</key>
+      #     #     <array>
+      #     #     <string>launchctl</string>
+      #     #     <string>limit</string>
+      #     #     <string>maxfiles</string>
+      #     #     <string>524288</string>
+      #     #     <string>524288</string>
+      #     #     </array>
+      #     #     <key>RunAtLoad</key>
+      #     #     <true/>
+      #     #     <key>ServiceIPC</key>
+      #     #     <false/>
+      #     # </dict>
+      #     # </plist>
+      #     # EOF
 
-          # sudo chmod 644 ${PLIST}
+      #     # sudo chmod 644 ${PLIST}
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -423,7 +425,7 @@ jobs:
 
       - name: Run the integration tests in a venv
         run: |
-          ulimit -S -n $(ulimit -Hn)
+          # ulimit -S -n $(ulimit -Hn)
           cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
