@@ -340,25 +340,14 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install Docker on MacOS
-        if: ${{ matrix.runner == 'macos-latest' }}
-        run: |
-          mkdir -p ~/.docker/machine/cache
-          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
-          brew install docker-machine docker
-          sudo docker --version
-          docker-machine create --driver virtualbox default
-          docker-machine env default
-          docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
-
       - name: Fix forks/maxfiles on MacOS
         if: ${{ matrix.runner == 'macos-latest' }}
         env:
           PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
           MAXFILES: 524588
         run: |
-          ulimit -S -n $MAXFILES $MAXFILES
-          # sudo launchctl limit maxfiles $MAXFILES $MAXFILES
+          sudo launchctl limit maxfiles $MAXFILES $MAXFILES
+          ulimit -n $MAXFILES $MAXFILES
           # cat >${PLIST} <<EOF
           # <?xml version="1.0" encoding="UTF-8"?>
           # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
@@ -385,6 +374,16 @@ jobs:
 
           # sudo chmod 644 ${PLIST}
 
+      - name: Install Docker on MacOS
+        if: ${{ matrix.runner == 'macos-latest' }}
+        run: |
+          mkdir -p ~/.docker/machine/cache
+          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
+          brew install docker-machine docker
+          sudo docker --version
+          docker-machine create --driver virtualbox default
+          docker-machine env default
+          docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
