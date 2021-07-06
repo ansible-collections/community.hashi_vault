@@ -357,7 +357,7 @@ jobs:
           PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
           MAXFILES: 524588
         run: |
-          ulimit -S -n $MAXFILES
+          ulimit -S -n $MAXFILES $MAXFILES
           # sudo launchctl limit maxfiles $MAXFILES $MAXFILES
           # cat >${PLIST} <<EOF
           # <?xml version="1.0" encoding="UTF-8"?>
@@ -384,8 +384,6 @@ jobs:
           # EOF
 
           # sudo chmod 644 ${PLIST}
-
-
 
 
       - name: Install ansible-base (${{ matrix.ansible }})
