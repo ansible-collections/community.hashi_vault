@@ -384,17 +384,6 @@ jobs:
 
           # sudo chmod 644 ${PLIST}
 
-      - name: Install Docker on MacOS
-        if: ${{ matrix.runner == 'macos-latest' }}
-        run: |
-          mkdir -p ~/.docker/machine/cache
-          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
-          brew install docker-machine docker
-          sudo docker --version
-          docker-machine create --driver virtualbox default
-          docker-machine env default
-          docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
-
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
@@ -432,17 +421,29 @@ jobs:
           ref: refs/tags/${{ env.CG_LATEST }}
           path: ansible_collections/community/general
 
-      # Run the integration tests
+      - name: Run the integration tests in a venv
+        run: |
+          ulimit -S -n $(ulimit -Hn)
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: Install Docker on MacOS
+        if: ${{ matrix.runner == 'macos-latest' }}
+        run: |
+          mkdir -p ~/.docker/machine/cache
+          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
+          brew install docker-machine docker
+          sudo docker --version
+          docker-machine create --driver virtualbox default
+          docker-machine env default
+          docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
+
+          # Run the integration tests
       - name: Run integration tests in docker
         run: |
           docker ps || true
           cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker #--coverage
-        working-directory: ${{ env.COLLECTION_PATH }}
-
-      - name: Run the integration tests in a venv
-        run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
