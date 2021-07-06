@@ -53,13 +53,13 @@
         - name: 'Create configuration file'
           template:
             src: vault_config.hcl.j2
-            dest: '{{ local_temp_dir }}/vault_config.hcl'
+            dest: '{{ vault_config_file }}'
 
         - debug:
-            msg: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl </dev/null >/dev/null 2>&1 &'
+            msg: '{{ vault_launch_cmd }} </dev/null >/dev/null 2>&1 &'
 
         - name: 'Start vault server (dev mode enabled)'
-          shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl </dev/null >/dev/null 2>&1 &'
+          shell: '{{ vault_launch_cmd }} </dev/null >/dev/null 2>&1 &'
           notify: test_managed_vault_cleanup
 
         - name: 'Ensure it succeeded'
@@ -74,9 +74,10 @@
           rescue:
             - name: 'dump the config'
               debug:
-                msg: "{{ lookup('file', local_temp_dir ~ '/vault_config.hcl') }}"
+                msg: "{{ lookup('file', vault_config_file) }}"
 
             # vault wasn't up, let's run the launch command with output, which we expect to fail
             - name: 'Re-launch Vault'
-              shell: 'nohup {{ vault_cmd }} server -dev -config {{ local_temp_dir }}/vault_config.hcl'
+              shell: '{{ vault_launch_cmd }}'
               notify: test_managed_vault_cleanup
+              # timeout: 10  # when we drop 2.9 support we can enable this just in case

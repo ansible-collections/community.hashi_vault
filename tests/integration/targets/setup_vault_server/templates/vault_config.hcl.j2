@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-pid_file = "{{ local_temp_dir }}/vault.pid"
+pid_file = "{{ vault_pid_file }}"
 {% if vault_run_https_tests | bool %}
 listener "tcp" {
   tls_key_file = "{{ vault_key_file }}"

@@ -6,6 +6,13 @@
 #   shell: "kill $(cat {{ local_temp_dir }}/vault.pid)"
 #   ignore_errors: true
 #   listen: test_managed_vault_cleanup
+- shell: ls -alh /tmp
+  listen: test_managed_vault_cleanup
+
+- shell: "cat {{ vault_pid_file }}"
+  listen: test_managed_vault_cleanup
+  ignore_errors: yes
+
 
 - name: Stop tinyproxy
   shell:

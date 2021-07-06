@@ -351,6 +351,43 @@ jobs:
           docker-machine env default
           docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
 
+      - name: Fix forks/maxfiles on MacOS
+        if: ${{ matrix.runner == 'macos-latest' }}
+        env:
+          PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
+          MAXFILES: 524588
+        run: |
+          ulimit -S -n $MAXFILES
+          # sudo launchctl limit maxfiles $MAXFILES $MAXFILES
+          # cat >${PLIST} <<EOF
+          # <?xml version="1.0" encoding="UTF-8"?>
+          # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+          #         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          # <plist version="1.0">
+          # <dict>
+          #     <key>Label</key>
+          #     <string>limit.maxfiles</string>
+          #     <key>ProgramArguments</key>
+          #     <array>
+          #     <string>launchctl</string>
+          #     <string>limit</string>
+          #     <string>maxfiles</string>
+          #     <string>524288</string>
+          #     <string>524288</string>
+          #     </array>
+          #     <key>RunAtLoad</key>
+          #     <true/>
+          #     <key>ServiceIPC</key>
+          #     <false/>
+          # </dict>
+          # </plist>
+          # EOF
+
+          # sudo chmod 644 ${PLIST}
+
+
+
+
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
