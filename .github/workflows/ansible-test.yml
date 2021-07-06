@@ -424,6 +424,7 @@ jobs:
       - name: Run the integration tests in a venv
         run: |
           ulimit -S -n $(ulimit -Hn)
+          cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
@@ -442,7 +443,6 @@ jobs:
       - name: Run integration tests in docker
         run: |
           docker ps || true
-          cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
