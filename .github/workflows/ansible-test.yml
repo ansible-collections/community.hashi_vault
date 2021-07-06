@@ -344,7 +344,7 @@ jobs:
         if: ${{ matrix.runner == 'macos-latest' }}
         env:
           PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
-          MAXFILES: 524588
+          MAXFILES: 524288
         run: |
           ulimit -n
           ulimit -Hn
