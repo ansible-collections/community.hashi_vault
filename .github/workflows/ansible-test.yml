@@ -346,8 +346,18 @@ jobs:
           PLIST: /Library/LaunchDaemons/limit.maxfiles.plist
           MAXFILES: 524588
         run: |
+          ulimit -n
+          ulimit -Hn
+          ulimit -Sn
+
           sudo launchctl limit maxfiles $MAXFILES $MAXFILES
+
+          ulimit -n
+          ulimit -Hn
+          ulimit -Sn
+
           ulimit -S -n $MAXFILES $MAXFILES
+
           # cat >${PLIST} <<EOF
           # <?xml version="1.0" encoding="UTF-8"?>
           # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
