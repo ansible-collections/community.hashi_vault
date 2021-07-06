@@ -68,8 +68,11 @@
               environment:
                 VAULT_ADDR: '{{ vault_test_server_http }}'
               shell: '{{ vault_cmd }} status'
+              register: vault_status
               retries: 10
               delay: 1
+              until: vault_status is succeeded
+
 
           rescue:
             - name: 'dump the config'
