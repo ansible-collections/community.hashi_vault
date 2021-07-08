@@ -6,7 +6,6 @@ vault_ansible_arch_table:
 
 vault_arch: "{{ vault_ansible_arch_table[ansible_architecture] }}"
 
-vault_version: '1.7.3'
 vault_bin: '{{ role_path }}/files/bin/{{ vault_slug }}'
 vault_slug: 'vault_{{ vault_version }}_{{ ansible_system | lower }}_{{ vault_arch }}'
 vault_zip: '{{ vault_bin }}/{{ vault_slug }}.zip'

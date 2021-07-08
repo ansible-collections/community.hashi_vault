@@ -1,17 +1,18 @@
 ---
 vault_version: '1.7.3'
+vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
 
 docker_compose: clean
-# up
-# down
-# none
+# clean - down, then up
+# up - bring up the configuration
+# down - destroy the configuration
+# none - do not take any docker actions (templating of docker-compose.yml still happens)
 
 docker_compose_project_name: hashi_vault
 
 vault_port_http: 8200
 vault_port_https: 8300
 vault_container_name: vault
-vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
 proxy_port: 8888
 proxy_container_name: tinyproxy
 
