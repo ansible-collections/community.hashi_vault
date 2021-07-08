@@ -360,6 +360,9 @@ jobs:
         with:
           path: ${{ env.COLLECTION_PATH }}
 
+      - name: Linkit
+        run: ln -s "${COLLECTION_PATH}/.github" .github
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -412,50 +415,62 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      #TODO: remove dependency on community.crypto
-      - name: Find the latest version of community.crypto
-        run: |
-          # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
+      # - name: Find the latest version of community.crypto
+      #   run: |
+      #     # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
 
-          cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
-          echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
+      #     cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
+      #     echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
 
-          cglu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.general/releases/latest)
-          echo "CG_LATEST=$(basename ${cglu})" >> $GITHUB_ENV
+      #     cglu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.general/releases/latest)
+      #     echo "CG_LATEST=$(basename ${cglu})" >> $GITHUB_ENV
 
-          cdlu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.docker/releases/latest)
-          echo "CD_LATEST=$(basename ${cdlu})" >> $GITHUB_ENV
+      #     cdlu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.docker/releases/latest)
+      #     echo "CD_LATEST=$(basename ${cdlu})" >> $GITHUB_ENV
 
-      - name: Cache for community.crypto
-        id: cache-cc
-        uses: actions/cache@v2
+      # - name: Cache for community.crypto
+      #   id: cache-cc
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ansible_collections/community/crypto
+      #     key: collection-community.crypto-${{ env.CC_LATEST }}
+
+      # - name: Install collection dependencies
+      #   if: steps.cache-cc.outputs.cache-hit != 'true'
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: ansible-collections/community.crypto
+      #     ref: refs/tags/${{ env.CC_LATEST }}
+      #     path: ansible_collections/community/crypto
+
+      # - name: Install collection dependencies
+      #   # if: steps.cache-cc.outputs.cache-hit != 'true'
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: ansible-collections/community.general
+      #     ref: refs/tags/${{ env.CG_LATEST }}
+      #     path: ansible_collections/community/general
+
+      # - name: Install collection dependencies
+      #   # if: steps.cache-cc.outputs.cache-hit != 'true'
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: ansible-collections/community.docker
+      #     ref: refs/tags/${{ env.CD_LATEST }}
+      #     path: ansible_collections/community/docker
+
+      - uses: .github/actions/collection-via-git
         with:
-          path: ansible_collections/community/crypto
-          key: collection-community.crypto-${{ env.CC_LATEST }}
+          collection: community.crypto
 
-      - name: Install collection dependencies
-        if: steps.cache-cc.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+      - uses: .github/actions/collection-via-git
         with:
-          repository: ansible-collections/community.crypto
-          ref: refs/tags/${{ env.CC_LATEST }}
-          path: ansible_collections/community/crypto
+          collection: community.docker
 
-      - name: Install collection dependencies
-        # if: steps.cache-cc.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+      - uses: .github/actions/collection-via-git
+        if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
         with:
-          repository: ansible-collections/community.general
-          ref: refs/tags/${{ env.CG_LATEST }}
-          path: ansible_collections/community/general
-
-      - name: Install collection dependencies
-        # if: steps.cache-cc.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
-        with:
-          repository: ansible-collections/community.docker
-          ref: refs/tags/${{ env.CD_LATEST }}
-          path: ansible_collections/community/docker
+          collection: community.general
 
       - name: legacy integration - use sample integration_config
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
