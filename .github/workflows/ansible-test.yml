@@ -484,6 +484,7 @@ jobs:
         run: |
           pwd
           rm -f "${COLLECTION_INTEGRATION_PATH}/integration_config.yml"
+          pip install -r files/requirements/requirements.txt
           ./setup.sh
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
