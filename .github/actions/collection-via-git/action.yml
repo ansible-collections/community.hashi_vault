@@ -27,9 +27,9 @@ runs:
         CN="${COLLECTION#*.}"
 
         # only collections in the ansible-collections organization are supported right now
-        $URLBASE="https://github.com/ansible-collections/${COLLECTION}"
-        $URLCLONE="${URLBASE}.git"
-        $URLLATEST="${URLBASE}/releases/latest"
+        URLBASE="https://github.com/ansible-collections/${COLLECTION}"
+        URLCLONE="${URLBASE}.git"
+        URLLATEST="${URLBASE}/releases/latest"
 
         if [[ -n "${P_PATH}" ]]
         then
