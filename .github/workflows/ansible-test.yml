@@ -164,6 +164,8 @@ jobs:
           - ansible: devel
             vault: 1.7.3
             python: '3.10'
+            runner: ubuntu-latest
+            test_container: default
     # services:
     #   vault:
     #     image: vault:${{ matrix.vault }}
@@ -446,7 +448,9 @@ jobs:
 
       - name: Use Sample integration_config
         working-directory: ${COLLECTION_INTEGRATION_PATH}
-        run: cp "integration_config.yml.sample" "integration_config.yml"
+        run: |
+          pwd
+          cp "integration_config.yml.sample" "integration_config.yml"
 
       - name: Run the integration tests in a venv
         run: |
