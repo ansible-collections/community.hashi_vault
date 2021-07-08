@@ -29,14 +29,18 @@ jobs:
 
   sanity:
     name: Sanity (Ⓐ${{ matrix.ansible }})
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
+        runner:
+          - ubuntu-latest
+        test_container:
+          - default
         ansible:
           - stable-2.9
           - stable-2.10
           - stable-2.11
           - devel
-    runs-on: ubuntu-latest
     steps:
 
       # ansible-test requires the collection to be in a directory in the form
@@ -62,16 +66,20 @@ jobs:
       # The docker container has all the pinned dependencies that are required
       # and all python versions ansible supports.
       - name: Run sanity tests
-        run: ansible-test sanity --docker -v --color
+        run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color
         working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
   units:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
       # As soon as the first unit test fails, cancel the others to free up the CI queue
       fail-fast: true
       matrix:
+        runner:
+          - ubuntu-latest
+        test_container:
+          - default
         ansible:
           - stable-2.9
           - stable-2.10
@@ -101,7 +109,7 @@ jobs:
 
       # Run the unit tests
       - name: Run unit test
-        run: ansible-test units -v --color --docker --coverage
+        run: ansible-test units -v --color --docker ${{ matrix.test_container }} --coverage
         working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
         # ansible-test support producing code coverage date
@@ -125,11 +133,15 @@ jobs:
 # https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
+        runner:
+          - ubuntu-latest
+        test_container:
+          - default
         ansible:
           - stable-2.9
           - stable-2.10
@@ -274,7 +286,9 @@ jobs:
           # ANSIBLE_ROLES_PATH: ${{ env.COLLECTION_INTEGRATION_TARGETS }}
           # ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
       - name: Prepare docker dependencies
-        run: setup.sh
+        run: |
+          pwd
+          ./setup.sh
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
           # pip install -r "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/requirements/requirements.txt" -c "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/requirements/constraints.txt"
@@ -286,7 +300,7 @@ jobs:
 
       - name: Run integration test
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker default --coverage --docker-network hashi_vault_default
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
@@ -299,10 +313,11 @@ jobs:
         with:
           fail_ci_if_error: false
 
-  classic_integration:
+  local_test_invocation:
     runs-on: ${{ matrix.runner }}
     name: Local I - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
+      # needed to prevent Ansible crashing on MacOS
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
     strategy:
       fail-fast: false
@@ -314,6 +329,8 @@ jobs:
         runner:
           - ubuntu-latest
           - macos-latest
+        test_container:
+          - ubuntu1804
         # vault:
         #   - 1.7.3
         # exclude:
@@ -330,7 +347,9 @@ jobs:
         with:
           env: |
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
+            COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
+            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
             LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
             LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
@@ -428,8 +447,8 @@ jobs:
       - name: Run the integration tests in a venv
         run: |
           # ulimit -S -n $(ulimit -Hn)
-          cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive --coverage
+          cp "${COLLECTION_INTEGRATION_PATH}/integration_config.yml.sample" "${COLLECTION_INTEGRATION_PATH}/integration_config.yml"
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --local --requirements --allow-destructive --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Install Docker on MacOS
@@ -443,22 +462,23 @@ jobs:
           docker-machine env default
           docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
 
-          # Run the integration tests
-      - name: Run integration tests in docker
+      - name: localenv_docker - setup
         run: |
-          docker ps || true
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker --coverage
-        working-directory: ${{ env.COLLECTION_PATH }}
-
-      - name: Prepare local docker setup
-        run: |
-          rm -f "${COLLECTION_INTEGRATION_TARGETS}/integration_config.yml"
-          setup.sh
+          pwd
+          rm -f "${COLLECTION_INTEGRATION_PATH}/integration_config.yml"
+          ./setup.sh
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
-      - name: Run integration test
+      - name: localenv_docker - Run integration test (in docker)
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker default --coverage --docker-network hashi_vault_default
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+        # Run the integration tests
+      - name: Run legacy integration tests (in docker)
+        run: |
+          docker ps || true
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
