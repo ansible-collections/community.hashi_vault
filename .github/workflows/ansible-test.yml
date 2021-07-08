@@ -270,17 +270,19 @@ jobs:
       #   run: ansible-playbook "download_vault.yml" -v
 
       # Run the integration tests
+        # env:
+          # ANSIBLE_ROLES_PATH: ${{ env.COLLECTION_INTEGRATION_TARGETS }}
+          # ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
       - name: Prepare docker dependencies
-        env:
-          ANSIBLE_ROLES_PATH: ${{ env.COLLECTION_INTEGRATION_TARGETS }}
-          ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
-        run: |
+        run: setup.sh
+        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
+
           # pip install -r "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/requirements/requirements.txt" -c "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/requirements/constraints.txt"
           # ansible localhost -m include_role -a "name=setup_localenv_docker" -e vault_version=${{ matrix.vault }}
-          ansible localhost -m include_role -a "name=setup_localenv_gha" -e vault_version=${{ matrix.vault }}
+          # ansible localhost -m include_role -a "name=setup_localenv_gha" -e vault_version=${{ matrix.vault }}
           # cp "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_docker/files/.output/integration_config.yml" "${COLLECTION_INTEGRATION_PATH}"
-          cp "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_gha/files/.output/integration_config.yml" "${COLLECTION_INTEGRATION_PATH}"
-          "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_gha/files/.output/launch.sh"
+          # cp "${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_gha/files/.output/integration_config.yml" "${COLLECTION_INTEGRATION_PATH}"
+          #"${COLLECTION_INTEGRATION_TARGETS}/setup_localenv_gha/files/.output/launch.sh"
 
       - name: Run integration test
         run: |
@@ -427,7 +429,7 @@ jobs:
         run: |
           # ulimit -S -n $(ulimit -Hn)
           cp "tests/integration/integration_config.yml.sample" "tests/integration/integration_config.yml"
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Install Docker on MacOS
@@ -445,15 +447,26 @@ jobs:
       - name: Run integration tests in docker
         run: |
           docker ps || true
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker #--coverage
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker --coverage
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: Prepare local docker setup
+        run: |
+          rm -f "${COLLECTION_INTEGRATION_TARGETS}/integration_config.yml"
+          setup.sh
+        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
+
+      - name: Run integration test
+        run: |
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker default --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
-      # - name: Generate coverage report
-      #   run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-      #   working-directory: ${{ env.COLLECTION_PATH }}
+      - name: Generate coverage report
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      # - uses: codecov/codecov-action@v1
-      #   with:
-      #     fail_ci_if_error: false
+      - uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: false
