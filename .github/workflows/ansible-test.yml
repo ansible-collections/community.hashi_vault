@@ -360,10 +360,6 @@ jobs:
         with:
           path: ${{ env.COLLECTION_PATH }}
 
-      - name: Install coverage in Ubuntu system python
-        if: startsWith( ${{ matrix.runner }}, 'ubuntu' )
-        run: /usr/bin/python3 -m pip install 'coverage>=4,<=5'
-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -459,7 +455,7 @@ jobs:
       - name: Run the integration tests in a venv
         run: |
           # ulimit -S -n $(ulimit -Hn)
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive --coverage
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Install Docker on MacOS
