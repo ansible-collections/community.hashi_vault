@@ -4,7 +4,6 @@ set -ex
 
 pushd "${BASH_SOURCE%/*}"
 
-ANSIBLE_COLLECTIONS_PATHS="../../../../../../../" \
 ANSIBLE_ROLES_PATH="../" \
     ansible-playbook files/playbooks/gha.yml "${@}"
 
