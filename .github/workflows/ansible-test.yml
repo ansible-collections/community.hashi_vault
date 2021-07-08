@@ -447,7 +447,7 @@ jobs:
           path: ansible_collections/community/general
 
       - name: Use Sample integration_config
-        working-directory: ${COLLECTION_INTEGRATION_PATH}
+        working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
         run: |
           pwd
           cp "integration_config.yml.sample" "integration_config.yml"
