@@ -444,10 +444,13 @@ jobs:
           ref: refs/tags/${{ env.CG_LATEST }}
           path: ansible_collections/community/general
 
+      - name: Use Sample integration_config
+        working-directory: ${COLLECTION_INTEGRATION_PATH}
+        run: cp "integration_config.yml.sample" "integration_config.yml"
+
       - name: Run the integration tests in a venv
         run: |
           # ulimit -S -n $(ulimit -Hn)
-          cp "${COLLECTION_INTEGRATION_PATH}/integration_config.yml.sample" "${COLLECTION_INTEGRATION_PATH}/integration_config.yml"
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --local --requirements --allow-destructive --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
