@@ -362,7 +362,7 @@ jobs:
 
       - name: Install coverage in Ubuntu system python
         if: startsWith( ${{ matrix.runner }}, 'ubuntu' )
-        run: /usr/bin/python3 -m pip install coverage
+        run: /usr/bin/python3 -m pip install 'coverage>=4,<=5'
 
       - name: Set up Python
         uses: actions/setup-python@v2
