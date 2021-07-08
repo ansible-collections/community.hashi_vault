@@ -459,15 +459,15 @@ jobs:
       #     ref: refs/tags/${{ env.CD_LATEST }}
       #     path: ansible_collections/community/docker
 
-      - uses: .github/actions/collection-via-git
+      - uses: ./.github/actions/collection-via-git
         with:
           collection: community.crypto
 
-      - uses: .github/actions/collection-via-git
+      - uses: ./.github/actions/collection-via-git
         with:
           collection: community.docker
 
-      - uses: .github/actions/collection-via-git
+      - uses: ./.github/actions/collection-via-git
         if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
         with:
           collection: community.general
