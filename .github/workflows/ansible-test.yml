@@ -457,16 +457,12 @@ jobs:
           ref: refs/tags/${{ env.CD_LATEST }}
           path: ansible_collections/community/docker
 
-      - name: Use Sample integration_config
+      - name: legacy integration - use sample integration_config
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-        run: |
-          pwd
-          cp "integration_config.yml.sample" "integration_config.yml"
+        run: cp "integration_config.yml.sample" "integration_config.yml"
 
-      - name: Run the integration tests in a venv
-        run: |
-          # ulimit -S -n $(ulimit -Hn)
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
+      - name: legacy integration - venv
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Install Docker on MacOS
@@ -480,11 +476,20 @@ jobs:
           docker-machine env default
           docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
 
+      - name: legacy integration - docker
+        run: |
+          docker ps || true
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: legacy integration - remove integration_config
+        working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
+        run: rm "integration_config.yml"
+
       - name: localenv_docker - setup
         run: |
           pwd
-          rm -f "${COLLECTION_INTEGRATION_PATH}/integration_config.yml"
-          pip install -r files/requirements/requirements.txt
+          pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
           ./setup.sh
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
@@ -493,12 +498,6 @@ jobs:
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # Run the integration tests
-      - name: Run legacy integration tests (in docker)
-        run: |
-          docker ps || true
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
-        working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
