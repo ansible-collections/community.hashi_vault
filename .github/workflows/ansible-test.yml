@@ -207,7 +207,7 @@ jobs:
         with:
           path: ${{ env.COLLECTION_PATH }}
 
-      - name: Linkit
+      - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
@@ -360,7 +360,7 @@ jobs:
         with:
           path: ${{ env.COLLECTION_PATH }}
 
-      - name: Linkit
+      - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
@@ -459,15 +459,18 @@ jobs:
       #     ref: refs/tags/${{ env.CD_LATEST }}
       #     path: ansible_collections/community/docker
 
-      - uses: ./.github/actions/collection-via-git
+      - name: Install community.crypto
+        uses: ./.github/actions/collection-via-git
         with:
           collection: community.crypto
 
-      - uses: ./.github/actions/collection-via-git
+      - name: Install community.docker
+        uses: ./.github/actions/collection-via-git
         with:
           collection: community.docker
 
-      - uses: ./.github/actions/collection-via-git
+      - name: Install community.general
+        uses: ./.github/actions/collection-via-git
         if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
         with:
           collection: community.general
@@ -482,18 +485,10 @@ jobs:
 
       - name: Install Docker on MacOS
         if: ${{ matrix.runner == 'macos-latest' }}
-        run: |
-          mkdir -p ~/.docker/machine/cache
-          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
-          brew install docker-machine docker
-          sudo docker --version
-          docker-machine create --driver virtualbox default
-          docker-machine env default
-          docker-machine env default | sed 's/^export //;/^#/d;s/^#.*//' | tr -d '"' >> $GITHUB_ENV
+        uses: ./.github/actions/macos-docker
 
       - name: legacy integration - docker
         run: |
-          docker ps || true
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
