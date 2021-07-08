@@ -332,7 +332,7 @@ jobs:
           - ubuntu-latest
           - macos-latest
         test_container:
-          - ubuntu1804
+          - default
         # vault:
         #   - 1.7.3
         # exclude:
