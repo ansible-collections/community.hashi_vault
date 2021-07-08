@@ -4,24 +4,28 @@
 # and should not be used as examples of how to write Ansible roles #
 ####################################################################
 
-- name: Create a local temporary directory
-  tempfile:
-    state: directory
-  register: tempfile_result
-  notify: cleanup
+# - name: Create a local temporary directory
+#   tempfile:
+#     state: directory
+#   register: tempfile_result
+#   notify: cleanup
 
-- set_fact:
-    local_temp_dir: '{{ tempfile_result.path }}'
+# - set_fact:
+#     local_temp_dir: '{{ tempfile_result.path }}'
 
 - include_role:
     name: setup_vault_server
   when: vault_integration_legacy | bool
 
+- include_role:
+    name: setup_tinyproxy_server
+  when: vault_integration_legacy | bool
+
 - import_tasks: vault_server_configure.yml
   when: vault_test_server_configure | bool
 
-- include_tasks: tinyproxy_server.yml
-  when: not vault_proxy_external | bool
+# - include_tasks: tinyproxy_server.yml
+#   when: not vault_proxy_external | bool
 
 - import_tasks: tests.yml
   vars:

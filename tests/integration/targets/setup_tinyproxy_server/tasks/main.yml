@@ -8,7 +8,7 @@
     }}"
   package:
     name: tinyproxy
-  notify: Uninstall tinyproxy
+  notify: proxy_cleanup
 
 - name: Configure tinyproxy
   copy:
@@ -16,11 +16,11 @@
       Port 8001
       MaxClients 100
       StartServers 10
-      PidFile "{{ local_temp_dir }}/tinyproxy.pid"
-    dest: "{{ local_temp_dir }}/tinyproxy.conf"
+      PidFile "{{ vault_proxy_pid }}"
+    dest: "{{ vault_proxy_conf }}"
 
 - name: Start tinyproxy
   shell:
-    cmd: tinyproxy -c "{{ local_temp_dir }}/tinyproxy.conf"
-    creates: "{{ local_temp_dir }}/tinyproxy.pid"
-  notify: Stop tinyproxy
+    cmd: tinyproxy -c "{{ vault_proxy_conf }}"
+    creates: "{{ vault_proxy_pid }}"
+  notify: proxy_cleanup
