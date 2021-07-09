@@ -36,11 +36,13 @@
   register: key_status
 
 - name: "Generate certs"
-  when: not (key_status.stat.exists and cert_status.stat.exists)
+  when: >-
+    vault_crypto_force | bool
+    or not (key_status.stat.exists and cert_status.stat.exists)
   include_role:
     name: setup_vault_server_cert
   vars:
-    vault_hostname: '{{ vault_container_name }}'
+    vault_dns_names: '{{ [vault_target_name, vault_container_name] | unique }}'
 
 - name: "Template vault config"
   template:
