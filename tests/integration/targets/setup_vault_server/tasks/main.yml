@@ -1,6 +1,5 @@
 ---
 - import_tasks: vault_server.yml
-  # when: not vault_test_server_external | bool
 
 - set_fact:
     vault_test_server_http: "{{ vault_test_server_http }}"

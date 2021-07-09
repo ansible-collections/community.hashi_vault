@@ -1,7 +1,4 @@
 ---
-# notify 'test_managed_vault_cleanup' for tasks related to the
-# vault server that is started by these tests
-# (those tasks should skip if the vault server is external to the test run)
 - name: 'Kill vault process'
   shell: "kill $(cat {{ vault_pid_file }})"
   ignore_errors: true
