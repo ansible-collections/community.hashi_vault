@@ -10,7 +10,7 @@
 
     - name: Generate CSR
       vars:
-        vault_dns_names: '{{ [vault_hostname] + (vault_alternate_hostnames | default([]) }}'
+        vault_dns_names: '{{ [vault_hostname] + (vault_alternate_hostnames | default([])) }}'
       community.crypto.openssl_csr:
         mode: 'o=r'
         path: '{{ vault_csr_file }}'
