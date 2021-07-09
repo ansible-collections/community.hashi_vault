@@ -2,7 +2,7 @@
 - name: Install tinyproxy
   become: '{{ ansible_distribution != "MacOSX" }}'
   vars:
-    # check 'Install unzip' task to know why we set ansible_python_interpreter
+    # check 'Install unzip' task in setup_vault_server_download to know why we set ansible_python_interpreter
     ansible_python_interpreter: "{{
       '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
     }}"
