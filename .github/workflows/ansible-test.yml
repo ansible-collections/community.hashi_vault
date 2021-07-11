@@ -484,7 +484,6 @@ jobs:
           collection: community.general
 
       - name: legacy integration - use sample integration_config
-        if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
         run: cp "integration_config.yml.sample" "integration_config.yml"
 
