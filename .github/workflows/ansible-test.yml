@@ -216,7 +216,7 @@ jobs:
           - ubuntu-latest
           - macos-latest
         test_container:
-          - ubuntu2004
+          - default
         docker:
           - true
           - false
@@ -284,7 +284,7 @@ jobs:
       - name: legacy integration - docker
         if: ${{ matrix.docker }}
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --docker ${{ matrix.test_container }} --coverage
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: legacy integration - remove integration_config
@@ -303,7 +303,7 @@ jobs:
       - name: localenv_docker - Run integration test (in docker)
         if: ${{ matrix.docker }}
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
