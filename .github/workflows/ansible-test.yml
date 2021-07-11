@@ -334,6 +334,13 @@ jobs:
           - macos-latest
         test_container:
           - default
+        docker:
+          - true
+          - false
+        exclude:
+          - runner: ubuntu-latest
+            docker: false
+
         # vault:
         #   - 1.7.3
         # exclude:
@@ -477,27 +484,32 @@ jobs:
           collection: community.general
 
       - name: legacy integration - use sample integration_config
+        if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
         run: cp "integration_config.yml.sample" "integration_config.yml"
 
       - name: legacy integration - venv
+        if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Install Docker on MacOS
-        if: ${{ matrix.runner == 'macos-latest' }}
+        if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
         uses: ./.github/actions/macos-docker
 
       - name: legacy integration - docker
+        if: ${{ matrix.docker }}
         run: |
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: legacy integration - remove integration_config
+        if: ${{ matrix.docker }}
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-        run: rm "integration_config.yml"
+        run: rm -f "integration_config.yml"
 
       - name: localenv_docker - setup
+        if: ${{ matrix.docker }}
         run: |
           pwd
           pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
@@ -505,6 +517,7 @@ jobs:
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
       - name: localenv_docker - Run integration test (in docker)
+        if: ${{ matrix.docker }}
         run: |
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
@@ -512,10 +525,12 @@ jobs:
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
+        if: ${{ matrix.docker }}
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v1
+        if: ${{ matrix.docker }}
         with:
           fail_ci_if_error: false
