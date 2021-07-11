@@ -318,7 +318,7 @@ jobs:
 
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
-    name: LI - ${{ runner.os }} ${{ matrix.docker && ' docker' }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: LI - ${{ matrix.runner }} ${{ matrix.docker && ' docker' }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
       # needed to prevent Ansible crashing on MacOS
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
