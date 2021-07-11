@@ -1,14 +1,10 @@
 # {{ ansible_managed }}
-# pid_file = "{{ local_temp_dir | default('/tmp') }}/vault.pid"
-# % if vault_run_https_tests | bool %
 listener "tcp" {
   tls_key_file = "/vault/config/{{ vault_key_file | basename }}"
   tls_cert_file = "/vault/config/{{ vault_cert_file | basename }}"
   tls_disable  = false
-  # address = " vault_test_server_https | regex_replace('^https://([^:]+):(\\d+).*?$', '\\1:\\2') "
   address = "{{
     integration_config.vault_test_server_https
     | regex_replace('^https://([^:]+):(\\d+).*?$', '\\1:\\2')
   }}"
 }
-# % endif %
