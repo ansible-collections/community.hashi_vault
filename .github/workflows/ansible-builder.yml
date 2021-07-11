@@ -1,0 +1,40 @@
+---
+name: ansible-builder
+on:
+  push:
+    paths:
+      - 'meta/execution-environment.yml'
+      - 'meta/ee-requirements.txt'
+  pull_request:
+    paths:
+      - 'meta/execution-environment.yml'
+      - 'meta/ee-requirements.txt'
+  schedule:
+    - cron: '0 13 * * *'
+
+env:
+  NAMESPACE: community
+  COLLECTION_NAME: hashi_vault
+
+jobs:
+  builder:
+    name: ansible-builder requirements
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install ansible-builder
+        run: pip install ansible-builder
+
+      # this is kind of a naive check, since we aren't comparing the output to anything to verify
+      # so the only we'll catch with this is an egregious error that causes builder to exit nonzero
+      - name: Verify Requirements
+        run: ansible-builder introspect --sanitize .

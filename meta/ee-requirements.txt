@@ -1,0 +1,4 @@
+# ansible-builder doesn't seem to properly handle "; python_version" type of constraints
+# requirements here are assuming python 3.6 or higher
+hvac >=0.10.6
+urllib3 >= 1.15
