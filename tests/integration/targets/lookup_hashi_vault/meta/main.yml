@@ -2,3 +2,4 @@
 dependencies:
   - setup_vault_test_plugins
   - setup_cert_content
+  - setup_vault_legacy

@@ -83,5 +83,3 @@ vault_run_https_tests: True
 # if any connections are taking longer than this to complete there's probably something really wrong
 # with the integration tests, so it'd be better to fail faster than the 30s default
 ansible_hashi_vault_timeout: 5
-
-vault_integration_legacy: False

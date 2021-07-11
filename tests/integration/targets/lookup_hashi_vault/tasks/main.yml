@@ -4,14 +4,6 @@
 # and should not be used as examples of how to write Ansible roles #
 ####################################################################
 
-- include_role:
-    name: setup_vault_server
-  when: vault_integration_legacy | bool
-
-- include_role:
-    name: setup_tinyproxy_server
-  when: vault_integration_legacy | bool
-
 - import_tasks: vault_server_configure.yml
   when: vault_test_server_configure | bool
 
