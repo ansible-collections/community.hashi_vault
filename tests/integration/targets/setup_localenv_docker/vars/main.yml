@@ -5,6 +5,4 @@ integration_config:
   vault_test_server_https: 'https://{{ vault_target_name }}:{{ vault_port_https}}'
   vault_dev_root_token_id: '{{ vault_dev_root_token_id }}'
   vault_proxy_server: 'http://{{ proxy_target_name }}:{{ proxy_port }}'
-  vault_test_server_external: True
-  vault_proxy_external: True
   vault_cert_content: "{{ lookup('file', vault_cert_file) }}"
