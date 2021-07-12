@@ -134,6 +134,7 @@ Customization
 
 ``setup.sh`` will pass any additional params you send it to the ``ansible-playbook`` command it calls, so you can customize variables with the standard ``-e`` option. There are many advanced scenarios possible, but a few things you might want to override:
 
+* ``vault_version`` -- can target any version of Vault for which a docker container exists
 * ``docker_compose`` (defaults to ``clean`` but could be set to ``up``, ``down``, or ``none``)
   * ``up`` -- similar to running ``docker-compose up`` (no op if the project is running as it should)
   * ``down`` -- similar to ``docker-compose down`` (destroys the project)
