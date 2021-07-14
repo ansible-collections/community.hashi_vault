@@ -44,7 +44,7 @@ Proxy Server
 
 A proxy server is used to test the proxy connectivity options.
 
-In theory any number of proxy servers could be used for this purpose, but `tinyproxy <https://github.com/tinyproxy/tinyproxy>`_ is recommended for being, well.. tiny, as well as easy to configure and run, and available in package managers and containers.
+In theory any proxy supporting http/s targets could be used for this purpose, but `tinyproxy <https://github.com/tinyproxy/tinyproxy>`_ is recommended for being, well.. tiny, as well as easy to configure and run, and available in package managers and containers.
 
 .. csv-table:: Relevant integration_config Variables
   :header: "var", "example", "description"
@@ -56,8 +56,8 @@ localenv Role Conventions
 -------------------------
 
 * Use ``files/.output`` to hold generated artifacts.
-* Anything generated should be ``.gitignore``d; conversely anything not in a ``.gitignore`` should not be overwritten or modified by this process. That this, there should be no changes to git status that arise from this.
-* Consider providing a ``setup.sh`` to avoid having to manuall run ``ansible-`` commands. It should ideally operate correctly regardless of the current working directory.
+* Anything generated should be ``.gitignore``d; conversely anything not in a ``.gitignore`` should not be overwritten or modified by this process. That is, there should be no changes to git status that arise from this.
+* Consider providing a ``setup.sh`` to avoid having to manually run ``ansible-`` commands. It should ideally operate correctly regardless of the current working directory.
 * Generate a usable ``integration_config.yml`` that allows for using the result of the localenv. Generate it within the role output, not outside the role. Copy it to the right location, but do not overwrite an existing one.
 * If the role has external dependencies, try to codify those in file(s) that can be used by the right tool, like ``requirements.yml`` for ``ansible-galaxy``, etc.
 * localenv roles are meant to run **outside** of the ``ansible-test`` environment, but they can make (re)use of other roles; for example a localenv that seeks to run Vault directly on the local machine could reuse the setup roles for downloading and launching Vault that are used (within the test environment) by the legacy integration.

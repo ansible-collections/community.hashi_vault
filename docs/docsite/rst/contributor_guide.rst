@@ -19,7 +19,7 @@ Quick Start
 #. Log into your GitHub account.
 #. Fork the `ansible-collections/community.hashi_vault repository <https://github.com/ansible-collections/community.hashi_vault>`_ by clicking the **Fork** button in the upper right corner. This will create a fork in your own account.
 #. Clone the repository locally, following `the example instructions here <https://docs.ansible.com/ansible/devel/dev_guide/developing_collections_contributing.html>`_ (but replace ``general`` with ``hashi_vault``). **Pay special attention to the path structure.**
-#. As mentioned on that page, commit your changes to a branch, push them to your fork, and create a pull request (GitHub will automatically prompt you to do do when you look at your repository).
+#. As mentioned on that page, commit your changes to a branch, push them to your fork, and create a pull request (GitHub will automatically prompt you to do so when you look at your repository).
 #. `See the guidance on Changelogs <https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs>`_ and include a `changelog fragment <https://docs.ansible.com/ansible/latest/community/development_process.html#creating-a-changelog-fragment>`_ if appropriate.
 
 
@@ -33,7 +33,7 @@ First, `review the guidance on testing collections <https://docs.ansible.com/ans
 Integration Tests
 -----------------
 
-Unlike other collections, we now require an `integration_config.yml <https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html#integration-config-yml>`_ file for properly running integration tests, as the tests require external dependencies (like a Vault server) and need to know where to find them.
+Unlike other collections, we now require an `integration_config.yml <https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html#integration-config-yml>`_ file for properly running integration tests, as the tests require external dependencies (like a Vault server) and they need to know where to find those dependencies.
 
 If you have contributed to this collection or to the ``hashi_vault`` lookup plugin in the past, you might remember that the integration tests used to download, extract, and run a Vault server during the course of the tests, by default. This **legacy method** is not recommended but is still available (for now) via opt-in.
 
@@ -80,7 +80,7 @@ As a result, if you're going to use legacy mode it's best to limit your test run
 Docker Compose localenv
 .......................
 
-The recommended way to run the tests has Vault and tinyproxy running in their own containers, set up via docker-compose, and the itnegration tests run in their own container separately.
+The recommended way to run the tests has Vault and tinyproxy running in their own containers, set up via docker-compose, and the integration tests run in their own container separately.
 
 We have a pre-defined "localenv" setup role for this purpose.
 
@@ -91,7 +91,7 @@ For ease of typing / length of commands, we'll enter role directory first:
 
 .. code-block:: bash
 
-    $ cd tests/integration/targets/setup_localenv_docker
+    $ pushd tests/integration/targets/setup_localenv_docker
 
 This localenv has both Ansible collection and Python requirements, so let's get those out of the way:
 
@@ -120,7 +120,7 @@ With your containers running, you can now run the tests in docker (after returni
 
 .. code-block:: bash
 
-    $ cd ../../../../
+    $ popd
     $ ansible-test integration --docker default --docker-network hashi_vault_default -v
 
 The ``--docker-network`` part is important, as it will ensure that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, ``hashi_vault_default`` comes from the default docker-compose project name used by this role (``hashi_vault``). See the next section for more information.
