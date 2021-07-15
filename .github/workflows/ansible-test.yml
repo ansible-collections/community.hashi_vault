@@ -181,7 +181,7 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Prepare docker dependencies
-        run: ./setup.sh
+        run: ./setup.sh -e vault_version=${{ matrix.vault }}
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
       - name: Run integration test
