@@ -140,7 +140,7 @@ jobs:
           - 3.8
           - 3.9
         vault:
-          # - 1.7.3
+          - 1.7.3
           - 1.6.5
         exclude:
           - ansible: stable-2.9
