@@ -71,7 +71,7 @@ Note that your system packages may be manipulated by running locally or in a ven
 
 Legacy mode is not recommended because a new Vault server and proxy server will be downloaded, set up, configured, and/or uninstalled, for every *target*. Traditionally, we've only had one target, and so it was a good way to go, but that's no longer going to be the case. This is going to make it slower and slower as you'll incur the overhead on every target, in every run.
 
-As a result, if you're going to use legacy mode it's best to limit your test run to the specific target needed, for example:
+If you must use legacy mode testing, you can make it more efficient by limiting your test run to the specific target needed, for example:
 
 .. code-block:: bash
 
