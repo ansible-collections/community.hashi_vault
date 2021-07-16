@@ -27,7 +27,10 @@ To run the tests that deal specifically with TLS/HTTPS access, the Vault server 
 
 The **root token** of the Vault server is needed, as the integration tests will make changes to Vault's configuration, and will expect to have that token available to do so. It's possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the ``-dev-root-token-id`` option or ``VAULT_DEV_ROOT_TOKEN_ID`` environment variable (see `Dev Options <https://www.vaultproject.io/docs/commands/server#dev-options>`_).
 
-.. csv-table:: Relevant integration_config Variables
+Relevant ``integration_config.yml`` Variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. csv-table::
   :header: "var", "example", "description"
   :widths: 15, 20, 65
 
@@ -46,7 +49,10 @@ A proxy server is used to test the proxy connectivity options.
 
 In theory any proxy supporting http/s targets could be used for this purpose, but `tinyproxy <https://github.com/tinyproxy/tinyproxy>`_ is recommended for being, well.. tiny, as well as easy to configure and run, and available in package managers and containers.
 
-.. csv-table:: Relevant integration_config Variables
+Relevant ``integration_config.yml`` Variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. csv-table::
   :header: "var", "example", "description"
   :widths: 15, 20, 65
 
@@ -56,7 +62,7 @@ localenv Role Conventions
 -------------------------
 
 * Use ``files/.output`` to hold generated artifacts.
-* Anything generated should be ``.gitignore``d; conversely anything not in a ``.gitignore`` should not be overwritten or modified by this process. That is, there should be no changes to git status that arise from this.
+* Anything generated should be in a ``.gitignore``; conversely anything not in a ``.gitignore`` should not be overwritten or modified by this process. That is, there should be no changes to git status that arise from this.
 * Consider providing a ``setup.sh`` to avoid having to manually run ``ansible-`` commands. It should ideally operate correctly regardless of the current working directory.
 * Generate a usable ``integration_config.yml`` that allows for using the result of the localenv. Generate it within the role output, not outside the role. Copy it to the right location, but do not overwrite an existing one.
 * If the role has external dependencies, try to codify those in file(s) that can be used by the right tool, like ``requirements.yml`` for ``ansible-galaxy``, etc.
