@@ -1,7 +1,7 @@
 .. _ansible_collections.community.hashi_vault.docsite.user_guide:
 
 **********
-User Guide
+User guide
 **********
 
 The `community.hashi_vault collection <https://galaxy.ansible.com/community/hashi_vault>`_ offers Ansible content for working with `HashiCorp Vault <https://www.vaultproject.io/>`_.
@@ -25,7 +25,7 @@ The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readth
     $ pip install hvac
 
 
-Retry Support
+Retry support
 =============
 
 Via the ``retries`` parameter, we can control what happens when a request to Vault fails, and automatically retry certain requests. Retries are based on the `urllib3 Retry class <https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry>`_ and so all of its options are supported.
@@ -38,7 +38,7 @@ In ``community.hashi_vault`` you can specify the ``retries`` parameter in two wa
 * Set a dictionary, where you can set any field that the ``Retry`` class can be initialized with, in order to fully customize your retry experience.
 
 
-About the Collection Defaults
+About the collection defaults
 -----------------------------
 
 The collection uses its own set of recommended defaults for retries, including which HTTP status codes to retry, which HTTP methods are subject to retries, and the backoff factor used. **These defaults are subject to change at any time (in any release) and won't be considered breaking changes.** By setting ``retries`` to a number you are opting in to trust the defaults in the collection. To enable retries with full control over its behavior, be sure to specify a dictionary.

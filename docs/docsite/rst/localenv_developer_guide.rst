@@ -1,7 +1,7 @@
 .. _ansible_collections.community.hashi_vault.docsite.localenv_developer_guide:
 
 ************************
-localenv Developer Guide
+localenv developer guide
 ************************
 
 A "localenv" role in the context of this collection is a role that's used to set up the external dependencies required to run the integration tests. The idea is to provide a pre-packaged way for a contributor to set up their local environment in a certain way.
@@ -16,7 +16,7 @@ A "localenv" role in the context of this collection is a role that's used to set
   :depth: 2
 
 
-Required External Dependencies
+Required external dependencies
 ==============================
 
 HashiCorp Vault
@@ -30,7 +30,7 @@ To run the tests that deal specifically with TLS/HTTPS access, the Vault server 
 
 The **root token** of the Vault server is needed, as the integration tests will make changes to Vault's configuration, and will expect to have that token available to do so. It's possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the ``-dev-root-token-id`` option or ``VAULT_DEV_ROOT_TOKEN_ID`` environment variable (see `Dev Options <https://www.vaultproject.io/docs/commands/server#dev-options>`_).
 
-Relevant ``integration_config.yml`` Variables
+Relevant ``integration_config.yml`` variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. csv-table::
@@ -45,14 +45,14 @@ Relevant ``integration_config.yml`` Variables
   "``vault_cert_content``", "``-----BEGIN CERTIFICATE-----<snip>``", "The public cert of the CA that signed the cert used for Vault's TLS listener (or the cert itself if self-signed)."
 
 
-Proxy Server
+Proxy server
 ------------
 
 A proxy server is used to test the proxy connectivity options.
 
 In theory any proxy supporting http/s targets could be used for this purpose, but `tinyproxy <https://github.com/tinyproxy/tinyproxy>`_ is recommended for being, well.. tiny, as well as easy to configure and run, and available in package managers and containers.
 
-Relevant ``integration_config.yml`` Variables
+Relevant ``integration_config.yml`` variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. csv-table::
@@ -61,7 +61,7 @@ Relevant ``integration_config.yml`` Variables
 
   "``vault_proxy_server``", "``http://proxy:8080``", "The full HTTP URL of your proxy server."
 
-localenv Role Conventions
+localenv role conventions
 =========================
 
 * Use ``files/.output`` to hold generated artifacts.
