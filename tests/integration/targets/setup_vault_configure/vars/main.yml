@@ -1,0 +1,4 @@
+---
+vault_configure_canary:
+  path: cubbyhole/configure_basic
+  value: complete  # value does not matter
