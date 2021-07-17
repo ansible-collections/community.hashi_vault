@@ -1,11 +1,14 @@
 .. _ansible_collections.community.hashi_vault.docsite.user_guide:
 
+**********
 User Guide
-============
+**********
 
 The `community.hashi_vault collection <https://galaxy.ansible.com/community/hashi_vault>`_ offers Ansible content for working with `HashiCorp Vault <https://www.vaultproject.io/>`_.
 
-**NOTE:** this guide is a work-in-progress and should not be considered complete. Use it in conjunction with plugin documentation.
+.. note::
+
+  This guide is a work-in-progress and should not be considered complete. Use it in conjunction with plugin documentation.
 
 .. contents::
   :local:
@@ -13,7 +16,7 @@ The `community.hashi_vault collection <https://galaxy.ansible.com/community/hash
 
 
 Requirements
-------------
+============
 
 The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readthedocs.io/en/stable/>`_ library.
 
@@ -23,7 +26,7 @@ The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readth
 
 
 Retry Support
--------------
+=============
 
 Via the ``retries`` parameter, we can control what happens when a request to Vault fails, and automatically retry certain requests. Retries are based on the `urllib3 Retry class <https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry>`_ and so all of its options are supported.
 
@@ -36,7 +39,7 @@ In ``community.hashi_vault`` you can specify the ``retries`` parameter in two wa
 
 
 About the Collection Defaults
-.............................
+-----------------------------
 
 The collection uses its own set of recommended defaults for retries, including which HTTP status codes to retry, which HTTP methods are subject to retries, and the backoff factor used. **These defaults are subject to change at any time (in any release) and won't be considered breaking changes.** By setting ``retries`` to a number you are opting in to trust the defaults in the collection. To enable retries with full control over its behavior, be sure to specify a dictionary.
 
@@ -56,12 +59,12 @@ Current Defaults (always check the source code to confirm the defaults in your s
 Any of the ``Retry`` class's parameters that are not specified in the collection defaults or in your custom dictionary, are initialized using the class's defaults, with one exception: the ``raise_on_status`` parameter is always set to ``false`` unless you explicitly added it your custom dictionary. The reason is that this lets our error handling look for the expected ``hvac`` exceptions, instead of the ``Retry``-specfic exceptions. It is recommended that you don't override this as it may cause unexpected error messages on common failures if they are retried.
 
 Retry messages
-..............
+--------------
 
 By default, if a retry is performed, a warning will be emitted that shows how many retries are remaining. This can be controlled with the ``retry_action`` option which defaults to ``warn``. It is recommended to keep this enabled unless you have other processes that will be thrown off by the warning output.
 
 A note about timeouts
-.....................
+---------------------
 
 Consider setting the ``timeout`` option appropriately when using retries, as a connection timeout doesn't count toward time between retries (backoff). A long timeout can cause very long delays for a connection that isn't going to recover, multiplied by number of retries.
 
