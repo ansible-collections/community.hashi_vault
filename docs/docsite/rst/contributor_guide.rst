@@ -109,7 +109,7 @@ If you have contributed to this collection or to the ``hashi_vault`` lookup plug
 
   Legacy mode is not recommended because a new Vault server and proxy server will be downloaded, set up, configured, and/or uninstalled, for every *target*. Traditionally, we've only had one target, and so it was a good way to go, but that's no longer going to be the case. This will make it slower and slower as you'll incur the overhead on every target, in every run.
 
-  Skip to :ref:`localenv_docker` for a method that's nearly as easy but better off in the long run (docker-compose).
+  Skip to :ref:`ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker` for a method that's nearly as easy but better off in the long run (docker-compose).
 
 Legacy Mode
 ^^^^^^^^^^^
@@ -149,7 +149,7 @@ If you must use legacy mode testing, you can make it more efficient by limiting 
 
     $ ansible-test integration --docker default -v lookup_hashi_vault
 
-.. _localenv_docker:
+.. _ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker:
 
 Docker Compose localenv
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -197,13 +197,13 @@ With your containers running, you can now run the tests in docker (after returni
     $ popd
     $ ansible-test integration --docker default --docker-network hashi_vault_default -v
 
-The ``--docker-network`` part is important, because it will ensure that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, ``hashi_vault_default`` comes from the default docker-compose project name used by this role (``hashi_vault``). See the :ref:`customization section <localenv_docker_customization>` for more information.
+The ``--docker-network`` part is important, because it will ensure that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, ``hashi_vault_default`` comes from the default docker-compose project name used by this role (``hashi_vault``). See the :ref:`customization section <ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker_customization>` for more information.
 
 Running ``setup.sh`` again can be used to re-deploy the containers, or if you prefer you can use the generated ``files/.output/<project_name>/docker-compose.yml`` directly with local tools.
 
 If running again, remember to manually copy the contents of newly generated ``files/.output/integration_config.yml`` to the integration root, or delete the file in the root before re-running setup so that it copies the file automatically.
 
-.. _localenv_docker_customization:
+.. _ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker_customization:
 
 Customization
 """""""""""""
