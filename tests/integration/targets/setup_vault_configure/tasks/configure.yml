@@ -1,11 +1,4 @@
 ---
-- name: 'Create generic secrets engine'
-  vault_ci_enable_engine:
-    url: '{{ vault_test_server_http }}'
-    token: '{{ vault_dev_root_token_id }}'
-    backend_type: generic
-    path: gen
-
 - name: 'Create KV v1 secrets engine'
   vault_ci_enable_engine:
     url: '{{ vault_test_server_http }}'
@@ -37,17 +30,6 @@
     token: '{{ vault_dev_root_token_id }}'
     name: alt-policy
     policy: "{{ vault_alt_policy }}"
-
-- name: 'Create generic secrets'
-  loop: [1, 2, 3]
-  vault_ci_kv_put:
-    url: '{{ vault_test_server_http }}'
-    token: '{{ vault_dev_root_token_id }}'
-    path: "{{ vault_gen_path | regex_replace('^gen/') }}/secret{{ item }}"
-    version: 1
-    mount_point: gen
-    secret:
-      value: 'foo{{ item }}'
 
 - name: 'Create KV v1 secrets'
   loop: [1, 2, 3]

@@ -30,8 +30,6 @@
   block:
     - name: 'Fetch secrets using "hashi_vault" lookup'
       set_fact:
-        gen_secret1: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_gen_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
-        gen_secret2: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_gen_path ~ '/secret2 token=' ~ user_token) }}"
         kv1_secret1: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_kv1_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
         kv1_secret2: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_kv1_path ~ '/secret2 token=' ~ user_token) }}"
         kv2_secret1: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1 auth_method=token token=' ~ user_token) }}"
@@ -40,11 +38,6 @@
         kv2_secret2_as_raw: "{{ lookup('community.hashi_vault.hashi_vault', vault_kv2_path ~ '/secret2 ' ~  conn_params, auth_method='token', token=user_token, return_format='raw') }}"
         kv2_secrets_as_dict: "{{ lookup('community.hashi_vault.hashi_vault', vault_kv2_multi_path ~ '/secrets ' ~  conn_params, auth_method='token', token=user_token) }}"
         kv2_secrets_as_values: "{{ query('community.hashi_vault.hashi_vault', vault_kv2_multi_path ~ '/secrets ' ~  conn_params, auth_method='token', token=user_token, return_format='values') }}"
-
-    - name: 'Check secret generic values'
-      fail:
-        msg: 'unexpected secret values'
-      when: gen_secret1['value'] != 'foo1' or gen_secret2['value'] != 'foo2'
 
     - name: 'Check secret kv1 values'
       fail:
