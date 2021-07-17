@@ -6,11 +6,13 @@ vault_plugins_module_defaults_common:
 # As of https://github.com/ansible/ansible/pull/74039 ::
 # we can't use this dictionary directly in module_defaults anymore 😢
 # but keeping it here and updated as it's a handy copy/paste source
-vault_plugins_module_defaults:
-  vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
-  vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
-  vault_ci_kv_put: '{{ vault_plugins_module_defaults_common }}'
-  vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
-  vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
-  vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
-  vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
+# Actually, this is completely broken...
+# https://github.com/ansible/ansible/issues/75279
+# vault_plugins_module_defaults:
+#   ansible.legacy.vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
+#   ansible.legacy.vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
+#   ansible.legacy.vault_ci_kv_put: '{{ vault_plugins_module_defaults_common }}'
+#   ansible.legacy.vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+#   ansible.legacy.vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+#   ansible.legacy.vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
+#   ansible.legacy.vault_ci_write: '{{ vault_plugins_module_defaults_common }}'

@@ -1,11 +1,15 @@
 ---
 - name: 'Create generic secrets engine'
   vault_ci_enable_engine:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     backend_type: generic
     path: gen
 
 - name: 'Create KV v1 secrets engine'
   vault_ci_enable_engine:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     backend_type: kv
     path: kv1
     options:
@@ -13,6 +17,8 @@
 
 - name: 'Create KV v2 secrets engine'
   vault_ci_enable_engine:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     backend_type: kv
     path: kv2
     options:
@@ -20,17 +26,23 @@
 
 - name: 'Create a test policy'
   vault_ci_policy_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     name: test-policy
     policy: "{{ vault_test_policy }}"
 
 - name: 'Create an alternate policy'
   vault_ci_policy_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     name: alt-policy
     policy: "{{ vault_alt_policy }}"
 
 - name: 'Create generic secrets'
   loop: [1, 2, 3]
   vault_ci_kv_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     path: "{{ vault_gen_path | regex_replace('^gen/') }}/secret{{ item }}"
     version: 1
     mount_point: gen
@@ -40,6 +52,8 @@
 - name: 'Create KV v1 secrets'
   loop: [1, 2, 3]
   vault_ci_kv_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     path: "{{ vault_kv1_path | regex_replace('^kv1/') }}/secret{{ item }}"
     version: 1
     mount_point: kv1
@@ -49,6 +63,8 @@
 - name: 'Create KV v2 secrets'
   loop: [1, 2, 3, 4, 5]
   vault_ci_kv_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     path: "{{ vault_kv2_path | regex_replace('^kv2/data/') }}/secret{{ item }}"
     version: 2
     mount_point: kv2
@@ -57,6 +73,8 @@
 
 - name: 'Update KV v2 secret4 with new value to create version'
   vault_ci_kv_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     path: "{{ vault_kv2_path | regex_replace('^kv2/data/') }}/secret4"
     version: 2
     mount_point: kv2
@@ -65,6 +83,8 @@
 
 - name: 'Create multiple KV v2 secrets under one path'
   vault_ci_kv_put:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     path: "{{ vault_kv2_multi_path | regex_replace('^kv2/data/') }}/secrets"
     version: 2
     mount_point: kv2
@@ -75,6 +95,8 @@
 
 - name: 'Write Canary'
   vault_ci_write:
+    url: '{{ vault_test_server_http }}'
+    token: '{{ vault_dev_root_token_id }}'
     path: '{{ vault_configure_canary.path }}'
     data:
       value: '{{ vault_configure_canary.value }}'
