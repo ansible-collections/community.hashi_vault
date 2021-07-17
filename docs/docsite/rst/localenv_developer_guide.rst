@@ -1,11 +1,14 @@
 .. _ansible_collections.community.hashi_vault.docsite.localenv_developer_guide:
 
+************************
 localenv Developer Guide
-========================
+************************
 
 A "localenv" role in the context of this collection is a role that's used to set up the external dependencies required to run the integration tests. The idea is to provide a pre-packaged way for a contributor to set up their local environment in a certain way.
 
-**NOTE:** this guide is a work-in-progress and is **very** light on details. For the time being, it's best to open an issue in the repository to discuss it if you're thinking of a new localenv. Looking at ``setup_localenv_docker`` should also be helpful as it's the most complete one to date.
+..  note::
+
+  This guide is a work-in-progress and is **very** light on details. For the time being, it's best to open an issue in the repository to discuss it if you're thinking of a new localenv. Looking at ``setup_localenv_docker`` should also be helpful as it's the most complete one to date.
 
 
 .. contents::
@@ -14,10 +17,10 @@ A "localenv" role in the context of this collection is a role that's used to set
 
 
 Required External Dependencies
-------------------------------
+==============================
 
 HashiCorp Vault
-...............
+---------------
 
 A Vault server is required for the integration tests. Using `Vault Dev Server Mode <https://www.vaultproject.io/docs/concepts/dev-server>`_ is recommended as it's the easiest and fastest way to get a server started.
 
@@ -43,7 +46,7 @@ Relevant ``integration_config.yml`` Variables
 
 
 Proxy Server
-............
+------------
 
 A proxy server is used to test the proxy connectivity options.
 
@@ -59,7 +62,7 @@ Relevant ``integration_config.yml`` Variables
   "``vault_proxy_server``", "``http://proxy:8080``", "The full HTTP URL of your proxy server."
 
 localenv Role Conventions
--------------------------
+=========================
 
 * Use ``files/.output`` to hold generated artifacts.
 * Anything generated should be in a ``.gitignore``; conversely anything not in a ``.gitignore`` should not be overwritten or modified by this process. That is, there should be no changes to git status that arise from this.
