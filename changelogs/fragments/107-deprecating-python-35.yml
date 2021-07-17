@@ -1,0 +1,4 @@
+---
+deprecated_features:
+  - hashi_vault collection - support for Python 3.5 will be dropped in version ``2.0.0``
+    of ``community.hashi_vault`` (https://github.com/ansible-collections/community.hashi_vault/issues/81).

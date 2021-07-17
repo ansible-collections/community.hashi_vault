@@ -34,7 +34,7 @@ See [the CI configuration](https://github.com/ansible-collections/community.hash
 
 ## Python Requirements
 
-**[Support for Python 2 will be dropped in `v2.0.0` of the collection.](https://github.com/ansible-collections/community.hashi_vault/issues/81)**
+**[Support for Python 2 & Python 3.5 will be dropped in `v2.0.0` of the collection.](https://github.com/ansible-collections/community.hashi_vault/issues/81)**
 
 Currently we test against Python versions:
 * 2.7
