@@ -8,7 +8,7 @@ This guide aims to help PR authors contribute to the ``community.hashi_vault`` c
 
 .. note::
 
-	This guide is a work-in-progress and should not be considered complete. Check back often as we fill out more details based on experience and feedback, and please let us know how this guide can be improved.
+	This guide is a work-in-progress and should not be considered complete. Check back often as we fill out more details based on experience and feedback, and please let us know how this guide can be improved by opening a `GitHub issue in the repository <https://github.com/ansible-collections/community.hashi_vault/issues>`_.
 
 
 .. contents::
@@ -21,7 +21,7 @@ Quick start
 
 #. Log into your GitHub account.
 #. Fork the `ansible-collections/community.hashi_vault repository <https://github.com/ansible-collections/community.hashi_vault>`_ by clicking the **Fork** button in the upper right corner. This will create a fork in your own account.
-#. Clone the repository locally, following :ref:`the example instructions here <hacking_collections>` (but replace ``general`` with ``hashi_vault``). **Pay special attention to the path structure.**
+#. Clone the repository locally, following :ref:`the example instructions here <hacking_collections>` (but replace ``general`` with ``hashi_vault``). **Pay special attention to the local path structure** of the cloned repository as described in those instructions (for example ``ansible_collections/community/hashi_vault``).
 #. As mentioned on that page, commit your changes to a branch, push them to your fork, and create a pull request (GitHub will automatically prompt you to do so when you look at your repository).
 #. :ref:`See the guidance on Changelogs <community_changelogs>` and include a :ref:`changelog fragment <changelogs_how_to>` if appropriate.
 
