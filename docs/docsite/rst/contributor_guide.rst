@@ -33,7 +33,7 @@ Additions to the collection documentation are very welcome! We have three primar
 Module and plugin documentation
 -------------------------------
 
-This type of documentation gets generated from structured YAML, inside of a Python string. It will be included in the same code that it's documenting, or it will be in a separate Python file, such as a doc fragment. Please see the :ref:`module format and documentation guidance <developing_modules_documenting>` for more information.
+This type of documentation gets generated from structured YAML, inside of a Python string. It is included in the same code that it's documenting, or in a separate Python file, such as a doc fragment. Please see the :ref:`module format and documentation guidance <developing_modules_documenting>` for more information.
 
 This type of documentation is tested with ``ansible-test sanity`` and full instructions are available on the :ref:`testing module documentation <testing_module_documentation>` page.
 
@@ -51,9 +51,9 @@ Markdown files can be previewed natively in GutHub, so they are easy to validate
 Collection docsite
 ------------------
 
-The collection docsite is a set what you are reading now. It is a set of documentation written in reStructuredText (RST) format that is published on the :ref:`ansible_documentation` site. This is where we have longform documentation that doesn't fit into the other two categories.
+The collection docsite is what you are reading now. It is written in reStructuredText (RST) format and published on the :ref:`ansible_documentation` site. This is where we have long-form documentation that doesn't fit into the other two categories.
 
-If you are considering adding an entirely new document here it may be best to open an issue first to discuss the idea and how best to organize it.
+If you are considering adding an entirely new document here it may be best to open a GitHub issue first to discuss the idea and how best to organize it.
 
 Refer to the :ref:`Ansible style guide <style_guide>` for all submissions to the collection docsite.
 
@@ -64,7 +64,7 @@ Only the ``extra-docs.yml`` file is validated by the collection's CI, and there 
 Advanced
 ^^^^^^^^
 
-Docsite pages can be generated locally through a workaround technique. **This is not a supported method** but it may be helpful to get more rapid feedback on docsite if changes, if you're comfortable at a command line.
+Docsite pages can be generated locally through a workaround technique. **This is not a supported method** but it may be helpful to get more rapid feedback on docsite changes, if you're comfortable at a command line.
 
 The process is:
 
@@ -91,7 +91,7 @@ The process is:
 
 The rendered HTML docs should be available in ``docs/docsite/_build/html/`` and can be opened in a browser.
 
-Running Tests Locally
+Running tests locally
 =====================
 
 If you're making anything more than very small or one-time changes, you'll want to run the tests locally to avoid having to push a commit for each thing, and waiting for the CI to run tests.
@@ -109,9 +109,9 @@ If you have contributed to this collection or to the ``hashi_vault`` lookup plug
 
   Legacy mode is not recommended because a new Vault server and proxy server will be downloaded, set up, configured, and/or uninstalled, for every *target*. Traditionally, we've only had one target, and so it was a good way to go, but that's no longer going to be the case. This will make it slower and slower as you'll incur the overhead on every target, in every run.
 
-  Skip to :ref:`ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker` for a method that's nearly as easy but better off in the long run (docker-compose).
+  Skip to :ref:`ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker` for a method that's nearly as easy as legacy mode, and far more efficient (docker-compose).
 
-Legacy Mode
+Legacy mode
 ^^^^^^^^^^^
 
 To get started quickly without having to set anything else, you can use legacy mode by copying the included integration config sample:
@@ -180,7 +180,7 @@ To set up your docker-compose environment with all the defaults:
 
     $ ./setup.sh
 
-This will do the following:
+The setup script does the following:
 
 #. Template a ``docker-compose.yml`` for the project.
 #. Generate a private key and self-signed certificate for Vault.
@@ -197,7 +197,7 @@ With your containers running, you can now run the tests in docker (after returni
     $ popd
     $ ansible-test integration --docker default --docker-network hashi_vault_default -v
 
-The ``--docker-network`` part is important, because it will ensure that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, ``hashi_vault_default`` comes from the default docker-compose project name used by this role (``hashi_vault``). See the :ref:`customization section <ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker_customization>` for more information.
+The ``--docker-network`` part is important, because it ensures that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, ``hashi_vault_default`` comes from the default docker-compose project name used by this role (``hashi_vault``). See the :ref:`customization section <ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker_customization>` for more information.
 
 Running ``setup.sh`` again can be used to re-deploy the containers, or if you prefer you can use the generated ``files/.output/<project_name>/docker-compose.yml`` directly with local tools.
 
@@ -208,7 +208,7 @@ If running again, remember to manually copy the contents of newly generated ``fi
 Customization
 """""""""""""
 
-``setup.sh`` will pass any additional params you send it to the ``ansible-playbook`` command it calls, so you can customize variables with the standard ``--extra-vars`` (or ``-e``) option. There are many advanced scenarios possible, but a few things you might want to override:
+``setup.sh`` passes any additional params you send it to the ``ansible-playbook`` command it calls, so you can customize variables with the standard ``--extra-vars`` (or ``-e``) option. There are many advanced scenarios possible, but a few things you might want to override:
 
 * ``vault_version`` -- can target any version of Vault for which a docker container exists
 * ``docker_compose`` (defaults to ``clean`` but could be set to ``up``, ``down``, or ``none``)

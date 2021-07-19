@@ -28,7 +28,7 @@ A unencrypted (plain HTTP) listener is *required* for our purposes as most of th
 
 To run the tests that deal specifically with TLS/HTTPS access, the Vault server will need to be started with a TLS enabled listener as well, and the address/port, as well as the CA cert (or the cert itself if self-signed) will need to be supplied.
 
-The **root token** of the Vault server is needed, as the integration tests will make changes to Vault's configuration, and will expect to have that token available to do so. It's possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the ``-dev-root-token-id`` option or ``VAULT_DEV_ROOT_TOKEN_ID`` environment variable (see `Dev Options <https://www.vaultproject.io/docs/commands/server#dev-options>`_).
+The **root token** of the Vault server is needed, as the integration tests make changes to Vault's configuration, and expect to have that token available to do so. It's possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the ``-dev-root-token-id`` option or ``VAULT_DEV_ROOT_TOKEN_ID`` environment variable (see `Dev Options <https://www.vaultproject.io/docs/commands/server#dev-options>`_).
 
 Relevant ``integration_config.yml`` variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -25,10 +25,10 @@ The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readth
     $ pip install hvac
 
 
-Retry support
+Retrying failed requests
 =============
 
-Via the ``retries`` parameter, we can control what happens when a request to Vault fails, and automatically retry certain requests. Retries are based on the `urllib3 Retry class <https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry>`_ and so all of its options are supported.
+Via the ``retries`` parameter, you can control what happens when a request to Vault fails, and automatically retry certain requests. Retries are based on the `urllib3 Retry class <https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry>`_ and so all of its options are supported.
 
 Retries are disabled by default.
 
