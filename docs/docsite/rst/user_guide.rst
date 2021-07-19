@@ -20,7 +20,7 @@ Requirements
 
 The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readthedocs.io/en/stable/>`_ library.
 
-.. code-block:: bash
+.. code-block:: shell-session
 
     $ pip install hvac
 
