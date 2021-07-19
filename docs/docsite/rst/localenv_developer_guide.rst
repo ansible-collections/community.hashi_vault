@@ -4,7 +4,7 @@
 localenv developer guide
 ************************
 
-A "localenv" role in the context of this collection is a role that's used to set up the external dependencies required to run the integration tests. The idea is to provide a pre-packaged way for a contributor to set up their local environment in a certain way.
+A "localenv" role in this collection sets up the external dependencies required to run the integration tests. The idea is to provide a pre-packaged way for a contributor to set up their local environment in a consistent, repeatable way.
 
 ..  note::
 
@@ -26,7 +26,7 @@ A Vault server is required for the integration tests. Using `Vault Dev Server Mo
 
 A unencrypted (plain HTTP) listener is *required* for our purposes as most of the tests will expect to connect that way.
 
-To run the tests that deal specifically with TLS/HTTPS access, the Vault server will need to be started with a TLS enabled listener as well, and the address/port, as well as the CA cert (or the cert itself if self-signed) will need to be supplied.
+To run the tests that deal specifically with TLS/HTTPS access, you must start the Vault server with a TLS enabled listener. The TLS address:port, and the CA cert (or the cert itself if self-signed) must be supplied.
 
 The **root token** of the Vault server is needed, as the integration tests make changes to Vault's configuration, and expect to have that token available to do so. It's possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the ``-dev-root-token-id`` option or ``VAULT_DEV_ROOT_TOKEN_ID`` environment variable (see `Dev Options <https://www.vaultproject.io/docs/commands/server#dev-options>`_).
 
