@@ -35,6 +35,7 @@ from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import Ha
 
 display = Display()
 
+
 def dictify(thing):
     return json.loads(
         json.dumps(
@@ -43,6 +44,7 @@ def dictify(thing):
             default=lambda o: getattr(o, '__dict__', str(o)),
         )
     )
+
 
 class LookupModule(HashiVaultLookupBase):
     _retry_count = 0
