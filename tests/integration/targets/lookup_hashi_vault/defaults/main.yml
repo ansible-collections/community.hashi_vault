@@ -21,7 +21,7 @@ auth_methods:
 vault_test_server_configure: True
 
 # when False the tests requiring a valid SSL connection to Vault will be skipped
-vault_run_https_tests: True
+# vault_run_https_tests: True
 
 # if any connections are taking longer than this to complete there's probably something really wrong
 # with the integration tests, so it'd be better to fail faster than the 30s default
