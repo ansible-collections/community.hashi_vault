@@ -1,0 +1,13 @@
+# copy this file to integration_config.yml to use the legacy style all-in-one setup
+# for best results, consider a different localenv setup.
+# See the additional documentation at https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/
+---
+vault_integration_legacy: true
+vault_version: 1.7.3
+
+vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+
+vault_proxy_server: 'http://127.0.0.1:8001'
+
+vault_test_server_http: http://localhost:8200
+vault_test_server_https: https://localhost:8300

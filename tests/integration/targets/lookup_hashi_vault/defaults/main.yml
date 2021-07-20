@@ -1,0 +1,85 @@
+---
+vault_gen_path: 'gen/testproject'
+vault_kv1_path: 'kv1/testproject'
+vault_kv2_path: 'kv2/data/testproject'
+vault_kv2_multi_path: 'kv2/data/testmulti'
+
+vault_base_policy: |
+  path "{{ vault_gen_path }}/secret1" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_gen_path }}/secret2" {
+    capabilities = ["read", "update"]
+  }
+  path "{{ vault_gen_path }}/secret3" {
+    capabilities = ["deny"]
+  }
+  path "{{ vault_kv1_path }}/secret1" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_kv1_path }}/secret2" {
+    capabilities = ["read", "update"]
+  }
+  path "{{ vault_kv1_path }}/secret3" {
+    capabilities = ["deny"]
+  }
+  path "{{ vault_kv2_path }}/secret1" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_kv2_path }}/secret2" {
+    capabilities = ["read", "update"]
+  }
+  path "{{ vault_kv2_path }}/secret3" {
+    capabilities = ["deny"]
+  }
+  path "{{ vault_kv2_multi_path }}/secrets" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_kv2_path }}/secret4" {
+    capabilities = ["read", "update"]
+  }
+
+# the purpose of these policies is to catch when the plugin accepts mount_point but does not pass
+# it into hvac. we set the test policy to deny access to this secret and the alt policy to read it
+# the test-policy is assigned to the default mount of the auth method, while the alt policy is
+# assigned to the alternate (non-default) mount
+vault_test_policy: |
+  {{ vault_base_policy }}
+  path "{{ vault_kv2_path }}/secret5" {
+    capabilities = ["deny"]
+  }
+
+vault_alt_policy: |
+  {{ vault_base_policy }}
+  path "{{ vault_kv2_path }}/secret5" {
+    capabilities = ["read"]
+  }
+
+
+## auth method params
+auth_methods:
+  jwt:
+    default_path: jwt
+    paths:
+      - jwt
+      - jwt-alt
+  aws_iam_login:
+    default_path: aws
+    paths:
+      - aws-alt
+      - aws
+  approle:
+    default_path: approle
+    paths:
+      - approle
+      - approle-alt
+
+# WIP
+vault_test_server_configure: True
+
+# when False the tests requiring a valid SSL connection to Vault will be skipped
+vault_run_https_tests: True
+
+# if any connections are taking longer than this to complete there's probably something really wrong
+# with the integration tests, so it'd be better to fail faster than the 30s default
+ansible_hashi_vault_timeout: 5

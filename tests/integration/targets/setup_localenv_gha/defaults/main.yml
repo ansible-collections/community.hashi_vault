@@ -1,0 +1,4 @@
+---
+output_dir: '{{ role_path }}/files/.output'
+docker_compose_project_name: hashi_vault
+docker_compose: none

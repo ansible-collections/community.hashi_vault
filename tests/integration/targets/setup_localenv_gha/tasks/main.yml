@@ -1,0 +1,15 @@
+---
+- name: "Persist defaults"
+  set_fact:
+    output_dir: '{{ output_dir }}'
+    docker_compose: '{{ docker_compose }}'
+    docker_compose_project_name: '{{ docker_compose_project_name }}'
+
+- import_role:
+    name: setup_localenv_docker
+
+- name: "Template the launch script"
+  template:
+    src: launch.sh.j2
+    dest: '{{ output_dir }}/launch.sh'
+    mode: '+x'

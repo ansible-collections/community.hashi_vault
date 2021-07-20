@@ -1,0 +1,74 @@
+- name: HTTP connection
+  vars:
+    conn_params: ''
+  block:
+    - name: Set the HTTP connection address
+      set_fact:
+        ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+
+    - name: 'test {{ auth_type }} auth with retries'
+      include_tasks: '{{ auth_type }}_test.yml'
+      args:
+        apply:
+          vars:
+            ansible_hashi_vault_retries: 2
+
+    - name: 'test {{ auth_type }} auth without SSL (lookup parameters)'
+      include_tasks: '{{ auth_type }}_test.yml'
+
+    - name: 'test {{ auth_type }} auth without SSL (lookup parameters, with string proxy)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        conn_params: 'url={{ vault_proxy_alt_vault_http | default(vault_test_server_http) }} proxies={{ vault_proxy_server }} '
+
+    - name: 'test {{ auth_type }} auth without SSL (ansible variable)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      args:
+        apply:
+          vars:
+            conn_params: ''
+
+- name: HTTPS connection
+  when: vault_run_https_tests | bool
+  block:
+    - name: Set the HTTPS connection address
+      set_fact:
+        ansible_hashi_vault_url: '{{ vault_test_server_https }}'
+
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        conn_params: 'ca_cert={{ vault_cert_file }} validate_certs=True '
+
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with string proxy)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        conn_params: 'url={{ vault_proxy_alt_vault_https | default(vault_test_server_https) }} ca_cert={{ vault_cert_file }} validate_certs=True proxies={{ vault_proxy_server }} '
+
+    - name: Set proxies variable
+      set_fact:
+        ansible_hashi_vault_proxies:
+          http: '{{ vault_proxy_server }}'
+          https: '{{ vault_proxy_server }}'
+
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, lookup parameters, with dict proxy via ansible vars)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        conn_params: 'url={{ vault_proxy_alt_vault_https | default(vault_test_server_https) }} ca_cert={{ vault_cert_file }} validate_certs=True '
+
+    - name: Reset proxies variable
+      set_fact:
+        ansible_hashi_vault_proxies: null
+
+    - name: 'test {{ auth_type }} auth with certs (validation enabled, ansible variables)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      args:
+        apply:
+          vars:
+            conn_params: 'ca_cert={{ vault_cert_file }} '
+
+    - name: 'test {{ auth_type }} auth with certs (validation disabled, lookup parameters)'
+      include_tasks: '{{ auth_type }}_test.yml'
+      vars:
+        ansible_hashi_vault_validate_certs: False
+        conn_params: ''

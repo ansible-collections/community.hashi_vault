@@ -1,0 +1,12 @@
+---
+- name: "Cert Content Block"
+  when: vault_cert_content is defined
+  block:
+    - name: "Write Certificate"
+      copy:
+        dest: '{{ cert_location }}'
+        content: '{{ vault_cert_content }}'
+
+    - name: "Register the Cert Location"
+      set_fact:
+        vault_cert_file: '{{ cert_location }}'

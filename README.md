@@ -9,7 +9,7 @@ Browsing the [**latest** collection documentation](https://docs.ansible.com/ansi
 
 Browsing the [**devel** collection documentation](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault) shows docs for the _latest version released on Galaxy_.
 
-If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**.
+If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **devel**.
 ## Tested with Ansible
 
 * 2.9
@@ -70,6 +70,8 @@ Currently we test against Python versions:
 See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
+
+See the contributor guide in the [**devel** collection documentation](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault).
 
 <!--Describe how the community can contribute to your collection. At a minimum, include how and where users can create issues to report problems or request features for this collection.  List contribution requirements, including preferred workflows and necessary testing, so you can benefit from community PRs. If you are following general Ansible contributor guidelines, you can link to - [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html). -->
 

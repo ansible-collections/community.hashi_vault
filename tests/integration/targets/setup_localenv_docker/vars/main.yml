@@ -1,0 +1,8 @@
+---
+integration_config:
+  vault_version: '{{ vault_version }}'
+  vault_test_server_http: 'http://{{ vault_target_name }}:{{ vault_port_http }}'
+  vault_test_server_https: 'https://{{ vault_target_name }}:{{ vault_port_https}}'
+  vault_dev_root_token_id: '{{ vault_dev_root_token_id }}'
+  vault_proxy_server: 'http://{{ proxy_target_name }}:{{ proxy_port }}'
+  vault_cert_content: "{{ lookup('file', vault_cert_file) }}"

@@ -1,0 +1,6 @@
+---
+- name: 'Kill vault process'
+  shell: "kill $(cat {{ vault_pid_file }})"
+  ignore_errors: true
+  listen: test_managed_vault_cleanup
+  when: vault_integration_legacy | bool

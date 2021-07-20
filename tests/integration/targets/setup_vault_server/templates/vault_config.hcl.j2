@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+pid_file = "{{ vault_pid_file }}"
+{% if vault_run_https_tests | bool %}
+listener "tcp" {
+  tls_key_file = "{{ vault_key_file }}"
+  tls_cert_file = "{{ vault_cert_file }}"
+  tls_disable  = false
+  address = "{{ vault_test_server_https | regex_replace('^https://([^:]+):(\\d+).*?$', '\\1:\\2') }}"
+}
+{% endif %}

@@ -1,9 +1,3 @@
-# README FIRST
-# 1. If you don't have unit tests remove that section
-# 2. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
-# If you need help please ask in the #ansible-community channel on Libera.Chat IRC (https://libera.chat/)
-# Refer to https://libera.chat/guides/registration to learn how to register
-
 name: CI
 on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
@@ -19,6 +13,7 @@ env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
   ANSIBLE_FORCE_COLOR: true
+  ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
 
 jobs:
 
@@ -29,14 +24,18 @@ jobs:
 
   sanity:
     name: Sanity (Ⓐ${{ matrix.ansible }})
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
+        runner:
+          - ubuntu-latest
+        test_container:
+          - default
         ansible:
           - stable-2.9
           - stable-2.10
           - stable-2.11
           - devel
-    runs-on: ubuntu-latest
     steps:
 
       # ansible-test requires the collection to be in a directory in the form
@@ -62,16 +61,20 @@ jobs:
       # The docker container has all the pinned dependencies that are required
       # and all python versions ansible supports.
       - name: Run sanity tests
-        run: ansible-test sanity --docker -v --color
+        run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color
         working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
   units:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
       # As soon as the first unit test fails, cancel the others to free up the CI queue
       fail-fast: true
       matrix:
+        runner:
+          - ubuntu-latest
+        test_container:
+          - default
         ansible:
           - stable-2.9
           - stable-2.10
@@ -94,14 +97,9 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      # # OPTIONAL If your unit test requires Python libraries from other collections
-      # # Install them like this
-      # - name: Install collection dependencies
-      #   run: ansible-galaxy collection install ansible.netcommon ansible.utils -p .
-
       # Run the unit tests
       - name: Run unit test
-        run: ansible-test units -v --color --docker --coverage
+        run: ansible-test units -v --color --docker ${{ matrix.test_container }} --coverage
         working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
         # ansible-test support producing code coverage date
@@ -119,17 +117,16 @@ jobs:
 #
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
-
-# If the application you are testing is available as a docker container and you want to test
-# multiple versions see the following for an example:
-# https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
-
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
+        runner:
+          - ubuntu-latest
+        test_container:
+          - default
         ansible:
           - stable-2.9
           - stable-2.10
@@ -152,83 +149,44 @@ jobs:
           - ansible: devel
             vault: 1.7.3
             python: '3.10'
+            runner: ubuntu-latest
+            test_container: default
 
     steps:
       - name: Initialize env vars
-        run: |
-          COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-          LOOKUP_HASHI_VAULT_PATH=${COLLECTION_PATH}/tests/integration/targets/lookup_hashi_vault
-          LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-          LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
-
-          echo "COLLECTION_PATH=${COLLECTION_PATH}" >> ${GITHUB_ENV}
-          echo "LOOKUP_HASHI_VAULT_PATH=${LOOKUP_HASHI_VAULT_PATH}" >> ${GITHUB_ENV}
-          echo "LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_BIN}" >> ${GITHUB_ENV}
-          echo "LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_VARS}" >> ${GITHUB_ENV}
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
+            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
+            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
       - name: Check out code
         uses: actions/checkout@v2
         with:
           path: ${{ env.COLLECTION_PATH }}
 
+      - name: Link to .github  # easier access to local actions
+        run: ln -s "${COLLECTION_PATH}/.github" .github
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
-      - name: Cache for vault binaries
-        id: cache-vault
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.LOOKUP_HASHI_VAULT_BIN }}
-          key: ${{ runner.os }}-vault${{ matrix.vault }} # future: include version/arch when configurable
-
-      # removing .gitignore lets the files in those dirs be sent to the container via ansible-test
-      # the files/bin dir will contain the vault binary downloaded a few steps later (or retrieved from cache)
-      # the vars/ dir will be used to write a file overriding role defaults (for Vault version)
-      - name: Prepare for Vault version and caching
-        run: |
-          rm -f "${LOOKUP_HASHI_VAULT_BIN}/.gitignore"
-          rm -f "${LOOKUP_HASHI_VAULT_VARS}/.gitignore"
-          echo '{ "vault_version": "${{ matrix.vault }}" }' > "${LOOKUP_HASHI_VAULT_VARS}/main.json"
-
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      #TODO: remove dependency on community.crypto
-      - name: Find the latest version of community.crypto
-        run: |
-          # credit to https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c#gistcomment-3294173
+      - name: Prepare docker dependencies
+        run: ./setup.sh -e vault_version=${{ matrix.vault }}
+        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
-          cclu=$(curl -fs -o/dev/null -w %{redirect_url} https://github.com/ansible-collections/community.crypto/releases/latest)
-          echo "CC_LATEST=$(basename ${cclu})" >> $GITHUB_ENV
-
-      - name: Cache for community.crypto
-        id: cache-cc
-        uses: actions/cache@v2
-        with:
-          path: ansible_collections/community/crypto
-          key: collection-community.crypto-${{ env.CC_LATEST }}
-
-      - name: Install collection dependencies
-        if: steps.cache-cc.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
-        with:
-          repository: ansible-collections/community.crypto
-          ref: refs/tags/${{ env.CC_LATEST }}
-          path: ansible_collections/community/crypto
-
-      # this will populate files/bin with the selected vault version binary
-      - name: Pre-download Vault
-        if: steps.cache-vault.outputs.cache-hit != 'true'
-        env:
-          ANSIBLE_ROLES_PATH: ../
-        working-directory: ${{ env.LOOKUP_HASHI_VAULT_PATH }}/playbooks
-        run: ansible-playbook "download_vault.yml" -v
-
-      # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
+        run: |
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
@@ -238,5 +196,124 @@ jobs:
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: false
+
+  local_test_invocation:
+    runs-on: ${{ matrix.runner }}
+    name: LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    env:
+      # needed to prevent Ansible crashing on MacOS
+      OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.11
+        python:
+          - 3.8
+        runner:
+          - ubuntu-latest
+          - macos-latest
+        test_container:
+          - default
+        docker:
+          - true
+          - false
+        exclude:
+          - runner: ubuntu-latest
+            docker: false
+
+    steps:
+      - name: Initialize env vars
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
+            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
+            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
+            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
+
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.COLLECTION_PATH }}
+
+      - name: Link to .github  # easier access to local actions
+        run: ln -s "${COLLECTION_PATH}/.github" .github
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Install community.crypto
+        uses: ./.github/actions/collection-via-git
+        with:
+          collection: community.crypto
+
+      - name: Install community.docker
+        uses: ./.github/actions/collection-via-git
+        with:
+          collection: community.docker
+
+      - name: Install community.general
+        uses: ./.github/actions/collection-via-git
+        if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
+        with:
+          collection: community.general
+
+      - name: legacy integration - use sample integration_config
+        working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
+        run: cp "integration_config.yml.sample" "integration_config.yml"
+
+      - name: legacy integration - venv
+        if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: Install Docker on MacOS
+        if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
+        uses: ./.github/actions/macos-docker
+
+      - name: legacy integration - docker
+        if: ${{ matrix.docker }}
+        run: |
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: legacy integration - remove integration_config
+        if: ${{ matrix.docker }}
+        working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
+        run: rm -f "integration_config.yml"
+
+      - name: localenv_docker - setup
+        if: ${{ matrix.docker }}
+        run: |
+          pwd
+          pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
+          ./setup.sh
+        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
+
+      - name: localenv_docker - Run integration test (in docker)
+        if: ${{ matrix.docker }}
+        run: |
+          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+        # ansible-test support producing code coverage date
+      - name: Generate coverage report
+        if: ${{ matrix.docker }}
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
+      - uses: codecov/codecov-action@v2
+        if: ${{ matrix.docker }}
         with:
           fail_ci_if_error: false

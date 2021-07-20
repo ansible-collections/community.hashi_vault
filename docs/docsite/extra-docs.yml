@@ -1,5 +1,7 @@
 ---
 sections:
-  - title: User Guide
+  - title: Guides
     toctree:
       - user_guide
+      - contributor_guide
+      - localenv_developer_guide

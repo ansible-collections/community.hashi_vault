@@ -1,0 +1,26 @@
+---
+- name: Install tinyproxy
+  become: '{{ ansible_distribution != "MacOSX" }}'
+  vars:
+    # check 'Install unzip' task in setup_vault_server_download to know why we set ansible_python_interpreter
+    ansible_python_interpreter: "{{
+      '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+    }}"
+  package:
+    name: tinyproxy
+  notify: proxy_cleanup
+
+- name: Configure tinyproxy
+  copy:
+    content: |
+      Port 8001
+      MaxClients 100
+      StartServers 10
+      PidFile "{{ vault_proxy_pid }}"
+    dest: "{{ vault_proxy_conf }}"
+
+- name: Start tinyproxy
+  shell:
+    cmd: tinyproxy -c "{{ vault_proxy_conf }}"
+    creates: "{{ vault_proxy_pid }}"
+  notify: proxy_cleanup

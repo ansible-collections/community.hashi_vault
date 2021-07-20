@@ -1,0 +1,18 @@
+---
+vault_dev_root_token_id: '47542cbc-6bf8-4fba-8eda-02e0a0d29a0a'
+vault_test_server_https: 'https://localhost:8201'
+vault_test_server_http: 'http://localhost:8200'
+
+# WIP
+vault_test_server_configure: True
+
+# when False the tests requiring a valid SSL connection to Vault will be skipped
+vault_run_https_tests: True
+
+vault_server_temp_dir: /tmp
+vault_cert_file: '{{ vault_server_temp_dir }}/cert.pem'
+vault_key_file: '{{ vault_server_temp_dir }}/privatekey.pem'
+vault_config_file: '{{ vault_server_temp_dir }}/vault_config.hcl'
+vault_pid_file: '{{ vault_server_temp_dir }}/vault.pid'
+
+vault_launch_cmd: 'nohup {{ vault_cmd }} server -dev -config {{ vault_config_file }}'

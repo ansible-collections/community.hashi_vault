@@ -1,0 +1,13 @@
+---
+- name: "Shut down"
+  when: docker_compose in ['clean', 'down']
+  community.docker.docker_compose:
+    project_name: '{{ docker_compose_project_name }}'
+    state: absent
+    project_src: '{{ docker_compose_output }}'
+
+- name: "Bring up"
+  when: docker_compose in ['clean', 'up']
+  community.docker.docker_compose:
+    project_name: '{{ docker_compose_project_name }}'
+    project_src: '{{ docker_compose_output }}'

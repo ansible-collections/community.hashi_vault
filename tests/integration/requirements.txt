@@ -1,0 +1,6 @@
+hvac >= 0.10.6, != 0.10.12, != 0.10.13, < 1.0.0 ; python_version == '2.7' # bugs in 0.10.12 and 0.10.13 prevent it from working in Python 2
+hvac >= 0.10.6 ; python_version >= '3.5'
+
+# these should be satisfied naturally by the requests versions required by hvac anyway
+urllib3 >= 1.15 ; python_version >= '3.6' # we need raise_on_status for retry support to raise the correct exceptions https://github.com/urllib3/urllib3/blob/main/CHANGES.rst#115-2016-04-06
+urllib3 >= 1.15, <2.0.0 ; python_version < '3.6' # https://urllib3.readthedocs.io/en/latest/v2-roadmap.html#optimized-for-python-3-6

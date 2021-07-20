@@ -1,0 +1,6 @@
+---
+vault_proxy_server: 'http://127.0.0.1:8001'
+
+vault_proxy_tmp: /tmp
+vault_proxy_pid: '{{ vault_proxy_tmp }}/tinyproxy.pid'
+vault_proxy_conf: '{{ vault_proxy_tmp }}/tinyproxy.conf'

@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+listener "tcp" {
+  tls_key_file = "/vault/config/{{ vault_key_file | basename }}"
+  tls_cert_file = "/vault/config/{{ vault_cert_file | basename }}"
+  tls_disable  = false
+  address = "{{
+    integration_config.vault_test_server_https
+    | regex_replace('^https://([^:]+):(\\d+).*?$', '\\1:\\2')
+  }}"
+}

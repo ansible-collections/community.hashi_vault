@@ -1,6 +1,3 @@
-shippable/posix/group2
-destructive
-needs/file/tests/utils/constraints.txt
-skip/aix
-skip/python2.6  # lookups are controller only, and we no longer support Python 2.6 on the controller
-skip/macos  # FIXME seems to be always unstable
+skip/python2.6  # Python 2.6 is not supported by the collection
+needs/target/setup_vault_legacy
+needs/target/setup_vault_test_plugins

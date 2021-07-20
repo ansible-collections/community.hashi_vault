@@ -1,0 +1,20 @@
+---
+- name: Stop tinyproxy
+  shell:
+    cmd: |
+      kill $(cat "{{ vault_proxy_pid }}")
+      rm -f "{{ vault_proxy_pid }}"
+    removes: "{{ vault_proxy_pid }}"
+  listen: proxy_cleanup
+
+- name: Uninstall tinyproxy
+  become: '{{ ansible_distribution != "MacOSX" }}'
+  vars:
+    ansible_python_interpreter: "{{
+      '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+    }}"
+  package:
+    name: tinyproxy
+    state: absent
+  ignore_errors: yes
+  listen: proxy_cleanup

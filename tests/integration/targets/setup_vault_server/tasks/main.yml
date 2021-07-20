@@ -1,0 +1,8 @@
+---
+- import_tasks: vault_server.yml
+
+- set_fact:
+    vault_test_server_http: "{{ vault_test_server_http }}"
+    vault_test_server_https: "{{ vault_test_server_https }}"
+    vault_cert_file: "{{ vault_cert_file }}"
+    vault_key_file: "{{ vault_key_file }}"

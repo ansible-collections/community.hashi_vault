@@ -1,0 +1,6 @@
+---
+collections:
+  # community.docker is not required if using docker_compose=none
+  - community.docker
+  # community.crypto is not required the certificate and key files specified already exist
+  - community.crypto
