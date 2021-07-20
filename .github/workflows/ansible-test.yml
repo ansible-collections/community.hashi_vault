@@ -195,7 +195,7 @@ jobs:
         working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
         with:
           fail_ci_if_error: false
 
