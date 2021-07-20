@@ -58,8 +58,8 @@ Current Defaults (always check the source code to confirm the defaults in your s
 
 Any of the ``Retry`` class's parameters that are not specified in the collection defaults or in your custom dictionary, are initialized using the class's defaults, with one exception: the ``raise_on_status`` parameter is always set to ``false`` unless you explicitly added it your custom dictionary. The reason is that this lets our error handling look for the expected ``hvac`` exceptions, instead of the ``Retry``-specfic exceptions. It is recommended that you don't override this as it may cause unexpected error messages on common failures if they are retried.
 
-Retry messages
---------------
+Controlling retry warnings
+--------------------------
 
 By default, if a retry is performed, a warning will be emitted that shows how many retries are remaining. This can be controlled with the ``retry_action`` option which defaults to ``warn``. It is recommended to keep this enabled unless you have other processes that will be thrown off by the warning output.
 
