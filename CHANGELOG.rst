@@ -5,6 +5,25 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.3.2
+======
+
+Release Summary
+---------------
+
+This release adds requirements detection support for Ansible Execution Environments. It also updates and adds new guides in our `collection docsite <https://docs.ansible.com/ansible/devel/collections/community/hashi_vault>`_.
+This release also announces the dropping of Python 3.5 support in version ``2.0.0`` of the collection, alongside the previous announcement dropping Python 2.x in ``2.0.0``.
+
+Minor Changes
+-------------
+
+- hashi_vault collection - add ``execution-environment.yml`` and a python requirements file to better support ``ansible-builder`` (https://github.com/ansible-collections/community.hashi_vault/pull/105).
+
+Deprecated Features
+-------------------
+
+- hashi_vault collection - support for Python 3.5 will be dropped in version ``2.0.0`` of ``community.hashi_vault`` (https://github.com/ansible-collections/community.hashi_vault/issues/81).
+
 v1.3.1
 ======
 
