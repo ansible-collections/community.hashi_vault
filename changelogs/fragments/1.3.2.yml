@@ -1,4 +1,0 @@
----
-release_summary: |-
-  This release adds requirements detection support for Ansible Execution Environments. It also updates and adds new guides in our `collection docsite <https://docs.ansible.com/ansible/devel/collections/community/hashi_vault>`_.
-  This release also announces the dropping of Python 3.5 support in version ``2.0.0`` of the collection, alongside the previous announcement dropping Python 2.x in ``2.0.0``.

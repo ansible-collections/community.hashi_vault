@@ -1,3 +1,0 @@
----
-minor_changes:
-  - hashi_vault collection - add ``execution-environment.yml`` and a python requirements file to better support ``ansible-builder`` (https://github.com/ansible-collections/community.hashi_vault/pull/105).
