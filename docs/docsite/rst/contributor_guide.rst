@@ -37,7 +37,7 @@ This type of documentation gets generated from structured YAML, inside of a Pyth
 
 This type of documentation is tested with ``ansible-test sanity`` and full instructions are available on the :ref:`testing module documentation <testing_module_documentation>` page.
 
-Although we can't preview how the documentation will look for these, we can be reasonably assured the output is correct because of the highly structured nature and the validation via sanity tests.
+Although we can't preview how the documentation will look for these, we can be reasonably sure the output is correct because the documentation is highly structured and validated using sanity tests.
 
 README and other markdown files
 -------------------------------
@@ -94,7 +94,7 @@ The rendered HTML docs should be available in ``docs/docsite/_build/html/`` and 
 Running tests locally
 =====================
 
-If you're making anything more than very small or one-time changes, you'll want to run the tests locally to avoid having to push a commit for each thing, and waiting for the CI to run tests.
+If you're making anything more than very small or one-time changes, run the tests locally to avoid having to push a commit for each thing, and waiting for the CI to run tests.
 
 First, :ref:`review the guidance on testing collections <testing_collections>`, as it applies to this collection as well.
 
