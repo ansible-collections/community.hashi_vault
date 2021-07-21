@@ -51,13 +51,14 @@ class LookupModule(HashiVaultLookupBase):
 
     def _generate_retry_callback(self, retry_action):
         '''returns a Retry callback function for plugins'''
+
+        original = super(LookupModule, self)._generate_retry_callback(retry_action)
+
         def _on_retry(retry_obj):
             if retry_obj.total > 0:
                 self._retry_count += 1
-                if retry_action == 'warn':
-                    display.warning('tester: %i %s remaining.' % (retry_obj.total, 'retry' if retry_obj.total == 1 else 'retries'))
-                else:
-                    pass
+
+            original(retry_obj)
 
         return _on_retry
 
