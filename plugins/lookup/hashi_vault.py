@@ -1,5 +1,5 @@
 # (c) 2020, Brian Scholer (@briantist)
-# (c) 2015, Jonathan Davila <jonathan(at)davila.io>
+# (c) 2015, Julie Davila (@juliedavila) <julie(at)davila.io>
 # (c) 2017 Ansible Project
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -9,7 +9,7 @@ __metaclass__ = type
 DOCUMENTATION = """
   lookup: hashi_vault
   author:
-    - Jonathan Davila (!UNKNOWN) <jdavila(at)ansible.com>
+    - Julie Davila (@juliedavila) <julie(at)davila.io>
     - Brian Scholer (@briantist)
   short_description: Retrieve secrets from HashiCorp's Vault
   requirements:
