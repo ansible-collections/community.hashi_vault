@@ -60,7 +60,7 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - uses: ./.github/action/pull-ansible-test-images
+      - uses: ./.github/actions/pull-ansible-test-images
 
       # run ansible-test sanity inside of Docker.
       # The docker container has all the pinned dependencies that are required
@@ -105,7 +105,7 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - uses: ./.github/action/pull-ansible-test-images
+      - uses: ./.github/actions/pull-ansible-test-images
 
       # Run the unit tests
       - name: Run unit test
@@ -190,7 +190,7 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - uses: ./.github/action/pull-ansible-test-images
+      - uses: ./.github/actions/pull-ansible-test-images
 
       - name: Prepare docker dependencies
         run: ./setup.sh -e vault_version=${{ matrix.vault }}
@@ -264,7 +264,7 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - uses: ./.github/action/pull-ansible-test-images
+      - uses: ./.github/actions/pull-ansible-test-images
 
       - name: Install community.crypto
         uses: ./.github/actions/collection-via-git
