@@ -50,7 +50,7 @@
     - name: HTTPS connection
       when: vault_run_https_tests | bool
       vars:
-        kwargs:
+        kwargs: &kwargs
           ca_cert: '{{ vault_cert_file }}'
       block:
         - name: Set the HTTPS connection address
@@ -60,7 +60,7 @@
         - name: test HTTPS with no cert validation
           <<: *test
           vars:
-            ansible_hashi_vault_validate_certs: False
+            ansible_hashi_vault_validate_certs: false
 
         - <<: *assert
 
@@ -76,6 +76,7 @@
           <<: *test
           vars:
             kwargs:
+              <<: *kwargs
               url: '{{ vault_proxy_alt_vault_https | default(vault_test_server_http) }}'
               proxies: '{{ vault_proxy_server }}'
 
