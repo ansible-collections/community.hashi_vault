@@ -46,9 +46,6 @@ jobs:
         with:
           path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -89,9 +86,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -177,9 +171,6 @@ jobs:
 
       - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -289,10 +280,6 @@ jobs:
       - name: Install Docker on MacOS
         if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
         uses: ./.github/actions/macos-docker
-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        if: ${{ matrix.docker }}
-        continue-on-error: true
 
       - name: legacy integration - docker
         if: ${{ matrix.docker }}
