@@ -1,0 +1,27 @@
+---
+name: Pull ansible-test docker images
+description: Performs a docker pull against ansible-test docker image aliases
+runs:
+  using: composite
+  steps:
+    - shell: python
+      run: |
+        import os
+
+        try:
+            from ansible_test._internal.util_common import get_docker_completion
+        except ImportError:
+            # 2.9
+            from ansible_test._internal.util import get_docker_completion
+
+        context = 'collection'
+        wanted = ['default']
+
+        dockers = get_docker_completion()
+
+        for alias, data in dockers.items():
+            if alias in wanted:
+                if 'context' not in data or data['context'] == context:
+                    image = data['name']
+                    print('pulling %s' % image)
+                    os.system('docker pull %s' % image)

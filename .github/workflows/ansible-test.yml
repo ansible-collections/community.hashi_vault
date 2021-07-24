@@ -46,6 +46,9 @@ jobs:
         with:
           path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
+      - name: Link to .github  # easier access to local actions
+        run: ln -s "${COLLECTION_PATH}/.github" .github
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -56,6 +59,8 @@ jobs:
       # Install the head of the given branch (devel, stable-2.10)
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - uses: ./.github/action/pull-ansible-test-images
 
       # run ansible-test sanity inside of Docker.
       # The docker container has all the pinned dependencies that are required
@@ -87,6 +92,9 @@ jobs:
         with:
           path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
+      - name: Link to .github  # easier access to local actions
+        run: ln -s "${COLLECTION_PATH}/.github" .github
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -96,6 +104,8 @@ jobs:
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - uses: ./.github/action/pull-ansible-test-images
 
       # Run the unit tests
       - name: Run unit test
@@ -180,6 +190,8 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      - uses: ./.github/action/pull-ansible-test-images
+
       - name: Prepare docker dependencies
         run: ./setup.sh -e vault_version=${{ matrix.vault }}
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
@@ -251,6 +263,8 @@ jobs:
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - uses: ./.github/action/pull-ansible-test-images
 
       - name: Install community.crypto
         uses: ./.github/actions/collection-via-git
