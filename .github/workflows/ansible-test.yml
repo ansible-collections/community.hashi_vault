@@ -66,7 +66,8 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
-        uses: ./.github/actions/pull-ansible-test-images
+        continue-on-error: true
+        uses: .github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
 
@@ -120,7 +121,8 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
-        uses: ./.github/actions/pull-ansible-test-images
+        continue-on-error: true
+        uses: .github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
 
@@ -208,7 +210,8 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
-        uses: ./.github/actions/pull-ansible-test-images
+        continue-on-error: true
+        uses: .github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
 
@@ -285,17 +288,17 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Install community.crypto
-        uses: ./.github/actions/collection-via-git
+        uses: .github/actions/collection-via-git
         with:
           collection: community.crypto
 
       - name: Install community.docker
-        uses: ./.github/actions/collection-via-git
+        uses: .github/actions/collection-via-git
         with:
           collection: community.docker
 
       - name: Install community.general
-        uses: ./.github/actions/collection-via-git
+        uses: .github/actions/collection-via-git
         if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
         with:
           collection: community.general
@@ -311,11 +314,12 @@ jobs:
 
       - name: Install Docker on MacOS
         if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
-        uses: ./.github/actions/macos-docker
+        uses: .github/actions/macos-docker
 
       - name: Pull Ansible test images
         if: ${{ matrix.docker }}
-        uses: ./.github/actions/pull-ansible-test-images
+        continue-on-error: true
+        uses: .github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
 
