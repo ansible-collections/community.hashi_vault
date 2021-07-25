@@ -1,11 +1,18 @@
 ---
+# task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+# see: https://github.com/ansible/ansible/issues/73268
+- name: Persist defaults
+  set_fact:
+    '{{ item.key }}': "{{ lookup('vars', item.key) }}"
+  loop: "{{ lookup('file', role_path ~ '/defaults/main.yml') | from_yaml | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+
 # TODO: consider setting up a Vault agent in CI to provide a better test of the none method
 # TODO: unit tests can probably check easily that the none method results in a client with no token
 - name: "Test that a request with none auth_type is not successful"
-  vars:
-    ansible_hashi_vault_auth_method: none
   debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', conn_params ~ 'secret=' ~ vault_kv2_path ~ '/secret1') }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=not_important') }}"
   register: status
   ignore_errors: yes
 

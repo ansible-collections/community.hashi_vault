@@ -1,0 +1,97 @@
+---
+- name: Connection Tests
+  module_defaults:
+    assert:
+      quiet: yes
+  vars:
+    # we don't set kwargs: {} here because of https://github.com/ansible/ansible/issues/75286
+    test_cmd: &test
+      set_fact:
+        result: "{{ lookup('vault_test_connection', '', **kwargs) }}"
+    assert_cmd: &assert
+      assert:
+        that: result.status.initialized
+  block:
+    - name: HTTP connection
+      vars:
+        kwargs: {}
+      block:
+        - name: Set the HTTP connection address
+          set_fact:
+            ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+
+        - name: test HTTP
+          <<: *test
+
+        - <<: *assert
+
+        - name: test HTTP with proxy
+          <<: *test
+          vars:
+            kwargs:
+              url: '{{ vault_proxy_alt_vault_http | default(vault_test_server_http) }}'
+              proxies: '{{ vault_proxy_server }}'
+
+        - <<: *assert
+
+        - name: test HTTP with wrong proxy
+          <<: *test
+          vars:
+            vault_test_connection_want_exception: yes
+            ansible_hashi_vault_proxies: http://127.0.0.1:4567
+            ansible_hashi_vault_retries: 2
+
+        - assert:
+            that:
+              - result is failed
+              - result.msg is search('Cannot connect to proxy')
+              - result.retries == 2
+
+    - name: HTTPS connection
+      when: vault_run_https_tests | bool
+      vars:
+        kwargs: &kwargs
+          ca_cert: '{{ vault_cert_file }}'
+      block:
+        - name: Set the HTTPS connection address
+          set_fact:
+            ansible_hashi_vault_addr: '{{ vault_test_server_https }}'
+
+        - name: test HTTPS with no cert validation
+          <<: *test
+          vars:
+            ansible_hashi_vault_validate_certs: false
+
+        - <<: *assert
+
+        - name: test HTTPS with cert validation
+          <<: *test
+          vars:
+            vault_test_connection_want_args: yes
+            vault_test_connection_want_exception: yes
+
+        - <<: *assert
+
+        - name: test HTTPS with proxy & cert validation
+          <<: *test
+          vars:
+            kwargs:
+              <<: *kwargs
+              url: '{{ vault_proxy_alt_vault_https | default(vault_test_server_http) }}'
+              proxies: '{{ vault_proxy_server }}'
+
+        - <<: *assert
+
+        - name: test HTTPS with wrong proxy & cert validation
+          <<: *test
+          vars:
+            vault_test_connection_want_exception: yes
+            ansible_hashi_vault_validate_certs: yes
+            ansible_hashi_vault_proxies: http://127.0.0.1:4567
+            ansible_hashi_vault_retries: 2
+
+        - assert:
+            that:
+              - result is failed
+              - result.msg is search('Cannot connect to proxy')
+              - result.retries == 2

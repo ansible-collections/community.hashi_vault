@@ -1,0 +1,16 @@
+---
+vault_plugins_module_defaults_common:
+  url: '{{ vault_test_server_http | default(omit) }}'
+  token: '{{ vault_dev_root_token_id | default(omit) }}'
+
+# As of https://github.com/ansible/ansible/pull/74039 ::
+# we can't use this dictionary directly in module_defaults anymore 😢
+# but keeping it here and updated as it's a handy copy/paste source
+vault_plugins_module_defaults:
+  vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_kv_put: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_write: '{{ vault_plugins_module_defaults_common }}'

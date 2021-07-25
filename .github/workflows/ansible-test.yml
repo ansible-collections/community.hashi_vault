@@ -40,11 +40,19 @@ jobs:
 
       # ansible-test requires the collection to be in a directory in the form
       # .../ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+      - name: Initialize env vars
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
 
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+          path: ${{ env.COLLECTION_PATH }}
+
+      - name: Link to .github  # easier access to local actions
+        run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -57,12 +65,18 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      - name: Pull Ansible test images
+        continue-on-error: true
+        uses: ./.github/actions/pull-ansible-test-images
+        with:
+          working-directory: ${{ env.COLLECTION_PATH }}
+
       # run ansible-test sanity inside of Docker.
       # The docker container has all the pinned dependencies that are required
       # and all python versions ansible supports.
       - name: Run sanity tests
         run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color
-        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
   units:
     runs-on: ${{ matrix.runner }}
@@ -82,10 +96,19 @@ jobs:
           - devel
 
     steps:
+      - name: Initialize env vars
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+          path: ${{ env.COLLECTION_PATH }}
+
+      - name: Link to .github  # easier access to local actions
+        run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -97,15 +120,21 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      - name: Pull Ansible test images
+        continue-on-error: true
+        uses: ./.github/actions/pull-ansible-test-images
+        with:
+          working-directory: ${{ env.COLLECTION_PATH }}
+
       # Run the unit tests
       - name: Run unit test
         run: ansible-test units -v --color --docker ${{ matrix.test_container }} --coverage
-        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-        working-directory: ./ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
+        working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v2
@@ -179,6 +208,12 @@ jobs:
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Pull Ansible test images
+        continue-on-error: true
+        uses: ./.github/actions/pull-ansible-test-images
+        with:
+          working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Prepare docker dependencies
         run: ./setup.sh -e vault_version=${{ matrix.vault }}
@@ -280,6 +315,13 @@ jobs:
       - name: Install Docker on MacOS
         if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
         uses: ./.github/actions/macos-docker
+
+      - name: Pull Ansible test images
+        if: ${{ matrix.docker }}
+        continue-on-error: true
+        uses: ./.github/actions/pull-ansible-test-images
+        with:
+          working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: legacy integration - docker
         if: ${{ matrix.docker }}

@@ -1,0 +1,66 @@
+---
+- name: 'Create KV v1 secrets engine'
+  vault_ci_enable_engine:
+    backend_type: kv
+    path: kv1
+    options:
+      version: 1
+
+- name: 'Create KV v2 secrets engine'
+  vault_ci_enable_engine:
+    backend_type: kv
+    path: kv2
+    options:
+      version: 2
+
+- name: 'Create a test policy'
+  vault_ci_policy_put:
+    name: test-policy
+    policy: "{{ vault_test_policy }}"
+
+- name: 'Create an alternate policy'
+  vault_ci_policy_put:
+    name: alt-policy
+    policy: "{{ vault_alt_policy }}"
+
+- name: 'Create KV v1 secrets'
+  loop: [1, 2, 3]
+  vault_ci_kv_put:
+    path: "{{ vault_kv1_path | regex_replace('^kv1/') }}/secret{{ item }}"
+    version: 1
+    mount_point: kv1
+    secret:
+      value: 'foo{{ item }}'
+
+- name: 'Create KV v2 secrets'
+  loop: [1, 2, 3, 4, 5]
+  vault_ci_kv_put:
+    path: "{{ vault_kv2_path | regex_replace('^kv2/data/') }}/secret{{ item }}"
+    version: 2
+    mount_point: kv2
+    secret:
+      value: 'foo{{ item }}'
+
+- name: 'Update KV v2 secret4 with new value to create version'
+  vault_ci_kv_put:
+    path: "{{ vault_kv2_path | regex_replace('^kv2/data/') }}/secret4"
+    version: 2
+    mount_point: kv2
+    secret:
+      value: 'foo5'
+
+- name: 'Create multiple KV v2 secrets under one path'
+  vault_ci_kv_put:
+    path: "{{ vault_kv2_multi_path | regex_replace('^kv2/data/') }}/secrets"
+    version: 2
+    mount_point: kv2
+    secret:
+      value1: foo1
+      value2: foo2
+      value3: foo3
+
+- name: 'Write Canary'
+  vault_ci_write:
+    path: '{{ vault_configure_canary.path }}'
+    data:
+      value: '{{ vault_configure_canary.value }}'

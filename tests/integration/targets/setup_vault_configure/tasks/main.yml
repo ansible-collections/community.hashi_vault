@@ -1,0 +1,17 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_kv_put: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
+  block:
+    - name: 'Canary for Vault basic setup'
+      vault_ci_read:
+        path: '{{ vault_configure_canary.path }}'
+      register: canary
+
+    - name: 'Configure Vault basic setup'
+      include_tasks: configure.yml
+      when: canary.result is none
