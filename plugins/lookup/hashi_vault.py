@@ -27,88 +27,15 @@ DOCUMENTATION = """
     - As of community.hashi_vault 0.1.0, only the latest version of a secret is returned when specifying a KV v2 path.
     - As of community.hashi_vault 0.1.0, all options can be supplied via term string (space delimited key=value pairs) or by parameters (see examples).
     - As of community.hashi_vault 0.1.0, when I(secret) is the first option in the term string, C(secret=) is not required (see examples).
-  extends_documentation_fragment: community.hashi_vault.connection
+  extends_documentation_fragment:
+    - community.hashi_vault.connection
+    - community.hashi_vault.auth_common
+    - community.hashi_vault.auth_token
+    - community.hashi_vault.auth_userpass
   options:
     secret:
       description: Vault path to the secret being requested in the format C(path[:field]).
       required: True
-    token:
-      description:
-        - Vault token. Token may be specified explicitly, through the listed [env] vars, and also through the C(VAULT_TOKEN) env var.
-        - If no token is supplied, explicitly or through env, then the plugin will check for a token file, as determined by I(token_path) and I(token_file).
-        - The order of token loading (first found wins) is C(token param -> ansible var -> ANSIBLE_HASHI_VAULT_TOKEN -> VAULT_TOKEN -> token file).
-      env:
-        - name: ANSIBLE_HASHI_VAULT_TOKEN
-          version_added: '0.2.0'
-      vars:
-        - name: ansible_hashi_vault_token
-          version_added: '1.2.0'
-    token_path:
-      description: If no token is specified, will try to read the I(token_file) from this path.
-      env:
-        - name: VAULT_TOKEN_PATH
-          deprecated:
-            why: standardizing environment variables
-            version: 2.0.0
-            collection_name: community.hashi_vault
-            alternatives: ANSIBLE_HASHI_VAULT_TOKEN_PATH
-        - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
-          version_added: '0.2.0'
-      ini:
-        - section: lookup_hashi_vault
-          key: token_path
-      vars:
-        - name: ansible_hashi_vault_token_path
-          version_added: '1.2.0'
-    token_file:
-      description: If no token is specified, will try to read the token from this file in I(token_path).
-      env:
-        - name: VAULT_TOKEN_FILE
-          deprecated:
-            why: standardizing environment variables
-            version: 2.0.0
-            collection_name: community.hashi_vault
-            alternatives: ANSIBLE_HASHI_VAULT_TOKEN_FILE
-        - name: ANSIBLE_HASHI_VAULT_TOKEN_FILE
-          version_added: '0.2.0'
-      ini:
-        - section: lookup_hashi_vault
-          key: token_file
-      vars:
-        - name: ansible_hashi_vault_token_file
-          version_added: '1.2.0'
-      default: '.vault-token'
-    token_validate:
-      description:
-        - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
-        - Disable if your token doesn't have the C(lookup-self) capability.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_TOKEN_VALIDATE
-      ini:
-        - section: lookup_hashi_vault
-          key: token_validate
-      vars:
-        - name: ansible_hashi_vault_token_validate
-          version_added: '1.2.0'
-      type: boolean
-      default: true
-      version_added: 0.2.0
-    username:
-      description: Authentication user name.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_USERNAME
-          version_added: '1.2.0'
-      vars:
-        - name: ansible_hashi_vault_username
-          version_added: '1.2.0'
-    password:
-      description: Authentication password.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_PASSWORD
-          version_added: '1.2.0'
-      vars:
-        - name: ansible_hashi_vault_password
-          version_added: '1.2.0'
     role_id:
       description: Vault Role ID. Used in approle and aws_iam_login auth methods.
       env:
@@ -140,34 +67,6 @@ DOCUMENTATION = """
       vars:
         - name: ansible_hashi_vault_secret_id
           version_added: '1.2.0'
-    auth_method:
-      description:
-        - Authentication method to be used.
-        - C(none) auth method was added in collection version C(1.2.0).
-      env:
-        - name: VAULT_AUTH_METHOD
-          deprecated:
-            why: standardizing environment variables
-            version: 2.0.0
-            collection_name: community.hashi_vault
-            alternatives: ANSIBLE_HASHI_VAULT_AUTH_METHOD
-        - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
-          version_added: '0.2.0'
-      ini:
-        - section: lookup_hashi_vault
-          key: auth_method
-      vars:
-        - name: ansible_hashi_vault_auth_method
-          version_added: '1.2.0'
-      choices:
-        - token
-        - userpass
-        - ldap
-        - approle
-        - aws_iam_login
-        - jwt
-        - none
-      default: token
     return_format:
       description:
         - Controls how multiple key/value pairs in a path are treated on return.
@@ -180,60 +79,10 @@ DOCUMENTATION = """
         - raw
       default: dict
       aliases: [ as ]
-    mount_point:
-      description:
-        - Vault mount point.
-        - If not specified, the default mount point for a given auth method is used.
-        - Does not apply to token authentication.
     jwt:
       description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
       env:
         - name: ANSIBLE_HASHI_VAULT_JWT
-    aws_profile:
-      description: The AWS profile
-      type: str
-      aliases: [ boto_profile ]
-      env:
-        - name: AWS_DEFAULT_PROFILE
-        - name: AWS_PROFILE
-    aws_access_key:
-      description: The AWS access key to use.
-      type: str
-      aliases: [ aws_access_key_id ]
-      env:
-        - name: EC2_ACCESS_KEY
-        - name: AWS_ACCESS_KEY
-        - name: AWS_ACCESS_KEY_ID
-    aws_secret_key:
-      description: The AWS secret key that corresponds to the access key.
-      type: str
-      aliases: [ aws_secret_access_key ]
-      env:
-        - name: EC2_SECRET_KEY
-        - name: AWS_SECRET_KEY
-        - name: AWS_SECRET_ACCESS_KEY
-    aws_security_token:
-      description: The AWS security token if using temporary access and secret keys.
-      type: str
-      env:
-        - name: EC2_SECURITY_TOKEN
-        - name: AWS_SESSION_TOKEN
-        - name: AWS_SECURITY_TOKEN
-    region:
-      description: The AWS region for which to create the connection.
-      type: str
-      env:
-        - name: EC2_REGION
-        - name: AWS_REGION
-    aws_iam_server_id:
-      description: If specified, sets the value to use for the C(X-Vault-AWS-IAM-Server-ID) header as part of C(GetCallerIdentity) request.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_AWS_IAM_SERVER_ID
-      ini:
-        - section: lookup_hashi_vault
-          key: aws_iam_server_id
-      required: False
-      version_added: '0.2.0'
 """
 
 EXAMPLES = """
@@ -409,13 +258,16 @@ _raw:
   elements: dict
 """
 
-import os
+# import os
 
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultHelper
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+    HashiVaultHelper,
+    HashiVaultValueError,
+)
 
 display = Display()
 
@@ -426,21 +278,21 @@ try:
 except ImportError:
     HAS_HVAC = False
 
-HAS_BOTOCORE = False
-try:
-    # import boto3
-    import botocore
-    HAS_BOTOCORE = True
-except ImportError:
-    HAS_BOTOCORE = False
+# HAS_BOTOCORE = False
+# try:
+#     # import boto3
+#     import botocore
+#     HAS_BOTOCORE = True
+# except ImportError:
+#     HAS_BOTOCORE = False
 
-HAS_BOTO3 = False
-try:
-    import boto3
-    # import botocore
-    HAS_BOTO3 = True
-except ImportError:
-    HAS_BOTO3 = False
+# HAS_BOTO3 = False
+# try:
+#     import boto3
+#     # import botocore
+#     HAS_BOTO3 = True
+# except ImportError:
+#     HAS_BOTO3 = False
 
 
 class HashiVault:
@@ -455,10 +307,11 @@ class HashiVault:
                 ret[option] = val
         return ret
 
-    def __init__(self, connection_options, adapter, **kwargs):
+    def __init__(self, connection_options, adapter, authenticator, **kwargs):
         # taking adapter during transition period
         self.adapter = adapter
         self.connection_options = connection_options
+        self.authenticator = authenticator
 
         self.options = kwargs
 
@@ -466,7 +319,7 @@ class HashiVault:
 
         # check early that auth method is actually available
         self.auth_function = 'auth_' + self.options['auth_method']
-        if not (hasattr(self, self.auth_function) and callable(getattr(self, self.auth_function))):
+        if self.options['auth_method'] not in self.authenticator._selector and not (hasattr(self, self.auth_function) and callable(getattr(self, self.auth_function))):
             raise AnsibleError(
                 "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
             )
@@ -481,7 +334,10 @@ class HashiVault:
         # auth_<method_name>
         #
         # so just call it
-        getattr(self, self.auth_function)()
+        try:
+            self.authenticator.authenticate(self.client)
+        except KeyError:
+            getattr(self, self.auth_function)()
 
     def get(self):
         '''gets a secret. should always return a list'''
@@ -550,23 +406,23 @@ class HashiVault:
     #    0.10.5 -- jwt (new)
     #    0.10.6 -- approle
     #
-    def auth_token(self):
-        if self.options['auth_method'] == 'token':
-            self.client.token = self.options.get('token')
+    # def auth_token(self):
+    #     if self.options['auth_method'] == 'token':
+    #         self.client.token = self.options.get('token')
 
-        if self.options.get('token_validate') and not self.client.is_authenticated():
-            raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup.")
+    #     if self.options.get('token_validate') and not self.client.is_authenticated():
+    #         raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup.")
 
-    def auth_userpass(self):
-        params = self.get_options('username', 'password', 'mount_point')
-        try:
-            response = self.client.auth.userpass.login(**params)
-            # must manually set the client token with userpass login
-            # see https://github.com/hvac/hvac/issues/644
-            self.client.token = response['auth']['client_token']
-        except (NotImplementedError, AttributeError):
-            display.warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
-            self.client.auth_userpass(**params)
+    # def auth_userpass(self):
+    #     params = self.get_options('username', 'password', 'mount_point')
+    #     try:
+    #         response = self.client.auth.userpass.login(**params)
+    #         # must manually set the client token with userpass login
+    #         # see https://github.com/hvac/hvac/issues/644
+    #         self.client.token = response['auth']['client_token']
+    #     except (NotImplementedError, AttributeError):
+    #         display.warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
+    #         self.client.auth_userpass(**params)
 
     def auth_ldap(self):
         params = self.get_options('username', 'password', 'mount_point')
@@ -584,13 +440,13 @@ class HashiVault:
             display.warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
             self.client.auth_approle(**params)
 
-    def auth_aws_iam_login(self):
-        params = self.options['_auth_aws_iam_login_params']
-        try:
-            self.client.auth.aws.iam_login(**params)
-        except (NotImplementedError, AttributeError):
-            display.warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
-            self.client.auth_aws_iam(**params)
+    # def auth_aws_iam_login(self):
+    #     params = self.options['_auth_aws_iam_login_params']
+    #     try:
+    #         self.client.auth.aws.iam_login(**params)
+    #     except (NotImplementedError, AttributeError):
+    #         display.warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
+    #         self.client.auth_aws_iam(**params)
 
     def auth_jwt(self):
         params = self.get_options('role_id', 'jwt', 'mount_point')
@@ -607,8 +463,8 @@ class HashiVault:
         except (NotImplementedError, AttributeError):
             raise AnsibleError("JWT authentication requires HVAC version 0.10.5 or higher.")
 
-    def auth_none(self):
-        pass
+    # def auth_none(self):
+    #     pass
     # end auth implementation methods
 
 
@@ -628,7 +484,7 @@ class LookupModule(HashiVaultLookupBase):
             self.process_options()
             # passing connection_options and adapter to the HashiVault class to make transition easier
             # while the things in this class get moved to shared classes
-            client = HashiVault(self.connection_options, self._options_adapter, **self._options)
+            client = HashiVault(self.connection_options, self._options_adapter, self.authenticator, **self._options)
             client.authenticate()
             ret.extend(client.get())
 
@@ -688,10 +544,15 @@ class LookupModule(HashiVaultLookupBase):
                 "Authentication method '%s' not supported. Available options are %r" % (auth_method, avail_auth_methods)
             )
 
-        # run validator if available
-        auth_validator = 'validate_auth_' + auth_method
-        if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
-            getattr(self, auth_validator)(auth_method)
+        try:
+            self.authenticator.validate()
+        except KeyError:
+            # run validator if available
+            auth_validator = 'validate_auth_' + auth_method
+            if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
+                getattr(self, auth_validator)(auth_method)
+        except HashiVaultValueError as e:
+            raise AnsibleError(e)
 
     # end options processing methods
 
@@ -703,8 +564,8 @@ class LookupModule(HashiVaultLookupBase):
         if missing:
             raise AnsibleError("Authentication method %s requires options %r to be set, but these are missing: %r" % (auth_method, field_names, missing))
 
-    def validate_auth_userpass(self, auth_method):
-        self.validate_by_required_fields(auth_method, 'username', 'password')
+    # def validate_auth_userpass(self, auth_method):
+    #     self.validate_by_required_fields(auth_method, 'username', 'password')
 
     def validate_auth_ldap(self, auth_method):
         self.validate_by_required_fields(auth_method, 'username', 'password')
@@ -716,64 +577,64 @@ class LookupModule(HashiVaultLookupBase):
         # https://github.com/ansible-collections/community.hashi_vault/issues/35
         self.get_option('secret_id')
 
-    def validate_auth_token(self, auth_method):
-        if auth_method == 'token':
-            if not self.get_option('token') and self.get_option('token_path'):
-                token_filename = os.path.join(
-                    self.get_option('token_path'),
-                    self.get_option('token_file')
-                )
-                if os.path.exists(token_filename):
-                    with open(token_filename) as token_file:
-                        self.set_option('token', token_file.read().strip())
+    # def validate_auth_token(self, auth_method):
+        # if auth_method == 'token':
+        #     if not self.get_option('token') and self.get_option('token_path'):
+        #         token_filename = os.path.join(
+        #             self.get_option('token_path'),
+        #             self.get_option('token_file')
+        #         )
+        #         if os.path.exists(token_filename):
+        #             with open(token_filename) as token_file:
+        #                 self.set_option('token', token_file.read().strip())
 
-            if not self.get_option('token'):
-                raise AnsibleError("No Vault Token specified or discovered.")
+        #     if not self.get_option('token'):
+        #         raise AnsibleError("No Vault Token specified or discovered.")
 
-    def validate_auth_aws_iam_login(self, auth_method):
-        params = {
-            'access_key': self.get_option('aws_access_key'),
-            'secret_key': self.get_option('aws_secret_key'),
-        }
+    # def validate_auth_aws_iam_login(self, auth_method):
+    #     params = {
+    #         'access_key': self.get_option('aws_access_key'),
+    #         'secret_key': self.get_option('aws_secret_key'),
+    #     }
 
-        if self.get_option('mount_point'):
-            params['mount_point'] = self.get_option('mount_point')
+    #     if self.get_option('mount_point'):
+    #         params['mount_point'] = self.get_option('mount_point')
 
-        if self.get_option('role_id'):
-            params['role'] = self.get_option('role_id')
+    #     if self.get_option('role_id'):
+    #         params['role'] = self.get_option('role_id')
 
-        if self.get_option('region'):
-            params['region'] = self.get_option('region')
+    #     if self.get_option('region'):
+    #         params['region'] = self.get_option('region')
 
-        if self.get_option('aws_iam_server_id'):
-            params['header_value'] = self.get_option('aws_iam_server_id')
+    #     if self.get_option('aws_iam_server_id'):
+    #         params['header_value'] = self.get_option('aws_iam_server_id')
 
-        if not (params['access_key'] and params['secret_key']):
-            profile = self.get_option('aws_profile')
-            if profile:
-                # try to load boto profile
-                if not HAS_BOTO3:
-                    raise AnsibleError("boto3 is required for loading a boto profile.")
-                session_credentials = boto3.session.Session(profile_name=profile).get_credentials()
-            else:
-                # try to load from IAM credentials
-                if not HAS_BOTOCORE:
-                    raise AnsibleError("botocore is required for loading IAM role credentials.")
-                session_credentials = botocore.session.get_session().get_credentials()
+    #     if not (params['access_key'] and params['secret_key']):
+    #         profile = self.get_option('aws_profile')
+    #         if profile:
+    #             # try to load boto profile
+    #             if not HAS_BOTO3:
+    #                 raise AnsibleError("boto3 is required for loading a boto profile.")
+    #             session_credentials = boto3.session.Session(profile_name=profile).get_credentials()
+    #         else:
+    #             # try to load from IAM credentials
+    #             if not HAS_BOTOCORE:
+    #                 raise AnsibleError("botocore is required for loading IAM role credentials.")
+    #             session_credentials = botocore.session.get_session().get_credentials()
 
-            if not session_credentials:
-                raise AnsibleError("No AWS credentials supplied or available.")
+    #         if not session_credentials:
+    #             raise AnsibleError("No AWS credentials supplied or available.")
 
-            params['access_key'] = session_credentials.access_key
-            params['secret_key'] = session_credentials.secret_key
-            if session_credentials.token:
-                params['session_token'] = session_credentials.token
+    #         params['access_key'] = session_credentials.access_key
+    #         params['secret_key'] = session_credentials.secret_key
+    #         if session_credentials.token:
+    #             params['session_token'] = session_credentials.token
 
-        self.set_option('_auth_aws_iam_login_params', params)
+    #     self.set_option('_auth_aws_iam_login_params', params)
 
     def validate_auth_jwt(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id', 'jwt')
 
-    def validate_auth_none(self, auth_method):
-        pass
+    # def validate_auth_none(self, auth_method):
+    #     pass
     # end auth method validators

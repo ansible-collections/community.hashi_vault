@@ -16,7 +16,7 @@
       ignore_errors: yes
 
     - assert:
-        that: test_no_policy_failure is failed and test_no_policy_failure.msg is search('Invalid Hashicorp Vault Token')
+        that: test_no_policy_failure is failed and test_no_policy_failure.msg is search('Invalid Vault Token')
 
     - name: "Fetch a secret with no default policy token - with no validation"
       vars:

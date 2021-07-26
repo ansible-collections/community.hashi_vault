@@ -50,6 +50,10 @@ except ImportError:
     pass
 
 
+class HashiVaultValueError(ValueError):
+    '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
+
+
 class HashiVaultHelper():
 
     def __init__(self):
@@ -423,3 +427,210 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
         if not (validate_certs and ca_cert):
             self._options.set_option('ca_cert', validate_certs)
+
+
+class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
+    '''Base class for individual auth method implementations'''
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodBase, self).__init__(option_adapter)
+        self._warner = warning_callback
+
+    def validate(self):
+        '''Validates the given auth method as much as possible without calling Vault.'''
+        raise NotImplementedError('validate must be implemented')
+
+    def authenticate(self, client, use_token=True):
+        '''Authenticates against Vault, returns a token.'''
+        raise NotImplementedError('authenticate must be implemented')
+
+    def validate_by_required_fields(self, *field_names):
+        missing = [field for field in field_names if self._options.get_option_default(field) is None]
+
+        if missing:
+            raise HashiVaultValueError("Authentication method %s requires options %r to be set, but these are missing: %r" % (self.NAME, field_names, missing))
+
+    def warn(self, message):
+        self._warner(message)
+
+
+class HashiVaultAuthMethodNone(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: none'''
+
+    NAME = 'none'
+    OPTIONS = []
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodNone, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        pass
+
+    def authenticate(self, client, use_token=False):
+        return None
+
+
+class HashiVaultAuthMethodUserpass(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: userpass'''
+
+    NAME = 'userpass'
+    OPTIONS = ['username', 'password', 'mount_point']
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodUserpass, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        self.validate_by_required_fields('username', 'password')
+
+    def authenticate(self, client, use_token=True):
+        params = self._options.get_filled_options(*self.OPTIONS)
+        try:
+            response = client.auth.userpass.login(use_token=use_token, **params)
+        except (NotImplementedError, AttributeError):
+            self.warn("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
+            response = client.auth_userpass(use_token=use_token, **params)
+
+        token = response['auth']['client_token']
+
+        # must manually set the client token with userpass login
+        # see https://github.com/hvac/hvac/issues/644
+        if use_token:
+            client.token = token
+
+        return token
+
+
+class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: userpass'''
+
+    NAME = 'token'
+    OPTIONS = ['token', 'token_path', 'token_file', 'token_validate']
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        if not self._options.get_option('token') and self._options.get_option('token_path'):
+            token_filename = os.path.join(
+                self._options.get_option('token_path'),
+                self._options.get_option('token_file')
+            )
+            if os.path.exists(token_filename):
+                with open(token_filename) as token_file:
+                    self._options.set_option('token', token_file.read().strip())
+
+        if not self._options.get_option('token'):
+            raise HashiVaultValueError("No Vault Token specified or discovered.")
+
+    def authenticate(self, client, use_token=True):
+        token = self._options.get_option('token')
+        if use_token:
+            client.token = token
+
+            if self._options.get_option('token_validate') and not client.is_authenticated():
+                raise HashiVaultValueError("Invalid Vault Token Specified.")
+
+        return token
+
+
+class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: userpass'''
+
+    NAME = 'aws_iam_login'
+    OPTIONS = [
+        'aws_profile',
+        'aws_access_key',
+        'aws_secret_key',
+        'aws_security_token',
+        'region',
+        'aws_iam_server_id',
+    ]
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodAwsIamLogin, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        params = {
+            'access_key': self._options.get_option_default('aws_access_key'),
+            'secret_key': self._options.get_option_default('aws_secret_key'),
+        }
+
+        mount_point = self._options.get_option_default('mount_point')
+        if mount_point:
+            params['mount_point'] = mount_point
+
+        role = self._options.get_option_default('role_id')
+        if role:
+            params['role'] = role
+
+        region = self._options.get_option_default('region')
+        if region:
+            params['region'] = region
+
+        header_value = self._options.get_option_default('aws_iam_server_id')
+        if header_value:
+            params['header_value'] = header_value
+
+        if not (params['access_key'] and params['secret_key']):
+            profile = self._options.get_option_default('aws_profile')
+            if profile:
+                # try to load boto profile
+                try:
+                    import boto3
+                except ImportError:
+                    raise HashiVaultValueError("boto3 is required for loading a boto profile.")
+                else:
+                    session_credentials = boto3.session.Session(profile_name=profile).get_credentials()
+            else:
+                # try to load from IAM credentials
+                try:
+                    import botocore
+                except ImportError:
+                    raise HashiVaultValueError("botocore is required for loading IAM role credentials.")
+                else:
+                    session_credentials = botocore.session.get_session().get_credentials()
+
+            if not session_credentials:
+                raise HashiVaultValueError("No AWS credentials supplied or available.")
+
+            params['access_key'] = session_credentials.access_key
+            params['secret_key'] = session_credentials.secret_key
+            if session_credentials.token:
+                params['session_token'] = session_credentials.token
+
+        self._auth_aws_iam_login_params = params
+
+    def authenticate(self, client, use_token=True):
+        params = self._auth_aws_iam_login_params
+        try:
+            response = client.auth.aws.iam_login(use_token=use_token, **params)
+        except (NotImplementedError, AttributeError):
+            self.warn("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
+            client.auth_aws_iam(**params)
+
+        return response['client_token']
+
+
+class HashiVaultAuthenticator():
+    def __init__(self, option_adapter, warning_callback):
+        self._options = option_adapter
+        self._selector = {
+            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
+            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
+            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
+            'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
+        }
+
+    def validate(self, *args, **kwargs):
+        method = kwargs.pop('method', None)
+        if method is None:
+            method = self._options.get_option('auth_method')
+
+        self._selector[method].validate(*args, **kwargs)
+
+    def authenticate(self, *args, **kwargs):
+        method = kwargs.pop('method', None)
+        if method is None:
+            method = self._options.get_option('auth_method')
+
+        return self._selector[method].authenticate(*args, **kwargs)
