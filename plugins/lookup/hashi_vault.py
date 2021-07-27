@@ -319,10 +319,11 @@ class HashiVault:
 
         # check early that auth method is actually available
         self.auth_function = 'auth_' + self.options['auth_method']
-        if self.options['auth_method'] not in self.authenticator._selector and not (hasattr(self, self.auth_function) and callable(getattr(self, self.auth_function))):
-            raise AnsibleError(
-                "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
-            )
+        if self.options['auth_method'] not in self.authenticator._selector:
+            if not (hasattr(self, self.auth_function) and callable(getattr(self, self.auth_function))):
+                raise AnsibleError(
+                    "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
+                )
 
         client_args = self.connection_options.get_hvac_connection_options()
 
