@@ -139,7 +139,7 @@ jobs:
       - name: Upload integration tests coverage artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: local_test_invocation
+          name: units
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -235,7 +235,7 @@ jobs:
       - name: Upload integration tests coverage artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: local_test_invocation
+          name: integration
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
