@@ -136,10 +136,10 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job_id }} coverage reports
+      - name: Upload ${{ github.job }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job_id }}-${{ matrix.ansible }}
+          name: ${{ github.job }}-${{ matrix.ansible }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -232,10 +232,10 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job_id }} coverage reports
+      - name: Upload ${{ github.job }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job_id }}-${{ matrix.ansible }}-${{ matrix.python }}-${{ matrix.vault }}
+          name: ${{ github.job }}-${{ matrix.ansible }}-${{ matrix.python }}-${{ matrix.vault }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -360,11 +360,11 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job_id }} coverage reports
+      - name: Upload ${{ github.job }} coverage reports
         if: ${{ matrix.docker }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job_id }}-${{ matrix.runner }}-${{ matrix.docker }}-${{ matrix.ansible }}-${{ matrix.python }}
+          name: ${{ github.job }}-${{ matrix.runner }}-${{ matrix.docker }}-${{ matrix.ansible }}-${{ matrix.python }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
