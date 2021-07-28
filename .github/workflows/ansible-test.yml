@@ -80,7 +80,7 @@ jobs:
 
   units:
     runs-on: ${{ matrix.runner }}
-    name: &units_name Units (Ⓐ${{ matrix.ansible }})
+    name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
       # As soon as the first unit test fails, cancel the others to free up the CI queue
       fail-fast: true
@@ -139,7 +139,7 @@ jobs:
       - name: Upload ${{ github.job_id }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: *units_name
+          name: ${{ github.job_id }}-${{ matrix.ansible }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -151,7 +151,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: &integration_name I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
@@ -235,14 +235,14 @@ jobs:
       - name: Upload ${{ github.job_id }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: *integration_name
+          name: ${{ github.job_id }}-${{ matrix.ansible }}-${{ matrix.python }}-${{ matrix.vault }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
 
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
-    name: &local_test_invocation_name LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
       # needed to prevent Ansible crashing on MacOS
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
@@ -364,7 +364,7 @@ jobs:
         if: ${{ matrix.docker }}
         uses: actions/upload-artifact@v2
         with:
-          name: *local_test_invocation_name
+          name: ${{ guthub.job_id }}-${{ matrix.runner }}-${{ matrix.docker }}-${{ matrix.ansible }}-${{ matrix.python }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
