@@ -351,11 +351,35 @@ jobs:
         # ansible-test support producing code coverage date
       - name: Generate coverage report
         if: ${{ matrix.docker }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: |
+          ansible-test coverage xml -v --requirements --group-by command --group-by version
+
         working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: Upload integration tests coverage artifacts
+        if: ${{ matrix.docker }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: local_test_invocation
+          path: |
+            codecov.xml
+            ${{ env.COLLECTION_PATH }}/tests/output/reports/
+          if-no-files-found: error
+          retention-days: 1
+
+
+  upload:
+    needs:
+      - units
+      - integration
+      - local_test_invocation
+    name: Upload Codecov reports
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v2
-        if: ${{ matrix.docker }}
         with:
           fail_ci_if_error: false
