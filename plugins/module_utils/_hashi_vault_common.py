@@ -611,6 +611,29 @@ class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
         return response['client_token']
 
 
+class HashiVaultAuthMethodLdap(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: ldap'''
+
+    NAME = 'ldap'
+    OPTIONS = ['username', 'password', 'mount_point']
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodLdap, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        self.validate_by_required_fields('username', 'password')
+
+    def authenticate(self, client, use_token=True):
+        params = self._options.get_filled_options(*self.OPTIONS)
+        try:
+            response = client.auth.ldap.login(use_token=use_token, **params)
+        except (NotImplementedError, AttributeError):
+            self.warn("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
+            response = client.auth_ldap(use_token=use_token, **params)
+
+        return response['auth']['client_token']
+
+
 class HashiVaultAuthenticator():
     def __init__(self, option_adapter, warning_callback):
         self._options = option_adapter
@@ -619,6 +642,7 @@ class HashiVaultAuthenticator():
             'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
             'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
+            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
         }
 
     def validate(self, *args, **kwargs):
