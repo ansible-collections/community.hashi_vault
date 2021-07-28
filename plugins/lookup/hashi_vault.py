@@ -221,16 +221,10 @@ _raw:
   elements: dict
 """
 
-# import os
-
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
 from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
-    HashiVaultHelper,
-    HashiVaultValueError,
-)
 
 display = Display()
 
@@ -241,73 +235,84 @@ try:
 except ImportError:
     HAS_HVAC = False
 
-# HAS_BOTOCORE = False
-# try:
-#     # import boto3
-#     import botocore
-#     HAS_BOTOCORE = True
-# except ImportError:
-#     HAS_BOTOCORE = False
 
-# HAS_BOTO3 = False
-# try:
-#     import boto3
-#     # import botocore
-#     HAS_BOTO3 = True
-# except ImportError:
-#     HAS_BOTO3 = False
+class LookupModule(HashiVaultLookupBase):
+    def run(self, terms, variables=None, **kwargs):
+        if not HAS_HVAC:
+            raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
 
+        ret = []
 
-class HashiVault:
-    # NOTE: the HashiVault class here is in the process of being removed, as functionality moves to shared classes
+        for term in terms:
+            opts = kwargs.copy()
+            opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
+            self.set_options(direct=opts, var_options=variables)
+            # TODO: remove process_deprecations() if backported fix is available (see method definition)
+            self.process_deprecations()
+            self.process_options()
 
-    def get_options(self, *option_names, **kwargs):
-        ret = {}
-        include_falsey = kwargs.get('include_falsey', False)
-        for option in option_names:
-            val = self.options.get(option)
-            if val or include_falsey:
-                ret[option] = val
+            client_args = self.connection_options.get_hvac_connection_options()
+            self.client = self.helper.get_vault_client(**client_args)
+
+            try:
+                self.authenticator.authenticate(self.client)
+            except NotImplementedError as e:
+                raise AnsibleError(e)
+
+            ret.extend(self.get())
+
         return ret
 
-    def __init__(self, connection_options, adapter, authenticator, **kwargs):
-        # taking adapter during transition period
-        self.adapter = adapter
-        self.connection_options = connection_options
-        self.authenticator = authenticator
+    def process_options(self):
+        '''performs deep validation and value loading for options'''
 
-        self.options = kwargs
+        # low preference env vars
+        # doing this as a function of connection options is temporary
+        # eventually each option group will handle these
+        self.connection_options.process_low_preference_env_vars()
 
-        self.helper = HashiVaultHelper()
+        # process connection options
+        self.connection_options.process_connection_options()
 
-        # check early that auth method is actually available
-        self.auth_function = 'auth_' + self.options['auth_method']
-        if self.options['auth_method'] not in self.authenticator._selector:
-            if not (hasattr(self, self.auth_function) and callable(getattr(self, self.auth_function))):
-                raise AnsibleError(
-                    "Authentication method '%s' is not implemented. ('%s' member function not found)" % (self.options['auth_method'], self.auth_function)
-                )
-
-        client_args = self.connection_options.get_hvac_connection_options()
-
-        self.client = self.helper.get_vault_client(**client_args)
-
-    def authenticate(self):
-        # We've already checked to ensure a method exists for a particular auth_method, of the form:
-        #
-        # auth_<method_name>
-        #
-        # so just call it
         try:
-            self.authenticator.authenticate(self.client)
-        except NotImplementedError:
-            getattr(self, self.auth_function)()
+            self.authenticator.validate()
+        except NotImplementedError as e:
+            raise AnsibleError(e)
+
+        # secret field splitter
+        self.field_ops()
+
+        # apply additional defaults
+        self.apply_additional_defaults(url='http://127.0.0.1:8200')
+
+    # begin options processing methods
+
+    # this is a temporary method
+    # https://github.com/ansible-collections/community.hashi_vault/pull/61
+    # low preference env vars will be updated to take defaults into account
+    def apply_additional_defaults(self, **kwargs):
+        for k, v in kwargs.items():
+            if self.get_option(k) is None:
+                self.set_option(k, v)
+
+    def field_ops(self):
+        # split secret and field
+        secret = self.get_option('secret')
+
+        s_f = secret.rsplit(':', 1)
+        self.set_option('secret', s_f[0])
+        if len(s_f) >= 2:
+            field = s_f[1]
+        else:
+            field = None
+        self.set_option('secret_field', field)
 
     def get(self):
         '''gets a secret. should always return a list'''
-        secret = self.options['secret']
-        field = self.options['secret_field']
-        return_as = self.options['return_format']
+
+        secret = self.get_option('secret')
+        field = self.get_option('secret_field')
+        return_as = self.get_option('return_format')
 
         try:
             data = self.client.read(secret)
@@ -342,263 +347,3 @@ class HashiVault:
             raise AnsibleError("The secret %s does not contain the field '%s'. for hashi_vault lookup" % (secret, field))
 
         return [data['data'][field]]
-
-    # begin auth implementation methods
-    #
-    # To add new backends, 3 things should be added:
-    #
-    # 1. Add a new validate_auth_<method_name> method to the LookupModule, which is responsible for validating
-    #    that it has the necessary options and whatever else it needs.
-    #
-    # 2. Update the avail_auth_methods list in the LookupModule's auth_methods() method (for now this is static).
-    #
-    # 3. Add a new auth_<method_name> method to this class. These implementations are faily minimal as they should
-    #    already have everything they need. This is also the place to check for deprecated auth methods as hvac
-    #    continues to move backends into the auth_methods class.
-    #
-    #    hvac is moving auth methods into the auth_methods class (added in 0.7.0)
-    #    which lives in the client.auth member.
-    #    https://github.com/hvac/hvac/releases/tag/v0.7.0
-    #
-    #    Attempting to find which backends were moved into the class when (this is primarily for warnings):
-    #    0.7.0 -- github, ldap, mfa, azure?, gcp
-    #    0.7.1 -- okta
-    #    0.8.0 -- kubernetes
-    #    0.9.0 -- azure?, radius
-    #    0.9.3 -- aws
-    #    0.9.6 -- userpass
-    #    0.10.5 -- jwt (new)
-    #    0.10.6 -- approle
-    #
-    # def auth_token(self):
-    #     if self.options['auth_method'] == 'token':
-    #         self.client.token = self.options.get('token')
-
-    #     if self.options.get('token_validate') and not self.client.is_authenticated():
-    #         raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup.")
-
-    # def auth_userpass(self):
-    #     params = self.get_options('username', 'password', 'mount_point')
-    #     try:
-    #         response = self.client.auth.userpass.login(**params)
-    #         # must manually set the client token with userpass login
-    #         # see https://github.com/hvac/hvac/issues/644
-    #         self.client.token = response['auth']['client_token']
-    #     except (NotImplementedError, AttributeError):
-    #         display.warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
-    #         self.client.auth_userpass(**params)
-
-    # def auth_ldap(self):
-    #     params = self.get_options('username', 'password', 'mount_point')
-    #     try:
-    #         self.client.auth.ldap.login(**params)
-    #     except (NotImplementedError, AttributeError):
-    #         display.warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
-    #         self.client.auth_ldap(**params)
-
-    # def auth_approle(self):
-    #     params = self.get_options('role_id', 'secret_id', 'mount_point')
-    #     try:
-    #         self.client.auth.approle.login(**params)
-    #     except (NotImplementedError, AttributeError):
-    #         display.warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
-    #         self.client.auth_approle(**params)
-
-    # def auth_aws_iam_login(self):
-    #     params = self.options['_auth_aws_iam_login_params']
-    #     try:
-    #         self.client.auth.aws.iam_login(**params)
-    #     except (NotImplementedError, AttributeError):
-    #         display.warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
-    #         self.client.auth_aws_iam(**params)
-
-    # def auth_jwt(self):
-    #     params = self.get_options('role_id', 'jwt', 'mount_point')
-    #     params['role'] = params.pop('role_id')
-
-    #     if 'mount_point' in params:
-    #         params['path'] = params.pop('mount_point')
-
-    #     try:
-    #         response = self.client.auth.jwt.jwt_login(**params)
-    #         # must manually set the client token with JWT login
-    #         # see https://github.com/hvac/hvac/issues/644
-    #         self.client.token = response['auth']['client_token']
-    #     except (NotImplementedError, AttributeError):
-    #         raise AnsibleError("JWT authentication requires HVAC version 0.10.5 or higher.")
-
-    # def auth_none(self):
-    #     pass
-    # end auth implementation methods
-
-
-class LookupModule(HashiVaultLookupBase):
-    def run(self, terms, variables=None, **kwargs):
-        if not HAS_HVAC:
-            raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
-
-        ret = []
-
-        for term in terms:
-            opts = kwargs.copy()
-            opts.update(self.parse_kev_term(term, first_unqualified='secret', plugin_name='hashi_vault'))
-            self.set_options(direct=opts, var_options=variables)
-            # TODO: remove process_deprecations() if backported fix is available (see method definition)
-            self.process_deprecations()
-            self.process_options()
-            # passing connection_options and adapter to the HashiVault class to make transition easier
-            # while the things in this class get moved to shared classes
-            client = HashiVault(self.connection_options, self._options_adapter, self.authenticator, **self._options)
-            client.authenticate()
-            ret.extend(client.get())
-
-        return ret
-
-    def process_options(self):
-        '''performs deep validation and value loading for options'''
-
-        # low preference env vars
-        # doing this as a function of connection options is temporary
-        # eventually each option group will handle these
-        self.connection_options.process_low_preference_env_vars()
-
-        # process connection options
-        self.connection_options.process_connection_options()
-
-        # auth methods
-        self.auth_methods()
-
-        # secret field splitter
-        self.field_ops()
-
-        # apply additional defaults
-        self.apply_additional_defaults(url='http://127.0.0.1:8200')
-
-    # begin options processing methods
-
-    # this is a temporary method
-    # https://github.com/ansible-collections/community.hashi_vault/pull/61
-    # low preference env vars will be updated to take defaults into account
-    def apply_additional_defaults(self, **kwargs):
-        for k, v in kwargs.items():
-            if self.get_option(k) is None:
-                self.set_option(k, v)
-
-    def field_ops(self):
-        # split secret and field
-        secret = self.get_option('secret')
-
-        s_f = secret.rsplit(':', 1)
-        self.set_option('secret', s_f[0])
-        if len(s_f) >= 2:
-            field = s_f[1]
-        else:
-            field = None
-        self.set_option('secret_field', field)
-
-    def auth_methods(self):
-        # enforce and set the list of available auth methods
-        # TODO: can this be read from the choices: field in documentation?
-        avail_auth_methods = ['token', 'approle', 'userpass', 'ldap', 'aws_iam_login', 'jwt', 'none']
-        self.set_option('avail_auth_methods', avail_auth_methods)
-        auth_method = self.get_option('auth_method')
-
-        if auth_method not in avail_auth_methods:
-            raise AnsibleError(
-                "Authentication method '%s' not supported. Available options are %r" % (auth_method, avail_auth_methods)
-            )
-
-        try:
-            self.authenticator.validate()
-        except NotImplementedError:
-            # run validator if available
-            auth_validator = 'validate_auth_' + auth_method
-            if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
-                getattr(self, auth_validator)(auth_method)
-        except HashiVaultValueError as e:
-            raise AnsibleError(e)
-
-    # end options processing methods
-
-    # begin auth method validators
-
-    def validate_by_required_fields(self, auth_method, *field_names):
-        missing = [field for field in field_names if not self.get_option(field)]
-
-        if missing:
-            raise AnsibleError("Authentication method %s requires options %r to be set, but these are missing: %r" % (auth_method, field_names, missing))
-
-    # def validate_auth_userpass(self, auth_method):
-    #     self.validate_by_required_fields(auth_method, 'username', 'password')
-
-    # def validate_auth_ldap(self, auth_method):
-    #     self.validate_by_required_fields(auth_method, 'username', 'password')
-
-    # def validate_auth_approle(self, auth_method):
-    #     self.validate_by_required_fields(auth_method, 'role_id')
-
-    #     # This lone superfluous get_option() is intentional, see:
-    #     # https://github.com/ansible-collections/community.hashi_vault/issues/35
-    #     self.get_option('secret_id')
-
-    # def validate_auth_token(self, auth_method):
-        # if auth_method == 'token':
-        #     if not self.get_option('token') and self.get_option('token_path'):
-        #         token_filename = os.path.join(
-        #             self.get_option('token_path'),
-        #             self.get_option('token_file')
-        #         )
-        #         if os.path.exists(token_filename):
-        #             with open(token_filename) as token_file:
-        #                 self.set_option('token', token_file.read().strip())
-
-        #     if not self.get_option('token'):
-        #         raise AnsibleError("No Vault Token specified or discovered.")
-
-    # def validate_auth_aws_iam_login(self, auth_method):
-    #     params = {
-    #         'access_key': self.get_option('aws_access_key'),
-    #         'secret_key': self.get_option('aws_secret_key'),
-    #     }
-
-    #     if self.get_option('mount_point'):
-    #         params['mount_point'] = self.get_option('mount_point')
-
-    #     if self.get_option('role_id'):
-    #         params['role'] = self.get_option('role_id')
-
-    #     if self.get_option('region'):
-    #         params['region'] = self.get_option('region')
-
-    #     if self.get_option('aws_iam_server_id'):
-    #         params['header_value'] = self.get_option('aws_iam_server_id')
-
-    #     if not (params['access_key'] and params['secret_key']):
-    #         profile = self.get_option('aws_profile')
-    #         if profile:
-    #             # try to load boto profile
-    #             if not HAS_BOTO3:
-    #                 raise AnsibleError("boto3 is required for loading a boto profile.")
-    #             session_credentials = boto3.session.Session(profile_name=profile).get_credentials()
-    #         else:
-    #             # try to load from IAM credentials
-    #             if not HAS_BOTOCORE:
-    #                 raise AnsibleError("botocore is required for loading IAM role credentials.")
-    #             session_credentials = botocore.session.get_session().get_credentials()
-
-    #         if not session_credentials:
-    #             raise AnsibleError("No AWS credentials supplied or available.")
-
-    #         params['access_key'] = session_credentials.access_key
-    #         params['secret_key'] = session_credentials.secret_key
-    #         if session_credentials.token:
-    #             params['session_token'] = session_credentials.token
-
-    #     self.set_option('_auth_aws_iam_login_params', params)
-
-    # def validate_auth_jwt(self, auth_method):
-    #     self.validate_by_required_fields(auth_method, 'role_id', 'jwt')
-
-    # def validate_auth_none(self, auth_method):
-    #     pass
-    # end auth method validators
