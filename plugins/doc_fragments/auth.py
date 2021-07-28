@@ -11,6 +11,39 @@ class ModuleDocFragment(object):
 
     DOCUMENTATION = r'''
     options:
+      auth_method:
+        description:
+          - Authentication method to be used.
+          - C(none) auth method was added in collection version C(1.2.0).
+        env:
+          - name: VAULT_AUTH_METHOD
+            deprecated:
+              why: standardizing environment variables
+              version: 2.0.0
+              collection_name: community.hashi_vault
+              alternatives: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+          - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
+            version_added: '0.2.0'
+        ini:
+          - section: lookup_hashi_vault
+            key: auth_method
+        vars:
+          - name: ansible_hashi_vault_auth_method
+            version_added: '1.2.0'
+        choices:
+          - token
+          - userpass
+          - ldap
+          - approle
+          - aws_iam_login
+          - jwt
+          - none
+        default: token
+      mount_point:
+        description:
+          - Vault mount point.
+          - If not specified, the default mount point for a given auth method is used.
+          - Does not apply to token authentication.
       token:
         description:
           - Vault token. Token may be specified explicitly, through the listed [env] vars, and also through the C(VAULT_TOKEN) env var.
@@ -72,4 +105,39 @@ class ModuleDocFragment(object):
         type: boolean
         default: true
         version_added: 0.2.0
+      role_id:
+        description: Vault Role ID. Used in approle and aws_iam_login auth methods.
+        env:
+          - name: VAULT_ROLE_ID
+            deprecated:
+              why: standardizing environment variables
+              version: 2.0.0
+              collection_name: community.hashi_vault
+              alternatives: ANSIBLE_HASHI_VAULT_ROLE_ID
+          - name: ANSIBLE_HASHI_VAULT_ROLE_ID
+            version_added: '0.2.0'
+        ini:
+          - section: lookup_hashi_vault
+            key: role_id
+        vars:
+          - name: ansible_hashi_vault_role_id
+            version_added: '1.2.0'
+      secret_id:
+        description: Secret ID to be used for Vault AppRole authentication.
+        env:
+          - name: VAULT_SECRET_ID
+            deprecated:
+              why: standardizing environment variables
+              version: 2.0.0
+              collection_name: community.hashi_vault
+              alternatives: ANSIBLE_HASHI_VAULT_SECRET_ID
+          - name: ANSIBLE_HASHI_VAULT_SECRET_ID
+            version_added: '0.2.0'
+        vars:
+          - name: ansible_hashi_vault_secret_id
+            version_added: '1.2.0'
+      jwt:
+        description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
+        env:
+          - name: ANSIBLE_HASHI_VAULT_JWT
     '''

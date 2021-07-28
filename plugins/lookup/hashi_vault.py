@@ -29,44 +29,11 @@ DOCUMENTATION = """
     - As of community.hashi_vault 0.1.0, when I(secret) is the first option in the term string, C(secret=) is not required (see examples).
   extends_documentation_fragment:
     - community.hashi_vault.connection
-    - community.hashi_vault.auth_common
-    - community.hashi_vault.auth_token
-    - community.hashi_vault.auth_userpass
+    - community.hashi_vault.auth
   options:
     secret:
       description: Vault path to the secret being requested in the format C(path[:field]).
       required: True
-    role_id:
-      description: Vault Role ID. Used in approle and aws_iam_login auth methods.
-      env:
-        - name: VAULT_ROLE_ID
-          deprecated:
-            why: standardizing environment variables
-            version: 2.0.0
-            collection_name: community.hashi_vault
-            alternatives: ANSIBLE_HASHI_VAULT_ROLE_ID
-        - name: ANSIBLE_HASHI_VAULT_ROLE_ID
-          version_added: '0.2.0'
-      ini:
-        - section: lookup_hashi_vault
-          key: role_id
-      vars:
-        - name: ansible_hashi_vault_role_id
-          version_added: '1.2.0'
-    secret_id:
-      description: Secret ID to be used for Vault AppRole authentication.
-      env:
-        - name: VAULT_SECRET_ID
-          deprecated:
-            why: standardizing environment variables
-            version: 2.0.0
-            collection_name: community.hashi_vault
-            alternatives: ANSIBLE_HASHI_VAULT_SECRET_ID
-        - name: ANSIBLE_HASHI_VAULT_SECRET_ID
-          version_added: '0.2.0'
-      vars:
-        - name: ansible_hashi_vault_secret_id
-          version_added: '1.2.0'
     return_format:
       description:
         - Controls how multiple key/value pairs in a path are treated on return.
@@ -79,10 +46,6 @@ DOCUMENTATION = """
         - raw
       default: dict
       aliases: [ as ]
-    jwt:
-      description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
-      env:
-        - name: ANSIBLE_HASHI_VAULT_JWT
 """
 
 EXAMPLES = """
@@ -425,13 +388,13 @@ class HashiVault:
     #         display.warning("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
     #         self.client.auth_userpass(**params)
 
-    def auth_ldap(self):
-        params = self.get_options('username', 'password', 'mount_point')
-        try:
-            self.client.auth.ldap.login(**params)
-        except (NotImplementedError, AttributeError):
-            display.warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
-            self.client.auth_ldap(**params)
+    # def auth_ldap(self):
+    #     params = self.get_options('username', 'password', 'mount_point')
+    #     try:
+    #         self.client.auth.ldap.login(**params)
+    #     except (NotImplementedError, AttributeError):
+    #         display.warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
+    #         self.client.auth_ldap(**params)
 
     def auth_approle(self):
         params = self.get_options('role_id', 'secret_id', 'mount_point')
@@ -568,8 +531,8 @@ class LookupModule(HashiVaultLookupBase):
     # def validate_auth_userpass(self, auth_method):
     #     self.validate_by_required_fields(auth_method, 'username', 'password')
 
-    def validate_auth_ldap(self, auth_method):
-        self.validate_by_required_fields(auth_method, 'username', 'password')
+    # def validate_auth_ldap(self, auth_method):
+    #     self.validate_by_required_fields(auth_method, 'username', 'password')
 
     def validate_auth_approle(self, auth_method):
         self.validate_by_required_fields(auth_method, 'role_id')
