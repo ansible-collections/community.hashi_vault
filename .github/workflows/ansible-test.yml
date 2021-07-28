@@ -390,7 +390,16 @@ jobs:
         uses: actions/download-artifact@v2
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - uses: codecov/codecov-action@v2
+      - name: Upload coverage for units
+        uses: codecov/codecov-action@v2
         with:
-          # flags: command,version,environment,target
+          files: coverage=units*
+          flags: units
+          fail_ci_if_error: false
+
+      - name: Upload coverage for integration
+        uses: codecov/codecov-action@v2
+        with:
+          files: coverage=integration*
+          flags: integration
           fail_ci_if_error: false
