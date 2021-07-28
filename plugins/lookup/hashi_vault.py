@@ -412,20 +412,20 @@ class HashiVault:
     #         display.warning("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
     #         self.client.auth_aws_iam(**params)
 
-    def auth_jwt(self):
-        params = self.get_options('role_id', 'jwt', 'mount_point')
-        params['role'] = params.pop('role_id')
+    # def auth_jwt(self):
+    #     params = self.get_options('role_id', 'jwt', 'mount_point')
+    #     params['role'] = params.pop('role_id')
 
-        if 'mount_point' in params:
-            params['path'] = params.pop('mount_point')
+    #     if 'mount_point' in params:
+    #         params['path'] = params.pop('mount_point')
 
-        try:
-            response = self.client.auth.jwt.jwt_login(**params)
-            # must manually set the client token with JWT login
-            # see https://github.com/hvac/hvac/issues/644
-            self.client.token = response['auth']['client_token']
-        except (NotImplementedError, AttributeError):
-            raise AnsibleError("JWT authentication requires HVAC version 0.10.5 or higher.")
+    #     try:
+    #         response = self.client.auth.jwt.jwt_login(**params)
+    #         # must manually set the client token with JWT login
+    #         # see https://github.com/hvac/hvac/issues/644
+    #         self.client.token = response['auth']['client_token']
+    #     except (NotImplementedError, AttributeError):
+    #         raise AnsibleError("JWT authentication requires HVAC version 0.10.5 or higher.")
 
     # def auth_none(self):
     #     pass
@@ -596,8 +596,8 @@ class LookupModule(HashiVaultLookupBase):
 
     #     self.set_option('_auth_aws_iam_login_params', params)
 
-    def validate_auth_jwt(self, auth_method):
-        self.validate_by_required_fields(auth_method, 'role_id', 'jwt')
+    # def validate_auth_jwt(self, auth_method):
+    #     self.validate_by_required_fields(auth_method, 'role_id', 'jwt')
 
     # def validate_auth_none(self, auth_method):
     #     pass

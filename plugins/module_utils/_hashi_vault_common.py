@@ -485,15 +485,17 @@ class HashiVaultAuthMethodUserpass(HashiVaultAuthMethodBase):
     def authenticate(self, client, use_token=True):
         params = self._options.get_filled_options(*self.OPTIONS)
         try:
-            response = client.auth.userpass.login(use_token=use_token, **params)
+            response = client.auth.userpass.login(**params)
         except (NotImplementedError, AttributeError):
             self.warn("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
-            response = client.auth_userpass(use_token=use_token, **params)
+            response = client.auth_userpass(**params)
 
         token = response['auth']['client_token']
 
         # must manually set the client token with userpass login
         # see https://github.com/hvac/hvac/issues/644
+        # fixed in 0.11.0 (https://github.com/hvac/hvac/pull/733)
+        # but we keep the old behavior to maintain compatibility with older hvac
         if use_token:
             client.token = token
 
@@ -606,7 +608,7 @@ class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
             response = client.auth.aws.iam_login(use_token=use_token, **params)
         except (NotImplementedError, AttributeError):
             self.warn("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
-            client.auth_aws_iam(**params)
+            client.auth_aws_iam(use_token=use_token, **params)
 
         return response['client_token']
 
@@ -657,6 +659,40 @@ class HashiVaultAuthMethodApprole(HashiVaultAuthMethodBase):
         return response['auth']['client_token']
 
 
+class HashiVaultAuthMethodJwt(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: jwt'''
+
+    NAME = 'jwt'
+    OPTIONS = ['jwt', 'role_id', 'mount_point']
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodJwt, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        self.validate_by_required_fields('role_id', 'jwt')
+
+    def authenticate(self, client, use_token=True):
+        params = self._options.get_filled_options(*self.OPTIONS)
+        params['role'] = params.pop('role_id')
+
+        if 'mount_point' in params:
+            params['path'] = params.pop('mount_point')
+
+        try:
+            response = client.auth.jwt.jwt_login(**params)
+        except (NotImplementedError, AttributeError):
+            raise NotImplementedError("JWT authentication requires HVAC version 0.10.5 or higher.")
+
+        token = response['auth']['client_token']
+
+        # must manually set the client token with JWT login
+        # see https://github.com/hvac/hvac/issues/644
+        if use_token:
+            client.token = token
+
+        return token
+
+
 class HashiVaultAuthenticator():
     def __init__(self, option_adapter, warning_callback):
         self._options = option_adapter
@@ -667,6 +703,7 @@ class HashiVaultAuthenticator():
             'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
+            'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
         }
 
     def _get_method_object(self, method=None):
