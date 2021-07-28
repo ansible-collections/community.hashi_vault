@@ -131,9 +131,8 @@ jobs:
         run: ansible-test units -v --color --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage date
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -229,7 +228,7 @@ jobs:
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -357,7 +356,7 @@ jobs:
         # ansible-test support producing code coverage date
       - name: Generate coverage report
         if: ${{ matrix.docker }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -393,4 +392,5 @@ jobs:
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v2
         with:
+          # flags: command,version,environment,target
           fail_ci_if_error: false
