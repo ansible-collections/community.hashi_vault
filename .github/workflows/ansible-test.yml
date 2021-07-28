@@ -364,7 +364,7 @@ jobs:
         if: ${{ matrix.docker }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ guthub.job_id }}-${{ matrix.runner }}-${{ matrix.docker }}-${{ matrix.ansible }}-${{ matrix.python }}
+          name: ${{ github.job_id }}-${{ matrix.runner }}-${{ matrix.docker }}-${{ matrix.ansible }}-${{ matrix.python }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
