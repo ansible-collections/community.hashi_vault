@@ -80,7 +80,7 @@ jobs:
 
   units:
     runs-on: ${{ matrix.runner }}
-    name: Units (Ⓐ${{ matrix.ansible }})
+    name: &units_name Units (Ⓐ${{ matrix.ansible }})
     strategy:
       # As soon as the first unit test fails, cancel the others to free up the CI queue
       fail-fast: true
@@ -136,10 +136,10 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload integration tests coverage artifacts
+      - name: Upload ${{ github.job_id }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: units
+          name: *units_name
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -151,7 +151,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
+    name: &integration_name I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
     strategy:
       fail-fast: false
       matrix:
@@ -232,17 +232,17 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload integration tests coverage artifacts
+      - name: Upload ${{ github.job_id }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: integration
+          name: *integration_name
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
 
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
-    name: LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: &local_test_invocation_name LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
       # needed to prevent Ansible crashing on MacOS
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
@@ -360,17 +360,16 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload integration tests coverage artifacts
+      - name: Upload ${{ github.job_id }} coverage reports
         if: ${{ matrix.docker }}
         uses: actions/upload-artifact@v2
         with:
-          name: local_test_invocation
+          name: *local_test_invocation_name
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
 
-
-  upload:
+  upload-coverage:
     needs:
       - units
       - integration
