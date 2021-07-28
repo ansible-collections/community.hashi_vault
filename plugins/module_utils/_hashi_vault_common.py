@@ -634,6 +634,29 @@ class HashiVaultAuthMethodLdap(HashiVaultAuthMethodBase):
         return response['auth']['client_token']
 
 
+class HashiVaultAuthMethodApprole(HashiVaultAuthMethodBase):
+    '''HashiVault option group class for auth: approle'''
+
+    NAME = 'approle'
+    OPTIONS = ['role_id', 'secret_id', 'mount_point']
+
+    def __init__(self, option_adapter, warning_callback):
+        super(HashiVaultAuthMethodApprole, self).__init__(option_adapter, warning_callback)
+
+    def validate(self):
+        self.validate_by_required_fields('role_id')
+
+    def authenticate(self, client, use_token=True):
+        params = self._options.get_filled_options(*self.OPTIONS)
+        try:
+            response = client.auth.approle.login(use_token=use_token, **params)
+        except (NotImplementedError, AttributeError):
+            self.warn("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
+            response = client.auth_approle(use_token=use_token, **params)
+
+        return response['auth']['client_token']
+
+
 class HashiVaultAuthenticator():
     def __init__(self, option_adapter, warning_callback):
         self._options = option_adapter
@@ -643,18 +666,24 @@ class HashiVaultAuthenticator():
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
             'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
+            'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
         }
 
-    def validate(self, *args, **kwargs):
-        method = kwargs.pop('method', None)
+    def _get_method_object(self, method=None):
         if method is None:
             method = self._options.get_option('auth_method')
 
-        self._selector[method].validate(*args, **kwargs)
+        try:
+            o_method = self._selector[method]
+        except KeyError:
+            raise NotImplementedError("auth method '%s' is not implemented in HashiVaultAuthenticator" % method)
+
+        return o_method
+
+    def validate(self, *args, **kwargs):
+        method = self._get_method_object(kwargs.pop('method', None))
+        method.validate(*args, **kwargs)
 
     def authenticate(self, *args, **kwargs):
-        method = kwargs.pop('method', None)
-        if method is None:
-            method = self._options.get_option('auth_method')
-
-        return self._selector[method].authenticate(*args, **kwargs)
+        method = self._get_method_object(kwargs.pop('method', None))
+        return method.authenticate(*args, **kwargs)

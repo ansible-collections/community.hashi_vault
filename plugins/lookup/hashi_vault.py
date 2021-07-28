@@ -300,7 +300,7 @@ class HashiVault:
         # so just call it
         try:
             self.authenticator.authenticate(self.client)
-        except KeyError:
+        except NotImplementedError:
             getattr(self, self.auth_function)()
 
     def get(self):
@@ -396,13 +396,13 @@ class HashiVault:
     #         display.warning("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
     #         self.client.auth_ldap(**params)
 
-    def auth_approle(self):
-        params = self.get_options('role_id', 'secret_id', 'mount_point')
-        try:
-            self.client.auth.approle.login(**params)
-        except (NotImplementedError, AttributeError):
-            display.warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
-            self.client.auth_approle(**params)
+    # def auth_approle(self):
+    #     params = self.get_options('role_id', 'secret_id', 'mount_point')
+    #     try:
+    #         self.client.auth.approle.login(**params)
+    #     except (NotImplementedError, AttributeError):
+    #         display.warning("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
+    #         self.client.auth_approle(**params)
 
     # def auth_aws_iam_login(self):
     #     params = self.options['_auth_aws_iam_login_params']
@@ -510,7 +510,7 @@ class LookupModule(HashiVaultLookupBase):
 
         try:
             self.authenticator.validate()
-        except KeyError:
+        except NotImplementedError:
             # run validator if available
             auth_validator = 'validate_auth_' + auth_method
             if hasattr(self, auth_validator) and callable(getattr(self, auth_validator)):
@@ -534,12 +534,12 @@ class LookupModule(HashiVaultLookupBase):
     # def validate_auth_ldap(self, auth_method):
     #     self.validate_by_required_fields(auth_method, 'username', 'password')
 
-    def validate_auth_approle(self, auth_method):
-        self.validate_by_required_fields(auth_method, 'role_id')
+    # def validate_auth_approle(self, auth_method):
+    #     self.validate_by_required_fields(auth_method, 'role_id')
 
-        # This lone superfluous get_option() is intentional, see:
-        # https://github.com/ansible-collections/community.hashi_vault/issues/35
-        self.get_option('secret_id')
+    #     # This lone superfluous get_option() is intentional, see:
+    #     # https://github.com/ansible-collections/community.hashi_vault/issues/35
+    #     self.get_option('secret_id')
 
     # def validate_auth_token(self, auth_method):
         # if auth_method == 'token':
