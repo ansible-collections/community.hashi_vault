@@ -138,7 +138,7 @@ jobs:
       - name: Upload ${{ github.job }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ matrix.ansible }}
+          name: ${{ github.job }}-ansible_${{ matrix.ansible }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -172,7 +172,7 @@ jobs:
           - 3.9
         vault:
           - 1.7.3
-          - 1.6.5
+          # - 1.6.5
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -234,7 +234,7 @@ jobs:
       - name: Upload ${{ github.job }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ matrix.ansible }}-${{ matrix.python }}-${{ matrix.vault }}
+          name: ${{ github.job }}-ansible_${{ matrix.ansible }}-${{ matrix.python }}-${{ matrix.vault }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -363,7 +363,7 @@ jobs:
         if: ${{ matrix.docker }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ matrix.runner }}-${{ matrix.docker }}-${{ matrix.ansible }}-${{ matrix.python }}
+          name: ${{ github.job }}-${{ matrix.runner }}-${{ matrix.docker }}-ansible_${{ matrix.ansible }}-${{ matrix.python }}
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -383,23 +383,30 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v2
-        with:
-          path: ${{ env.COLLECTION_PATH }}
+        # with:
+        #   path: ${{ env.COLLECTION_PATH }}
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
+        with:
+          path: ./cov
+
+      - uses: ./.github/ansible-codecov
+        with:
+          directory: ./cov
+          directory-flag-pattern: ansible_{ansible-%}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - name: Upload coverage for units
-        uses: codecov/codecov-action@v2
-        with:
-          files: '**/coverage=units*.xml'
-          flags: units
-          fail_ci_if_error: false
+      # - name: Upload coverage for units
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     files: '**/coverage=units*.xml'
+      #     flags: units
+      #     fail_ci_if_error: false
 
-      - name: Upload coverage for integration
-        uses: codecov/codecov-action@v2
-        with:
-          files: '**/coverage=integration*.xml'
-          flags: integration
-          fail_ci_if_error: false
+      # - name: Upload coverage for integration
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     files: '**/coverage=integration*.xml'
+      #     flags: integration
+      #     fail_ci_if_error: false
