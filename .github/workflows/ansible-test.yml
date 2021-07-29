@@ -139,7 +139,7 @@ jobs:
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v2
         with:
-          flags: units,${{ matrix.ansible }}
+          flags: units,ansible-${{ matrix.ansible }}
           fail_ci_if_error: false
 
 ###
@@ -360,5 +360,5 @@ jobs:
       - uses: codecov/codecov-action@v2
         if: ${{ matrix.docker }}
         with:
-          flags: integration,${{ matrix.ansible }}
+          flags: integration,ansible-${{ matrix.ansible }}
           fail_ci_if_error: false
