@@ -176,12 +176,12 @@ jobs:
         exclude:
           - ansible: stable-2.9
             python: 3.9
-        include:
-          - ansible: devel
-            vault: 1.7.3
-            python: '3.10'
-            runner: ubuntu-latest
-            test_container: default
+        # include:
+        #   - ansible: devel
+        #     vault: 1.7.3
+        #     python: '3.10'
+        #     runner: ubuntu-latest
+        #     test_container: default
 
     steps:
       - name: Initialize env vars
@@ -391,13 +391,7 @@ jobs:
         with:
           path: ./cov
 
-      - run: |
-          ls -alh ./
-          ls -alh ./.github
-          ls -alh ./.github/ansible-codecov
-
-      - uses: ./.github/ansible-codecov
-        if: always()
+      - uses: ./.github/actions/ansible-codecov
         with:
           directory: ./cov
           directory-flag-pattern: ansible_{ansible-%}
