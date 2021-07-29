@@ -170,7 +170,7 @@ jobs:
           - 3.9
         vault:
           - 1.7.3
-          - 1.6.5
+          # - 1.6.5
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -226,12 +226,13 @@ jobs:
 
         # ansible-test support producing code coverage date
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - uses: codecov/codecov-action@v2
         with:
+          flags: py${{ matrix.python }},integration,ansible-${{ matrix.ansible }}
           fail_ci_if_error: false
 
   local_test_invocation:
