@@ -372,7 +372,7 @@ jobs:
     needs:
       - units
       - integration
-      - local_test_invocation
+      # - local_test_invocation
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
