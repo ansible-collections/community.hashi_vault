@@ -226,7 +226,7 @@ jobs:
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage date
+        # ansible-test support producing code coverage data
       - name: Generate coverage report
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
@@ -353,7 +353,7 @@ jobs:
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage date
+        # ansible-test support producing code coverage data
       - name: Generate coverage report
         if: ${{ matrix.docker }}
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
@@ -393,13 +393,13 @@ jobs:
       - name: Upload coverage for units
         uses: codecov/codecov-action@v2
         with:
-          files: coverage=units*
+          files: '**/coverage=units*.xml'
           flags: units
           fail_ci_if_error: false
 
       - name: Upload coverage for integration
         uses: codecov/codecov-action@v2
         with:
-          files: coverage=integration*
+          files: '**/coverage=integration*.xml'
           flags: integration
           fail_ci_if_error: false
