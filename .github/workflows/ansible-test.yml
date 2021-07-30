@@ -239,6 +239,8 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - uses: ./.github/actions/ansible-codecov
+
   # local_test_invocation:
   #   runs-on: ${{ matrix.runner }}
   #   name: LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})

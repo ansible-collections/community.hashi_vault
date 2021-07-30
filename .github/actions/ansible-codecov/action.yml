@@ -33,6 +33,8 @@ runs:
     - name: Download and verify codecov uploader
       shell: bash
       run: |
+        echo "::group::Installing codecov uploader"
+
         mkdir -p /tmp/ccbin
         cd /tmp/ccbin
 
@@ -51,6 +53,8 @@ runs:
 
             ./codecov --version
         fi
+
+        echo "::endgroup::"
 
     - shell: python
       run: |
@@ -81,8 +85,7 @@ runs:
 
         flags = {}
 
-        if not directory:
-            directory = Path.cwd()
+        directory = Path(directory) if directory else Path.cwd()
 
         for f in directory.rglob('*'):
             if f.is_file():
