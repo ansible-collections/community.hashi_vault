@@ -56,70 +56,84 @@ runs:
 
         echo "::endgroup::"
 
-    - shell: python
+    - shell: bash
       env:
-        PYTHONUNBUFFERED: '1'
+        INPUT_DIRECTORY: '${{ inputs.directory }}'
+        INPUT_DIRECTORY_FLAG_PATTERN: '${{ inputs.file-flag-pattern }}'
+        INPUT_FILE_FLAG_PATTERN: '${{ inputs.file-flag-pattern }}'
+        INPUT_ADDITIONAL_FLAGS: '${{ inputs.additional-flags }}'
       run: |
-        import subprocess
-        import re
-        from pathlib import Path
+        python -u "${{ github.action_path }}/process.py" \
+        --directory "${INPUT_DIRECTORY}" \
+        --directory-flag-pattern "${INPUT_DIRECTORY_FLAG_PATTERN}" \
+        --file-flag-pattern "${INPUT_FILE_FLAG_PATTERN}" \
+        --additional-flags "${INPUT_ADDITIONAL_FLAGS}"
 
-        def get_flags(pattern, input):
-            patpat = r'\{([^\}]+)\}'
 
-            pats = re.findall(patpat, pattern)
+    # - shell: python
+    #   env:
+    #     PYTHONUNBUFFERED: '1'
+    #   run: |
+    #     import subprocess
+    #     import re
+    #     from pathlib import Path
 
-            matcher = re.sub(patpat, r'(.*?)', pattern)
+    #     def get_flags(pattern, input):
+    #         patpat = r'\{([^\}]+)\}'
 
-            match = re.search(matcher, input)
+    #         pats = re.findall(patpat, pattern)
 
-            print('[DEBUG]: pattern: %s' % pattern)
-            print('[DEBUG]: matcher: %s' % matcher)
+    #         matcher = re.sub(patpat, r'(.*?)', pattern)
 
-            if match:
-                print('[DEBUG]: match groups: %r' % (match.groups(),))
-                return [pats[i].replace('%', result) for i, result in enumerate(match.groups())]
+    #         match = re.search(matcher, input)
 
-            return None
+    #         print('[DEBUG]: pattern: %s' % pattern)
+    #         print('[DEBUG]: matcher: %s' % matcher)
 
-        additional_flags = r'${{ inputs.additional-flags }}'
-        file_flag_pattern = r'${{ inputs.file-flag-pattern }}'
-        directory_flag_pattern = r'${{ inputs.directory-flag-pattern }}'
-        directory = r'${{ inputs.directory }}'
+    #         if match:
+    #             print('[DEBUG]: match groups: %r' % (match.groups(),))
+    #             return [pats[i].replace('%', result) for i, result in enumerate(match.groups())]
 
-        extra_flags = additional_flags.split(',') if additional_flags else []
+    #         return None
 
-        flags = {}
+    #     additional_flags = r'${{ inputs.additional-flags }}'
+    #     file_flag_pattern = r'${{ inputs.file-flag-pattern }}'
+    #     directory_flag_pattern = r'${{ inputs.directory-flag-pattern }}'
+    #     directory = r'${{ inputs.directory }}'
 
-        directory = Path(directory) if directory else Path.cwd()
+    #     extra_flags = additional_flags.split(',') if additional_flags else []
 
-        for f in directory.rglob('*'):
-            if f.is_file():
-                iflags = set()
-                if directory_flag_pattern:
-                    print('[DEBUG]: %r' % (f.parent.parts,))
-                    for part in f.parent.parts:
-                        dflags = get_flags(directory_flag_pattern, part)
-                        if dflags:
-                            iflags.update(dflags)
+    #     flags = {}
 
-                fflags = get_flags(file_flag_pattern, str(f.name))
-                if fflags:
-                    iflags.update(fflags)
+    #     directory = Path(directory) if directory else Path.cwd()
 
-                for flag in iflags:
-                    flags.setdefault(flag, []).append(str(f.resolve()))
+    #     for f in directory.rglob('*'):
+    #         if f.is_file():
+    #             iflags = set()
+    #             if directory_flag_pattern:
+    #                 print('[DEBUG]: %r' % (f.parent.parts,))
+    #                 for part in f.parent.parts:
+    #                     dflags = get_flags(directory_flag_pattern, part)
+    #                     if dflags:
+    #                         iflags.update(dflags)
 
-        logextra = ' (+%r)' % extra_flags if extra_flags else ''
+    #             fflags = get_flags(file_flag_pattern, str(f.name))
+    #             if fflags:
+    #                 iflags.update(fflags)
 
-        for flag, files in flags.items():
-            cmd = ['codecov', '-F', flag]
-            [cmd.extend(['-F', extra] for extra in extra_flags)]
-            [cmd.extend(['-f', file]) for file in files]
+    #             for flag in iflags:
+    #                 flags.setdefault(flag, []).append(str(f.resolve()))
 
-            print('::group::Flag: %s%s' % (flag, logextra))
+    #     logextra = ' (+%r)' % extra_flags if extra_flags else ''
 
-            print('Executing: %r' % cmd)
-            subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
+    #     for flag, files in flags.items():
+    #         cmd = ['codecov', '-F', flag]
+    #         [cmd.extend(['-F', extra] for extra in extra_flags)]
+    #         [cmd.extend(['-f', file]) for file in files]
 
-            print('::endgroup::')
+    #         print('::group::Flag: %s%s' % (flag, logextra))
+
+    #         print('Executing: %r' % cmd)
+    #         subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
+
+    #         print('::endgroup::')
