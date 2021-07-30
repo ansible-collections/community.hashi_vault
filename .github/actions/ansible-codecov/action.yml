@@ -117,7 +117,7 @@ runs:
 
             # os.system('codecov -F "%s" -f "%s"' % (allflags, allfiles))
             print('Executing: %r' % cmd)
-            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True)
+            subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
 
             # with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
             #     for line in iter(p.stdout.readline, b''):
