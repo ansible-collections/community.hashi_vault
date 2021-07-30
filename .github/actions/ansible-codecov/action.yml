@@ -33,8 +33,13 @@ runs:
     - name: Download and verify codecov uploader
       shell: bash
       run: |
+        mkdir -p /tmp/ccbin
+        cd /tmp/ccbin
+
+        echo "/tmp/ccbin" >> ${GITHUB_PATH}
+
         if command -v codecov ; then
-            codecov --version
+            ./codecov --version
         else
             curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
             curl -Os https://uploader.codecov.io/latest/linux/codecov
@@ -44,7 +49,7 @@ runs:
             shasum -a 256 -c codecov.SHA256SUM
             chmod +x codecov
 
-            codecov --version
+            ./codecov --version
         fi
 
     - shell: python
