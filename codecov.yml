@@ -4,3 +4,8 @@ ignore:
 
 fixes:
   - "ansible_collections/community/hashi_vault/::"
+
+flags:
+  target_lookup_hashi_vault:
+    paths:
+      - plugins/lookup/hashi_vault.py
