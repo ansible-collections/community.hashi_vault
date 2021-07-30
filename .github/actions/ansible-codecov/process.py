@@ -48,43 +48,43 @@ def main(argv):
         elif opt == '--additional-flags':
             additional_flags = arg
 
-        extra_flags = additional_flags.split(',') if additional_flags else []
+    extra_flags = additional_flags.split(',') if additional_flags else []
 
-        flags = {}
+    flags = {}
 
-        directory = Path(directory) if directory else Path.cwd()
+    directory = Path(directory) if directory else Path.cwd()
 
-        for f in directory.rglob('*'):
-            if f.is_file():
-                iflags = set()
-                if directory_flag_pattern:
-                    print('[DEBUG]: %r' % (f.parent.parts,))
-                    for part in f.parent.parts:
-                        dflags = get_flags(directory_flag_pattern, part)
-                        if dflags:
-                            iflags.update(dflags)
+    for f in directory.rglob('*'):
+        if f.is_file():
+            iflags = set()
+            if directory_flag_pattern:
+                print('[DEBUG]: %r' % (f.parent.parts,))
+                for part in f.parent.parts:
+                    dflags = get_flags(directory_flag_pattern, part)
+                    if dflags:
+                        iflags.update(dflags)
 
-                print('[DEBUG]: file_flag_pattern: %r' % (file_flag_pattern,))
-                fflags = get_flags(file_flag_pattern, str(f.name))
-                if fflags:
-                    iflags.update(fflags)
+            print('[DEBUG]: file_flag_pattern: %r' % (file_flag_pattern,))
+            fflags = get_flags(file_flag_pattern, str(f.name))
+            if fflags:
+                iflags.update(fflags)
 
-                for flag in iflags:
-                    flags.setdefault(flag, []).append(str(f.resolve()))
+            for flag in iflags:
+                flags.setdefault(flag, []).append(str(f.resolve()))
 
-        logextra = ' (+%r)' % extra_flags if extra_flags else ''
+    logextra = ' (+%r)' % extra_flags if extra_flags else ''
 
-        for flag, files in flags.items():
-            cmd = ['codecov', '-F', flag]
-            [cmd.extend(['-F', extra] for extra in extra_flags)]
-            [cmd.extend(['-f', file]) for file in files]
+    for flag, files in flags.items():
+        cmd = ['codecov', '-F', flag]
+        [cmd.extend(['-F', extra] for extra in extra_flags)]
+        [cmd.extend(['-f', file]) for file in files]
 
-            print('::group::Flag: %s%s' % (flag, logextra))
+        print('::group::Flag: %s%s' % (flag, logextra))
 
-            print('Executing: %r' % cmd)
-            subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
+        print('Executing: %r' % cmd)
+        subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
 
-            print('::endgroup::')
+        print('::endgroup::')
 
 if __name__ == '__main__':
     main(sys.argv[1:])
