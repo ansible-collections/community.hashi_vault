@@ -62,11 +62,11 @@ runs:
         INPUT_DIRECTORY_FLAG_PATTERN: '${{ inputs.file-flag-pattern }}'
         INPUT_FILE_FLAG_PATTERN: '${{ inputs.file-flag-pattern }}'
         INPUT_ADDITIONAL_FLAGS: '${{ inputs.additional-flags }}'
-      run: |
-        python -u "${{ github.action_path }}/process.py" \
-        --directory "${{ inputs.directory }}" \
-        --directory-flag-pattern "${{ inputs.file-flag-pattern }}" \
-        --file-flag-pattern "${{ inputs.file-flag-pattern }}" \
+      run: >-
+        python -u "${{ github.action_path }}/process.py"
+        --directory "${{ inputs.directory }}"
+        --directory-flag-pattern "${{ inputs.file-flag-pattern }}"
+        --file-flag-pattern "${{ inputs.file-flag-pattern }}"
         --additional-flags "${{ inputs.additional-flags }}"
 
 
