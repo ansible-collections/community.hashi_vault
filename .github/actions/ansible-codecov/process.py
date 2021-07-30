@@ -7,13 +7,15 @@ from pathlib import Path
 def get_flags(pattern, input):
     patpat = r'\{([^\}]+)\}'
 
+    print('[DEBUG]: pattern: %s' % pattern)
+    print('[DEBUG]: input: %s' % input)
+
     pats = re.findall(patpat, pattern)
 
     matcher = re.sub(patpat, r'(.*?)', pattern)
 
     match = re.search(matcher, input)
 
-    print('[DEBUG]: pattern: %s' % pattern)
     print('[DEBUG]: matcher: %s' % matcher)
 
     if match:
