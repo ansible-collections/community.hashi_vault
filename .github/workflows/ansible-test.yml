@@ -239,7 +239,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - uses: ./.github/actions/ansible-codecov
+      # - uses: ./.github/actions/ansible-codecov
 
   # local_test_invocation:
   #   runs-on: ${{ matrix.runner }}
