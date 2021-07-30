@@ -65,7 +65,7 @@ runs:
         def get_flags(pattern, input):
             patpat = r'\{(?P<pat>[^\}]+)\}'
 
-            pats = re.findall(patpat, input)
+            pats = re.findall(patpat, pattern)
 
             matcher = re.sub(patpat, r'(.*?)', pattern)
 
