@@ -34,6 +34,9 @@ def main(argv):
         'additional-flags=',
     ])
 
+    print('[DEBUG]: opts: %r' % (opts,))
+    print('[DEBUG]: argv: %r' % (argv,))
+
     for opt, arg in opts:
         if opt == 'directory':
             directory = arg
@@ -54,6 +57,7 @@ def main(argv):
             if f.is_file():
                 iflags = set()
                 if directory_flag_pattern:
+                    print('[DEBUG]: %r' % (f.parent.parts,))
                     for part in f.parent.parts:
                         dflags = get_flags(directory_flag_pattern, part)
                         if dflags:
