@@ -58,7 +58,7 @@ runs:
 
     - shell: python
       run: |
-        import os
+        import subprocess
         import re
         from pathlib import Path
 
@@ -107,10 +107,13 @@ runs:
 
         for flag, files in flags.items():
             allflags = ','.join([flag] + extra_flags)
-            allfiles = ','.join(files)
+            # allfiles = ','.join(files)
+            cmd = ['codecov', '-F', allflags]
+            [cmd.extend(['-f', file]) for file in files]
 
             print('::group::Flag: %s%s' % (flag, logextra))
 
-            os.system('codecov -F "%s" -f "%s"' % (allflags, allfiles))
+            # os.system('codecov -F "%s" -f "%s"' % (allflags, allfiles))
+            subprocess.run(cmd, stderr=STDOUT)
 
             print('::endgroup::')
