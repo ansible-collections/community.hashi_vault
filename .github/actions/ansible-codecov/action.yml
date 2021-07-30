@@ -17,7 +17,7 @@ inputs:
   file-flag-pattern:
     description: |
       A pattern to infer flags from coverage reports. For example the default pattern:
-        coverage={%}={%}={%}={%}.xml
+        coverage={%}={target_%}={env_%}=python-{py%}.xml
       applied to a file name like:
         coverage=integration=lookup_some_plugin=docker-default=python-3.9.xml
       Results in the flags:
@@ -113,19 +113,13 @@ runs:
         logextra = ' (+%r)' % extra_flags if extra_flags else ''
 
         for flag, files in flags.items():
-            allflags = ','.join([flag] + extra_flags)
-            # allfiles = ','.join(files)
-            cmd = ['codecov', '-F', allflags]
+            cmd = ['codecov', '-F', flag]
+            [cmd.extend(['-F', extra] for extra in extra_flags)]
             [cmd.extend(['-f', file]) for file in files]
 
             print('::group::Flag: %s%s' % (flag, logextra))
 
-            # os.system('codecov -F "%s" -f "%s"' % (allflags, allfiles))
             print('Executing: %r' % cmd)
             subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
-
-            # with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
-            #     for line in iter(p.stdout.readline, b''):
-            #         print(line)
 
             print('::endgroup::')
