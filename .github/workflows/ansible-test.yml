@@ -403,7 +403,7 @@ jobs:
           directory: ./cov
           directory-flag-pattern: =ansible_{ansible-%}=
 
-      See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
+      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage for units
         uses: codecov/codecov-action@v2
         with:
