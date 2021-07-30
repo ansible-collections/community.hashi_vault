@@ -7,19 +7,14 @@ from pathlib import Path
 def get_flags(pattern, input):
     patpat = r'\{([^\}]+)\}'
 
-    print('[DEBUG]: pattern: %s' % pattern)
-    print('[DEBUG]: input: %s' % input)
-
     pats = re.findall(patpat, pattern)
 
     matcher = re.sub(patpat, r'(.*?)', pattern)
 
     match = re.search(matcher, input)
 
-    print('[DEBUG]: matcher: %s' % matcher)
 
     if match:
-        print('[DEBUG]: match groups: %r' % (match.groups(),))
         return [pats[i].replace('%', result) for i, result in enumerate(match.groups())]
 
     return None
@@ -34,11 +29,7 @@ def main(argv):
         'additional-flags=',
     ])
 
-    print('[DEBUG]: opts: %r' % (opts,))
-    print('[DEBUG]: argv: %r' % (argv,))
-
     for opt, arg in opts:
-        print('[DEBUG]: opt: %r || arg: %r' % (opt,arg))
         if opt == '--directory':
             directory = arg
         elif opt == '--directory-flag-pattern':
@@ -58,13 +49,11 @@ def main(argv):
         if f.is_file():
             iflags = set()
             if directory_flag_pattern:
-                print('[DEBUG]: %r' % (f.parent.parts,))
                 for part in f.parent.parts:
                     dflags = get_flags(directory_flag_pattern, part)
                     if dflags:
                         iflags.update(dflags)
 
-            print('[DEBUG]: file_flag_pattern: %r' % (file_flag_pattern,))
             fflags = get_flags(file_flag_pattern, str(f.name))
             if fflags:
                 iflags.update(fflags)
