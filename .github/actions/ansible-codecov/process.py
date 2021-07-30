@@ -43,6 +43,7 @@ def main(argv):
         elif opt == '--directory-flag-pattern':
             directory_flag_pattern = arg
         elif opt == '--file-flag-pattern':
+            print('[DEBUG]: opt: %r || arg: %r' % (opt,arg))
             file_flag_pattern = arg
         elif opt == '--additional-flags':
             additional_flags = arg
