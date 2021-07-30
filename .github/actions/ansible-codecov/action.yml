@@ -58,6 +58,8 @@ runs:
 
     - shell: python
       run: |
+        #!/usr/bin/python -u
+
         import subprocess
         import re
         from pathlib import Path
@@ -114,6 +116,11 @@ runs:
             print('::group::Flag: %s%s' % (flag, logextra))
 
             # os.system('codecov -F "%s" -f "%s"' % (allflags, allfiles))
-            subprocess.run(cmd, stderr=subprocess.STDOUT)
+            print('Executing: %r' % cmd)
+            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True)
+
+            # with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
+            #     for line in iter(p.stdout.readline, b''):
+            #         print(line)
 
             print('::endgroup::')
