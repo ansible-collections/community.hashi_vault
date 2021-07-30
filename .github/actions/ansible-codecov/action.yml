@@ -98,7 +98,7 @@ runs:
             if f.is_file():
                 iflags = set()
                 if directory_flag_pattern:
-                    print('[DEBUG]: %r' % f.parent.parts)
+                    print('[DEBUG]: %r' % (f.parent.parts,))
                     for part in f.parent.parts:
                         dflags = get_flags(directory_flag_pattern, part)
                         if dflags:
