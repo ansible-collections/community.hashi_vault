@@ -28,13 +28,11 @@ def main(argv):
     additional_flags = file_flag_pattern = directory_flag_pattern = directory = None
 
     opts, args = getopt.getopt(argv, '', [
-        'directory',
-        'directory-flag-pattern',
-        'file-flag-pattern',
-        'additional-flags',
+        'directory=',
+        'directory-flag-pattern=',
+        'file-flag-pattern=',
+        'additional-flags=',
     ])
-
-    print('[DEBUG]: %r' % (opts,))
 
     for opt, arg in opts:
         if opt == 'directory':
@@ -56,7 +54,6 @@ def main(argv):
             if f.is_file():
                 iflags = set()
                 if directory_flag_pattern:
-                    print('[DEBUG]: %r' % (f.parent.parts,))
                     for part in f.parent.parts:
                         dflags = get_flags(directory_flag_pattern, part)
                         if dflags:

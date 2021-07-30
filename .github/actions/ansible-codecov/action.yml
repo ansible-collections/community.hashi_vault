@@ -57,11 +57,6 @@ runs:
         echo "::endgroup::"
 
     - shell: bash
-      env:
-        INPUT_DIRECTORY: '${{ inputs.directory }}'
-        INPUT_DIRECTORY_FLAG_PATTERN: '${{ inputs.file-flag-pattern }}'
-        INPUT_FILE_FLAG_PATTERN: '${{ inputs.file-flag-pattern }}'
-        INPUT_ADDITIONAL_FLAGS: '${{ inputs.additional-flags }}'
       run: >-
         python -u "${{ github.action_path }}/process.py"
         --directory "${{ inputs.directory }}"
