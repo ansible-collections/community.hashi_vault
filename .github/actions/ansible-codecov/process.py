@@ -34,6 +34,8 @@ def main(argv):
         'additional-flags',
     ])
 
+    print('[DEBUG]: %r' % (opts,))
+
     for opt, arg in opts:
         if opt == 'directory':
             directory = arg

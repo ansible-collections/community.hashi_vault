@@ -64,10 +64,10 @@ runs:
         INPUT_ADDITIONAL_FLAGS: '${{ inputs.additional-flags }}'
       run: |
         python -u "${{ github.action_path }}/process.py" \
-        --directory "${INPUT_DIRECTORY}" \
-        --directory-flag-pattern "${INPUT_DIRECTORY_FLAG_PATTERN}" \
-        --file-flag-pattern "${INPUT_FILE_FLAG_PATTERN}" \
-        --additional-flags "${INPUT_ADDITIONAL_FLAGS}"
+        --directory "${{ inputs.directory }}" \
+        --directory-flag-pattern "${{ inputs.file-flag-pattern }}" \
+        --file-flag-pattern "${{ inputs.file-flag-pattern }}" \
+        --additional-flags "${{ inputs.additional-flags }}"
 
 
     # - shell: python
