@@ -38,13 +38,13 @@ def main(argv):
     print('[DEBUG]: argv: %r' % (argv,))
 
     for opt, arg in opts:
-        if opt == 'directory':
+        if opt == '--directory':
             directory = arg
-        elif opt == 'directory-flag-pattern':
+        elif opt == '--directory-flag-pattern':
             directory_flag_pattern = arg
-        elif opt == 'file-flag-pattern':
+        elif opt == '--file-flag-pattern':
             file_flag_pattern = arg
-        elif opt == 'additional-flags':
+        elif opt == '--additional-flags':
             additional_flags = arg
 
         extra_flags = additional_flags.split(',') if additional_flags else []
@@ -63,6 +63,7 @@ def main(argv):
                         if dflags:
                             iflags.update(dflags)
 
+                print('[DEBUG]: file_flag_pattern: %r' % (file_flag_pattern,))
                 fflags = get_flags(file_flag_pattern, str(f.name))
                 if fflags:
                     iflags.update(fflags)
