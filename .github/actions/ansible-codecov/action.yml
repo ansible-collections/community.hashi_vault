@@ -57,9 +57,9 @@ runs:
         echo "::endgroup::"
 
     - shell: python
+      env:
+        PYTHONUNBUFFERED: '1'
       run: |
-        #!/usr/bin/python -u
-
         import subprocess
         import re
         from pathlib import Path
