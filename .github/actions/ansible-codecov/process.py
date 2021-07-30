@@ -1,23 +1,31 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright: (c) 2012, Brian Scholer (@briantist)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import sys
 import subprocess
 import re
 import getopt
 from pathlib import Path
 
+
 def get_flags(pattern, input):
     patpat = r'\{([^\}]+)\}'
 
     pats = re.findall(patpat, pattern)
-
     matcher = re.sub(patpat, r'(.*?)', pattern)
-
     match = re.search(matcher, input)
-
 
     if match:
         return [pats[i].replace('%', result) for i, result in enumerate(match.groups())]
 
     return None
+
 
 def main(argv):
     additional_flags = file_flag_pattern = directory_flag_pattern = directory = None
@@ -74,6 +82,7 @@ def main(argv):
         subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
 
         print('::endgroup::')
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
