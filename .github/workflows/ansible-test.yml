@@ -383,37 +383,17 @@ jobs:
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
-      - name: Initialize env vars
-        uses: briantist/ezenv@v1
-        with:
-          env: COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-
       - name: Check out code
         uses: actions/checkout@v2
-        with:
-          path: ${{ env.COLLECTION_PATH }}
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
           path: ./cov
 
-      - uses: ./.github/actions/ansible-codecov
+      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
+      - name: Upload coverage reports to Codecov
+        uses: ./.github/actions/ansible-codecov
         with:
           directory: ./cov
           directory-flag-pattern: =ansible_{ansible-%}=
-
-      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - name: Upload coverage for units
-        uses: codecov/codecov-action@v2
-        with:
-          files: '**/coverage=units*.xml'
-          flags: units
-          fail_ci_if_error: false
-
-      - name: Upload coverage for integration
-        uses: codecov/codecov-action@v2
-        with:
-          files: '**/coverage=integration*.xml'
-          flags: integration
-          fail_ci_if_error: false
