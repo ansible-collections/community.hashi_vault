@@ -114,6 +114,6 @@ runs:
             print('::group::Flag: %s%s' % (flag, logextra))
 
             # os.system('codecov -F "%s" -f "%s"' % (allflags, allfiles))
-            subprocess.run(cmd, stderr=STDOUT)
+            subprocess.run(cmd, stderr=subprocess.STDOUT)
 
             print('::endgroup::')
