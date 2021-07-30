@@ -69,13 +69,12 @@ runs:
 
             pats = re.findall(patpat, pattern)
 
-            matcher = re.sub(patpat, r'(.*?)', pattern)
+            matcher = re.sub(patpat, r'(.*)', pattern)
 
             match = re.search(matcher, input)
 
             print('[DEBUG]: pattern: %s' % pattern)
             print('[DEBUG]: matcher: %s' % matcher)
-            print('[DEBUG]: patpat: %s' % patpat)
 
             if match:
                 print('[DEBUG]: match groups: %r' % (match.groups(),))
