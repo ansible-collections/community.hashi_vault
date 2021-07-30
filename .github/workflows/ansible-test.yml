@@ -128,7 +128,7 @@ jobs:
 
       # Run the unit tests
       - name: Run unit test
-        run: ansible-test units -v --color --docker ${{ matrix.test_container }} --coverage
+        run: ansible-test units --color --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
