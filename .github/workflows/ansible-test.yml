@@ -396,7 +396,7 @@ jobs:
       - uses: ./.github/actions/ansible-codecov
         with:
           directory: ./cov
-          directory-flag-pattern: ansible_{ansible-%}
+          directory-flag-pattern: -ansible_{ansible-%}
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       # - name: Upload coverage for units

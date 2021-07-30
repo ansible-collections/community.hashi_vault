@@ -65,13 +65,18 @@ runs:
         from pathlib import Path
 
         def get_flags(pattern, input):
-            patpat = r'\{(?P<pat>[^\}]+)\}'
+            patpat = r'\{([^\}]+)\}'
 
             pats = re.findall(patpat, pattern)
 
             matcher = re.sub(patpat, r'(.*?)', pattern)
 
             match = re.search(matcher, input)
+
+            print('[DEBUG]: pattern: %s' % pattern)
+            print('[DEBUG]: matcher: %s' % matcher)
+            print('[DEBUG]: patpat: %s' % patpat)
+            print('[DEBUG]: match groups: %r' % match.groups())
 
             if match:
                 return [pats[i].replace('%', result) for i, result in enumerate(match.groups())]
@@ -93,6 +98,7 @@ runs:
             if f.is_file():
                 iflags = set()
                 if directory_flag_pattern:
+                    print('[DEBUG]: %r' % f.parent.parts)
                     for part in f.parent.parts:
                         dflags = get_flags(directory_flag_pattern, part)
                         if dflags:
