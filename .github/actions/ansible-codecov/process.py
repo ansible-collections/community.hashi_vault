@@ -73,7 +73,7 @@ def main(argv):
 
     for flag, files in flags.items():
         cmd = ['codecov', '-F', flag]
-        [cmd.extend(['-F', extra] for extra in extra_flags)]
+        [cmd.extend(['-F', extra]) for extra in extra_flags]
         [cmd.extend(['-f', file]) for file in files]
 
         print('::group::Flag: %s%s' % (flag, logextra))
