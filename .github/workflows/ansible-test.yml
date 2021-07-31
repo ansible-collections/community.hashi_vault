@@ -391,6 +391,19 @@ jobs:
         with:
           path: ./cov
 
+      - name: Move Ansible 2.9 units
+        run: |
+          mkdir ./cov-units2.9
+          mv ./cov/coverage=units=ansible_stable-2.9=data ./cov-units2.9
+
+      - name: Upload Ansible 2.9 unit coverage reports to Codecov
+        uses: ./.github/actions/ansible-codecov
+        with:
+          directory: ./cov-units2.9
+          additional-flags: units
+          file-flag-pattern: coverage=units=units={env_%}=python-{py%}.xml
+          directory-flag-pattern: =ansible_{ansible-%}=
+
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage reports to Codecov
         uses: ./.github/actions/ansible-codecov
