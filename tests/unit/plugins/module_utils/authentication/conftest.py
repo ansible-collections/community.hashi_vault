@@ -14,6 +14,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultOptionAdapter,
 )
 
+
 class HashiVaultAuthMethodFake(HashiVaultAuthMethodBase):
     NAME = 'fake'
     OPTIONS = []
