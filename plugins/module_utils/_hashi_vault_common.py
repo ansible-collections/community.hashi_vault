@@ -15,12 +15,6 @@ __metaclass__ = type
 
 import os
 
-from ansible.module_utils.common.validation import (
-    check_type_dict,
-    check_type_str,
-    check_type_bool,
-    check_type_int,
-)
 
 HAS_HVAC = False
 try:
@@ -29,25 +23,6 @@ try:
 except ImportError:
     HAS_HVAC = False
 
-# we implement retries via the urllib3 Retry class
-# https://github.com/ansible-collections/community.hashi_vault/issues/58
-HAS_RETRIES = False
-try:
-    from requests import Session
-    from requests.adapters import HTTPAdapter
-    try:
-        # try for a standalone urllib3
-        from urllib3.util import Retry
-        HAS_RETRIES = True
-    except ImportError:
-        try:
-            # failing that try for a vendored version within requests
-            from requests.packages.urllib3.util import Retry
-            HAS_RETRIES = True
-        except ImportError:
-            pass
-except ImportError:
-    pass
 
 
 class HashiVaultValueError(ValueError):
