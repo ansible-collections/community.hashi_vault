@@ -1,0 +1,3 @@
+---
+bugfixes:
+    - hashi_vault collection - a fallback import supporting the ``retries`` option for ``urllib3`` via ``requests.packages.urllib3`` was not correctly formed (https://github.com/ansible-collections/community.hashi_vault/issues/116).
