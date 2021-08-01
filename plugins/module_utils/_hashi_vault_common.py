@@ -24,7 +24,6 @@ except ImportError:
     HAS_HVAC = False
 
 
-
 class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
