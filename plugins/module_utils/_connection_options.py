@@ -32,12 +32,12 @@ try:
     from requests.adapters import HTTPAdapter
     try:
         # try for a standalone urllib3
-        from urllib3.util import Retry
+        import urllib3
         HAS_RETRIES = True
     except ImportError:
         try:
             # failing that try for a vendored version within requests
-            from requests.packages.urllib3.util import Retry
+            from requests.packages import urllib3
             HAS_RETRIES = True
         except ImportError:
             pass
@@ -64,7 +64,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
             # See also:
             # - https://github.com/urllib3/urllib3/issues/2092
             # - https://github.com/urllib3/urllib3/blob/main/CHANGES.rst#1260-2020-11-10
-            "allowed_methods" if HAS_RETRIES and hasattr(Retry.DEFAULT, "allowed_methods") else "method_whitelist"
+            "allowed_methods" if HAS_RETRIES and hasattr(urllib3.util.Retry.DEFAULT, "allowed_methods") else "method_whitelist"
         ): None,  # None allows retries on all methods, including those which may not be considered idempotent, like POST
         'backoff_factor': 0.3,
     }
@@ -106,7 +106,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
         # This is defined here because Retry may not be defined if its import failed.
         # As mentioned above, that's very unlikely, but it'll fail sanity tests nonetheless if defined with other classes.
-        class CallbackRetry(Retry):
+        class CallbackRetry(urllib3.util.Retry):
             def __init__(self, *args, **kwargs):
                 self._newcb = kwargs.pop('new_callback')
                 super(CallbackRetry, self).__init__(*args, **kwargs)
