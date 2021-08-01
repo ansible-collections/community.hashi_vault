@@ -454,22 +454,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
         self._warner(message)
 
 
-class HashiVaultAuthMethodNone(HashiVaultAuthMethodBase):
-    '''HashiVault option group class for auth: none'''
-
-    NAME = 'none'
-    OPTIONS = []
-
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodNone, self).__init__(option_adapter, warning_callback)
-
-    def validate(self):
-        pass
-
-    def authenticate(self, client, use_token=False):
-        return None
-
-
 class HashiVaultAuthMethodUserpass(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: userpass'''
 
@@ -691,36 +675,3 @@ class HashiVaultAuthMethodJwt(HashiVaultAuthMethodBase):
             client.token = token
 
         return token
-
-
-class HashiVaultAuthenticator():
-    def __init__(self, option_adapter, warning_callback):
-        self._options = option_adapter
-        self._selector = {
-            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
-            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
-            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
-            'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
-            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
-            'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
-            'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
-        }
-
-    def _get_method_object(self, method=None):
-        if method is None:
-            method = self._options.get_option('auth_method')
-
-        try:
-            o_method = self._selector[method]
-        except KeyError:
-            raise NotImplementedError("auth method '%s' is not implemented in HashiVaultAuthenticator" % method)
-
-        return o_method
-
-    def validate(self, *args, **kwargs):
-        method = self._get_method_object(kwargs.pop('method', None))
-        method.validate(*args, **kwargs)
-
-    def authenticate(self, *args, **kwargs):
-        method = self._get_method_object(kwargs.pop('method', None))
-        return method.authenticate(*args, **kwargs)

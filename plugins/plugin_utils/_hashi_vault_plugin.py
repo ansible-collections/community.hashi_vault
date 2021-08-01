@@ -19,8 +19,10 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultHelper,
     HashiVaultOptionAdapter,
     HashiVaultConnectionOptions,
-    HashiVaultAuthenticator,
 )
+
+from ansible_collections.community.hashi_vault.plugins.module_utils._authenticator import HashiVaultAuthenticator
+
 
 display = Display()
 
