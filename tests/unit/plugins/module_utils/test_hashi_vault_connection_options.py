@@ -12,9 +12,10 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultOptionGroupBase,
-    HashiVaultConnectionOptions,
     HashiVaultOptionAdapter,
 )
+
+from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
 
 from requests import Session
 

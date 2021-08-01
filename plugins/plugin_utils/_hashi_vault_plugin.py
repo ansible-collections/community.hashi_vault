@@ -18,9 +18,9 @@ from ansible.utils.display import Display
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultHelper,
     HashiVaultOptionAdapter,
-    HashiVaultConnectionOptions,
 )
 
+from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
 from ansible_collections.community.hashi_vault.plugins.module_utils._authenticator import HashiVaultAuthenticator
 
 
