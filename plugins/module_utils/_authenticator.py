@@ -24,6 +24,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultAuthMethodJwt,
 )
 
+
 class HashiVaultAuthenticator():
     def __init__(self, option_adapter, warning_callback):
         self._options = option_adapter

@@ -15,6 +15,7 @@ __metaclass__ = type
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase
 
+
 class HashiVaultAuthMethodNone(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: none'''
 
