@@ -44,12 +44,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: /tmp/pr
+          path: ${{ runner.temp }}/pr
 
       - name: Apply docs changes from PR
         if: github.event_name == 'pull_request'
         working-directory: ${{ env.COLLECTION_PATH }}
-        run: rsync -avc --delete-after /tmp/pr/docs/docsite/ docs/docsite/
+        run: rsync -avc --delete-after "${{ runner.temp }}/pr/docs/docsite/" docs/docsite/
 
       - name: Set up Python
         uses: actions/setup-python@v2
