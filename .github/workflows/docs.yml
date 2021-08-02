@@ -24,7 +24,7 @@ env:
 
 jobs:
   docs:
-    name: Collection Docs Lint
+    name: Collection Docs Lint & Build
     runs-on: ubuntu-latest
     steps:
       - name: Set up env vars
@@ -64,7 +64,7 @@ jobs:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
         run: ${DOCS_PREVIEW}/build.sh
 
-      - name: Upload ZIP artifact
+      - name: Upload Docsite artifact
         uses: actions/upload-artifact@v2
         with:
           name: html_docsite
