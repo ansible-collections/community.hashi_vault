@@ -19,7 +19,6 @@ jobs:
 
 ###
 # Sanity tests (REQUIRED)
-#
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
   sanity:
@@ -128,18 +127,20 @@ jobs:
 
       # Run the unit tests
       - name: Run unit test
-        run: ansible-test units -v --color --docker ${{ matrix.test_container }} --coverage
+        run: ansible-test units --color --docker ${{ matrix.test_container }} --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage date
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - uses: codecov/codecov-action@v2
+      - name: Upload ${{ github.job }} coverage reports
+        uses: actions/upload-artifact@v2
         with:
-          fail_ci_if_error: false
+          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
+          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+          if-no-files-found: error
+          retention-days: 1
 
 ###
 # Integration tests (RECOMMENDED)
@@ -174,6 +175,14 @@ jobs:
         exclude:
           - ansible: stable-2.9
             python: 3.9
+          - ansible: devel
+            python: 3.7
+          - ansible: devel
+            python: 3.6
+          - ansible: devel
+            python: 3.5
+          - ansible: devel
+            python: 2.7
         include:
           - ansible: devel
             vault: 1.7.3
@@ -224,15 +233,18 @@ jobs:
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage date
+        # ansible-test support producing code coverage data
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - uses: codecov/codecov-action@v2
+      - name: Upload ${{ github.job }} coverage reports
+        uses: actions/upload-artifact@v2
         with:
-          fail_ci_if_error: false
+          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=${{ matrix.vault }}=data
+          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+          if-no-files-found: error
+          retention-days: 1
 
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
@@ -348,14 +360,60 @@ jobs:
           ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage date
+        # ansible-test support producing code coverage data
       - name: Generate coverage report
         if: ${{ matrix.docker }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
-      - uses: codecov/codecov-action@v2
+      - name: Upload ${{ github.job }} coverage reports
         if: ${{ matrix.docker }}
+        uses: actions/upload-artifact@v2
         with:
-          fail_ci_if_error: false
+          name: coverage=${{ github.job }}=${{ matrix.runner }}=${{ matrix.docker }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+          if-no-files-found: error
+          retention-days: 1
+
+  upload-coverage:
+    needs:
+      - units
+      - integration
+      - local_test_invocation
+    name: Upload Codecov reports
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: ./cov
+
+      # Before Ansible 2.12, units always used a "target" of "units", and we don't want a flag of "target_units".
+      # After 2.12, target can be "controller" or "module_utils" and we'll preserve them for now.
+      # If we decide that those targets are not helpful, we can simplify processing by removing this run block
+      # and just having two ansible-codecov calls, one for units (that excludes target) and one for integration.
+      # That change would also make integration processing faster because we can hardcode the integration flag as an additional flag.
+      - name: Move Ansible pre-2.12 units
+        run: |
+          mkdir ./cov-units-pre2.12
+          mv ./cov/coverage=units=ansible_stable-2.9=data ./cov-units-pre2.12
+          mv ./cov/coverage=units=ansible_stable-2.10=data ./cov-units-pre2.12
+          mv ./cov/coverage=units=ansible_stable-2.11=data ./cov-units-pre2.12
+
+      - name: Upload Ansible pre-2.12 unit coverage reports to Codecov
+        uses: ./.github/actions/ansible-codecov
+        with:
+          directory: ./cov-units-pre2.12
+          additional-flags: units
+          file-flag-pattern: coverage=units=units={env_%}=python-{py%}.xml
+          directory-flag-pattern: =ansible_{ansible-%}=
+
+      # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
+      - name: Upload coverage reports to Codecov
+        uses: ./.github/actions/ansible-codecov
+        with:
+          directory: ./cov
+          directory-flag-pattern: =ansible_{ansible-%}=

@@ -1,0 +1,65 @@
+---
+name: Upload Ansible coverage reports with flags
+description: Does separate codecov uploads with flags taken from ansible-test's --group-by options
+inputs:
+  additional-flags:
+    description: Additional custom flags (comma separated) to be added to all reports.
+    required: false
+  directory-flag-pattern:
+    description: |
+      A pattern to infer flags from directory names. For example this pattern:
+        {ansible-%}=python-{py%}={%}
+      applied to a directory name like:
+        stable-2.11=python-3.9=rando
+      Results in the flags:
+        ansible-stable-2.11,py3.9,rando
+    required: false
+  file-flag-pattern:
+    description: |
+      A pattern to infer flags from coverage reports. For example the default pattern:
+        coverage={%}={target_%}={env_%}=python-{py%}.xml
+      applied to a file name like:
+        coverage=integration=lookup_some_plugin=docker-default=python-3.9.xml
+      Results in the flags:
+        integration,target_lookup_some_plugin,env_docker-default,py3.9
+    required: false
+    default: coverage={%}={target_%}={env_%}=python-{py%}.xml
+  directory:
+    description: The directory to scan recursively. Defaults to current working directory.
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Download and verify codecov uploader
+      shell: bash
+      run: |
+        echo "::group::Installing codecov uploader"
+
+        mkdir -p /tmp/ccbin
+        cd /tmp/ccbin
+
+        echo "/tmp/ccbin" >> ${GITHUB_PATH}
+
+        if command -v codecov ; then
+            ./codecov --version
+        else
+            curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
+            curl -Os https://uploader.codecov.io/latest/linux/codecov
+            curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+            curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+            gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
+            shasum -a 256 -c codecov.SHA256SUM
+            chmod +x codecov
+
+            ./codecov --version
+        fi
+
+        echo "::endgroup::"
+
+    - shell: bash
+      run: >-
+        python -u "${{ github.action_path }}/process.py"
+        --directory "${{ inputs.directory }}"
+        --directory-flag-pattern "${{ inputs.file-flag-pattern }}"
+        --file-flag-pattern "${{ inputs.file-flag-pattern }}"
+        --additional-flags "${{ inputs.additional-flags }}"
