@@ -97,17 +97,17 @@ jobs:
           fi
 
       - name: Install Node
-        if: secrets.SURGE_TOKEN != ''
+        if: github.repository == 'ansible-collections/community.hashi_vault'
         uses: actions/setup-node@v2
         with:
           node-version: 14
 
       - name: Install Surge
-        if: secrets.SURGE_TOKEN != ''
+        if: github.repository == 'ansible-collections/community.hashi_vault'
         run: npm install -g surge
 
       - name: Publish site
-        if: secrets.SURGE_TOKEN != ''
+        if: github.repository == 'ansible-collections/community.hashi_vault'
         working-directory: ${{ env.HTML }}
         run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
