@@ -212,10 +212,10 @@ Customization
 
 * ``vault_version`` -- can target any version of Vault for which a docker container exists
 * ``docker_compose`` (defaults to ``clean`` but could be set to ``up``, ``down``, or ``none``)
-  * ``up`` -- similar to running ``docker-compose up`` (no op if the project is running as it should)
-  * ``down`` -- similar to ``docker-compose down`` (destroys the project)
-  * ``clean`` -- (default) similar to ``docker-compose down`` followed by ``docker-compose up``
-  * ``none`` -- does the other tasks, including templating, but does not bring the project up or down. With this option, the ``community.docker`` collection is not required.
+   * ``up`` -- similar to running ``docker-compose up`` (no op if the project is running as it should)
+   * ``down`` -- similar to ``docker-compose down`` (destroys the project)
+   * ``clean`` -- (default) similar to ``docker-compose down`` followed by ``docker-compose up``
+   * ``none`` -- does the other tasks, including templating, but does not bring the project up or down. With this option, the ``community.docker`` collection is not required.
 * ``vault_crypto_force`` -- by default this is ``false`` so if the cert and key exist they won't be regenerated. Setting to ``true`` will overwrite them.
 * ``vault_port_http``, ``vault_port_https``, ``proxy_port`` -- all of the ports are exposed to the host, so if you already have any of the default ports in use on your host, you may need to override these.
 * ``vault_container_name``, ``proxy_container_name`` -- these are the names for their respective containers, which will also be the DNS names used within the container network. In case you have the default names in use you may need to override these.
