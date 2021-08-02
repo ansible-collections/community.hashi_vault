@@ -1,0 +1,72 @@
+---
+name: Collection Docs
+on:
+  # we want to ensure the docs are still good before doing a release
+  # so we try to catch that with the changelog changes
+  push:
+    paths:
+      - '.github/workflows/docs.yml'
+      - 'docs/**'
+      - 'CHANGELOG.rst'
+      - 'changelogs/changelog.yaml'
+  pull_request:
+    paths:
+      - '.github/workflows/docs.yml'
+      - 'docs/**'
+      - 'CHANGELOG.rst'
+      - 'changelogs/changelog.yaml'
+  schedule:
+    - cron: '0 13 * * *'
+
+env:
+  NAMESPACE: community
+  COLLECTION_NAME: hashi_vault
+
+jobs:
+  docs:
+    name: Collection Docs Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up env vars
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            DOCS=${COLLECTION_PATH}/docs
+            DOCS_PREVIEW=${DOCS}/preview
+            HTML=${DOCS_PREVIEW}/build/html
+
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.COLLECTION_PATH }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install antsibull
+        run: pip install antsibull
+
+      - name: Lint Collection Docs
+        working-directory: ${{ env.COLLECTION_PATH }}
+        run: antsibull-lint collection-docs -v .
+
+      - name: Install the requirements
+        working-directory: ${{ env.DOCS_PREVIEW }}
+        run: pip install -r requirements.txt
+
+      - name: Build the preview docs
+        working-directory: ${{ env.DOCS_PREVIEW }}
+        run: ./build.sh
+
+      - name: Create ZIP artifact
+        working-directory: ${{ env.HTML }}
+        run: zip -r html.zip ./
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: html_docsite
+          path: ${{ env.HTML }}/html.zip
