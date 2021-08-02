@@ -4,12 +4,14 @@ on:
   # we want to ensure the docs are still good before doing a release
   # so we try to catch that with the changelog changes
   push:
+    branches:
+      - main
     paths:
       - '.github/workflows/docs.yml'
       - 'docs/**'
       - 'CHANGELOG.rst'
       - 'changelogs/changelog.yaml'
-  pull_request:
+  pull_request_target:
     paths:
       - '.github/workflows/docs.yml'
       - 'docs/**'
@@ -31,6 +33,7 @@ jobs:
         uses: briantist/ezenv@v1
         with:
           env: |
+            SITE_STUB=community-hashi-vault
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             DOCS=${COLLECTION_PATH}/docs
             DOCS_PREVIEW=${DOCS}/preview
@@ -40,6 +43,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ${{ env.COLLECTION_PATH }}
+
+      - name: Check out PR to temp location
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: /tmp/pr
+
+      - name: Apply docs changes from PR
+        if: github.event_name == 'pull_request_target'
+        working-directory: ${{ env.COLLECTION_PATH }}
+        run: rsync -avc --delete-after /tmp/pr/docs/docsite/ docs/docsite/
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -70,3 +85,49 @@ jobs:
           name: html_docsite
           path: ${{ env.HTML }}
           retention-days: 7
+
+      - name: Determine docsite subdomain
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" -eq "push" ]]; then
+            echo "SITE_NAME=${SITE_STUB}-main" >> $GITHUB_ENV
+          else
+            echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
+          fi
+
+      - name: Look for existing comment
+        if: github.event_name == 'pull_request_target'
+        id: fc
+        uses: peter-evans/find-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: "##Docs Build"
+
+      - name: Post a comment on the PR
+        if: github.event_name == 'pull_request_target'
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.number }}
+          body: |
+            ##Docs Build
+
+            📝 First pass at a PR comment!
+
+            Your doc build is available as an artifact on this run:
+            https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+            Site-to-be: https://${SITE_NAME}.surge.sh
+          edit-mode: replace
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Surge
+        run: npm install -g surge
+
+      - name: Publish site
+        working-directory: ${{ env.HTML }}
+        run: surge ./ --token ${{ secrets.SURGE_TOKEN }}
