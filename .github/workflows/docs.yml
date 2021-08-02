@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-  pull_request: #_target
+  pull_request_target:
     paths:
       - '.github/workflows/docs.yml'
       - 'docs/**'
@@ -44,14 +44,14 @@ jobs:
       # Please read ALL of this document before changing these:
       # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: Check out PR to temp location
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: __pr
 
       - name: Apply docs changes from PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         working-directory: ${{ env.COLLECTION_PATH }}
         run: |
           rsync -avc --delete-after "${{ github.workspace }}/__pr/docs/docsite/" docs/docsite/
@@ -108,7 +108,7 @@ jobs:
         run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
       - name: Look for existing comment
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         id: fc
         uses: peter-evans/find-comment@v1
         with:
@@ -117,7 +117,7 @@ jobs:
           body-includes: "##Docs Build"
 
       - name: Post a comment on the PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
