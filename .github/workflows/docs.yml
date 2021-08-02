@@ -7,11 +7,11 @@ on:
     branches:
       - main
   pull_request_target:
-    # paths:
-    #   - '.github/workflows/docs.yml'
-    #   - 'docs/**'
-    #   - 'CHANGELOG.rst'
-    #   - 'changelogs/changelog.yaml'
+    paths:
+      - '.github/workflows/docs.yml'
+      - 'docs/**'
+      - 'CHANGELOG.rst'
+      - 'changelogs/changelog.yaml'
   schedule:
     - cron: '0 13 * * *'
 
