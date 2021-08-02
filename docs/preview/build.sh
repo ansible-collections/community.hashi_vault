@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 pushd "${BASH_SOURCE%/*}"
 
