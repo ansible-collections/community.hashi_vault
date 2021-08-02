@@ -53,9 +53,11 @@ jobs:
         working-directory: ${{ env.COLLECTION_PATH }}
         run: antsibull-lint collection-docs -v .
 
-      - name: Install the requirements
+      - name: Install Ansible and other requirements
         working-directory: ${{ env.DOCS_PREVIEW }}
-        run: pip install -r requirements.txt
+        run: |
+          pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+          pip install -r requirements.txt --disable-pip-version-check
 
       - name: Build the preview docs
         working-directory: ${{ env.DOCS_PREVIEW }}
