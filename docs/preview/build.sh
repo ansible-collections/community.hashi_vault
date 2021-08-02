@@ -11,7 +11,7 @@ antsibull-docs collection \
     community.hashi_vault
 
 # Copy collection documentation into source directory
-rsync -avc --delete-after temp-rst/collections/ rst/collections/
+rsync -avc --delete-after temp-rst/collections/ rst/collections/ --exclude=/collections/index.rst
 
 # Build Sphinx site
 sphinx-build -M html rst build -c .

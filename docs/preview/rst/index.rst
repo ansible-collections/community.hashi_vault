@@ -1,9 +1,9 @@
 .. _docsite_root_index:
 
-Welcome to my Ansible collection documentation
-==============================================
+Ansible collection documentation preview
+========================================
 
-This docsite contains documentation of community.hashi_vault.
+This docsite contains documentation from ``community.hashi_vault``.
 
 
 .. toctree::
