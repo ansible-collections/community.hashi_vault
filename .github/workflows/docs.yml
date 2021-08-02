@@ -85,7 +85,7 @@ jobs:
 
       - name: Determine docsite subdomain
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" -eq "push" ]]; then
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
             echo "SITE_NAME=${SITE_STUB}-main" >> $GITHUB_ENV
           else
             echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
@@ -112,9 +112,9 @@ jobs:
             📝 First pass at a PR comment!
 
             Your doc build is available as an artifact on this run:
-            https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-            Site-to-be: https://${SITE_NAME}.surge.sh
+            Site-to-be: https://${{ env.SITE_NAME }}.surge.sh
           edit-mode: replace
 
       - name: Install Node
