@@ -40,14 +40,14 @@ jobs:
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Check out PR to temp location
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: /tmp/pr
 
       - name: Apply docs changes from PR
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         working-directory: ${{ env.COLLECTION_PATH }}
         run: rsync -avc --delete-after /tmp/pr/docs/docsite/ docs/docsite/
 
@@ -90,7 +90,7 @@ jobs:
           fi
 
       - name: Look for existing comment
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         id: fc
         uses: peter-evans/find-comment@v1
         with:
@@ -99,7 +99,7 @@ jobs:
           body-includes: "##Docs Build"
 
       - name: Post a comment on the PR
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -125,4 +125,4 @@ jobs:
 
       - name: Publish site
         working-directory: ${{ env.HTML }}
-        run: surge ./ --token ${{ secrets.SURGE_TOKEN }}
+        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
