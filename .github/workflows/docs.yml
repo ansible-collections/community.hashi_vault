@@ -39,6 +39,10 @@ jobs:
         with:
           path: ${{ env.COLLECTION_PATH }}
 
+      ######## IMPORTANT
+      # Do not change these checkout and apply tasks lightly, we only want the docs from the PR side.
+      # Please read ALL of this document before changing these:
+      # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: Check out PR to temp location
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v2
@@ -91,6 +95,18 @@ jobs:
             echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
           fi
 
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Surge
+        run: npm install -g surge
+
+      - name: Publish site
+        working-directory: ${{ env.HTML }}
+        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+
       - name: Look for existing comment
         if: github.event_name == 'pull_request'
         id: fc
@@ -106,25 +122,14 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.number }}
-          body: |
-            ##Docs Build
-
-            📝 First pass at a PR comment!
-
-            Your doc build is available as an artifact on this run:
-            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Site-to-be: https://${{ env.SITE_NAME }}.surge.sh
           edit-mode: replace
+          body: |
+            ##Docs Build 📝
 
-      - name: Install Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+            Thank you for contribution!✨
 
-      - name: Install Surge
-        run: npm install -g surge
+            The docs for this PR have been published here:
+            https://${{ env.SITE_NAME }}.surge.sh
 
-      - name: Publish site
-        working-directory: ${{ env.HTML }}
-        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+            The docsite is available for download as an artifact on this run:
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
