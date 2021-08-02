@@ -60,16 +60,13 @@ jobs:
           pip install -r requirements.txt --disable-pip-version-check
 
       - name: Build the preview docs
-        working-directory: ${{ env.DOCS_PREVIEW }}
-        run: ./build.sh
-
-      - name: Create ZIP artifact
-        working-directory: ${{ env.HTML }}
-        run: zip -r html.zip ./
+        env:
+          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
+        run: ${DOCS_PREVIEW}/build.sh
 
       - name: Upload ZIP artifact
         uses: actions/upload-artifact@v2
         with:
           name: html_docsite
-          path: ${{ env.HTML }}/html.zip
+          path: ${{ env.HTML }}
           retention-days: 7
