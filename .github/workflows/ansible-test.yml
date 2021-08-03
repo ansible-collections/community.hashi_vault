@@ -328,6 +328,8 @@ jobs:
 
       - name: Install Docker on MacOS
         if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
+        timeout-minutes: 6
+        # sometimes this hangs forever waiting for an IP
         uses: ./.github/actions/macos-docker
 
       - name: Pull Ansible test images
