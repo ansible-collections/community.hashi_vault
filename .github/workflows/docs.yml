@@ -159,7 +159,7 @@ jobs:
 
       - name: Should publish?
         run: |
-          if [[ "${{ github.event_name }}" != "pull_request_target" ]] || [[ "${BASE_HASH}" != "${HEAD_HASH}" ]]
+          if [[ "${{ github.event_name }}" != "pull_request_target" ]] || [[ "${BASE_DOCS_HASH}" != "${HEAD_DOCS_HASH}" ]]
           then
             echo "PUBLISH=true" >> $GITHUB_ENV
           else
