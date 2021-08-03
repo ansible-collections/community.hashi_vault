@@ -30,15 +30,6 @@ Contributing documentation
 
 Additions to the collection documentation are very welcome! We have three primary types of documentation, each with their own syntax and rules.
 
-Module and plugin documentation
--------------------------------
-
-This type of documentation gets generated from structured YAML, inside of a Python string. It is included in the same code that it's documenting, or in a separate Python file, such as a doc fragment. Please see the :ref:`module format and documentation guidance <developing_modules_documenting>` for more information.
-
-This type of documentation is tested with ``ansible-test sanity`` and full instructions are available on the :ref:`testing module documentation <testing_module_documentation>` page.
-
-Although we can't preview how the documentation will look for these, we can be reasonably sure the output is correct because the documentation is highly structured and validated using sanity tests.
-
 README and other markdown files
 -------------------------------
 
@@ -47,6 +38,17 @@ Markdown files (those with the extension ``.md``) can be found in several direct
 The main exception to the above is the ``README.md`` in the repository root. This file is more important because it provides introductory information and links for anyone browsing the repository, both on GitHub and on the collection's `Ansible Galaxy page <https://galaxy.ansible.com/community/hashi_vault>`_.
 
 Markdown files can be previewed natively in GutHub, so they are easy to validate by reviewers, and there are no specific tests that need to run against them.
+
+Your IDE or code editor may also be able to preview these files. For example `Visual Studio Code has built-in markdown preview <https://code.visualstudio.com/docs/languages/markdown#_markdown-preview>`_.
+
+Module and plugin documentation
+-------------------------------
+
+This type of documentation gets generated from structured YAML, inside of a Python string. It is included in the same code that it's documenting, or in a separate Python file, such as a doc fragment. Please see the :ref:`module format and documentation guidance <developing_modules_documenting>` for more information.
+
+This type of documentation is highly structured and tested with ``ansible-test sanity``. Full instructions are available on the :ref:`testing module documentation <testing_module_documentation>` page.
+
+Additionally, the docsite build on pull requests (or built locally) will include module and plugin documentation as well. See the next section for details.
 
 Collection docsite
 ------------------
