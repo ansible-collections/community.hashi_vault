@@ -52,7 +52,7 @@ jobs:
           body-includes: "##Docs Build"
 
       - name: Post a comment on a merged PR
-        if: github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true && steps.fc.outputs.comment-id
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -67,7 +67,7 @@ jobs:
             https://${{ env.SITE_NAME_MAIN }}.surge.sh
 
       - name: Post a comment on a closed PR
-        if: github.event.pull_request.merged == false
+        if: github.event.pull_request.merged == false && steps.fc.outputs.comment-id
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -95,7 +95,7 @@ jobs:
             DOCS=${COLLECTION_PATH}/docs
             DOCS_PREVIEW=${DOCS}/preview
             DOCS_BUILD=${DOCS_PREVIEW}/build
-            HTML=${DOCS_BUILD}/build/html
+            HTML=${DOCS_BUILD}/html
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -107,16 +107,13 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install antsibull
-        run: pip install antsibull
-
       - name: Install Ansible and other requirements
         working-directory: ${{ env.DOCS_PREVIEW }}
         run: |
           pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
           pip install -r requirements.txt --disable-pip-version-check
 
-      - name: Build the preview docs (${{ github.base_ref }})
+      - name: Build the preview docs (HEAD)
         env:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
         run: ${DOCS_PREVIEW}/build.sh
