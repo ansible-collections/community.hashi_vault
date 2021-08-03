@@ -110,10 +110,6 @@ jobs:
       - name: Install antsibull
         run: pip install antsibull
 
-      # - name: Lint Collection Docs
-      #   working-directory: ${{ env.COLLECTION_PATH }}
-      #   run: antsibull-lint collection-docs -v .
-
       - name: Install Ansible and other requirements
         working-directory: ${{ env.DOCS_PREVIEW }}
         run: |
@@ -146,6 +142,10 @@ jobs:
         run: |
           rsync -avc --delete-after "${{ github.workspace }}/__pr/docs/docsite/" docs/docsite/
           rm -rf "${{ github.workspace }}/__pr"
+
+      - name: Lint Collection Docs
+        working-directory: ${{ env.COLLECTION_PATH }}
+        run: antsibull-lint collection-docs -v .
 
       - name: Build the preview docs (${{ github.head_ref }})
         if: github.event_name == 'pull_request_target'
