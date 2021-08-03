@@ -151,10 +151,10 @@ jobs:
 
       - name: Determine docsite subdomain
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-            echo "SITE_NAME=${SITE_NAME_MAIN}" >> $GITHUB_ENV
-          else
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
             echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
+          else
+            echo "SITE_NAME=${SITE_NAME_MAIN}" >> $GITHUB_ENV
           fi
 
       - name: Install Node
