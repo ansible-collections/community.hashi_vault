@@ -9,3 +9,35 @@ flags:
   target_lookup_hashi_vault:
     paths:
       - plugins/lookup/hashi_vault.py
+
+  target_auth_approle:
+    paths:
+      - plugins/module_utils/_auth_method_approle.py
+
+  target_auth_aws_iam_login:
+    paths:
+      - plugins/module_utils/_auth_method_aws_iam_login.py
+
+  target_auth_jwt:
+    paths:
+      - plugins/module_utils/_auth_method_jwt.py
+
+  target_auth_ldap:
+    paths:
+      - plugins/module_utils/_auth_method_ldap.py
+
+  target_auth_none:
+    paths:
+      - plugins/module_utils/_auth_method_none.py
+
+  target_auth_token:
+    paths:
+      - plugins/module_utils/_auth_method_token.py
+
+  target_auth_userpass:
+    paths:
+      - plugins/module_utils/_auth_method_userpass.py
+
+  target_connection_options:
+    paths:
+      - plugins/module_utils/_connection_options.py

@@ -12,9 +12,10 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultOptionGroupBase,
-    HashiVaultConnectionOptions,
     HashiVaultOptionAdapter,
 )
+
+from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
 
 from requests import Session
 
@@ -250,3 +251,12 @@ class TestHashiVaultConnectionOptions(object):
         assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']
         assert 'timeout' not in opts or opts['timeout'] == predefined_options['timeout']
         assert 'session' not in opts or isinstance(opts['session'], Session)
+
+    @mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._connection_options.HAS_RETRIES', new=False)
+    def test_get_hvac_connection_options_retry_not_available(self, connection_options, adapter):
+        adapter.set_option('retries', 2)
+
+        connection_options.process_connection_options()
+
+        with pytest.raises(NotImplementedError):
+            connection_options.get_hvac_connection_options()
