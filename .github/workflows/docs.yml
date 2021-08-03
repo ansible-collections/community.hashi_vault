@@ -42,7 +42,7 @@ jobs:
       - name: Install Surge
         run: npm install -g surge
 
-      - name: Publish site
+      - name: Unpublish site
         run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
       - name: Look for existing comment
