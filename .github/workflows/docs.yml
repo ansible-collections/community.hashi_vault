@@ -94,12 +94,36 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             DOCS=${COLLECTION_PATH}/docs
             DOCS_PREVIEW=${DOCS}/preview
-            HTML=${DOCS_PREVIEW}/build/html
+            DOCS_BUILD=${DOCS_PREVIEW}/build
+            HTML=${DOCS_BUILD}/build/html
 
       - name: Check out code
         uses: actions/checkout@v2
         with:
           path: ${{ env.COLLECTION_PATH }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install antsibull
+        run: pip install antsibull
+
+      - name: Install Ansible and other requirements
+        working-directory: ${{ env.DOCS_PREVIEW }}
+        run: |
+          pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+          pip install -r requirements.txt --disable-pip-version-check
+
+      - name: Build the preview docs (${{ github.base_ref }})
+        env:
+          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
+        run: ${DOCS_PREVIEW}/build.sh
+
+      - name: Save the base hash # and discard the build
+        run: |
+          echo "BASE_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
 
       ######## IMPORTANT
       # Do not change these checkout and apply tasks lightly, we only want the docs from the PR side.
@@ -119,28 +143,31 @@ jobs:
           rsync -avc --delete-after "${{ github.workspace }}/__pr/docs/docsite/" docs/docsite/
           rm -rf "${{ github.workspace }}/__pr"
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
-      - name: Install antsibull
-        run: pip install antsibull
-
       - name: Lint Collection Docs
         working-directory: ${{ env.COLLECTION_PATH }}
         run: antsibull-lint collection-docs -v .
 
-      - name: Install Ansible and other requirements
-        working-directory: ${{ env.DOCS_PREVIEW }}
-        run: |
-          pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
-          pip install -r requirements.txt --disable-pip-version-check
-
-      - name: Build the preview docs
+      - name: Build the preview docs (${{ github.head_ref }})
+        if: github.event_name == 'pull_request_target'
         env:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
-        run: ${DOCS_PREVIEW}/build.sh
+        run: |
+          # discard previous build if any
+          rm -rf "${DOCS_BUILD}"
+          ${DOCS_PREVIEW}/build.sh
+
+      - name: Save the head hash
+        if: github.event_name == 'pull_request_target'
+        run: echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+
+      - name: Should publish?
+        run: |
+          if [[ "${BASE_HASH}" != "${HEAD_HASH}" ]]
+          then
+            echo "PUBLISH=true" >> $GITHUB_ENV
+          else
+            echo "PUBLISH=false" >> $GITHUB_ENV
+          fi
 
       - name: Upload Docsite artifact
         uses: actions/upload-artifact@v2
@@ -150,6 +177,7 @@ jobs:
           retention-days: 7
 
       - name: Determine docsite subdomain
+        if: fromJSON(env.PUBLISH)
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
             echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
@@ -158,22 +186,30 @@ jobs:
           fi
 
       - name: Install Node
-        if: github.repository == 'ansible-collections/community.hashi_vault'
+        if: >-
+          github.repository == 'ansible-collections/community.hashi_vault'
+          && fromJSON(env.PUBLISH)
         uses: actions/setup-node@v2
         with:
           node-version: 14
 
       - name: Install Surge
-        if: github.repository == 'ansible-collections/community.hashi_vault'
+        if: >-
+          github.repository == 'ansible-collections/community.hashi_vault'
+          && fromJSON(env.PUBLISH)
         run: npm install -g surge
 
       - name: Publish site
-        if: github.repository == 'ansible-collections/community.hashi_vault'
+        if: >-
+          github.repository == 'ansible-collections/community.hashi_vault'
+          && fromJSON(env.PUBLISH)
         working-directory: ${{ env.HTML }}
         run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
       - name: Look for existing comment
-        if: github.event_name == 'pull_request_target'
+        if: >-
+          github.event_name == 'pull_request_target'
+          && fromJSON(env.PUBLISH)
         id: fc
         uses: peter-evans/find-comment@v1
         with:
@@ -182,7 +218,9 @@ jobs:
           body-includes: "##Docs Build"
 
       - name: Post a comment on the PR
-        if: github.event_name == 'pull_request_target'
+        if: >-
+          github.event_name == 'pull_request_target'
+          && fromJSON(env.PUBLISH)
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
