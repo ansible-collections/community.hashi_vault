@@ -41,6 +41,7 @@ jobs:
         run: npm install -g surge
 
       - name: Unpublish site
+        continue-on-error: true
         run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
       - name: Look for existing comment
