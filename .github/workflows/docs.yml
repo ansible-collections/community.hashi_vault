@@ -29,10 +29,13 @@ jobs:
       && github.repository == 'ansible-collections/community.hashi_vault'
     runs-on: ubuntu-latest
     steps:
-      - name: Set site name
-        run: |
-          export SITE_STUB=community-hashi-vault
-          echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
+      - name: Set up env vars
+        uses: briantist/ezenv@v1
+        with:
+          env: |
+            SITE_STUB=community-hashi-vault
+            SITE_NAME_MAIN=${SITE_STUB}-main
+            SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}
 
       - name: Install Node
         uses: actions/setup-node@v2
@@ -54,7 +57,7 @@ jobs:
           body-includes: "##Docs Build"
 
       - name: Post a comment on a merged PR
-        if: github.event.pull_request.merged
+        if: github.event.pull_request.merged == true
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -69,7 +72,7 @@ jobs:
             https://${{ env.SITE_NAME_MAIN }}.surge.sh
 
       - name: Post a comment on a closed PR
-        if: github.event.pull_request.merged
+        if: github.event.pull_request.merged == false
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -82,6 +85,9 @@ jobs:
 
   docs:
     name: Collection Docs Lint & Build
+    if: >-
+      github.event_name != 'pull_request_target'
+      || github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Set up env vars
