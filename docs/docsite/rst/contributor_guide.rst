@@ -59,37 +59,17 @@ Refer to the :ref:`Ansible style guide <style_guide>` for all submissions to the
 
 RST files for the docsite are in the ``docs/docsite/rst/`` directory. Some submissions may also require edits to ``docs/docsite/extra-docs.yml``.
 
-Only the ``extra-docs.yml`` file is validated by the collection's CI, and there is not yet any automated preview for the docsite rendering, but this is an area we are hoping to improve on.
+When a pull request is submitted which changes the collection's documentation, a new docsite will be generated and published to a temporary site, and a bot will post a comment on the PR with a link. This will let you see the rendered docs to help with spotting formatting errors.
 
-Advanced
-^^^^^^^^
+It's also possible to build the docs locally, by installing some extra Python requirements and running the build script:
 
-Docsite pages can be generated locally through a workaround technique. **This is not a supported method** but it may be helpful to get more rapid feedback on docsite changes, if you're comfortable at a command line.
+.. code-block:: shell-session
 
-The process is:
+    $ pushd docs/preview
+    $ pip install -r requirements.txt
+    $ ./build.sh
 
-#. Clone `ansible/ansible <https://github.com/ansible/ansible/>`_ or a fork of it.
-#. Copy the ``.rst`` files you want to preview into that repository's ``docs/docsite/`` directory.
-#. Install the requirements needed to build the docsite (from the repository root):
-
-    .. code-block:: shell-session
-
-      $ pip install -r requirements.txt
-      $ pip install -r docs/docsite/requirements.txt
-
-#. You may also need to remove write permission from group and other:
-
-    .. code-block:: shell-session
-
-      $ chmod -R go-w docs/docsite/rst
-
-#. Build the docs:
-
-    .. code-block:: shell-session
-
-      $ make coredocs
-
-The rendered HTML docs should be available in ``docs/docsite/_build/html/`` and can be opened in a browser.
+You can then find the generated HTML in ``docs/preview/build/html`` and can open them locally in your browser.
 
 Running tests locally
 =====================
