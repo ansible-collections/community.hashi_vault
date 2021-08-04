@@ -37,7 +37,7 @@ Markdown files (those with the extension ``.md``) can be found in several direct
 
 The main exception to the above is the ``README.md`` in the repository root. This file is more important because it provides introductory information and links for anyone browsing the repository, both on GitHub and on the collection's `Ansible Galaxy page <https://galaxy.ansible.com/community/hashi_vault>`_.
 
-Markdown files can be previewed natively in GutHub, so they are easy to validate by reviewers, and there are no specific tests that need to run against them.
+Markdown files can be previewed natively in GitHub, so they are easy to validate by reviewers, and there are no specific tests that need to run against them.
 
 Your IDE or code editor may also be able to preview these files. For example `Visual Studio Code has built-in markdown preview <https://code.visualstudio.com/docs/languages/markdown#_markdown-preview>`_.
 
