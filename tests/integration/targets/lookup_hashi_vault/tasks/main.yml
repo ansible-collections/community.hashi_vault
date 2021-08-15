@@ -7,9 +7,8 @@
 - import_tasks: vault_server_configure.yml
   when: vault_test_server_configure | bool
 
-- import_tasks: tests.yml
-  vars:
-    auth_type: token
+- import_tasks: lookup_setup.yml
+- import_tasks: lookup_test.yml
 
 - name: approle tests
   include_tasks:
