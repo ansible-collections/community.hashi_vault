@@ -405,7 +405,7 @@ jobs:
       - name: Move Ansible pre-2.12 units
         run: |
           mkdir ./cov-units-pre2.12
-          mv ./cov/coverage=units=ansible_stable-2.9=data ./cov-units-pre2.12
+          # mv ./cov/coverage=units=ansible_stable-2.9=data ./cov-units-pre2.12
           mv ./cov/coverage=units=ansible_stable-2.10=data ./cov-units-pre2.12
           mv ./cov/coverage=units=ansible_stable-2.11=data ./cov-units-pre2.12
 
