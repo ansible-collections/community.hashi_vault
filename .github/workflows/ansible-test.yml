@@ -24,6 +24,7 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
   sanity:
+    if: 'false'
     name: Sanity (Ⓐ${{ matrix.ansible }})
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -173,7 +174,7 @@ jobs:
           - 3.9
         vault:
           - 1.7.3
-          - 1.6.5
+          # - 1.6.5
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -249,6 +250,7 @@ jobs:
           retention-days: 1
 
   local_test_invocation:
+    if: 'false'
     runs-on: ${{ matrix.runner }}
     name: LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
