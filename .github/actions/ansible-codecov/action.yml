@@ -49,7 +49,8 @@ runs:
             # curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
             # gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
             # shasum -a 256 -c codecov.SHA256SUM
-            curl -Os https://github.com/codecov/uploader/releases/download/v0.1.0_6943/codecov-linux
+            curl -LOs https://github.com/codecov/uploader/releases/download/v0.1.0_6943/codecov-linux
+            mv codecov-linux codecov
             chmod +x codecov
 
             ./codecov --version
