@@ -5,11 +5,10 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+import sys
 import pytest
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
-
-from ansible_collections.community.hashi_vault.plugins.module_utils._authenticator import HashiVaultAuthenticator
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
@@ -70,3 +69,28 @@ class TestHashiVaultAuthMethodBase(object):
         auth_base.warn(msg)
 
         warner.assert_called_once_with(msg)
+
+    @pytest.mark.parametrize('has_import', [True])
+    @pytest.mark.parametrize('should_warn', [True, False])
+    def test_check_import_has_import(self, auth_base, warner, has_import, should_warn):
+        result = auth_base.check_import('namename', has_import, warn=should_warn)
+
+        assert result is None
+        warner.assert_not_called()
+
+    @pytest.mark.parametrize('has_import', [False])
+    def test_check_import_has_not_raises(self, auth_base, warner, has_import):
+        with pytest.raises(ImportError):
+            auth_base.check_import('namename', has_import)
+
+        warner.assert_not_called()
+
+    @pytest.mark.parametrize('has_import', [False])
+    def test_check_import_has_not_warns(self, auth_base, warner, has_import):
+        auth_base.check_import('namename', has_import, warn=True)
+
+        # TODO: revisit in 2.0.0 when py3.5 is dropped
+        if sys.version_info < (3, 6):
+            assert warner.call_count == 1
+        else:
+            warner.assert_called_once()
