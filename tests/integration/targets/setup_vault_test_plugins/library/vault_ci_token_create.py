@@ -16,6 +16,7 @@ def main():
             token=dict(type='str', required=True),
             no_default_policy=dict(type='bool', default=False),
             policies=dict(type='str'),
+            ttl=dict(type=str, default='1h'),
         ),
     )
 
@@ -23,9 +24,10 @@ def main():
 
     client = hvac.Client(url=p['url'], token=p['token'])
 
-    result = client.create_token(
+    result = client.auth.token.create(
         policies=p['policies'],
         no_default_policy=p.get('no_default_policy'),
+        ttl=p.get('ttl'),
     )
 
     module.exit_json(changed=True, result=result)
