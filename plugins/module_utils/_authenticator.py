@@ -27,13 +27,14 @@ class HashiVaultAuthenticator():
     def __init__(self, option_adapter, warning_callback):
         self._options = option_adapter
         self._selector = {
-            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
-            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
-            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
-            'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
-            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
+            # please keep this list in alphabetical order of auth method name
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
+            'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
+            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
+            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
+            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
+            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
         }
 
     def _get_method_object(self, method=None):
