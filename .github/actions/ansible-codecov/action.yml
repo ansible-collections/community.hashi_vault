@@ -33,6 +33,12 @@ inputs:
       See https://uploader.codecov.io/linux for the versions available.
     required: false
     default: latest
+  fail-on-error:
+    description: |
+      If 'true' then codecov will be called with '-Z', which will fail the build on an error.
+      Any value other than 'true' will be treated as false.
+    required: false
+    default: 'true'
 runs:
   using: composite
   steps:
@@ -69,3 +75,4 @@ runs:
         --directory-flag-pattern "${{ inputs.file-flag-pattern }}"
         --file-flag-pattern "${{ inputs.file-flag-pattern }}"
         --additional-flags "${{ inputs.additional-flags }}"
+        ${{ inputs.fail-on-error == 'true' && '--fail-on-error' || '' }}
