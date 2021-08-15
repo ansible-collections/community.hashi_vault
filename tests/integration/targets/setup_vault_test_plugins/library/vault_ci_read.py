@@ -5,6 +5,8 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
+import traceback
+
 from ansible.module_utils.basic import AnsibleModule
 import hvac
 
@@ -22,7 +24,10 @@ def main():
 
     client = hvac.Client(url=p['url'], token=p['token'])
 
-    result = client.read(path=p['path'])
+    try:
+        result = client.read(path=p['path'])
+    except Exception as e:
+        module.fail_json(msg=str(e), exception=traceback.format_exc())
 
     module.exit_json(changed=True, result=result)
 
