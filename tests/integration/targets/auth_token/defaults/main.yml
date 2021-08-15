@@ -1,0 +1,3 @@
+---
+ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+ansible_hashi_vault_auth_method: token
