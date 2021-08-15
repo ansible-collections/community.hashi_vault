@@ -92,7 +92,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
+          # - stable-2.9
           - stable-2.10
           - stable-2.11
           - devel
@@ -161,7 +161,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
+          # - stable-2.9
           - stable-2.10
           - stable-2.11
           - devel
@@ -385,7 +385,7 @@ jobs:
     needs:
       - units
       - integration
-      - local_test_invocation
+      # - local_test_invocation
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
