@@ -28,13 +28,14 @@ def get_flags(pattern, input):
 
 
 def main(argv):
-    additional_flags = file_flag_pattern = directory_flag_pattern = directory = None
+    additional_flags = file_flag_pattern = directory_flag_pattern = directory = fail_on_error = None
 
     opts, args = getopt.getopt(argv, '', [
         'directory=',
         'directory-flag-pattern=',
         'file-flag-pattern=',
         'additional-flags=',
+        'fail-on-error',
     ])
 
     for opt, arg in opts:
@@ -46,6 +47,8 @@ def main(argv):
             file_flag_pattern = arg
         elif opt == '--additional-flags':
             additional_flags = arg
+        elif opt == '--fail-on-error':
+            fail_on_error = True
 
     extra_flags = additional_flags.split(',') if additional_flags else []
 
@@ -75,6 +78,8 @@ def main(argv):
         cmd = ['codecov', '-F', flag]
         [cmd.extend(['-F', extra]) for extra in extra_flags]
         [cmd.extend(['-f', file]) for file in files]
+        if fail_on_error:
+            cmd.append('-Z')
 
         print('::group::Flag: %s%s' % (flag, logextra))
 

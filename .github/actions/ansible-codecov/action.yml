@@ -27,6 +27,18 @@ inputs:
   directory:
     description: The directory to scan recursively. Defaults to current working directory.
     required: false
+  codecov-uploader-version:
+    description: |
+      The version of the codecov uploader to use. 'latest' (default) always gets the latest.
+      See https://uploader.codecov.io/linux for the versions available.
+    required: false
+    default: latest
+  fail-on-error:
+    description: |
+      If 'true' then codecov will be called with '-Z', which will fail the build on an error.
+      Any value other than 'true' will be treated as false.
+    required: false
+    default: 'true'
 runs:
   using: composite
   steps:
@@ -44,9 +56,9 @@ runs:
             ./codecov --version
         else
             curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
-            curl -Os https://uploader.codecov.io/latest/linux/codecov
-            curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
-            curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+            curl -Os https://uploader.codecov.io/${{ inputs.codecov-uploader-version }}/linux/codecov
+            curl -Os https://uploader.codecov.io/${{ inputs.codecov-uploader-version }}/linux/codecov.SHA256SUM
+            curl -Os https://uploader.codecov.io/${{ inputs.codecov-uploader-version }}/linux/codecov.SHA256SUM.sig
             gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
             shasum -a 256 -c codecov.SHA256SUM
             chmod +x codecov
@@ -63,3 +75,4 @@ runs:
         --directory-flag-pattern "${{ inputs.file-flag-pattern }}"
         --file-flag-pattern "${{ inputs.file-flag-pattern }}"
         --additional-flags "${{ inputs.additional-flags }}"
+        ${{ inputs.fail-on-error == 'true' && '--fail-on-error' || '' }}
