@@ -410,7 +410,7 @@ jobs:
       - name: Upload Ansible pre-2.12 unit coverage reports to Codecov
         uses: ./.github/actions/ansible-codecov
         with:
-          codecov-uploader-version: v0.1.0_6943
+          codecov-uploader-version: v0.1.0_8278
           directory: ./cov-units-pre2.12
           additional-flags: units
           file-flag-pattern: coverage=units=units={env_%}=python-{py%}.xml
@@ -420,6 +420,6 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: ./.github/actions/ansible-codecov
         with:
-          codecov-uploader-version: v0.1.0_6943
+          codecov-uploader-version: v0.1.0_8278
           directory: ./cov
           directory-flag-pattern: =ansible_{ansible-%}=
