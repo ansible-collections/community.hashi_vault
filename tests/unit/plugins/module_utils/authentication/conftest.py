@@ -7,7 +7,11 @@ __metaclass__ = type
 
 import pytest
 
-import hvac
+try:
+    import hvac
+except ImportError:
+    # python 2.6, which isn't supported anyway
+    pass
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
