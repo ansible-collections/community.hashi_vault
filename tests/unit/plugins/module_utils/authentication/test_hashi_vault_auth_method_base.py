@@ -18,11 +18,6 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 
 @pytest.fixture
-def warner():
-    return mock.MagicMock()
-
-
-@pytest.fixture
 def auth_base(adapter, warner):
     return HashiVaultAuthMethodBase(adapter, warner)
 
