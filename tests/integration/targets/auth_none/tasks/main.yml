@@ -9,7 +9,6 @@
     label: '{{ item.key }}'
 
 # TODO: consider setting up a Vault agent in CI to provide a better test of the none method
-# TODO: unit tests can probably check easily that the none method results in a client with no token
 - name: "Test that a request with none auth_type is not successful"
   debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=not_important') }}"
