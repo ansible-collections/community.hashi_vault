@@ -11,13 +11,13 @@ __metaclass__ = type
 import os
 import pytest
 
+from ansible_collections.community.hashi_vault.tests.unit.compat import mock
+
 try:
     import hvac
 except ImportError:
     # python 2.6, which isn't supported anyway
-    pass
-
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
+    hvac = mock.MagicMock()
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import (
     HashiVaultAuthMethodToken,
