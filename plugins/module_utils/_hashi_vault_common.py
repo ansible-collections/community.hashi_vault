@@ -222,7 +222,7 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
         self._warner = warning_callback
 
     # TODO: figure out a better way to centralize imports and/or check for imports
-    # this prbably doesn't really belong here, and isn't the best way to do this,
+    # this probably doesn't really belong here, and isn't the best way to do this,
     # but it's a start, and it's testable.
     def check_import(self, name, has, warn=False):
         if has:
@@ -230,10 +230,10 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
 
         msg = "Module '%s' could not be imported." % name
 
-        if warn:
-            self.warn(msg)
-        else:
+        if not warn:
             raise ImportError(msg)
+
+        self.warn(msg)
 
     def validate(self):
         '''Validates the given auth method as much as possible without calling Vault.'''

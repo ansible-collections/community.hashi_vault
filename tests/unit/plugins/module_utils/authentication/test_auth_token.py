@@ -7,7 +7,6 @@ from _pytest.fixtures import fixture
 from _pytest.python_api import raises
 __metaclass__ = type
 
-# import sys
 import os
 import pytest
 
@@ -137,7 +136,7 @@ class TestAuthToken(object):
             sim_login.assert_called_once_with(token, expected_lookup_value)
 
         assert response['auth']['client_token'] == token
-        assert (client.token == token) == use_token
+        assert (client.token == token) is use_token
 
     def test_auth_token_authenticate_success_on_no_validate(self, auth_token, adapter, client, token, validation_failure):
         adapter.set_option('token', token)
