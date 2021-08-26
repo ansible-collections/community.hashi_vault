@@ -28,6 +28,7 @@ class HashiVaultAuthenticator():
         self._options = option_adapter
         self._selector = {
             # please keep this list in alphabetical order of auth method name
+            # so that it's easier to scan and see at a glance that a given auth method is present or absent
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
             'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),

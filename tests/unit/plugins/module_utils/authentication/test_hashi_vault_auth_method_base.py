@@ -84,7 +84,8 @@ class TestHashiVaultAuthMethodBase(object):
     def test_check_import_has_not_warns(self, auth_base, warner, has_import):
         auth_base.check_import('namename', has_import, warn=True)
 
-        # TODO: revisit in 2.0.0 when py3.5 is dropped
+        # TODO: revisit in 2.0.0 when py3.5 is dropped (see https://github.com/ansible-collections/community.hashi_vault/issues/81)
+        # for now we will keep the conditional so that the intended code is ready
         if sys.version_info < (3, 6):
             assert warner.call_count == 1
         else:

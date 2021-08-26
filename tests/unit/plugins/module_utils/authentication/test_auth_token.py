@@ -89,10 +89,11 @@ class TestAuthToken(object):
 
         assert 'auth' in response
         assert response['auth']['client_token'] == token
-        if 'meta' in lookup_self_response['data']:
-            assert 'meta' not in response['auth']
-            assert 'metadata' in response['auth']
-            assert lookup_self_response['data']['meta'] == response['auth']['metadata']
+
+        if 'meta' not in lookup_self_response['data']:
+            return
+        assert 'meta' not in response['auth']
+        assert lookup_self_response['data']['meta'] == response['auth']['metadata']
 
     def test_auth_token_validate_direct(self, auth_token, adapter, token):
         adapter.set_option('token', token)

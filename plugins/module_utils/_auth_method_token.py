@@ -22,9 +22,10 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 try:
     from hvac import exceptions
-    HAS_HVAC = True
 except ImportError:
     HAS_HVAC = False
+else:
+    HAS_HVAC = True
 
 
 class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
