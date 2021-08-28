@@ -97,6 +97,8 @@ jobs:
             DOCS_PREVIEW=${DOCS}/preview
             DOCS_BUILD=${DOCS_PREVIEW}/build
             HTML=${DOCS_BUILD}/html
+            BASE_DOCS_RENDERED=${{ runner.temp }}/html/base
+            PR_DOCS_RENDERED=${{ runner.temp }}/html/pr
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -119,9 +121,11 @@ jobs:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
         run: ${DOCS_PREVIEW}/build.sh
 
-      - name: Save the base hash # and discard the build
+      - name: Save the base build & hash # and discard the build
         run: |
           echo "BASE_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+          rsync -avc --delete-after "${HTML}" "${BASE_DOCS_RENDERED}"
+
 
       ######## IMPORTANT
       # Do not change these checkout and apply tasks lightly, we only want the docs from the PR side.
@@ -156,7 +160,9 @@ jobs:
 
       - name: Save the head hash
         if: github.event_name == 'pull_request_target'
-        run: echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+        run: |
+          echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+          rsync -avc --delete-after "${HTML}" "${PR_DOCS_RENDERED}"
 
       - name: Should publish?
         run: |
@@ -166,6 +172,12 @@ jobs:
           else
             echo "PUBLISH=false" >> $GITHUB_ENV
           fi
+
+      - name: Generate docs diff
+        if: fromJSON(env.PUBLISH)
+        run: |
+          DOC_DIFF=$(git diff --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}")
+          echo "DOC_DIFF=${DOC_DIFF}" >> ${GITHUB_ENV}
 
       - name: Upload Docsite artifact
         uses: actions/upload-artifact@v2
@@ -237,3 +249,12 @@ jobs:
 
             The docsite for **this PR** is also available for download as an artifact from this run:
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            <details>
+            <summary>Click to see the diff comparison.</summary>
+
+            ```diff
+            ${{ env.DOC_DIFF }}
+            ```
+
+            </details>
