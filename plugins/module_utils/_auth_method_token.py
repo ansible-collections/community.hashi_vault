@@ -46,19 +46,21 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
             }
         }
 
-        if lookup_response is not None:
-            # first merge in the entire response at the top level
-            # but, rather than being missing, the auth field is going to be None,
-            # so we explicitly overwrite that with our original value.
-            response.update(lookup_response, auth=response['auth'])
+        if lookup_response is None:
+            return response
 
-            # then we'll merge the data field right into the auth field
-            response['auth'].update(lookup_response['data'])
+        # first merge in the entire response at the top level
+        # but, rather than being missing, the auth field is going to be None,
+        # so we explicitly overwrite that with our original value.
+        response.update(lookup_response, auth=response['auth'])
 
-            # and meta->metadata needs a name change
-            metadata = response['auth'].pop('meta', None)
-            if metadata:
-                response['auth']['metadata'] = metadata
+        # then we'll merge the data field right into the auth field
+        response['auth'].update(lookup_response['data'])
+
+        # and meta->metadata needs a name change
+        metadata = response['auth'].pop('meta', None)
+        if metadata:
+            response['auth']['metadata'] = metadata
 
         return response
 
