@@ -72,7 +72,8 @@ def validation_failure(request):
 class TestAuthToken(object):
 
     def test_auth_token_is_auth_method_base(self, auth_token):
-        assert issubclass(type(auth_token), HashiVaultAuthMethodBase)
+        assert isinstance(auth_token, HashiVaultAuthMethodToken)
+        assert issubclass(HashiVaultAuthMethodToken, HashiVaultAuthMethodBase)
 
     def test_simulate_login_response(self, auth_token, token):
         response = auth_token._simulate_login_response(token)
