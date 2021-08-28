@@ -12,7 +12,7 @@ pygments_style = 'ansible'
 
 highlight_language = 'YAML+Jinja'
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_ansible_theme'
 html_show_sphinx = False
 
 display_version = False
