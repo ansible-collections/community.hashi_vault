@@ -221,20 +221,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
         super(HashiVaultAuthMethodBase, self).__init__(option_adapter)
         self._warner = warning_callback
 
-    # TODO: figure out a better way to centralize imports and/or check for imports
-    # this probably doesn't really belong here, and isn't the best way to do this,
-    # but it's a start, and it's testable.
-    def check_import(self, name, has, warn=False):
-        if has:
-            return
-
-        msg = "Module '%s' could not be imported." % name
-
-        if not warn:
-            raise ImportError(msg)
-
-        self.warn(msg)
-
     def validate(self):
         '''Validates the given auth method as much as possible without calling Vault.'''
         raise NotImplementedError('validate must be implemented')

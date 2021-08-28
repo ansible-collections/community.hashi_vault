@@ -20,13 +20,6 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultValueError,
 )
 
-try:
-    from hvac import exceptions
-except ImportError:
-    HAS_HVAC = False
-else:
-    HAS_HVAC = True
-
 
 class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: userpass'''
@@ -87,7 +80,7 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
             client.token = token
 
             if lookup_self or validate:
-                self.check_import('hvac', HAS_HVAC)
+                from hvac import exceptions
 
                 try:
                     try:

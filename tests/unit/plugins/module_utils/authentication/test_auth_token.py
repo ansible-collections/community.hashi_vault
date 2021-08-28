@@ -119,7 +119,7 @@ class TestAuthToken(object):
     def test_auth_token_validate_xfailures(self, auth_token, adapter, opt_patch):
         adapter.set_options(**opt_patch)
 
-        with pytest.raises(HashiVaultValueError):
+        with pytest.raises(HashiVaultValueError, match=r'No Vault Token specified or discovered'):
             auth_token.validate()
 
     @pytest.mark.parametrize('use_token', [True, False], ids=lambda x: 'use_token=%s' % x)
@@ -163,6 +163,6 @@ class TestAuthToken(object):
         raiser = mock.Mock()
         raiser.side_effect = validation_failure
 
-        with pytest.raises(HashiVaultValueError):
+        with pytest.raises(HashiVaultValueError, match=r'Invalid Vault Token Specified'):
             with mock.patch.object(client.auth.token, 'lookup_self', raiser):
                 auth_token.authenticate(client, use_token=True, lookup_self=False)
