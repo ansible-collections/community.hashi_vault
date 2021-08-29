@@ -1,4 +1,4 @@
 antsibull
 ansible-pygments
 sphinx
-sphinx_rtd_theme
+sphinx-ansible-theme
