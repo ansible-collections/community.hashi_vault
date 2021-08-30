@@ -1,7 +1,4 @@
 ---
-- name: setup token auth
-  import_tasks: token_setup.yml
-
 - name: setup approle auth
   include_tasks:
     file: approle_setup.yml

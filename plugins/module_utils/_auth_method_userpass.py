@@ -36,13 +36,11 @@ class HashiVaultAuthMethodUserpass(HashiVaultAuthMethodBase):
             self.warn("HVAC should be updated to version 0.9.6 or higher. Deprecated method 'auth_userpass' will be used.")
             response = client.auth_userpass(**params)
 
-        token = response['auth']['client_token']
-
         # must manually set the client token with userpass login
         # see https://github.com/hvac/hvac/issues/644
         # fixed in 0.11.0 (https://github.com/hvac/hvac/pull/733)
         # but we keep the old behavior to maintain compatibility with older hvac
         if use_token:
-            client.token = token
+            client.token = response['auth']['client_token']
 
-        return token
+        return response

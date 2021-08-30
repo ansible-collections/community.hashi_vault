@@ -30,6 +30,33 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
     def __init__(self, option_adapter, warning_callback):
         super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback)
 
+    def _simulate_login_response(self, token, lookup_response=None):
+        '''returns a similar structure to a login method's return, optionally incorporating a lookup-self response'''
+
+        response = {
+            'auth': {
+                'client_token': token
+            }
+        }
+
+        if lookup_response is None:
+            return response
+
+        # first merge in the entire response at the top level
+        # but, rather than being missing, the auth field is going to be None,
+        # so we explicitly overwrite that with our original value.
+        response.update(lookup_response, auth=response['auth'])
+
+        # then we'll merge the data field right into the auth field
+        response['auth'].update(lookup_response['data'])
+
+        # and meta->metadata needs a name change
+        metadata = response['auth'].pop('meta', None)
+        if metadata:
+            response['auth']['metadata'] = metadata
+
+        return response
+
     def validate(self):
         if not self._options.get_option('token') and self._options.get_option('token_path'):
             token_filename = os.path.join(
@@ -43,12 +70,26 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
         if not self._options.get_option('token'):
             raise HashiVaultValueError("No Vault Token specified or discovered.")
 
-    def authenticate(self, client, use_token=True):
+    def authenticate(self, client, use_token=True, lookup_self=False):
         token = self._options.get_option('token')
+        validate = self._options.get_option('token_validate')
+
+        response = None
+
         if use_token:
             client.token = token
 
-            if self._options.get_option('token_validate') and not client.is_authenticated():
-                raise HashiVaultValueError("Invalid Vault Token Specified.")
+            if lookup_self or validate:
+                from hvac import exceptions
 
-        return token
+                try:
+                    try:
+                        response = client.auth.token.lookup_self()
+                    except (NotImplementedError, AttributeError):
+                        # usually we would warn here, but the v1 method doesn't seem to be deprecated (yet?)
+                        response = client.lookup_token()  # when token=None on this method, it calls lookup-self
+                except (exceptions.Forbidden, exceptions.InvalidPath, exceptions.InvalidRequest):
+                    if validate:
+                        raise HashiVaultValueError("Invalid Vault Token Specified.")
+
+        return self._simulate_login_response(token, response)

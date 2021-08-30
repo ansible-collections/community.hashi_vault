@@ -32,6 +32,9 @@ vault_base_policy: |
   path "{{ vault_kv2_path }}/secret4" {
     capabilities = ["read", "update"]
   }
+  path "{{ vault_kv2_path }}/non_existent_secret" {
+    capabilities = ["read"]
+  }
 
 # the purpose of these policies is to catch when the plugin accepts mount_point but does not pass
 # it into hvac. we set the test policy to deny access to this secret and the alt policy to read it

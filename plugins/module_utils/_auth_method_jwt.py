@@ -40,11 +40,9 @@ class HashiVaultAuthMethodJwt(HashiVaultAuthMethodBase):
         except (NotImplementedError, AttributeError):
             raise NotImplementedError("JWT authentication requires HVAC version 0.10.5 or higher.")
 
-        token = response['auth']['client_token']
-
         # must manually set the client token with JWT login
         # see https://github.com/hvac/hvac/issues/644
         if use_token:
-            client.token = token
+            client.token = response['auth']['client_token']
 
-        return token
+        return response

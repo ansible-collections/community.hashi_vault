@@ -1,0 +1,92 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    kwargs:
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+  block:
+    - name: 'Check kv2 secret raw return value'
+      vars:
+        kv2_secret2_as_raw: "{{ lookup('community.hashi_vault.hashi_vault', vault_kv2_path ~ '/secret2 ', return_format='raw', **kwargs) }}"
+      assert:
+        that:
+          - "'data' in kv2_secret2_as_raw"
+          - "'data' in kv2_secret2_as_raw['data']"
+          - "'metadata' in kv2_secret2_as_raw['data']"
+        fail_msg: 'Raw return did not contain expected fields.'
+
+    - name: "Check multiple secrets as dict (default)"
+      vars:
+        kv2_secrets_as_dict: "{{ lookup('community.hashi_vault.hashi_vault', vault_kv2_multi_path ~ '/secrets ', **kwargs) }}"
+      assert:
+        that:
+          - kv2_secrets_as_dict | type_debug == 'dict'
+          - kv2_secrets_as_dict['value' ~ item] == ('foo' ~ item)
+        fail_msg: 'Return value was not dict or items do not match.'
+      loop: [1, 2, 3]
+
+    - name: "Check multiple secrets as dict (explicit)"
+      vars:
+        kv2_secrets_as_dict: "{{ lookup('community.hashi_vault.hashi_vault', vault_kv2_multi_path ~ '/secrets ', return_format='dict', **kwargs) }}"
+      assert:
+        that:
+          - kv2_secrets_as_dict | type_debug == 'dict'
+          - kv2_secrets_as_dict['value' ~ item] == ('foo' ~ item)
+        fail_msg: 'Return value was not dict or items do not match.'
+      loop: [1, 2, 3]
+
+    - name: "Check multiple secrets as values"
+      vars:
+        kv2_secrets_as_values: "{{ query('community.hashi_vault.hashi_vault', vault_kv2_multi_path ~ '/secrets ', return_format='values', **kwargs) }}"
+      assert:
+        that:
+          - kv2_secrets_as_values | type_debug == 'list'
+          - ('foo' ~ item) in kv2_secrets_as_values
+        fail_msg: 'Return value was not list or items do not match.'
+      loop: [1, 2, 3]
+
+    ### failure tests
+
+    - name: 'Failure expected when erroneous credentials are used'
+      vars:
+        secret_wrong_cred: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=' ~ vault_kv2_path ~ '/secret2 token=wrong_token', **kwargs) }}"
+      debug:
+        msg: 'Failure is expected ({{ secret_wrong_cred }})'
+      register: test_wrong_cred
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_wrong_cred is failed
+          - test_wrong_cred.msg is search('Invalid Vault Token')
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    - name: 'Failure expected when unauthorized secret is read'
+      vars:
+        secret_unauthorized: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=' ~ vault_kv2_path ~ '/secret3', **kwargs) }}"
+      debug:
+        msg: 'Failure is expected ({{ secret_unauthorized }})'
+      register: test_unauthorized
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_unauthorized is failed
+          - test_unauthorized.msg is search('Permission Denied')
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    - name: 'Failure expected when inexistent secret is read'
+      vars:
+        secret_inexistent: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=' ~ vault_kv2_path ~ '/non_existent_secret', **kwargs) }}"
+      debug:
+        msg: 'Failure is expected ({{ secret_inexistent }})'
+      register: test_inexistent
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_inexistent is failed
+          - test_inexistent.msg is search("doesn't seem to exist")
+        fail_msg: "Expected failure but got success or wrong failure message."
