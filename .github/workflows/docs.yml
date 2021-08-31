@@ -124,6 +124,7 @@ jobs:
       - name: Save the base build & hash # and discard the build
         run: |
           echo "BASE_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+          mkdir -p "${BASE_DOCS_RENDERED}"
           rsync -avc --delete-after "${HTML}" "${BASE_DOCS_RENDERED}"
 
 
@@ -162,6 +163,7 @@ jobs:
         if: github.event_name == 'pull_request_target'
         run: |
           echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+          mkdir -p "${PR_DOCS_RENDERED}"
           rsync -avc --delete-after "${HTML}" "${PR_DOCS_RENDERED}"
 
       - name: Should publish?
