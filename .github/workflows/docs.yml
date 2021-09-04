@@ -178,7 +178,10 @@ jobs:
       - name: Generate docs diff
         if: fromJSON(env.PUBLISH)
         run: |
-          DOC_DIFF=$(git diff --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}")
+          ls -alh "${BASE_DOCS_RENDERED}" || true
+          ls -alh "${PR_DOCS_RENDERED}" || true
+
+          DOC_DIFF=$(git --no-pager diff --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}")
           echo "DOC_DIFF=${DOC_DIFF}" >> ${GITHUB_ENV}
 
       - name: Upload Docsite artifact
