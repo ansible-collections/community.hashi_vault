@@ -14,6 +14,7 @@ on:
 env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
+  NOT_A_FORK: ${{ github.repository == 'ansible-collections/community.hashi_vault' }}
 
 jobs:
   unpublish:
@@ -21,7 +22,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request_target'
       && github.event.action == 'closed'
-      && github.repository == 'ansible-collections/community.hashi_vault'
+      && fromJSON(env.NOT_A_FORK)
     runs-on: ubuntu-latest
     steps:
       - name: Set up env vars
@@ -200,7 +201,7 @@ jobs:
 
       - name: Install Node
         if: >-
-          github.repository == 'ansible-collections/community.hashi_vault'
+          fromJSON(env.NOT_A_FORK)
           && fromJSON(env.PUBLISH)
         uses: actions/setup-node@v2
         with:
@@ -208,13 +209,13 @@ jobs:
 
       - name: Install Surge
         if: >-
-          github.repository == 'ansible-collections/community.hashi_vault'
+          fromJSON(env.NOT_A_FORK)
           && fromJSON(env.PUBLISH)
         run: npm install -g surge
 
       - name: Publish site
         if: >-
-          github.repository == 'ansible-collections/community.hashi_vault'
+          fromJSON(env.NOT_A_FORK)
           && fromJSON(env.PUBLISH)
         working-directory: ${{ env.HTML }}
         run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
