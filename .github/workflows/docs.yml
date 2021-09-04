@@ -1,8 +1,6 @@
 ---
 name: Collection Docs
 on:
-  # we want to ensure the docs are still good before doing a release
-  # so we try to catch that with the changelog changes
   push:
     branches:
       - main
@@ -184,6 +182,7 @@ jobs:
           echo 'EOF' >> ${GITHUB_ENV}
 
       - name: Upload Docsite artifact
+        if: fromJSON(env.PUBLISH)
         uses: actions/upload-artifact@v2
         with:
           name: html_docsite
@@ -191,7 +190,6 @@ jobs:
           retention-days: 7
 
       - name: Determine docsite subdomain
-        if: fromJSON(env.PUBLISH)
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
             echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
@@ -200,17 +198,13 @@ jobs:
           fi
 
       - name: Install Node
-        if: >-
-          fromJSON(env.NOT_A_FORK)
-          && fromJSON(env.PUBLISH)
+        if: fromJSON(env.NOT_A_FORK)
         uses: actions/setup-node@v2
         with:
           node-version: 14
 
       - name: Install Surge
-        if: >-
-          fromJSON(env.NOT_A_FORK)
-          && fromJSON(env.PUBLISH)
+        if: fromJSON(env.NOT_A_FORK)
         run: npm install -g surge
 
       - name: Publish site
@@ -220,16 +214,36 @@ jobs:
         working-directory: ${{ env.HTML }}
         run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
-      - name: Look for existing comment
+      # there might have been changes published before, which were removed in a subsequent commit
+      - name: Unpublish site
         if: >-
-          github.event_name == 'pull_request_target'
-          && fromJSON(env.PUBLISH)
+          fromJSON(env.NOT_A_FORK)
+          && !fromJSON(env.PUBLISH)
+        continue-on-error: true
+        run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+
+      - name: Look for existing comment
+        if: github.event_name == 'pull_request_target'
         id: fc
         uses: peter-evans/find-comment@v1
         with:
           issue-number: ${{ github.event.number }}
           comment-author: 'github-actions[bot]'
           body-includes: "##Docs Build"
+
+      - name: Remove previous comment
+        if: >-
+          fromJSON(env.NOT_A_FORK)
+          && !fromJSON(env.PUBLISH)
+          && steps.fc.outputs.comment-id
+        uses: actions/github-script@v4
+        with:
+          script: |
+            github.issues.deleteComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: ${{ steps.fc.outputs.comment-id }}
+            })
 
       - name: Post a comment on the PR
         if: >-
