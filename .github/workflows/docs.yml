@@ -22,7 +22,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request_target'
       && github.event.action == 'closed'
-      && fromJSON(env.NOT_A_FORK)
+      && github.repository == 'ansible-collections/community.hashi_vault'
     runs-on: ubuntu-latest
     steps:
       - name: Set up env vars
