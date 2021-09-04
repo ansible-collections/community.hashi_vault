@@ -4,7 +4,7 @@
 Contributor guide
 *****************
 
-This guide aims to help anyone who wished to contribute to the ``community.hashi_vault`` collection.
+This guide aims to help anyone who wishes to contribute to the ``community.hashi_vault`` collection.
 
 .. note::
 
