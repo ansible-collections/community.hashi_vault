@@ -1,8 +1,6 @@
 ---
 name: Collection Docs
 on:
-  # we want to ensure the docs are still good before doing a release
-  # so we try to catch that with the changelog changes
   push:
     branches:
       - main
@@ -14,6 +12,7 @@ on:
 env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
+  NOT_A_FORK: ${{ github.repository == 'ansible-collections/community.hashi_vault' }}
 
 jobs:
   unpublish:
@@ -97,6 +96,8 @@ jobs:
             DOCS_PREVIEW=${DOCS}/preview
             DOCS_BUILD=${DOCS_PREVIEW}/build
             HTML=${DOCS_BUILD}/html
+            BASE_DOCS_RENDERED=${{ runner.temp }}/html/base
+            PR_DOCS_RENDERED=${{ runner.temp }}/html/pr
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -119,9 +120,12 @@ jobs:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
         run: ${DOCS_PREVIEW}/build.sh
 
-      - name: Save the base hash # and discard the build
+      - name: Save the base build & hash # and discard the build
         run: |
           echo "BASE_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+          mkdir -p "${BASE_DOCS_RENDERED}"
+          rsync -avc --delete-after "${HTML}" "${BASE_DOCS_RENDERED}"
+
 
       ######## IMPORTANT
       # Do not change these checkout and apply tasks lightly, we only want the docs from the PR side.
@@ -156,7 +160,10 @@ jobs:
 
       - name: Save the head hash
         if: github.event_name == 'pull_request_target'
-        run: echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+        run: |
+          echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
+          mkdir -p "${PR_DOCS_RENDERED}"
+          rsync -avc --delete-after "${HTML}" "${PR_DOCS_RENDERED}"
 
       - name: Should publish?
         run: |
@@ -167,7 +174,15 @@ jobs:
             echo "PUBLISH=false" >> $GITHUB_ENV
           fi
 
+      - name: Generate docs diff
+        if: fromJSON(env.PUBLISH)
+        run: |
+          echo 'DOC_DIFF<<EOF' >> ${GITHUB_ENV}
+          git --no-pager diff --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" >> ${GITHUB_ENV} || true
+          echo 'EOF' >> ${GITHUB_ENV}
+
       - name: Upload Docsite artifact
+        if: fromJSON(env.PUBLISH)
         uses: actions/upload-artifact@v2
         with:
           name: html_docsite
@@ -175,7 +190,6 @@ jobs:
           retention-days: 7
 
       - name: Determine docsite subdomain
-        if: fromJSON(env.PUBLISH)
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
             echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
@@ -184,36 +198,52 @@ jobs:
           fi
 
       - name: Install Node
-        if: >-
-          github.repository == 'ansible-collections/community.hashi_vault'
-          && fromJSON(env.PUBLISH)
+        if: fromJSON(env.NOT_A_FORK)
         uses: actions/setup-node@v2
         with:
           node-version: 14
 
       - name: Install Surge
-        if: >-
-          github.repository == 'ansible-collections/community.hashi_vault'
-          && fromJSON(env.PUBLISH)
+        if: fromJSON(env.NOT_A_FORK)
         run: npm install -g surge
 
       - name: Publish site
         if: >-
-          github.repository == 'ansible-collections/community.hashi_vault'
+          fromJSON(env.NOT_A_FORK)
           && fromJSON(env.PUBLISH)
         working-directory: ${{ env.HTML }}
         run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
-      - name: Look for existing comment
+      # there might have been changes published before, which were removed in a subsequent commit
+      - name: Unpublish site
         if: >-
-          github.event_name == 'pull_request_target'
-          && fromJSON(env.PUBLISH)
+          fromJSON(env.NOT_A_FORK)
+          && !fromJSON(env.PUBLISH)
+        continue-on-error: true
+        run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+
+      - name: Look for existing comment
+        if: github.event_name == 'pull_request_target'
         id: fc
         uses: peter-evans/find-comment@v1
         with:
           issue-number: ${{ github.event.number }}
           comment-author: 'github-actions[bot]'
           body-includes: "##Docs Build"
+
+      - name: Remove previous comment
+        if: >-
+          fromJSON(env.NOT_A_FORK)
+          && !fromJSON(env.PUBLISH)
+          && steps.fc.outputs.comment-id
+        uses: actions/github-script@v4
+        with:
+          script: |
+            github.issues.deleteComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: ${{ steps.fc.outputs.comment-id }}
+            })
 
       - name: Post a comment on the PR
         if: >-
@@ -237,3 +267,12 @@ jobs:
 
             The docsite for **this PR** is also available for download as an artifact from this run:
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            <details>
+            <summary>Click to see the diff comparison.</summary>
+
+            ```diff
+            ${{ env.DOC_DIFF }}
+            ```
+
+            </details>
