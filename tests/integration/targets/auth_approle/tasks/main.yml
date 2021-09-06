@@ -38,7 +38,7 @@
           value: '{{ vault_approle_canary.value }}'
 
     - name: Run approle tests
-      loop: '{{ auth_paths | product([secret_id_role, no_secret_id_role]) }}'
+      loop: '{{ auth_paths | product([secret_id_role, no_secret_id_role]) | list }}'
       include_tasks:
         file: approle_test.yml
         apply:
