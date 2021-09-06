@@ -1,11 +1,6 @@
 ---
 ## auth method params
 auth_methods:
-  jwt:
-    default_path: jwt
-    paths:
-      - jwt
-      - jwt-alt
   aws_iam_login:
     default_path: aws
     paths:

@@ -1,0 +1,4 @@
+---
+dependencies:
+  - setup_vault_legacy
+  - setup_vault_configure

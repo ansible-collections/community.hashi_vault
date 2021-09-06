@@ -25,14 +25,3 @@
   vars:
     auth_type: approle_secret_id_less
   when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-
-- name: jwt tests
-  include_tasks:
-    file: tests.yml
-    apply:
-      vars:
-        auth_type: jwt
-        default_path: "{{ auth_methods.jwt.default_path }}"
-        this_path: "{{ item }}"
-  when: ansible_distribution != 'RedHat' or ansible_distribution_major_version is version('7', '>')
-  loop: "{{ auth_methods.jwt.paths }}"

@@ -4,17 +4,15 @@
   block:
     - name: 'Enable the JWT auth method'
       vault_ci_enable_auth:
-        url: "{{ vault_addr }}"
-        token: "{{ vault_dev_root_token_id }}"
         method_type: jwt
         path: '{{ omit if is_default_path else this_path }}'
+        config:
+          default_lease_ttl: 60m
 
     - name: 'Configure the JWT auth method'
       vars:
         jwt_public_key: '{{ lookup("file", "jwt_public.pem") }}'
       vault_ci_write:
-        url: "{{ vault_addr }}"
-        token: "{{ vault_dev_root_token_id }}"
         path: 'auth/{{ this_path }}/config'
         data:
           # in docs, this is token_policies (changed in Vault 1.2)
@@ -24,8 +22,6 @@
 
     - name: 'Create a named role'
       vault_ci_write:
-        url: "{{ vault_addr }}"
-        token: "{{ vault_dev_root_token_id }}"
         path: 'auth/{{ this_path }}/role/test-role'
         data:
           # in docs, this is token_policies (changed in Vault 1.2)
