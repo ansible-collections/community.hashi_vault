@@ -1,20 +1,4 @@
 ---
-## auth method params
-auth_methods:
-  aws_iam_login:
-    default_path: aws
-    paths:
-      - aws-alt
-      - aws
-  approle:
-    default_path: approle
-    paths:
-      - approle
-      - approle-alt
-
-# WIP
-vault_test_server_configure: true
-
 # if any connections are taking longer than this to complete there's probably something really wrong
 # with the integration tests, so it'd be better to fail faster than the 30s default
 ansible_hashi_vault_timeout: 5

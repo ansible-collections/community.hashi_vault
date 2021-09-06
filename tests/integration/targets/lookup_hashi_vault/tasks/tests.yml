@@ -1,8 +1,0 @@
----
-- name: Set the HTTP connection address
-  set_fact:
-    ansible_hashi_vault_url: '{{ vault_test_server_http }}'
-    conn_params: ''
-
-- name: 'test {{ auth_type }} auth'
-  include_tasks: '{{ auth_type }}_test.yml'

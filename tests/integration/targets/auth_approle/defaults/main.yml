@@ -1,0 +1,14 @@
+---
+ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+ansible_hashi_vault_auth_method: approle
+
+auth_paths:
+  - approle
+  - approle-alt
+
+secret_id_role: req-secret-id-role
+no_secret_id_role: no-secret-id-role
+
+vault_approle_canary:
+  path: cubbyhole/configure_approle
+  value: complete  # value does not matter
