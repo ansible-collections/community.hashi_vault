@@ -36,4 +36,4 @@
         fail_msg: "An invalid JWT somehow did not cause a failure."
         that:
           - response is failed
-          - response.msg is search('error verifying token signature')
+          - response.msg is search('no known key successfully validated the token signature')
