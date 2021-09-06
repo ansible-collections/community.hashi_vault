@@ -20,10 +20,10 @@
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
         that:
-          - ('test-policy' in response.login.auth.policies) == is_default_path
-          - ('test-policy' not in response.login.auth.policies) != is_default_path
-          - ('alt-policy' in response.login.auth.policies) != is_default_path
-          - ('alt-policy' not in response.login.auth.policies) == is_default_path
+          - ('test-policy' in response.login.auth.policies) | bool == is_default_path
+          - ('test-policy' not in response.login.auth.policies) | bool != is_default_path
+          - ('alt-policy' in response.login.auth.policies) | bool != is_default_path
+          - ('alt-policy' not in response.login.auth.policies) | bool == is_default_path
 
     - name: Failure expected when erroneous credentials are used
       vars:
