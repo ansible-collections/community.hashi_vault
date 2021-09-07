@@ -33,7 +33,7 @@ jobs:
         test_container:
           - default
         ansible:
-          # - stable-2.9  # temporary: https://github.com/ansible/ansible/issues/75647
+          - stable-2.9
           - stable-2.10
           - stable-2.11
           - devel
