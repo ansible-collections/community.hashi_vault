@@ -76,7 +76,10 @@ jobs:
       # The docker container has all the pinned dependencies that are required
       # and all python versions ansible supports.
       - name: Run sanity tests
-        run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color --coverage
+        env:
+          # temporary: https://github.com/ansible/ansible/issues/75647
+          COV: ${{ matrix.ansible == 'stable-2.9' && '' || '--coverage' }}
+        run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color ${COV}
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
