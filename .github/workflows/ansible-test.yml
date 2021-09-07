@@ -33,7 +33,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
+          # - stable-2.9  # temporary: https://github.com/ansible/ansible/issues/75647
           - stable-2.10
           - stable-2.11
           - devel
@@ -76,21 +76,14 @@ jobs:
       # The docker container has all the pinned dependencies that are required
       # and all python versions ansible supports.
       - name: Run sanity tests
-        env:
-          # temporary: https://github.com/ansible/ansible/issues/75647
-          COV: ${{ matrix.ansible == 'stable-2.9' && '' || '--coverage' }}
-        run: |
-          echo "COV=${COV}" >> ${GITHUB_ENV}
-          ansible-test sanity --docker ${{ matrix.test_container }} -v --color ${COV}
+        run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color --coverage
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
-        if: env.COV != ''
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
-        if: env.COV != ''
         uses: actions/upload-artifact@v2
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
