@@ -82,7 +82,13 @@ jobs:
         run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color ${COV}
         working-directory: ${{ env.COLLECTION_PATH }}
 
+      - name: Generate coverage report
+        if: env.COV != ''
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        working-directory: ${{ env.COLLECTION_PATH }}
+
       - name: Upload ${{ github.job }} coverage reports
+        if: env.COV != ''
         uses: actions/upload-artifact@v2
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
