@@ -1,5 +1,5 @@
 ---
-vault_version: '1.7.3'
+vault_version: latest
 vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
 
 docker_compose: clean
@@ -29,4 +29,4 @@ vault_config_output: '{{ output_dir }}/vault_config'
 vault_cert_file: '{{ vault_config_output }}/cert.pem'
 vault_key_file: '{{ vault_config_output }}/key.pem'
 
-vault_crypto_force: False
+vault_crypto_force: false
