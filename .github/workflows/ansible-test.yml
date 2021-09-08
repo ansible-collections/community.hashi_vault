@@ -185,8 +185,8 @@ jobs:
           - 3.8
           - 3.9
         vault:
-          - 1.7.3
-          - 1.6.5
+          - latest
+          - 1.7.4
         exclude:
           - ansible: stable-2.9
             python: 3.9
