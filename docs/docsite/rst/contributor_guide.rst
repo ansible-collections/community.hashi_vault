@@ -4,11 +4,11 @@
 Contributor guide
 *****************
 
-This guide aims to help PR authors contribute to the ``community.hashi_vault`` collection.
+This guide aims to help anyone who wishes to contribute to the ``community.hashi_vault`` collection.
 
 .. note::
 
-	This guide is a work-in-progress and should not be considered complete. Check back often as we fill out more details based on experience and feedback, and please let us know how this guide can be improved by opening a `GitHub issue in the repository <https://github.com/ansible-collections/community.hashi_vault/issues>`_.
+	This guide can be improved with your help! Open a `GitHub issue in the repository <https://github.com/ansible-collections/community.hashi_vault/issues>`_ or contribute directly by following the instructions below.
 
 
 .. contents::
