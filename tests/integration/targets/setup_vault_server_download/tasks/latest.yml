@@ -1,0 +1,19 @@
+---
+- name: Get the list of Vault releases
+  uri:
+    url: '{{ vault_releases_url }}'
+  register: vault_releases
+  no_log: true
+  # this is no_log because the output is large, there are no secrets there
+
+- name: Get the latest non-pre-release version
+  set_fact:
+    vault_version: "{{
+        vault_releases.json
+        | selectattr('draft', 'equalto', False)
+        | selectattr('prerelease', 'equalto', False)
+        | sort(attribute='published_at', reverse=True)
+        | map(attribute='name')
+        | first
+        | replace('v', '')
+      }}"
