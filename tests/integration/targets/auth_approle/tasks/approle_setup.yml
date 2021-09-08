@@ -1,0 +1,38 @@
+- name: "Setup block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+  block:
+    - name: 'Enable the approle auth method'
+      vault_ci_enable_auth:
+        method_type: approle
+        path: '{{ omit if is_default_path else this_path }}'
+        config:
+          default_lease_ttl: 60m
+
+    - name: 'Create an approle policy'
+      vault_ci_policy_put:
+        name: approle-policy
+        policy: |
+          path "auth/{{ this_path }}/login" {
+            capabilities = [ "create", "read" ]
+          }
+
+    - name: 'Create a named role (secret ID required)'
+      vault_ci_write:
+        path: 'auth/{{ this_path }}/role/{{ secret_id_role }}'
+        data:
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          secret_id_ttl: 60m
+
+    - name: 'Create a named role (without secret id)'
+      vault_ci_write:
+        path: 'auth/{{ this_path }}/role/{{ no_secret_id_role }}'
+        data:
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          secret_id_ttl: 60m
+          bind_secret_id: false
+          secret_id_bound_cidrs: '0.0.0.0/0'

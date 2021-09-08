@@ -1,0 +1,52 @@
+---
+# task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+# see: https://github.com/ansible/ansible/issues/73268
+- name: Persist defaults
+  set_fact:
+    '{{ item.key }}': "{{ lookup('vars', item.key) }}"
+  loop: "{{ lookup('file', role_path ~ '/defaults/main.yml') | from_yaml | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+  block:
+    - name: Canary for approle auth
+      vault_ci_read:
+        path: '{{ vault_approle_canary.path }}'
+      register: canary
+
+    - name: Configure approle
+      when: canary.result is none
+      loop: '{{ auth_paths }}'
+      include_tasks:
+        file: approle_setup.yml
+        apply:
+          vars:
+            default_path: '{{ ansible_hashi_vault_auth_method }}'
+            this_path: '{{ item }}'
+
+    - name: Write Canary
+      when: canary.result is none
+      vault_ci_write:
+        path: '{{ vault_approle_canary.path }}'
+        data:
+          value: '{{ vault_approle_canary.value }}'
+
+    - name: Run approle tests
+      loop: '{{ auth_paths | product([secret_id_role, no_secret_id_role]) | list }}'
+      include_tasks:
+        file: approle_test.yml
+        apply:
+          vars:
+            default_path: '{{ ansible_hashi_vault_auth_method }}'
+            this_path: '{{ item[0] }}'
+            approle_name: '{{ item[1] }}'
+            use_secret_id: '{{ item[1] == secret_id_role }}'
+          module_defaults:
+            assert:
+              quiet: yes

@@ -1,0 +1,11 @@
+---
+ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+ansible_hashi_vault_auth_method: jwt
+
+auth_paths:
+  - jwt
+  - jwt-alt
+
+vault_jwt_canary:
+  path: cubbyhole/configure_jwt
+  value: complete  # value does not matter

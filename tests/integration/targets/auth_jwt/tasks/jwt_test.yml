@@ -1,0 +1,39 @@
+- name: "Test block"
+  vars:
+    jwt: '{{ lookup("file", "token.jwt") }}'
+    jwt_invalid: '{{ lookup("file", "token_invalid.jwt") }}'
+    is_default_path: "{{ this_path == default_path }}"
+    kwargs_common:
+      role_id: test-role
+    kwargs_mount: "{{ {} if is_default_path else {'mount_point': this_path} }}"
+    kwargs_jwt:
+      jwt: '{{ jwt }}'
+    kwargs: "{{ kwargs_common | combine(kwargs_mount) | combine(kwargs_jwt) }}"
+  block:
+    # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
+    # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
+    # is default, and success when the mount is alternate
+    - name: Check auth mount differing result
+      set_fact:
+        response: "{{ lookup('vault_test_auth', '', **kwargs) }}"
+
+    - assert:
+        fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
+        that:
+          - ('test-policy' in response.login.auth.policies) | bool == is_default_path
+          - ('test-policy' not in response.login.auth.policies) | bool != is_default_path
+          - ('alt-policy' in response.login.auth.policies) | bool != is_default_path
+          - ('alt-policy' not in response.login.auth.policies) | bool == is_default_path
+
+    - name: Failure expected when erroneous credentials are used
+      vars:
+        kwargs_jwt:
+          jwt: '{{ jwt_invalid }}'
+      set_fact:
+        response: "{{ lookup('vault_test_auth', '', want_exception=true, **kwargs) }}"
+
+    - assert:
+        fail_msg: "An invalid JWT somehow did not cause a failure."
+        that:
+          - response is failed
+          - response.msg is search('no known key successfully validated the token signature')
