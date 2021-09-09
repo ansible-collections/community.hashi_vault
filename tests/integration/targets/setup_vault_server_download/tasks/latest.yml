@@ -6,6 +6,8 @@
   no_log: true
   # this is no_log because the output is large, there are no secrets there
 
+  # this is a little bit naive; we're using the latest published_at as a
+  # proxy for latest version; it's possible for that not to be correct.
 - name: Get the latest non-pre-release version
   set_fact:
     vault_version: "{{
