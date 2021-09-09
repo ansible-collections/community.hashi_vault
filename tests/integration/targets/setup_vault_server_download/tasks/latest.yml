@@ -3,11 +3,21 @@
     - name: Get the list of Vault releases
       uri:
         url: '{{ vault_releases_url }}'
+        headers: "{{
+            {'authorization': 'Bearer ' ~ github_token} if github_token is defined else omit
+          }}"
       register: vault_releases
+      until: >-
+        vault_releases is success
+        or vault_releases.status != 403
+        or (vault_releases.json is defined and vault_releases.json.message | default('')) is not search('^API rate limit exceeded')
+      retries: 10
+      delay: 3
       no_log: true
-      # this is no_log because the output is large, there are no secrets there
+      # this is no_log because of the possible GitHub token, and because the output is large
   rescue:
-      # but if it fails, let's do it again without no_log so we can see what happened
+      # but if it fails, let's do it again without no_log (and with no token) so we can see what happened.
+      # without the token we might not hit the same problem, but it's worth a try.
     - name: Get the list of Vault releases
       uri:
         url: '{{ vault_releases_url }}'

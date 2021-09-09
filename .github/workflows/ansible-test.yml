@@ -267,22 +267,22 @@ jobs:
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
-      # - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-      #   run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
-      #   working-directory: ${{ env.COLLECTION_PATH }}
+      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+        working-directory: ${{ env.COLLECTION_PATH }}
 
       # - name: Set Vault Version (3)
       #   uses: briantist/ezenv@v1
       #   with:
       #     env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[2] }}
 
-      - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
-        run: ./setup.sh -e vault_version=${VAULT_VERSION}
-        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
+      # - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
+      #   run: ./setup.sh -e vault_version=${VAULT_VERSION}
+      #   working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
-      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
-        working-directory: ${{ env.COLLECTION_PATH }}
+      # - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
+      #   run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+      #   working-directory: ${{ env.COLLECTION_PATH }}
 
       # - name: Prepare docker dependencies
       #   run: ./setup.sh -e vault_version=${{ matrix.vault }}
@@ -377,7 +377,9 @@ jobs:
 
       - name: legacy integration - use sample integration_config
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-        run: cp "integration_config.yml.sample" "integration_config.yml"
+        run: |
+          cp "integration_config.yml.sample" "integration_config.yml"
+          echo -e "\n\ngithub_token: ${{ secrets.GITHUB_TOKEN }}" >> "integration_config.yml"
 
       - name: legacy integration - venv
         if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
