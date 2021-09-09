@@ -267,14 +267,14 @@ jobs:
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
-      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
-        working-directory: ${{ env.COLLECTION_PATH }}
+      # - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
+      #   run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+      #   working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Set Vault Version (3)
-        uses: briantist/ezenv@v1
-        with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[2] }}
+      # - name: Set Vault Version (3)
+      #   uses: briantist/ezenv@v1
+      #   with:
+      #     env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[2] }}
 
       - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
