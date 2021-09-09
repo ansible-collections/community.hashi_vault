@@ -31,6 +31,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Requirements
+      shell: bash
+      run: pip install -r "${{ github.action_path }}/requirements.txt"
+
     - shell: bash
       id: versions
       run: >-
