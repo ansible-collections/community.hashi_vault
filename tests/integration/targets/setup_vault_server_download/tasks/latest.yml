@@ -1,10 +1,17 @@
 ---
-- name: Get the list of Vault releases
-  uri:
-    url: '{{ vault_releases_url }}'
-  register: vault_releases
-  no_log: true
-  # this is no_log because the output is large, there are no secrets there
+- block:
+    - name: Get the list of Vault releases
+      uri:
+        url: '{{ vault_releases_url }}'
+      register: vault_releases
+      no_log: true
+      # this is no_log because the output is large, there are no secrets there
+  rescue:
+      # but if it fails, let's do it again without no_log so we can see what happened
+    - name: Get the list of Vault releases
+      uri:
+        url: '{{ vault_releases_url }}'
+      register: vault_releases
 
   # this is a little bit naive; we're using the latest published_at as a
   # proxy for latest version; it's possible for that not to be correct.
