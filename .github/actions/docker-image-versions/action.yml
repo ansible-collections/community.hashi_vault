@@ -17,7 +17,7 @@ inputs:
   num_minor_versions:
     description: Number of unique minor versions to return.
     required: false
-    default: '3'
+    default: '1'
   num_micro_versions:
     description: Number of unique micro versions to return.
     required: false
