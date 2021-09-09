@@ -233,6 +233,8 @@ jobs:
       - name: Get Vault versions
         id: vault_versions
         uses: ./.github/actions/docker-image-versions
+        with:
+          num_minor_versions: 2
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
