@@ -21,6 +21,7 @@ from packaging import version
 
 TAG_URI = 'https://registry.hub.docker.com/v2/repositories/library/%s/tags?page_size=1024'
 
+
 def main(argv):
     image = None
     include_prerelease = include_postrelease = False
@@ -68,7 +69,7 @@ def main(argv):
         vobj = None
         try:
             vobj = version.parse(tag['name'])
-        except:
+        except Exception:
             pass
 
         if vobj is None or isinstance(vobj, version.LegacyVersion):
