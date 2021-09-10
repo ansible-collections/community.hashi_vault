@@ -164,7 +164,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}  # | Vault ${{ matrix.vault }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false
       matrix:
@@ -244,7 +244,7 @@ jobs:
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Set Vault Version (1)
+      - name: Set Vault Version (first)
         uses: briantist/ezenv@v1
         with:
           env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[0] }}
@@ -257,7 +257,7 @@ jobs:
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Set Vault Version (2)
+      - name: Set Vault Version (second)
         uses: briantist/ezenv@v1
         with:
           env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
