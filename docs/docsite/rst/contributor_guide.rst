@@ -104,6 +104,10 @@ To get started quickly without having to set anything else, you can use legacy m
 
 That file has everything configured to be able to run the integration tests and have them set up the dependencies for you.
 
+.. warning::
+
+  Legacy mode uses the GitHub API to figure out the latest version of HashiCorp Vault. This API has a `strict rate limit <https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>`_ on anonymous requests and it's easy to hit that limit. You may set `github_token` within `integration_config.yml` to provide a token to use, which will give a much higher request, however if you find yourself hitting the limit, it's probably easier to instead set `vault_version` to a specific version, which avoids the API call altogether.
+
 You will also need the following additional Ansible collections:
 
 * `community.crypto <https://galaxy.ansible.com/community/crypto>`_
@@ -192,7 +196,7 @@ Customization
 
 ``setup.sh`` passes any additional params you send it to the ``ansible-playbook`` command it calls, so you can customize variables with the standard ``--extra-vars`` (or ``-e``) option. There are many advanced scenarios possible, but a few things you might want to override:
 
-* ``vault_version`` -- can target any version of Vault for which a docker container exists
+* ``vault_version`` -- can target any version of Vault for which a docker container exists (this is the container's tag), defaults to ``latest``
 * ``docker_compose`` (defaults to ``clean`` but could be set to ``up``, ``down``, or ``none``)
    * ``up`` -- similar to running ``docker-compose up`` (no op if the project is running as it should)
    * ``down`` -- similar to ``docker-compose down`` (destroys the project)

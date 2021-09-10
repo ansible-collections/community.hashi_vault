@@ -40,7 +40,7 @@ Relevant ``integration_config.yml`` variables
   "``vault_test_server_http``", "``http://myvault:8200``", "The full HTTP URL of your Vault test server."
   "``vault_test_server_https``", "``https://myvault:8300``", "The full HTTPS URL of your Vault test server."
   "``vault_dev_root_token_id``", "``3ee9a1f7-f115-4f7c-90a3-d3c73361bcb5``", "The root token used to authenticate to Vault."
-  "``vault_version``", "``1.7.3``", "The desired version of Vault to download (only used by legacy setup)."
+  "``vault_version``", "``1.7.3``", "The desired version of Vault to download (only used by legacy setup). Can use the value ``latest``."
   "``vault_integration_legacy``", "``false``", "When ``true`` legacy integration will be used (see legacy section)."
   "``vault_cert_content``", "``-----BEGIN CERTIFICATE-----<snip>``", "The public cert of the CA that signed the cert used for Vault's TLS listener (or the cert itself if self-signed)."
 

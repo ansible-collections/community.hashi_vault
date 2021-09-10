@@ -22,11 +22,11 @@ See [the CI configuration](https://github.com/ansible-collections/community.hash
 
 ## Tested with Vault
 
-We currently test against the latest two minor versions of Vault major version `1`. The patch version within each minor will be updated periodically.
+We currently test against the latest patch version within the latest two minor versions of the latest major version of Vault. Put another way, we test against version `Z.{Z|Y}.Z`. For example as of this writing, Vault is on major version `1`, with the latest two minors being `8` and `7`. So we'll test Vault `1.8.Z` and `1.7.Z` where `Z` is the latest patch within those versions.
 
 We do not test against any versions of Vault with major version `0`.
 
-If/when a new major version of Vault is released, we'll revisit which versions to test against.
+If/when a new major version of Vault is released, we'll revisit which and how many versions to test against.
 
 The decision of which version(s) of Vault to test against is still somewhat in flux, as we try to balance wide testing with CI execution time and resources.
 
