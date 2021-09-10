@@ -67,6 +67,7 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
@@ -135,6 +136,7 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
@@ -197,7 +199,6 @@ jobs:
             python: 2.7
         include:
           - ansible: devel
-            vault: 1.7.3
             python: '3.10'
             runner: ubuntu-latest
             test_container: default
@@ -210,9 +211,6 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
-            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -239,6 +237,7 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
@@ -316,9 +315,6 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
-            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -371,6 +367,7 @@ jobs:
 
       - name: Pull Ansible test images
         if: ${{ matrix.docker }}
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
