@@ -1,4 +1,10 @@
 ---
+- name: Determine latest Vault version if not specified
+  when: >-
+    vault_version is not defined
+    or vault_version == 'latest'
+  include_tasks: latest.yml
+
 - name: "Check if vault binary exists"
   stat:
     path: '{{ vault_cmd }}'
@@ -15,6 +21,7 @@
       file:
         path: '{{ vault_bin }}'
         state: directory
+        mode: u+rwx
 
     - name: 'Download vault binary'
       get_url:
@@ -45,8 +52,8 @@
             # by assuming python3 here we're probably condeming this to not work on older Ubuntu/Debian (from like 2014?)
             # but the alternative is probably reimplementing parts of interpreter_discovery.py
             ansible_python_interpreter: "{{
-              '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
-            }}"
+                '/usr/bin/python3' if ansible_distribution in ['Ubuntu', 'Debian'] else ansible_python.executable
+              }}"
           package:
             name: unzip
           when: ansible_distribution != "MacOSX"  # unzip already installed

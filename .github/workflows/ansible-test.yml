@@ -67,6 +67,7 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
@@ -135,6 +136,7 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
@@ -164,7 +166,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }} | Vault ${{ matrix.vault }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false
       matrix:
@@ -184,9 +186,6 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
-        vault:
-          - 1.7.3
-          - 1.6.5
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -200,7 +199,6 @@ jobs:
             python: 2.7
         include:
           - ansible: devel
-            vault: 1.7.3
             python: '3.10'
             runner: ubuntu-latest
             test_container: default
@@ -213,9 +211,6 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
-            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -230,22 +225,48 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Get Vault versions
+        id: vault_versions
+        uses: ./.github/actions/docker-image-versions
+        with:
+          num_major_versions: 1
+          num_minor_versions: 2
+          num_micro_versions: 1
+
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Prepare docker dependencies
-        run: ./setup.sh -e vault_version=${{ matrix.vault }}
+      - name: Set Vault Version (first)
+        uses: briantist/ezenv@v1
+        with:
+          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[0] }}
+
+      - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
+        run: ./setup.sh -e vault_version=${VAULT_VERSION}
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
-      - name: Run integration test
-        run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+        working-directory: ${{ env.COLLECTION_PATH }}
+
+      - name: Set Vault Version (second)
+        uses: briantist/ezenv@v1
+        with:
+          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
+
+      - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
+        run: ./setup.sh -e vault_version=${VAULT_VERSION}
+        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
+
+      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage data
@@ -256,7 +277,7 @@ jobs:
       - name: Upload ${{ github.job }} coverage reports
         uses: actions/upload-artifact@v2
         with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=${{ matrix.vault }}=data
+          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -294,9 +315,6 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            LOOKUP_HASHI_VAULT_PATH=${COLLECTION_INTEGRATION_TARGETS}/lookup_hashi_vault
-            LOOKUP_HASHI_VAULT_BIN=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/files/bin
-            LOOKUP_HASHI_VAULT_VARS=${LOOKUP_HASHI_VAULT_PATH}/lookup_hashi_vault/vars
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -332,7 +350,9 @@ jobs:
 
       - name: legacy integration - use sample integration_config
         working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-        run: cp "integration_config.yml.sample" "integration_config.yml"
+        run: |
+          cp "integration_config.yml.sample" "integration_config.yml"
+          echo -e "\n\ngithub_token: ${{ secrets.GITHUB_TOKEN }}" >> "integration_config.yml"
 
       - name: legacy integration - venv
         if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
@@ -347,6 +367,7 @@ jobs:
 
       - name: Pull Ansible test images
         if: ${{ matrix.docker }}
+        timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
         with:

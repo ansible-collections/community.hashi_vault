@@ -2,8 +2,9 @@
 # for best results, consider a different localenv setup.
 # See the additional documentation at https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/
 ---
+# With legacy integration mode, vault_version should be a specific version, or the special value "latest".
+vault_version: latest
 vault_integration_legacy: true
-vault_version: 1.7.3
 
 vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
 

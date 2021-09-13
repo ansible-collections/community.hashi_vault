@@ -1,0 +1,47 @@
+---
+name: Get a list of docker image versions
+description: Gets a list of docker image versions (via tags), limited to a specified number of major, minor, and micro combinations.
+outputs:
+  versions:
+      description: JSON encoded list of versions.
+      value: ${{ steps.versions.outputs.versions }}
+inputs:
+  image:
+    description: The docker image name.
+    required: false
+    default: vault
+  num_major_versions:
+    description: Number of unique major versions to return.
+    required: false
+    default: '1'
+  num_minor_versions:
+    description: Number of unique minor versions to return.
+    required: false
+    default: '1'
+  num_micro_versions:
+    description: Number of unique micro versions to return.
+    required: false
+    default: '1'
+  include_prerelease:
+    description: If 'true' then pre-release versions are included. Any value other than 'true' will be treated as false.
+    required: false
+  include_postrelease:
+    description: If 'true' then post-release versions are included. Any value other than 'true' will be treated as false.
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Requirements
+      shell: bash
+      run: pip install -r "${{ github.action_path }}/requirements.txt"
+
+    - shell: bash
+      id: versions
+      run: >-
+        python -u "${{ github.action_path }}/versions.py"
+        --image "${{ inputs.image }}"
+        --num_major_versions "${{ inputs.num_major_versions }}"
+        --num_minor_versions "${{ inputs.num_minor_versions }}"
+        --num_micro_versions "${{ inputs.num_micro_versions }}"
+        ${{ inputs.include_prerelease == 'true' && '--include_prerelease' || '' }}
+        ${{ inputs.include_postrelease == 'true' && '--include_postrelease' || '' }}

@@ -89,9 +89,9 @@ If you have contributed to this collection or to the ``hashi_vault`` lookup plug
 
 .. note::
 
-  Legacy mode is not recommended because a new Vault server and proxy server will be downloaded, set up, configured, and/or uninstalled, for every *target*. Traditionally, we've only had one target, and so it was a good way to go, but that's no longer going to be the case. This will make it slower and slower as you'll incur the overhead on every target, in every run.
+  Legacy mode is not recommended because a new Vault server and proxy server will be downloaded, set up, configured, and/or uninstalled, for every *target*. Historically, we only had one target, and so it was a good way to go, but that's no longer true. This will make it slower and slower as more targets are added because you will incur the overhead on every target, in every run.
 
-  Skip to :ref:`ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker` for a method that's nearly as easy as legacy mode, and far more efficient (docker-compose).
+  Skip to :ref:`ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker` for a method that is nearly as easy as legacy mode, and far more efficient (docker-compose).
 
 Legacy mode
 ^^^^^^^^^^^
@@ -103,6 +103,10 @@ To get started quickly without having to set anything else, you can use legacy m
     $ cp tests/integration/integration_config.yml.sample tests/integration/integration_config.yml
 
 That file has everything configured to be able to run the integration tests and have them set up the dependencies for you.
+
+.. warning::
+
+  Legacy mode uses the GitHub API to figure out the latest version of HashiCorp Vault. This API has a `strict rate limit <https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>`_ on anonymous requests and it's easy to hit that limit. You may set ``github_token`` within ``integration_config.yml`` to provide a token to use, which will give a much higher limit, however if you find yourself hitting the limit, it's probably easier to instead set ``vault_version`` to a specific version, which avoids the API call altogether.
 
 You will also need the following additional Ansible collections:
 
@@ -123,7 +127,7 @@ Running legacy mode tests in a controlled python virtual environment (**not reco
 
 .. warning::
 
-  In legacy mode, your system packages may be manipulated by running locally or in a venv.
+  In legacy mode, your system packages may be manipulated by running locally or in a venv (not in docker).
 
 If you must use legacy mode testing, you can make it more efficient by limiting your test run to the specific target needed, to avoid the overhead of creating and destroying the dependencies for each target. For example:
 
@@ -192,7 +196,7 @@ Customization
 
 ``setup.sh`` passes any additional params you send it to the ``ansible-playbook`` command it calls, so you can customize variables with the standard ``--extra-vars`` (or ``-e``) option. There are many advanced scenarios possible, but a few things you might want to override:
 
-* ``vault_version`` -- can target any version of Vault for which a docker container exists
+* ``vault_version`` -- can target any version of Vault for which a docker container exists (this is the container's tag), defaults to ``latest``
 * ``docker_compose`` (defaults to ``clean`` but could be set to ``up``, ``down``, or ``none``)
    * ``up`` -- similar to running ``docker-compose up`` (no op if the project is running as it should)
    * ``down`` -- similar to ``docker-compose down`` (destroys the project)

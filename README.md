@@ -9,7 +9,9 @@ Browsing the [**latest** collection documentation](https://docs.ansible.com/ansi
 
 Browsing the [**devel** collection documentation](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault) shows docs for the _latest version released on Galaxy_.
 
-If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **devel**.
+We also separately publish [**latest commit** collection documentation](https://community-hashi-vault-main.surge.sh) which shows docs for the _Latest commit in the `main` branch_.
+
+If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **latest commit**.
 ## Tested with Ansible
 
 * 2.9
@@ -22,11 +24,11 @@ See [the CI configuration](https://github.com/ansible-collections/community.hash
 
 ## Tested with Vault
 
-We currently test against the latest two minor versions of Vault major version `1`. The patch version within each minor will be updated periodically.
+We currently test against the latest patch version within the latest two minor versions of the latest major version of Vault. Put another way, we test against version `Z.{Z|Y}.Z`. For example as of this writing, Vault is on major version `1`, with the latest two minors being `8` and `7`. So we'll test Vault `1.8.Z` and `1.7.Z` where `Z` is the latest patch within those versions.
 
-We do not test against any versions of Vault with major version `0`.
+We do not test against any versions of Vault with major version `0` or against pre-release/release candidate (RC) versions.
 
-If/when a new major version of Vault is released, we'll revisit which versions to test against.
+If/when a new major version of Vault is released, we'll revisit which and how many versions to test against.
 
 The decision of which version(s) of Vault to test against is still somewhat in flux, as we try to balance wide testing with CI execution time and resources.
 
