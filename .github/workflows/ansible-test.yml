@@ -33,10 +33,12 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
-          - stable-2.10
-          - stable-2.11
-          - devel
+          # - stable-2.9
+          # - stable-2.10
+          # - stable-2.11
+          # - devel
+          - https://github.com/mattclay/ansible/archive/at-minisplit.tar.gz
+          - https://github.com/ansible/ansible/archive/devel.tar.gz
     steps:
 
       # ansible-test requires the collection to be in a directory in the form
@@ -64,7 +66,7 @@ jobs:
 
       # Install the head of the given branch (devel, stable-2.10)
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: pip install ${{ matrix.ansible }} --disable-pip-version-check
 
       - name: Pull Ansible test images
         timeout-minutes: 5
@@ -105,10 +107,12 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
-          - stable-2.10
-          - stable-2.11
-          - devel
+          # - stable-2.9
+          # - stable-2.10
+          # - stable-2.11
+          # - devel
+          - https://github.com/mattclay/ansible/archive/at-minisplit.tar.gz
+          - https://github.com/ansible/ansible/archive/devel.tar.gz
 
     steps:
       - name: Initialize env vars
@@ -133,7 +137,7 @@ jobs:
           python-version: 3.8
 
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: pip install ${{ matrix.ansible }} --disable-pip-version-check
 
       - name: Pull Ansible test images
         timeout-minutes: 5
@@ -175,10 +179,12 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
-          - stable-2.10
-          - stable-2.11
-          - devel
+          # - stable-2.9
+          # - stable-2.10
+          # - stable-2.11
+          # - devel
+          - https://github.com/mattclay/ansible/archive/at-minisplit.tar.gz
+          - https://github.com/ansible/ansible/archive/devel.tar.gz
         python:
           - 2.7
           - 3.5
@@ -234,7 +240,7 @@ jobs:
           num_micro_versions: 1
 
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: pip install ${{ matrix.ansible }} --disable-pip-version-check
 
       - name: Pull Ansible test images
         timeout-minutes: 5
@@ -292,7 +298,9 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.11
+          # - stable-2.11
+          - https://github.com/mattclay/ansible/archive/at-minisplit.tar.gz
+          - https://github.com/ansible/ansible/archive/devel.tar.gz
         python:
           - 3.8
         runner:
@@ -330,7 +338,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: pip install ${{ matrix.ansible }} --disable-pip-version-check
 
       - name: Install community.crypto
         uses: ./.github/actions/collection-via-git
