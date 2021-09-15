@@ -86,13 +86,13 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job }} coverage reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
-          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
-          if-no-files-found: error
-          retention-days: 1
+      # - name: Upload ${{ github.job }} coverage reports
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
+      #     path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+      #     if-no-files-found: error
+      #     retention-days: 1
 
 
   units:
@@ -155,13 +155,13 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job }} coverage reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
-          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
-          if-no-files-found: error
-          retention-days: 1
+      # - name: Upload ${{ github.job }} coverage reports
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
+      #     path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+      #     if-no-files-found: error
+      #     retention-days: 1
 
 ###
 # Integration tests (RECOMMENDED)
@@ -192,6 +192,7 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
+          - 3.10
         exclude:
           - ansible: stable-2.9
             python: 3.9
@@ -203,11 +204,11 @@ jobs:
             python: 3.5
           - ansible: devel
             python: 2.7
-        include:
-          - ansible: devel
-            python: '3.10'
-            runner: ubuntu-latest
-            test_container: default
+        # include:
+        #   - ansible: devel
+        #     python: '3.10'
+        #     runner: ubuntu-latest
+        #     test_container: default
 
     steps:
       - name: Initialize env vars
@@ -280,13 +281,13 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job }} coverage reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
-          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
-          if-no-files-found: error
-          retention-days: 1
+      # - name: Upload ${{ github.job }} coverage reports
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+      #     path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+      #     if-no-files-found: error
+      #     retention-days: 1
 
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
@@ -412,16 +413,17 @@ jobs:
         run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job }} coverage reports
-        if: ${{ matrix.docker }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage=${{ github.job }}=${{ matrix.runner }}=${{ matrix.docker }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
-          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
-          if-no-files-found: error
-          retention-days: 1
+      # - name: Upload ${{ github.job }} coverage reports
+      #   if: ${{ matrix.docker }}
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: coverage=${{ github.job }}=${{ matrix.runner }}=${{ matrix.docker }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+      #     path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+      #     if-no-files-found: error
+      #     retention-days: 1
 
   upload-coverage:
+    if: 'false'
     needs:
       - units
       - integration
