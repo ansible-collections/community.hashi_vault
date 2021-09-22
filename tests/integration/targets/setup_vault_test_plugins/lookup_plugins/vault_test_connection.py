@@ -10,7 +10,9 @@ DOCUMENTATION = """
     - Brian Scholer (@briantist)
   short_description: A plugin for testing connection to Vault
   description: Test connection to Vault and return useful information.
-  extends_documentation_fragment: community.hashi_vault.connection
+  extends_documentation_fragment:
+    - community.hashi_vault.connection
+    - community.hashi_vault.connection.plugins
   options:
     want_client:
       type: bool
