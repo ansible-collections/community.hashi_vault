@@ -17,4 +17,4 @@ urllib3 >= 1.15, <2.0.0 ; python_version < '3.6' # https://urllib3.readthedocs.i
 # has a constraint for requests that conflicts with hvac >= 0.11.1
 # versions chosen here are arbitrary, latest usable at the time of setting, we're just trying to avoid conflicting constraints
 hcloud >= 1.16.0 ; python_version >= '3.5'
-hcloud == 1.13.0  ; python_version == '2.7'
+hcloud >= 1.12.0, < 1.13.0  ; python_version == '2.7'
