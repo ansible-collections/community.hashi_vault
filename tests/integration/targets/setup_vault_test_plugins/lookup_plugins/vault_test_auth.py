@@ -12,7 +12,9 @@ DOCUMENTATION = """
   description: Test auth methods by performing a login to Vault and returning token information.
   extends_documentation_fragment:
     - community.hashi_vault.connection
+    - community.hashi_vault.connection.plugins
     - community.hashi_vault.auth
+    - community.hashi_vault.auth.plugins
   options:
     want_exception:
       type: bool
