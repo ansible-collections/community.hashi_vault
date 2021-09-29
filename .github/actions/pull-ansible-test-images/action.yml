@@ -11,6 +11,9 @@ inputs:
 runs:
   using: composite
   steps:
+    - shell: bash
+      run: pip install packaging
+
     - shell: python
       run: |
         import os
