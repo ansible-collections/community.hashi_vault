@@ -25,7 +25,8 @@ runs:
         if nwd:
           os.chdir(nwd)
 
-        if ver >= cutoff:
+        # not using ver >= cutoff because of pre-release/dev comparison logic
+        if ver.major > cutoff.major or (ver.major == cutoff.major and ver.minor >= cutoff.minor):
             invo = r'${{ inputs.ansible-test-invocation }}'
             sys.exit(os.system('ansible-test %s --prime-containers' % invo))
 
