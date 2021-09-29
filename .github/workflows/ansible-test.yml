@@ -36,6 +36,7 @@ jobs:
           - stable-2.9
           - stable-2.10
           - stable-2.11
+          - stable-2.12
           - devel
     steps:
 
@@ -46,6 +47,7 @@ jobs:
         with:
           env: |
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            TEST_INVOCATION="sanity --docker ${{ matrix.test_container }} -v --color --coverage"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -72,12 +74,13 @@ jobs:
         uses: ./.github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
+          ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
       # run ansible-test sanity inside of Docker.
       # The docker container has all the pinned dependencies that are required
       # and all python versions ansible supports.
       - name: Run sanity tests
-        run: ansible-test sanity --docker ${{ matrix.test_container }} -v --color --coverage
+        run: ansible-test ${{ env.TEST_INVOCATION }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
@@ -108,6 +111,7 @@ jobs:
           - stable-2.9
           - stable-2.10
           - stable-2.11
+          - stable-2.12
           - devel
 
     steps:
@@ -116,6 +120,7 @@ jobs:
         with:
           env: |
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+            TEST_INVOCATION="units --color --docker ${{ matrix.test_container }} --coverage"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -141,10 +146,11 @@ jobs:
         uses: ./.github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
+          ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
       # Run the unit tests
       - name: Run unit test
-        run: ansible-test units --color --docker ${{ matrix.test_container }} --coverage
+        run: ansible-test ${{ env.TEST_INVOCATION }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
@@ -180,28 +186,30 @@ jobs:
           - stable-2.11
           - devel
         python:
-          - 2.7
-          - 3.5
-          - 3.6
-          - 3.7
-          - 3.8
-          - 3.9
+          - '2.7'
+          - '3.5'
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
+          - '3.10'
         exclude:
           - ansible: stable-2.9
-            python: 3.9
-          - ansible: devel
-            python: 3.7
-          - ansible: devel
-            python: 3.6
-          - ansible: devel
-            python: 3.5
-          - ansible: devel
-            python: 2.7
-        include:
-          - ansible: devel
+            python: '3.9'
+          - ansible: stable-2.9
             python: '3.10'
-            runner: ubuntu-latest
-            test_container: default
+          - ansible: devel
+            python: '3.7'
+          - ansible: devel
+            python: '3.6'
+          - ansible: devel
+            python: '3.5'
+          - ansible: devel
+            python: '2.7'
+          - ansible: 'stable-2.10'
+            python: '3.10'
+          - ansible: 'stable-2.11'
+            python: '3.10'
 
     steps:
       - name: Initialize env vars
@@ -211,6 +219,7 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+            TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -242,6 +251,7 @@ jobs:
         uses: ./.github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
+          ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
       - name: Set Vault Version (first)
         uses: briantist/ezenv@v1
@@ -253,7 +263,7 @@ jobs:
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
       - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+        run: ansible-test ${{ env.TEST_INVOCATION }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Set Vault Version (second)
@@ -266,7 +276,7 @@ jobs:
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
       - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+        run: ansible-test ${{ env.TEST_INVOCATION }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage data
@@ -315,6 +325,7 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+            DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -372,11 +383,12 @@ jobs:
         uses: ./.github/actions/pull-ansible-test-images
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
+          ansible-test-invocation: ${{ env.DOCKER_TEST_INVOCATION }}
 
       - name: legacy integration - docker
         if: ${{ matrix.docker }}
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage
+          ansible-test ${{ env.DOCKER_TEST_INVOCATION }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: legacy integration - remove integration_config
@@ -395,7 +407,7 @@ jobs:
       - name: localenv_docker - Run integration test (in docker)
         if: ${{ matrix.docker }}
         run: |
-          ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default
+          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
         # ansible-test support producing code coverage data
