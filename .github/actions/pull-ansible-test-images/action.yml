@@ -5,16 +5,33 @@ inputs:
   working-directory:
     description: The working directory to operate under. This should be the collection's directory.
     required: false
+  ansible-test-invocation:
+    description: The options that will be passed to ansible-test.
+    required: true
 runs:
   using: composite
   steps:
+    - shell: bash
+      run: pip install packaging
+
     - shell: python
       run: |
         import os
+        import sys
+        from packaging import version
+        from ansible.release import __version__ as ansible_version
+
+        ver = version.parse(ansible_version)
+        cutoff = version.parse('2.12')
 
         nwd = r'${{ inputs.working-directory }}'
         if nwd:
           os.chdir(nwd)
+
+        # not using ver >= cutoff because of pre-release/dev comparison logic
+        if ver.major > cutoff.major or (ver.major == cutoff.major and ver.minor >= cutoff.minor):
+            invo = r'${{ inputs.ansible-test-invocation }}'
+            sys.exit(os.system('ansible-test %s --prime-containers' % invo))
 
         try:
             from ansible_test._internal.util_common import get_docker_completion
