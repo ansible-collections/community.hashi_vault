@@ -12,11 +12,11 @@ env:
 
 jobs:
   docs:
+    # This workflow must be subject to pre-review and approval before running.
+    # This is accomplished with the "docs-build" GitHub deployment environment in the repo.
+    # See comments on the "Check out PR" step as well.
     environment: docs-build
     name: Collection Docs Lint & Build
-    # if: >-
-    #   github.event_name != 'pull_request_target'
-    #   || github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Set up env vars
@@ -64,29 +64,22 @@ jobs:
 
 
       ######## IMPORTANT
-      # Do not change these checkout and apply tasks lightly, we only want the docs from the PR side.
+      # This workflow executes code from the PR, in a privileged workflow.
+      # This workflow must be subject to pre-review and approval before running.
+      # This is accomplished with the "docs-build" GitHub deployment environment in the repo.
       # Please read ALL of this document before changing these:
       # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: Check out PR
-        # if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: ${{ env.COLLECTION_PATH }}
-
-      # - name: Apply docs changes from PR
-      #   if: github.event_name == 'pull_request_target'
-      #   working-directory: ${{ env.COLLECTION_PATH }}
-      #   run: |
-      #     rsync -avc --delete-after "${{ github.workspace }}/__pr/docs/docsite/" docs/docsite/
-      #     rm -rf "${{ github.workspace }}/__pr"
 
       - name: Lint Collection Docs
         working-directory: ${{ env.COLLECTION_PATH }}
         run: antsibull-lint collection-docs -v .
 
       - name: Build the preview docs (${{ github.head_ref }})
-        # if: github.event_name == 'pull_request_target'
         env:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
         run: |
@@ -95,7 +88,6 @@ jobs:
           ${DOCS_PREVIEW}/build.sh
 
       - name: Save the head hash
-        # if: github.event_name == 'pull_request_target'
         run: |
           echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
           mkdir -p "${PR_DOCS_RENDERED}"
@@ -159,7 +151,6 @@ jobs:
         run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
       - name: Look for existing comment
-        # if: github.event_name == 'pull_request_target'
         id: fc
         uses: peter-evans/find-comment@v1
         with:
@@ -195,7 +186,7 @@ jobs:
 
             Thank you for contribution!✨
 
-            The docs for **this PR** have been published here:
+            The **full** docs for **this PR** have been published here:
             https://${{ env.SITE_NAME }}.surge.sh
 
             You can compare to the docs for the `main` branch here:

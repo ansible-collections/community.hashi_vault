@@ -260,7 +260,7 @@ jobs:
 
             Thank you for contribution!✨
 
-            The docs for **this PR** have been published here:
+            The docs for **this PR** have been published here (docsite changes only):
             https://${{ env.SITE_NAME }}.surge.sh
 
             You can compare to the docs for the `main` branch here:
