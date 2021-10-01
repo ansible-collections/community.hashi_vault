@@ -1,6 +1,8 @@
 ---
 name: Collection Docs
-concurrency: docs-${{ github.ref }}
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
 on:
   push:
     branches:

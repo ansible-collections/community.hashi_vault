@@ -1,6 +1,8 @@
 ---
 name: Collection Docs (Full)
-concurrency: docs-${{ github.ref }}
+concurrency:
+  group: docs-full-${{ github.ref }}
+  cancel-in-progress: true
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
