@@ -5,10 +5,12 @@ on:
     paths-ignore:
       - 'docs/**'
       - '.github/workflows/docs.yml'
+      - '.github/workflows/docs-full.yml'
   pull_request:
     paths-ignore:
       - 'docs/**'
       - '.github/workflows/docs.yml'
+      - '.github/workflows/docs-full.yml'
   schedule:
     - cron: '0 14 * * *'
 env:
