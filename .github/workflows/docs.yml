@@ -1,7 +1,7 @@
 ---
 name: Collection Docs
 concurrency:
-  group: docs-${{ github.ref }}
+  group: docs-${{ github.ref }}-${{ github.event_name }}-${{ github.event.action }}
   cancel-in-progress: true
 on:
   push:
