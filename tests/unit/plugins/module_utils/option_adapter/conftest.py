@@ -10,12 +10,35 @@ __metaclass__ = type
 
 # Keep in mind that this one is for module_utils and so it cannot depend on or import any controller-side code.
 
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
+
 import pytest
 
 
-@pytest.fixture(params=['dict', 'dict_defaults'])
-def adapter(request, adapter_from_dict, adapter_from_dict_defaults):
+class FakeAnsibleModule:
+    '''HashiVaultOptionAdapter.from_ansible_module() only cares about the AnsibleModule.params dict'''
+
+    def __init__(self, params):
+        self.params = params
+
+
+@pytest.fixture
+def ansible_module(sample_dict):
+    return FakeAnsibleModule(sample_dict)
+
+
+@pytest.fixture
+def adapter_from_ansible_module(ansible_module):
+    def _create_adapter_from_ansible_module():
+        return HashiVaultOptionAdapter.from_ansible_module(ansible_module)
+
+    return _create_adapter_from_ansible_module
+
+
+@pytest.fixture(params=['dict', 'dict_defaults', 'ansible_module'])
+def adapter(request, adapter_from_dict, adapter_from_dict_defaults, adapter_from_ansible_module):
     return {
         'dict': adapter_from_dict,
         'dict_defaults': adapter_from_dict_defaults,
+        'ansible_module': adapter_from_ansible_module,
     }[request.param]()

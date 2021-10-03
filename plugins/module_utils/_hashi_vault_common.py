@@ -101,6 +101,10 @@ class HashiVaultOptionAdapter(object):
             # AnsiblePlugin.has_option was added in 2.10, see https://github.com/ansible/ansible/pull/61078
         )
 
+    @classmethod
+    def from_ansible_module(cls, module):
+        return cls.from_dict(module.params)
+
     def __init__(
             self,
             getter, setter,
