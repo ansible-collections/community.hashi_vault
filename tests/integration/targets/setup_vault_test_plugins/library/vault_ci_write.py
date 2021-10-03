@@ -3,7 +3,6 @@
 # Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
 
 from __future__ import absolute_import, division, print_function
-from typing import Mapping
 __metaclass__ = type
 
 from ansible.module_utils.basic import AnsibleModule
