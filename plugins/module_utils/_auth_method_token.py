@@ -63,7 +63,7 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                 self._options.get_option('token_path'),
                 self._options.get_option('token_file')
             )
-            if os.path.exists(token_filename):
+            if os.path.exists(token_filename) and os.path.isfile(token_filename):
                 with open(token_filename) as token_file:
                     self._options.set_option('token', token_file.read().strip())
 
