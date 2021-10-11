@@ -179,6 +179,7 @@ class TestHashiVaultConnectionOptions(object):
 
     def test_process_connection_options(self, mocker, connection_options, adapter):
         # mock the internal methods we expect to be called
+        f_process_late_binding_env_vars = mocker.patch.object(connection_options, 'process_late_binding_env_vars')
         f_boolean_or_cacert = mocker.patch.object(connection_options, '_boolean_or_cacert')
         f_process_option_proxies = mocker.patch.object(connection_options, '_process_option_proxies')
         f_process_option_retries = mocker.patch.object(connection_options, '_process_option_retries')
@@ -191,6 +192,7 @@ class TestHashiVaultConnectionOptions(object):
         connection_options.process_connection_options()
 
         # assert the expected methods have been called once
+        f_process_late_binding_env_vars.assert_called_once()
         f_boolean_or_cacert.assert_called_once()
         f_process_option_proxies.assert_called_once()
         f_process_option_retries.assert_called_once()

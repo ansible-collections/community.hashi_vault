@@ -50,6 +50,12 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
     OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries', 'retry_action']
 
+    _LATE_BINDING_ENV_VAR_OPTIONS = {
+        'url': dict(env=['VAULT_ADDR'], default='http://127.0.0.1:8200'),
+        'ca_cert': dict(env=['VAULT_CACERT']),
+        'namespace': dict(env=['VAULT_NAMESPACE']),
+    }
+
     _RETRIES_DEFAULT_PARAMS = {
         'status_forcelist': [
             # https://www.vaultproject.io/api#http-status-codes
@@ -93,6 +99,8 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
     def process_connection_options(self):
         '''executes special processing required for certain options'''
+        self.process_late_binding_env_vars(self._LATE_BINDING_ENV_VAR_OPTIONS)
+
         self._boolean_or_cacert()
         self._process_option_proxies()
         self._process_option_retries()

@@ -199,23 +199,30 @@ class HashiVaultOptionGroupBase:
 
     # for now copying here
     # going to re-think where to specify these
-    _LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
-        'token_path': ['HOME'],
-        'namespace': ['VAULT_NAMESPACE'],
-        'token': ['VAULT_TOKEN'],
-        'url': ['VAULT_ADDR'],
-        'ca_cert': ['VAULT_CACERT'],
-    }
+    # _LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
+    #     'token_path': ['HOME'],
+    #     'namespace': ['VAULT_NAMESPACE'],
+    #     'token': ['VAULT_TOKEN'],
+    #     'url': ['VAULT_ADDR'],
+    #     'ca_cert': ['VAULT_CACERT'],
+    # }
 
     def __init__(self, option_adapter):
         self._options = option_adapter
 
-    def process_low_preference_env_vars(self, option_vars=None):
-        ov = option_vars or self._LOW_PRECEDENCE_ENV_VAR_OPTIONS
-        for opt, envs in ov.items():
-            for env in envs:
+    def process_late_binding_env_vars(self, option_vars):
+        '''looks through a set of options, and if empty/None, looks for a value in specified env vars, or sets an optional default'''
+        for opt, config in option_vars.items():
+            for env in config['env']:
+                # we use has_option + get_option rather than get_option_default
+                # because we will only override if the option exists and
+                # is None, not if it's missing. For plugins, that is the usual,
+                # but for modules, they may have to set the default to None
+                # in the argspec if it has late binding env vars.
                 if self._options.has_option(opt) and self._options.get_option(opt) is None:
                     self._options.set_option(opt, os.environ.get(env))
+            if 'default' in config and self._options.has_option(opt) and self._options.get_option(opt) is None:
+                self._options.set_option(opt, config['default'])
 
 
 class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
