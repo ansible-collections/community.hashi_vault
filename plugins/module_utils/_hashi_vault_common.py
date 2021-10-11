@@ -186,32 +186,23 @@ class HashiVaultOptionAdapter(object):
 class HashiVaultOptionGroupBase:
     '''A base class for class option group classes'''
 
-    # see https://github.com/ansible-collections/community.hashi_vault/issues/10
-    #
-    # Options which seek to use environment vars that are not Ansible-specific
-    # should load those as values of last resort, so that INI values can override them.
-    # For default processing, list such options and vars here.
-    # Alternatively, process them in another appropriate place like an auth method's
-    # validate_ method.
-    #
-    # key = option_name
-    # value = list of env vars (in order of those checked first; process stops when value is found)
-
-    # for now copying here
-    # going to re-think where to specify these
-    # _LOW_PRECEDENCE_ENV_VAR_OPTIONS = {
-    #     'token_path': ['HOME'],
-    #     'namespace': ['VAULT_NAMESPACE'],
-    #     'token': ['VAULT_TOKEN'],
-    #     'url': ['VAULT_ADDR'],
-    #     'ca_cert': ['VAULT_CACERT'],
-    # }
-
     def __init__(self, option_adapter):
         self._options = option_adapter
 
     def process_late_binding_env_vars(self, option_vars):
         '''looks through a set of options, and if empty/None, looks for a value in specified env vars, or sets an optional default'''
+        # see https://github.com/ansible-collections/community.hashi_vault/issues/10
+        #
+        # Options which seek to use environment vars that are not Ansible-specific
+        # should load those as values of last resort, so that INI values can override them.
+        # For default processing, list such options and vars here.
+        # Alternatively, process them in another appropriate place like an auth method's
+        # validate_ method.
+        #
+        # key = option_name
+        # value = dict with "env" key which is a list of env vars (in order of those checked first; process stops when value is found),
+        # and an optional "default" key whose value will be set if none of the env vars are found.
+
         for opt, config in option_vars.items():
             for env in config['env']:
                 # we use has_option + get_option rather than get_option_default

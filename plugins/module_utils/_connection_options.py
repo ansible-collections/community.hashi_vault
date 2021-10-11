@@ -50,6 +50,17 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
     OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries', 'retry_action']
 
+    ARGSPEC = dict(
+        url=dict(type='str', default=None),
+        proxies=dict(type='raw'),
+        ca_cert=dict(type='str', default=None),
+        validate_certs=dict(type='bool'),
+        namespace=dict(type='str', default=None),
+        timeout=dict(type='int'),
+        retries=dict(type='raw'),
+        retry_action=dict(type='str', default='warn'),
+    )
+
     _LATE_BINDING_ENV_VAR_OPTIONS = {
         'url': dict(env=['VAULT_ADDR'], default='http://127.0.0.1:8200'),
         'ca_cert': dict(env=['VAULT_CACERT']),
@@ -92,8 +103,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
-            hvopts['retries']['new_callback'] = self._retry_callback_generator(retry_action)
-            hvopts['session'] = self._get_custom_requests_session(hvopts.pop('retries'))
+            hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), **hvopts.pop('retries'))
 
         return hvopts
 
@@ -105,7 +115,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         self._process_option_proxies()
         self._process_option_retries()
 
-    def _get_custom_requests_session(self, retry_kwargs):
+    def _get_custom_requests_session(self, **retry_kwargs):
         '''returns a requests.Session to pass to hvac (or None)'''
 
         if not HAS_RETRIES:
