@@ -56,6 +56,7 @@ class LookupModule(HashiVaultLookupBase):
 
             try:
                 try:
+                    self.authenticator.validate()
                     response = self.authenticator.authenticate(client)
                 except NotImplementedError as e:
                     raise AnsibleError(e)
