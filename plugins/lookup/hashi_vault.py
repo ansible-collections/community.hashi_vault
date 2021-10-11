@@ -145,6 +145,7 @@ DOCUMENTATION = """
             alternatives: use section [hashi_vault_collection]
         - section: hashi_vault_collection
           key: auth_method
+          version_added: 1.4.0
     token_path:
       ini:
         - section: lookup_hashi_vault
@@ -156,6 +157,7 @@ DOCUMENTATION = """
             alternatives: use section [hashi_vault_collection]
         - section: hashi_vault_collection
           key: token_path
+          version_added: 1.4.0
     token_file:
       ini:
         - section: lookup_hashi_vault
@@ -167,6 +169,7 @@ DOCUMENTATION = """
             alternatives: use section [hashi_vault_collection]
         - section: hashi_vault_collection
           key: token_file
+          version_added: 1.4.0
     token_validate:
       ini:
         - section: lookup_hashi_vault
@@ -178,6 +181,7 @@ DOCUMENTATION = """
             alternatives: use section [hashi_vault_collection]
         - section: hashi_vault_collection
           key: token_validate
+          version_added: 1.4.0
     role_id:
       ini:
         - section: lookup_hashi_vault
@@ -189,6 +193,19 @@ DOCUMENTATION = """
             alternatives: use section [hashi_vault_collection]
         - section: hashi_vault_collection
           key: role_id
+          version_added: 1.4.0
+    aws_iam_server_id:
+      ini:
+        - section: lookup_hashi_vault
+          key: aws_iam_server_id
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: aws_iam_server_id
+          version_added: 1.4.0
 """
 
 EXAMPLES = """
