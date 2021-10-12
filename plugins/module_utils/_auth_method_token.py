@@ -64,11 +64,10 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                 self._options.get_option('token_file')
             )
             if os.path.exists(token_filename):
-                if os.path.isfile(token_filename):
-                    with open(token_filename) as token_file:
-                        self._options.set_option('token', token_file.read().strip())
-                else:
+                if not os.path.isfile(token_filename):
                     raise HashiVaultValueError("The Vault token file '%s' was found but is not a file." % token_filename)
+                with open(token_filename) as token_file:
+                    self._options.set_option('token', token_file.read().strip())
 
         if not self._options.get_option('token'):
             raise HashiVaultValueError("No Vault Token specified or discovered.")
