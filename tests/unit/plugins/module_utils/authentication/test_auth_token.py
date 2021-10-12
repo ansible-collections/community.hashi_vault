@@ -127,7 +127,7 @@ class TestAuthToken(object):
         # see also: https://github.com/ansible-collections/community.hashi_vault/issues/152
         adapter.set_options(token_path=str(tmp_path.parent), token_file=str(tmp_path))
 
-        with pytest.raises(HashiVaultValueError, match=r'No Vault Token specified or discovered'):
+        with pytest.raises(HashiVaultValueError, match=r"The Vault token file '[^']+' was found but is not a file."):
             auth_token.validate()
 
     @pytest.mark.parametrize('use_token', [True, False], ids=lambda x: 'use_token=%s' % x)
