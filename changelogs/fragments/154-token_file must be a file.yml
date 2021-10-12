@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - hashi_vault collection - unhandled exception with ``token`` auth when ``token_file`` exists but is a directory (https://github.com/ansible-collections/community.hashi_vault/issues/152).

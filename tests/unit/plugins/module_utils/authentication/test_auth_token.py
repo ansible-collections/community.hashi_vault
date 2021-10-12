@@ -122,6 +122,14 @@ class TestAuthToken(object):
         with pytest.raises(HashiVaultValueError, match=r'No Vault Token specified or discovered'):
             auth_token.validate()
 
+    def test_auth_token_file_is_directory(self, auth_token, adapter, tmp_path):
+        # ensure that a token_file that exists but is a directory is treated the same as it not being found
+        # see also: https://github.com/ansible-collections/community.hashi_vault/issues/152
+        adapter.set_options(token_path=str(tmp_path.parent), token_file=str(tmp_path))
+
+        with pytest.raises(HashiVaultValueError, match=r"The Vault token file '[^']+' was found but is not a file."):
+            auth_token.validate()
+
     @pytest.mark.parametrize('use_token', [True, False], ids=lambda x: 'use_token=%s' % x)
     @pytest.mark.parametrize('lookup_self', [True, False], ids=lambda x: 'lookup_self=%s' % x)
     @pytest.mark.parametrize('token_validate', [True, False], ids=lambda x: 'token_validate=%s' % x)
