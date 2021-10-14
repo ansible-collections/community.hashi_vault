@@ -58,7 +58,6 @@
           register: result
           vault_test_connection:
             want_args: yes
-            want_exception: yes
 
         - <<: *assert
 

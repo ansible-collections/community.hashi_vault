@@ -15,6 +15,8 @@ __metaclass__ = type
 
 import os
 
+from ansible.module_utils.common.text.converters import to_text
+
 from ansible.module_utils.common.validation import (
     check_type_dict,
     check_type_str,
@@ -240,13 +242,16 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
                 try:
                     # Check that we have a boolean value
                     vault_skip_verify = check_type_bool(vault_skip_verify)
-                    # Use the inverse of VAULT_SKIP_VERIFY
-                    validate_certs = not vault_skip_verify
                 except TypeError:
                     # Not a boolean value fallback to default value (True)
                     validate_certs = True
+                else:
+                    # Use the inverse of VAULT_SKIP_VERIFY
+                    validate_certs = not vault_skip_verify
             else:
                 validate_certs = True
 
         if not (validate_certs and ca_cert):
             self._options.set_option('ca_cert', validate_certs)
+        else:
+            self._options.set_option('ca_cert', to_text(ca_cert, errors='surrogate_or_strict'))
