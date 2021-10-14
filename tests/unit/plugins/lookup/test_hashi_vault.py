@@ -8,16 +8,13 @@ __metaclass__ = type
 import os
 import pytest
 
-from ansible.errors import AnsibleError
-
 from ansible.plugins.loader import lookup_loader
 
 from ansible.module_utils.six.moves.urllib.parse import urlparse
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
-from ansible_collections.community.hashi_vault.plugins.lookup.hashi_vault import LookupModule  # , HashiVault
-from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
 from requests.exceptions import ConnectionError
 
