@@ -37,14 +37,20 @@
           value: '{{ vault_jwt_canary.value }}'
 
 
-- name: Run JWT tests
+- name: Run JWT tests (controller)
   loop: '{{ auth_paths }}'
   include_tasks:
-    file: jwt_test.yml
-    apply:
+    file: jwt_test_controller.yml
+    apply: &test_apply
       vars:
         default_path: '{{ ansible_hashi_vault_auth_method }}'
         this_path: '{{ item }}'
       module_defaults:
         assert:
           quiet: yes
+
+- name: Run JWT tests (target)
+  loop: '{{ auth_paths }}'
+  include_tasks:
+    file: jwt_test_target.yml
+    apply: *test_apply
