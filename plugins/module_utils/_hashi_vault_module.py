@@ -38,7 +38,8 @@ class HashiVaultModule(AnsibleModule):
     @classmethod
     def generate_argspec(cls, **kwargs):
         spec = HashiVaultConnectionOptions.ARGSPEC.copy()
-        spec.update(kwargs)
+        spec.update(HashiVaultAuthenticator.ARGSPEC.copy())
+        spec.update(**kwargs)
 
         return spec
 
