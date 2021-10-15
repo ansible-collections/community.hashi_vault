@@ -1,3 +1,4 @@
 ---
 dependencies:
   - setup_vault_legacy
+  - setup_vault_test_plugins
