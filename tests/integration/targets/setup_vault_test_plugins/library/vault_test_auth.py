@@ -35,6 +35,7 @@ def dictify(thing):
         )
     )
 
+
 # this module is for running tests only; no_log can interfere with return values
 # and/or  makie it harder to troubleshoot test failures.
 def strip_no_log(spec):

@@ -23,7 +23,12 @@
         no_default_policy: true
       register: user_token_no_default_policy_cmd
 
-- import_tasks: token_test.yml
+- import_tasks: token_test_target.yml
+  module_defaults:
+    assert:
+      quiet: yes
+
+- import_tasks: token_test_controller.yml
   module_defaults:
     assert:
       quiet: yes
