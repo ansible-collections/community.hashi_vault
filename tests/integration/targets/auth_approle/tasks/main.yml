@@ -38,15 +38,15 @@
           value: '{{ vault_approle_canary.value }}'
 
     - name: Run approle tests
-      loop: '{{ auth_paths | product([secret_id_role, no_secret_id_role]) | list }}'
+      loop: '{{ auth_paths | product([secret_id_role, no_secret_id_role]) | product(["target", "controller"]) | list }}'
       include_tasks:
-        file: approle_test.yml
+        file: approle_test_{{ item[1] }}.yml
         apply:
           vars:
             default_path: '{{ ansible_hashi_vault_auth_method }}'
-            this_path: '{{ item[0] }}'
-            approle_name: '{{ item[1] }}'
-            use_secret_id: '{{ item[1] == secret_id_role }}'
+            this_path: '{{ item[0][0] }}'
+            approle_name: '{{ item[0][1] }}'
+            use_secret_id: '{{ item[0][1] == secret_id_role }}'
           module_defaults:
             assert:
               quiet: yes
