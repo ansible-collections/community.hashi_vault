@@ -55,12 +55,12 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     ARGSPEC = dict(
         url=dict(type='str', default=None),
         proxies=dict(type='raw'),
-        ca_cert=dict(type='str', default=None),
+        ca_cert=dict(type='str', aliases=['cacert'], default=None),
         validate_certs=dict(type='bool'),
         namespace=dict(type='str', default=None),
         timeout=dict(type='int'),
         retries=dict(type='raw'),
-        retry_action=dict(type='str', default='warn'),
+        retry_action=dict(type='str', choices=['ignore', 'warn'], default='warn'),
     )
 
     _LATE_BINDING_ENV_VAR_OPTIONS = {
