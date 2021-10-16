@@ -186,6 +186,7 @@ jobs:
 
       - name: Upload Docsite artifact
         if: fromJSON(env.PUBLISH)
+        continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
           name: html_docsite
