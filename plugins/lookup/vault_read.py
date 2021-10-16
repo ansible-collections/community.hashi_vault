@@ -109,7 +109,6 @@ class LookupModule(HashiVaultLookupBase):
         # TODO: remove process_deprecations() if backported fix is available (see method definition)
         self.process_deprecations()
 
-
         self.connection_options.process_connection_options()
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
