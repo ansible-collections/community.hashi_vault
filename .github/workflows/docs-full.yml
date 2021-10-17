@@ -108,7 +108,7 @@ jobs:
         if: fromJSON(env.PUBLISH)
         run: |
           DIFF=$(git --no-pager diff --histogram --no-index --diff-filter=ad "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
-          if (( ${#DIFF} > 30000 )); then
+          if (( ${#DIFF} > 60000 )); then
               echo "#### GREATER"
               DIFF=$(git --no-pager diff --name-status --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
           fi
