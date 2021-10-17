@@ -107,8 +107,12 @@ jobs:
       - name: Generate docs diff
         if: fromJSON(env.PUBLISH)
         run: |
+          DIFF=$(git --no-pager diff --histogram --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
+          if (( ${#DIFF} > 60000 )); then
+              DIFF=$(git --no-pager diff --name-status --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
+          fi
           echo 'DOC_DIFF<<EOF' >> ${GITHUB_ENV}
-          git --no-pager diff --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" >> ${GITHUB_ENV} || true
+          echo $DIFF >> ${GITHUB_ENV}
           echo 'EOF' >> ${GITHUB_ENV}
 
       - name: Upload Docsite artifact
@@ -199,7 +203,7 @@ jobs:
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             <details>
-            <summary>Click to see the diff comparison.</summary>
+            <summary>Click to see the diff comparison (long diffs will not show file contents).</summary>
 
             ```diff
             ${{ env.DOC_DIFF }}
