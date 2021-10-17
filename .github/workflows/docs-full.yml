@@ -110,13 +110,18 @@ jobs:
           # ':(exclude)**/*.js' ':(exclude)**/*.inv'
           # doesn't work with --no-index
           #
+          DIFF_FILES=$(git --no-pager diff --name-status --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
           DIFF=$(git --no-pager diff --histogram --no-index --relative --diff-filter=ad "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
-          if (( ${#DIFF} > 60000 )); then
-              echo "#### GREATER"
-              DIFF=$(git --no-pager diff --name-status --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
-          fi
+          echo 'DOC_DIFF_FILES<<EOF' >> ${GITHUB_ENV}
+          echo "$DIFF_FILES" >> ${GITHUB_ENV}
+          echo 'EOF' >> ${GITHUB_ENV}
+
           echo 'DOC_DIFF<<EOF' >> ${GITHUB_ENV}
-          echo "$DIFF" >> ${GITHUB_ENV}
+          if (( ${#DIFF} > 60000 )); then
+              echo "Diff output too large to display."
+          else
+              echo "$DIFF" >> ${GITHUB_ENV}
+          fi
           echo 'EOF' >> ${GITHUB_ENV}
 
       - name: Upload Docsite artifact
@@ -205,8 +210,15 @@ jobs:
             The docsite for **this PR** is also available for download as an artifact from this run:
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
+            File changes:
+            ```diff
+            ${{ env.DOC_DIFF_FILES }}
+            ```
+
             <details>
-            <summary>Click to see the diff comparison (long diffs will not show file contents).</summary>
+            <summary>Click to see the diff comparison.</summary>
+            **NOTE:** only file modifications are shown here. New and deleted files are excluded.
+            See the file list and check the published docs to see those files.
 
             ```diff
             ${{ env.DOC_DIFF }}
