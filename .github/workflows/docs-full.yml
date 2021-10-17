@@ -107,10 +107,13 @@ jobs:
       - name: Generate docs diff
         if: fromJSON(env.PUBLISH)
         run: |
-          DIFF=$(git --no-pager diff --histogram --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" ':(exclude)**/*.js' ':(exclude)**/*.inv' || true)
+          # ':(exclude)**/*.js' ':(exclude)**/*.inv'
+          # doesn't work with --no-index
+          #
+          DIFF=$(git --no-pager diff --histogram --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
           if (( ${#DIFF} > 60000 )); then
               echo "#### GREATER"
-              DIFF=$(git --no-pager diff --name-status --no-index "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" ':(exclude)**/*.js' ':(exclude)**/*.inv' || true)
+              DIFF=$(git --no-pager diff --name-status --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
           fi
           echo 'DOC_DIFF<<EOF' >> ${GITHUB_ENV}
           echo "$DIFF" >> ${GITHUB_ENV}
