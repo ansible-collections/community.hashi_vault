@@ -104,13 +104,35 @@ jobs:
             echo "PUBLISH=false" >> $GITHUB_ENV
           fi
 
+      - name: Determine docsite subdomain
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
+            echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
+          else
+            echo "SITE_NAME=${SITE_NAME_MAIN}" >> $GITHUB_ENV
+          fi
+
       - name: Generate docs diff
         if: fromJSON(env.PUBLISH)
         run: |
           # ':(exclude)**/*.js' ':(exclude)**/*.inv'
           # doesn't work with --no-index
+          # TODO: instead of using --no-index, make one or both of the html directories a git repo
           #
-          DIFF_FILES=$(git --no-pager diff --name-status --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
+
+          # https://stackoverflow.com/a/29613573/3905079
+          sed_regex_escape='s/[^^]/[&]/g; s/\^/\\^/g'
+          sed_repl_escape='s/[&/\]/\\&/g'
+
+          base_docs_escaped=$(sed "${sed_regex_escape}" <<<"${BASE_DOCS_RENDERED}")
+          pr_docs_escaped=$(sed "${sed_regex_escape}" <<<"${PR_DOCS_RENDERED}")
+
+          site_name_escaped=$(sed "https://${sed_repl_escape}" <<<"${SITE_NAME}")
+
+          path_search="^([A-Z])\s+(${base_docs_escaped}|${pr_docs_escaped})\/html\/(.*?)$"
+          path_repl="\* \`\1\` \[\3\]\(${site_name_escaped}\/\3\)"
+
+          DIFF_FILES=$(git --no-pager diff --name-status --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" | sed -E "s/${path_search}/${path_repl}/g" | sort || true)
           DIFF=$(git --no-pager diff --histogram --no-index --relative --diff-filter=ad "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
           echo 'DOC_DIFF_FILES<<EOF' >> ${GITHUB_ENV}
           echo "$DIFF_FILES" >> ${GITHUB_ENV}
@@ -131,14 +153,6 @@ jobs:
           name: html_docsite
           path: ${{ env.HTML }}
           retention-days: 7
-
-      - name: Determine docsite subdomain
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
-            echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
-          else
-            echo "SITE_NAME=${SITE_NAME_MAIN}" >> $GITHUB_ENV
-          fi
 
       - name: Install Node
         if: fromJSON(env.NOT_A_FORK)
@@ -217,6 +231,7 @@ jobs:
 
             <details>
             <summary>Click to see the diff comparison.</summary>
+
             **NOTE:** only file modifications are shown here. New and deleted files are excluded.
             See the file list and check the published docs to see those files.
 
