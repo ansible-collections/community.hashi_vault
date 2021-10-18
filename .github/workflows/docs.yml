@@ -298,8 +298,15 @@ jobs:
             The docsite for **this PR** is also available for download as an artifact from this run:
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
+            File changes:
+
+            ${{ env.DOC_DIFF_FILES }}
+
             <details>
-            <summary>Click to see the diff comparison (long diffs will not show file contents).</summary>
+            <summary>Click to see the diff comparison.</summary>
+
+            **NOTE:** only file modifications are shown here. New and deleted files are excluded.
+            See the file list and check the published docs to see those files.
 
             ```diff
             ${{ env.DOC_DIFF }}
