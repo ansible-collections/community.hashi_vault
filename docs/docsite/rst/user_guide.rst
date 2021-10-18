@@ -15,6 +15,8 @@ The `community.hashi_vault collection <https://galaxy.ansible.com/community/hash
   :depth: 1
 
 
+.. _ansible_collections.community.hashi_vault.docsite.user_guide.requirements:
+
 Requirements
 ============
 
@@ -24,6 +26,21 @@ The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readth
 
     $ pip install hvac
 
+``hvac`` version specifics
+--------------------------
+
+In general, we recommend using the latest version of ``hvac`` that is supported for your given Python version because that is what we test against. Where possible we will try to list version-specific restrictions here, but this list may not be exhaustive.
+
+* ``hvac`` 0.7.0+ (for namespace support)
+* ``hvac`` 0.9.6+ (to avoid most deprecation warnings)
+* ``hvac`` 0.10.5+ (for JWT auth)
+* ``hvac`` 0.10.6+ (to avoid deprecation warning for AppRole)
+
+Other requirements
+------------------
+
+* ``botocore`` (only if inferring aws params from boto)
+* ``boto3`` (only if using a boto profile)
 
 Retrying failed requests
 ========================

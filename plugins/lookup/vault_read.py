@@ -11,17 +11,14 @@ DOCUMENTATION = """
     - Brian Scholer (@briantist)
   short_description: Perform a read operation against HashiCorp Vault
   requirements:
-    - hvac (python library)
-    - hvac 0.7.0+ (for namespace support)
-    - hvac 0.9.6+ (to avoid most deprecation warnings)
-    - hvac 0.10.5+ (for JWT auth)
-    - hvac 0.10.6+ (to avoid deprecation warning for AppRole)
-    - botocore (only if inferring aws params from boto)
-    - boto3 (only if using a boto profile)
+    - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+    - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
   description:
     - Performs a generic read operation against a given path in HashiCorp Vault.
-  notes:
-    - ???
+  seealso:
+    - module: community.hashi_vault.vault_read
+    - ref: community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.hashi_vault_lookup>
+      description: The official documentation for the C(community.hashi_vault.hashi_vault) lookup plugin.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.connection.plugins

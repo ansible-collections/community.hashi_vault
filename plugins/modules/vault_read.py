@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# (c) 2020, Brian Scholer (@briantist)
+# (c) 2021, Brian Scholer (@briantist)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
@@ -13,17 +13,15 @@ DOCUMENTATION = """
     - Brian Scholer (@briantist)
   short_description: Perform a read operation against HashiCorp Vault
   requirements:
-    - hvac (python library)
-    - hvac 0.7.0+ (for namespace support)
-    - hvac 0.9.6+ (to avoid most deprecation warnings)
-    - hvac 0.10.5+ (for JWT auth)
-    - hvac 0.10.6+ (to avoid deprecation warning for AppRole)
-    - botocore (only if inferring aws params from boto)
-    - boto3 (only if using a boto profile)
+    - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+    - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
   description:
     - Performs a generic read operation against a given path in HashiCorp Vault.
-  notes:
-    - ???
+  seealso:
+    - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
+    - ref: community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.hashi_vault_lookup>
+      description: The official documentation for the C(community.hashi_vault.hashi_vault) lookup plugin.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.auth
@@ -35,44 +33,28 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'secret/data/hello', url='https://vault:8201') }}"
+- name: Read a kv2 secret from Vault via the remote host with userpass auth
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    path: secret/data/hello
+    auth_method: userpass
+    username: user
+    password: '{{ passwd }}'
+  register: secret
 
-- name: Retrieve an approle role ID
+- name: Display the secret data
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
+    msg: "{{ secret.data.data.data }}"
 
-- name: Perform multiple reads with a single Vault login
-  vars:
-    paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', paths, auth_method='userpass', username=user, password=pwd) }}"
+- name: Retrieve an approle role ID from Vault via the remote host
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    path: auth/approle/role/role-name/role-id
+  register: approle_id
 
-- name: Perform multiple reads with a single Vault login in a loop
-  vars:
-    paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+- name: Display the role ID
   ansible.builtin.debug:
-    msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_read', paths, auth_method='userpass', username=user, password=pwd) }}"
-
-- name: Perform multiple reads with a single Vault login in a loop (via with_)
-  vars:
-    ansible_hashi_vault_auth_method: userpass
-    ansible_hashi_vault_username: '{{ user }}'
-    ansible_hashi_vault_passowrd: '{{ pwd }}'
-  ansible.builtin.debug:
-    msg: '{{ item }}'
-  with_community.hashi_vault.vault_read:
-    - secret/data/hello
-    - auth/approle/role/role-one/role-id
-    - auth/approle/role/role-two/role-id
+    msg: "{{ approle_id.data.data.role_id }}"
 """
 
 RETURN = """
@@ -81,6 +63,7 @@ data:
   returned: success
   type: dict
 """
+
 import traceback
 
 from ansible.module_utils._text import to_native
