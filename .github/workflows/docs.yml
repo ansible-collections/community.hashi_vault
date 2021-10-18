@@ -115,7 +115,7 @@ jobs:
       - name: Install Ansible and other requirements
         working-directory: ${{ env.DOCS_PREVIEW }}
         run: |
-          pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+          pip install https://github.com/ansible/ansible/archive/milestone.tar.gz --disable-pip-version-check
           pip install -r requirements.txt --disable-pip-version-check
 
       - name: Build the preview docs (HEAD)
