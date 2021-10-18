@@ -127,7 +127,7 @@ jobs:
           base_docs_escaped=$(sed "${sed_regex_escape}" <<<"${BASE_DOCS_RENDERED}")
           pr_docs_escaped=$(sed "${sed_regex_escape}" <<<"${PR_DOCS_RENDERED}")
 
-          site_name_escaped=$(sed "${sed_repl_escape}" <<<"https://${SITE_NAME}")
+          site_name_escaped=$(sed "${sed_repl_escape}" <<<"https://${SITE_NAME}.surge.sh")
 
           path_search="^([A-Z])\s+(${base_docs_escaped}|${pr_docs_escaped})\/html\/(.*?)$"
           path_repl="\> \* \`\1\` \[\3\]\(${site_name_escaped}\/\3\)"
