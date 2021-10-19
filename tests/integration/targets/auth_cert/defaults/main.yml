@@ -1,0 +1,19 @@
+---
+vault_run_https_tests: True
+
+ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+ansible_hashi_vault_auth_method: cert
+
+auth_paths:
+  - cert
+  - cert-alt
+
+vault_cert_canary:
+  path: cubbyhole/configure_cert
+  value: complete  # value does not matter
+
+auth_cert_cn: vault-test
+auth_cert_cert: "{{ role_path }}/files/auth_cert.crt"
+auth_cert_key: "{{ role_path }}/files/auth_cert.key"
+invalid_auth_cert_cert: "{{ role_path }}/files/auth_cert_invalid.crt"
+invalid_auth_cert_key: "{{ role_path }}/files/auth_cert_invalid.key"

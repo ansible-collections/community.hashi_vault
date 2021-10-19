@@ -22,6 +22,7 @@ class ModuleDocFragment(object):
           - approle
           - aws_iam_login
           - jwt
+          - cert
           - none
         default: token
         type: str
@@ -58,7 +59,7 @@ class ModuleDocFragment(object):
         description: Authentication password.
         type: str
       role_id:
-        description: Vault Role ID. Used in approle and aws_iam_login auth methods.
+        description: Vault Role ID. Used in approle, aws_iam_login, and cert auth methods.
         type: str
       secret_id:
         description: Secret ID to be used for Vault AppRole authentication.
@@ -89,6 +90,12 @@ class ModuleDocFragment(object):
         required: False
         type: str
         version_added: '0.2.0'
+      cert_pem:
+        description: Path to the certificate to authenticate with.
+        type: str
+      key_pem:
+        description: Path to the private key to authenticate with.
+        type: str
     '''
 
     PLUGINS = r'''
@@ -238,4 +245,16 @@ class ModuleDocFragment(object):
           - section: hashi_vault_collection
             key: aws_iam_server_id
             version_added: 1.4.0
+      cert_pem:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_CERT_PEM
+        ini:
+          - section: hashi_vault_collection
+            key: cert_pem
+      key_pem:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_KEY_PEM
+        ini:
+          - section: hashi_vault_collection
+            key: key_pem
     '''

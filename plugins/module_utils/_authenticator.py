@@ -21,6 +21,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import HashiVaultAuthMethodToken
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_userpass import HashiVaultAuthMethodUserpass
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_cert import HashiVaultAuthMethodCert
 
 
 class HashiVaultAuthenticator():
@@ -36,6 +37,7 @@ class HashiVaultAuthenticator():
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
             'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
+            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
         }
 
     def _get_method_object(self, method=None):
