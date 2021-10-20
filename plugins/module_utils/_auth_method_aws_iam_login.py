@@ -41,6 +41,10 @@ class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
             'secret_key': self._options.get_option_default('aws_secret_key'),
         }
 
+        session_token = self._options.get_option_default('aws_security_token')
+        if session_token:
+            params['session_token'] = session_token
+
         mount_point = self._options.get_option_default('mount_point')
         if mount_point:
             params['mount_point'] = mount_point
