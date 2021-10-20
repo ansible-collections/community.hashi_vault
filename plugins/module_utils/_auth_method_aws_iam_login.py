@@ -30,6 +30,7 @@ class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
         'aws_security_token',
         'region',
         'aws_iam_server_id',
+        'role_id',
     ]
 
     def __init__(self, option_adapter, warning_callback):
