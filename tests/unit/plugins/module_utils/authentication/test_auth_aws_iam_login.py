@@ -48,6 +48,7 @@ def aws_secret_key():
 def auth_aws_iam_login(adapter, warner):
     return HashiVaultAuthMethodAwsIamLogin(adapter, warner)
 
+
 # TODO: these tests aren't complete but are doing some basic checking that the parameters are being passed correctly.
 # They will be filled out eventually. See also:
 # - https://github.com/ansible-collections/community.hashi_vault/issues/160 (this issue is caught by these tests)
