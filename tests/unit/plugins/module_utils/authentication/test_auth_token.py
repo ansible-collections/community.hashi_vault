@@ -34,7 +34,7 @@ def option_dict():
         'auth_method': 'fake',
         'token': None,
         'token_path': None,
-        'token_file': None,
+        'token_file': '.vault-token',
         'token_validate': True,
     }
 

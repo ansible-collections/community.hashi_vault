@@ -33,7 +33,7 @@ DOCUMENTATION = """
 import json
 from ansible.utils.display import Display
 
-from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
 display = Display()
 

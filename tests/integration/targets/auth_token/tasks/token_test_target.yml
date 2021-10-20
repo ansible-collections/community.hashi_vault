@@ -1,0 +1,92 @@
+- name: Test token with no default policy (missing lookup-self)
+  vars:
+    user_token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
+    secret: "{{ vault_kv2_path ~ '/secret1' }}"
+    expected_secret_value: foo1
+  module_defaults:
+    vault_test_auth:
+      url: '{{ ansible_hashi_vault_url }}'
+      token: '{{ user_token }}'
+  block:
+    - name: Authenticate with a 'no default policy' token (failure expected)
+      register: response
+      vault_test_auth:
+        want_exception: true
+
+    - assert:
+        that:
+          - response.inner is failed
+          - response.msg is search('Invalid Vault Token')
+
+    - name: Authenticate with 'no default policy' token - with no validation
+      register: response
+      vault_test_auth:
+        token_validate: false
+
+    - assert:
+        that: response.login.auth.client_token == user_token
+
+    # if we could lookup-self, we'd be able to inspect the policies on this token,
+    # but since we can't, let's use the token to retrieve a secret we expect it to have access to.
+    # TODO: consider that we can use the root token we have access to in CI to lookup this token.
+    - name: Check that the token is usable
+      vault_ci_read:
+        url: '{{ ansible_hashi_vault_url }}'
+        token: '{{ response.login.auth.client_token }}'
+        path: '{{ secret }}'
+      register: secret_data
+
+    - assert:
+        that: secret_data.result.data.data.value == expected_secret_value
+
+    - name: Authenticate with an invalid token - with no validation
+      register: response
+      vault_test_auth:
+        token: fake
+        token_validate: false
+
+    - assert:
+        that: response.login.auth.client_token == 'fake'
+
+    - name: Try to use the invalid token
+      vault_ci_read:
+        url: '{{ ansible_hashi_vault_url }}'
+        token: '{{ response.login.auth.client_token }}'
+        path: '{{ secret }}'
+      register: secret_data
+      ignore_errors: yes
+
+    - assert:
+        that:
+          - secret_data is failed
+          - secret_data.msg is search('permission denied')
+
+- name: Normal token tests
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    expected_policy: test-policy
+  module_defaults:
+    vault_test_auth:
+      url: '{{ ansible_hashi_vault_url }}'
+  block:
+    - name: Authenticate with a token
+      register: response
+      vault_test_auth:
+        token: '{{ user_token }}'
+
+    - assert:
+        that:
+          - response.login.auth.client_token == user_token
+          - expected_policy in response.login.data.policies
+          - expected_policy in response.login.auth.policies
+
+    - name: Authenticate with an invalid token
+      register: response
+      vault_test_auth:
+        token: fake
+        want_exception: true
+
+    - assert:
+        that:
+          - response.inner is failed
+          - response.msg is search('Invalid Vault Token')

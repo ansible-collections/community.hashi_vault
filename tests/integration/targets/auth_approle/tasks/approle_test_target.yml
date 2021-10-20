@@ -1,19 +1,17 @@
 - name: "Test block"
   vars:
     is_default_path: "{{ this_path == default_path }}"
-    kwargs_mount: "{{ {} if is_default_path else {'mount_point': this_path} }}"
-    kwargs_secret_id: {}
-    kwargs: "{{ kwargs_common | combine(kwargs_mount) | combine(kwargs_secret_id) }}"
+  module_defaults:
+    vault_test_auth:
+      url: '{{ ansible_hashi_vault_url }}'
+      auth_method: '{{ ansible_hashi_vault_auth_method }}'
+      mount_point: '{{ omit if is_default_path else this_path }}'
+      role_id: '{{ role_id_cmd.result.data.role_id | default(omit) }}'
   block:
     - name: 'Fetch the RoleID of the AppRole'
       vault_ci_read:
         path: 'auth/{{ this_path }}/role/{{ approle_name }}/role-id'
       register: role_id_cmd
-
-    - name: Set common args
-      set_fact:
-        kwargs_common:
-          role_id: '{{ role_id_cmd.result.data.role_id }}'
 
     - name: 'Get a SecretID issued against the AppRole'
       when: use_secret_id | bool
@@ -22,18 +20,13 @@
         data: {}
       register: secret_id_cmd
 
-    - name: Set secret ID
-      when: use_secret_id | bool
-      set_fact:
-        kwargs_secret_id:
-          secret_id: '{{ secret_id_cmd.result.data.secret_id }}'
-
     # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
     # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
     # is default, and success when the mount is alternate
     - name: Check auth mount differing result
-      set_fact:
-        response: "{{ lookup('vault_test_auth', '', **kwargs) }}"
+      register: response
+      vault_test_auth:
+        secret_id: "{{ secret_id_cmd.result.data.secret_id if (use_secret_id | bool) else omit }}"
 
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
@@ -43,17 +36,14 @@
           - ('alt-policy' in response.login.auth.policies) | bool != is_default_path
           - ('alt-policy' not in response.login.auth.policies) | bool == is_default_path
 
-    - name: Prepare an invalid secret ID
-      set_fact:
-        kwargs_secret_id:
-          secret_id: fake
-
     - name: Failure expected when erroneous credentials are used and secret ID is required
-      set_fact:
-        response: "{{ lookup('vault_test_auth', '', want_exception=true, **kwargs) }}"
+      register: response
+      vault_test_auth:
+        secret_id: fake
+        want_exception: yes
 
     - assert:
         fail_msg: "An invalid secret ID somehow did not cause a failure."
         that:
-          - (response is failed) == use_secret_id
+          - (response.inner is failed) == use_secret_id
           - not use_secret_id or response.msg is search('invalid secret id')

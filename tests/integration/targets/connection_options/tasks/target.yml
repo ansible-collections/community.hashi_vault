@@ -1,0 +1,84 @@
+---
+- name: Connection Tests
+  module_defaults:
+    assert:
+      quiet: yes
+  vars:
+    assert_cmd: &assert
+      assert:
+        that: result.status.initialized
+  block:
+    - name: HTTP connection
+      module_defaults:
+        vault_test_connection:
+          url: '{{ vault_test_server_http }}'
+      block:
+        - name: test HTTP
+          register: result
+          vault_test_connection:
+
+        - <<: *assert
+
+        - name: test HTTP with proxy
+          register: result
+          vault_test_connection:
+            url: '{{ vault_proxy_alt_vault_http | default(vault_test_server_http) }}'
+            proxies: '{{ vault_proxy_server }}'
+
+        - <<: *assert
+
+        - name: test HTTP with wrong proxy
+          register: result
+          vault_test_connection:
+            want_exception: yes
+            proxies: http://127.0.0.1:4567
+            retries: 2
+
+        - assert:
+            that:
+              - result.inner is failed
+              - result.msg is search('Cannot connect to proxy')
+              - result.retries == 2
+
+    - name: HTTPS connection
+      when: vault_run_https_tests | bool
+      module_defaults:
+        vault_test_connection:
+          url: '{{ vault_test_server_https }}'
+          ca_cert: '{{ vault_cert_file }}'
+      block:
+        - name: test HTTPS with no cert validation
+          register: result
+          vault_test_connection:
+            validate_certs: false
+
+        - <<: *assert
+
+        - name: test HTTPS with cert validation
+          register: result
+          vault_test_connection:
+            want_args: yes
+
+        - <<: *assert
+
+        - name: test HTTPS with proxy & cert validation
+          register: result
+          vault_test_connection:
+            url: '{{ vault_proxy_alt_vault_https | default(vault_test_server_http) }}'
+            proxies: '{{ vault_proxy_server }}'
+
+        - <<: *assert
+
+        - name: test HTTPS with wrong proxy & cert validation
+          register: result
+          vault_test_connection:
+            want_exception: yes
+            validate_certs: yes
+            proxies: http://127.0.0.1:4567
+            retries: 2
+
+        - assert:
+            that:
+              - result.inner is failed
+              - result.msg is search('Cannot connect to proxy')
+              - result.retries == 2

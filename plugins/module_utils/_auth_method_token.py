@@ -27,6 +27,11 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
     NAME = 'token'
     OPTIONS = ['token', 'token_path', 'token_file', 'token_validate']
 
+    _LATE_BINDING_ENV_VAR_OPTIONS = {
+        'token': dict(env=['VAULT_TOKEN']),
+        'token_path': dict(env=['HOME']),
+    }
+
     def __init__(self, option_adapter, warning_callback):
         super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback)
 
@@ -58,7 +63,9 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
         return response
 
     def validate(self):
-        if not self._options.get_option('token') and self._options.get_option('token_path'):
+        self.process_late_binding_env_vars(self._LATE_BINDING_ENV_VAR_OPTIONS)
+
+        if self._options.get_option_default('token') is None and self._options.get_option_default('token_path') is not None:
             token_filename = os.path.join(
                 self._options.get_option('token_path'),
                 self._options.get_option('token_file')
@@ -69,12 +76,12 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                 with open(token_filename) as token_file:
                     self._options.set_option('token', token_file.read().strip())
 
-        if not self._options.get_option('token'):
+        if self._options.get_option_default('token') is None:
             raise HashiVaultValueError("No Vault Token specified or discovered.")
 
     def authenticate(self, client, use_token=True, lookup_self=False):
         token = self._options.get_option('token')
-        validate = self._options.get_option('token_validate')
+        validate = self._options.get_option_default('token_validate')
 
         response = None
 

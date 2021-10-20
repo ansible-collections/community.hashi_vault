@@ -32,6 +32,7 @@
     # but since we can't, let's use the token to retrieve a secret we expect it to have access to.
     # TODO: consider that we can use the root token we have access to in CI to lookup this token.
     - name: Check that the token is usable
+      delegate_to: localhost
       vault_ci_read:
         url: '{{ ansible_hashi_vault_url }}'
         token: '{{ response.login.auth.client_token }}'
@@ -49,6 +50,7 @@
         that: response.login.auth.client_token == 'fake'
 
     - name: Try to use the invalid token
+      delegate_to: localhost
       vault_ci_read:
         url: '{{ ansible_hashi_vault_url }}'
         token: '{{ response.login.auth.client_token }}'

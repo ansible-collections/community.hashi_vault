@@ -1,0 +1,12 @@
+---
+# TODO: consider setting up a Vault agent in CI to provide a better test of the none method
+- name: "Perform a login with 'none' auth type"
+  register: status
+  vault_test_auth:
+    url: '{{ ansible_hashi_vault_url }}'
+    auth_method: '{{ ansible_hashi_vault_auth_method }}'
+
+- name: "Assert no login information is returned"
+  assert:
+    that:
+      - status.login == None
