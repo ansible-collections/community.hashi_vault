@@ -37,14 +37,20 @@
           value: '{{ vault_cert_canary.value }}'
 
 
-- name: Run cert tests
+- name: Run cert tests (controller)
   loop: '{{ auth_paths }}'
   include_tasks:
-    file: cert_test.yml
-    apply:
+    file: cert_test_controller.yml
+    apply: &test_apply
       vars:
         default_path: '{{ ansible_hashi_vault_auth_method }}'
         this_path: '{{ item }}'
       module_defaults:
         assert:
           quiet: yes
+
+- name: Run cert tests (target)
+  loop: '{{ auth_paths }}'
+  include_tasks:
+    file: cert_test_target.yml
+    apply: *test_apply

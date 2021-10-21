@@ -1,4 +1,5 @@
 vault/auth/cert
+context/target
 needs/target/setup_vault_legacy
 needs/target/setup_vault_test_plugins
 needs/target/setup_vault_configure
