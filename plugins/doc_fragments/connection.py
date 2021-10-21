@@ -33,18 +33,20 @@ class ModuleDocFragment(object):
           - Path to certificate to use for authentication.
           - If not specified by any other means, the C(VAULT_CACERT) environment variable will be used.
         aliases: [ cacert ]
+        type: str
       validate_certs:
         description:
           - Controls verification and validation of SSL certificates, mostly you only want to turn off with self signed ones.
           - Will be populated with the inverse of C(VAULT_SKIP_VERIFY) if that is set and I(validate_certs) is not explicitly provided.
           - Will default to C(true) if neither I(validate_certs) or C(VAULT_SKIP_VERIFY) are set.
-        type: boolean
+        type: bool
       namespace:
         description:
           - Vault namespace where secrets reside. This option requires HVAC 0.7.0+ and Vault 0.11+.
           - Optionally, this may be achieved by prefixing the authentication mount point and/or secret path with the namespace
             (e.g C(mynamespace/secret/mysecret)).
           - If environment variable C(VAULT_NAMESPACE) is set, its value will be used last among all ways to specify I(namespace).
+        type: str
       timeout:
         description:
           - Sets the connection timeout in seconds.

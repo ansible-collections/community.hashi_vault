@@ -25,6 +25,34 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 
 
 class HashiVaultAuthenticator():
+    ARGSPEC = dict(
+        auth_method=dict(type='str', default='token', choices=[
+            'token',
+            'userpass',
+            'ldap',
+            'approle',
+            'aws_iam_login',
+            'jwt',
+            'none',
+        ]),
+        mount_point=dict(type='str'),
+        token=dict(type='str', no_log=True, default=None),
+        token_path=dict(type='str', default=None, no_log=False),
+        token_file=dict(type='str', default='.vault-token'),
+        token_validate=dict(type='bool', default=True),
+        username=dict(type='str'),
+        password=dict(type='str', no_log=True),
+        role_id=dict(type='str'),
+        secret_id=dict(type='str', no_log=True),
+        jwt=dict(type='str', no_log=True),
+        aws_profile=dict(type='str', aliases=['boto_profile']),
+        aws_access_key=dict(type='str', aliases=['aws_access_key_id'], no_log=False),
+        aws_secret_key=dict(type='str', aliases=['aws_secret_access_key'], no_log=True),
+        aws_security_token=dict(type='str', no_log=False),
+        region=dict(type='str'),
+        aws_iam_server_id=dict(type='str'),
+    )
+
     def __init__(self, option_adapter, warning_callback):
         self._options = option_adapter
         self._selector = {

@@ -1,0 +1,19 @@
+---
+# task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+# see: https://github.com/ansible/ansible/issues/73268
+- name: Persist defaults
+  set_fact:
+    '{{ item.key }}': "{{ lookup('vars', item.key) }}"
+  loop: "{{ lookup('file', role_path ~ '/defaults/main.yml') | from_yaml | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+
+# TODO: consider setting up a Vault agent in CI to provide a better test of the none method
+- name: "Perform a login with 'none' auth type"
+  set_fact:
+    status: "{{ lookup('vault_test_auth', '') }}"
+
+- name: "Assert no login information is returned"
+  assert:
+    that:
+      - status.login == None

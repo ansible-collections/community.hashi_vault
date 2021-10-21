@@ -385,7 +385,7 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
-from ansible_collections.community.hashi_vault.plugins.lookup.__init__ import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
 display = Display()
 
@@ -427,11 +427,6 @@ class LookupModule(HashiVaultLookupBase):
     def process_options(self):
         '''performs deep validation and value loading for options'''
 
-        # low preference env vars
-        # doing this as a function of connection options is temporary
-        # eventually each option group will handle these
-        self.connection_options.process_low_preference_env_vars()
-
         # process connection options
         self.connection_options.process_connection_options()
 
@@ -443,18 +438,7 @@ class LookupModule(HashiVaultLookupBase):
         # secret field splitter
         self.field_ops()
 
-        # apply additional defaults
-        self.apply_additional_defaults(url='http://127.0.0.1:8200')
-
     # begin options processing methods
-
-    # this is a temporary method
-    # https://github.com/ansible-collections/community.hashi_vault/pull/61
-    # low preference env vars will be updated to take defaults into account
-    def apply_additional_defaults(self, **kwargs):
-        for k, v in kwargs.items():
-            if self.get_option(k) is None:
-                self.set_option(k, v)
 
     def field_ops(self):
         # split secret and field

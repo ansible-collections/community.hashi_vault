@@ -21,13 +21,16 @@ PREREAD_OPTIONS = {
     'opt2': None,
     'opt3': 'val3',
     'opt4': None,
+    # no opt5
+    'opt6': None,
 }
 
 LOW_PREF_DEF = {
-    'opt1': ['_ENV_1A'],
-    'opt2': ['_ENV_2A', '_ENV_2B'],
-    'opt4': ['_ENV_4A', '_ENV_4B', '_ENV_4C'],
-    'opt5': ['_ENV_5A'],
+    'opt1': dict(env=['_ENV_1A'], default='never'),
+    'opt2': dict(env=['_ENV_2A', '_ENV_2B']),
+    'opt4': dict(env=['_ENV_4A', '_ENV_4B', '_ENV_4C']),
+    'opt5': dict(env=['_ENV_5A']),
+    'opt6': dict(env=['_ENV_6A'], default='mosdefault'),
 }
 
 
@@ -51,14 +54,14 @@ def option_group_base(adapter):
     # second dict is used to patch the current options to get them to the expected state
     #
     # envpatch, expatch
-    ({}, {}),
-    ({'_ENV_1A': 'alt1a'}, {}),
-    ({'_ENV_3X': 'noop3x'}, {}),
-    ({'_ENV_2B': 'alt2b'}, {'opt2': 'alt2b'}),
-    ({'_ENV_2A': 'alt2a', '_ENV_2B': 'alt2b'}, {'opt2': 'alt2a'}),
-    ({'_ENV_4B': 'alt4b', '_ENV_4C': 'alt4c'}, {'opt4': 'alt4b'}),
-    ({'_ENV_1A': 'alt1a', '_ENV_4A': 'alt4a', '_ENV_1B': 'noop1b', '_ENV_4C': 'alt4c'}, {'opt4': 'alt4a'}),
-    ({'_ENV_5A': 'noop5a', '_ENV_4C': 'alt4c', '_ENV_2A': 'alt2a'}, {'opt2': 'alt2a', 'opt4': 'alt4c'}),
+    ({}, {'opt6': 'mosdefault'}),
+    ({'_ENV_1A': 'alt1a'}, {'opt6': 'mosdefault'}),
+    ({'_ENV_3X': 'noop3x'}, {'opt6': 'mosdefault'}),
+    ({'_ENV_2B': 'alt2b'}, {'opt2': 'alt2b', 'opt6': 'mosdefault'}),
+    ({'_ENV_2A': 'alt2a', '_ENV_2B': 'alt2b'}, {'opt2': 'alt2a', 'opt6': 'mosdefault'}),
+    ({'_ENV_4B': 'alt4b', '_ENV_6A': 'defnot', '_ENV_4C': 'alt4c'}, {'opt4': 'alt4b', 'opt6': 'defnot'}),
+    ({'_ENV_1A': 'alt1a', '_ENV_4A': 'alt4a', '_ENV_1B': 'noop1b', '_ENV_4C': 'alt4c'}, {'opt4': 'alt4a', 'opt6': 'mosdefault'}),
+    ({'_ENV_5A': 'noop5a', '_ENV_4C': 'alt4c', '_ENV_2A': 'alt2a'}, {'opt2': 'alt2a', 'opt4': 'alt4c', 'opt6': 'mosdefault'}),
 ])
 def with_env(request, preread_options):
     envpatch, expatch = request.param
@@ -72,7 +75,7 @@ def with_env(request, preread_options):
 
 class TestHashiVaultOptionGroupBase(object):
 
-    def test_process_low_preference_env_vars(self, option_group_base, with_env, preread_options):
-        option_group_base.process_low_preference_env_vars(LOW_PREF_DEF)
+    def test_process_late_binding_env_vars(self, option_group_base, with_env, preread_options):
+        option_group_base.process_late_binding_env_vars(LOW_PREF_DEF)
 
         assert preread_options == with_env, "Expected: %r\nGot: %r" % (with_env, preread_options)
