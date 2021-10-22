@@ -66,7 +66,7 @@ class TestAuthCert(object):
         expected_login_params = {
             "cert_pem": "/fake/path",
             "key_pem": "/fake/path",
-            "name": "cert",
+            "name": role_id,
             "use_token": use_token
         }
 
