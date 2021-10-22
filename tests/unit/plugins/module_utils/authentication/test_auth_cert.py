@@ -68,7 +68,7 @@ class TestAuthCert(object):
             "key_pem": "/fake/path",
             "use_token": use_token,
         }
-        
+
         if role_id:
             expected_login_params["name"] = role_id
 
