@@ -53,7 +53,7 @@ def auth_aws_iam_login(adapter, warner):
 # They will be filled out eventually. See also:
 # - https://github.com/ansible-collections/community.hashi_vault/issues/160 (this issue is caught by these tests)
 # - https://github.com/ansible-collections/community.hashi_vault/issues/118
-class TestAuthJwt(object):
+class TestAuthAwsIamLogin(object):
 
     def test_auth_aws_iam_login_is_auth_method_base(self, auth_aws_iam_login):
         assert isinstance(auth_aws_iam_login, HashiVaultAuthMethodAwsIamLogin)
