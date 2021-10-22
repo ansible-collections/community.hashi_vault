@@ -1,3 +1,4 @@
+---
 - name: "Test block"
   vars:
     is_default_path: "{{ this_path == default_path }}"
