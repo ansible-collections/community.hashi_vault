@@ -66,9 +66,11 @@ class TestAuthCert(object):
         expected_login_params = {
             "cert_pem": "/fake/path",
             "key_pem": "/fake/path",
-            "name": role_id,
-            "use_token": use_token
+            "use_token": use_token,
         }
+        
+        if role_id:
+            expected_login_params["name"] = role_id
 
         if mount_point:
             expected_login_params["mount_point"] = mount_point
