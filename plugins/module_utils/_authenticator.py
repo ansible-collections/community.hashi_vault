@@ -60,12 +60,12 @@ class HashiVaultAuthenticator():
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
             'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
+            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
             'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
-            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
         }
 
     def _get_method_object(self, method=None):
