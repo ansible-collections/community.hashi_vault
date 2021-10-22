@@ -30,8 +30,8 @@ class HashiVaultAuthMethodCert(HashiVaultAuthMethodBase):
 
         if "mount_point" in options:
             params["mount_point"] = options["mount_point"]
-        if "role_id" in params:
-            params["name"] = params.pop("role_id")
+        if "role_id" in options:
+            params["name"] = options["role_id"]
 
         try:
             response = client.auth.cert.login(use_token=use_token, **params)
