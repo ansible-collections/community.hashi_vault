@@ -90,12 +90,14 @@ class ModuleDocFragment(object):
         required: False
         type: str
         version_added: '0.2.0'
-      cert_pem:
-        description: Path to the certificate to authenticate with.
-        type: str
-      key_pem:
-        description: Path to the private key to authenticate with.
-        type: str
+      cert_auth_public_key:
+        description: For C(cert) auth, path to the certificate file to authenticate with, in PEM format.
+        type: path
+        version_added: 1.4.0
+      cert_auth_private_key:
+        description: For C(cert) auth, path to the private key file to authenticate with, in PEM format.
+        type: path
+        version_added: 1.4.0
     '''
 
     PLUGINS = r'''
