@@ -59,7 +59,7 @@ class ModuleDocFragment(object):
         description: Authentication password.
         type: str
       role_id:
-        description: 
+        description:
           - Vault Role ID or name. Used in C(approle), C(aws_iam_login), and C(cert) auth methods.
           - For C(cert) auth, if no I(role_id) is supplied, the default behavior is to try all certificate roles and return any one that matches.
         type: str
