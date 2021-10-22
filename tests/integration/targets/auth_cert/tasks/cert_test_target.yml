@@ -1,23 +1,21 @@
 - name: "Test block"
   vars:
     is_default_path: "{{ this_path == default_path }}"
-    kwargs_common:
+  module_defaults:
+    vault_test_auth:
+      url: "{{ vault_test_server_https }}"
       ca_cert: "{{ vault_cert_file }}"
-    kwargs_mount: "{{ {} if is_default_path else {'mount_point': this_path} }}"
-    kwargs_cert:
-      cert_pem: "{{ auth_cert_cert }}"
-      key_pem: "{{ auth_cert_key }}"
-    kwargs: "{{ kwargs_common | combine(kwargs_mount) | combine(kwargs_cert) }}"
+      auth_method: "cert"
+      mount_point: "{{ omit if is_default_path else this_path }}"
+      cert_auth_public_key: "{{ auth_cert_cert }}"
+      cert_auth_private_key: "{{ auth_cert_key }}"
   block:
-    - name: Set the HTTPS connection address
-      set_fact:
-        ansible_hashi_vault_addr: "{{ vault_test_server_https }}"
     # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
     # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
     # is default, and success when the mount is alternate
     - name: Check auth mount differing result
-      set_fact:
-        response: "{{ lookup('vault_test_auth', '', **kwargs) }}"
+      vault_test_auth:
+      register: response
 
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
@@ -28,15 +26,14 @@
           - ('alt-policy' not in response.login.auth.policies) | bool == is_default_path
 
     - name: Failure expected when erroneous credentials are used
-      vars:
-        kwargs_cert:
-          cert_pem: "{{ invalid_auth_cert_cert }}"
-          key_pem: "{{ invalid_auth_cert_key }}"
-      set_fact:
-        response: "{{ lookup('vault_test_auth', '', want_exception=true, **kwargs) }}"
+      vault_test_auth:
+        cert_auth_public_key: "{{ invalid_auth_cert_cert }}"
+        cert_auth_private_key: "{{ invalid_auth_cert_key }}"
+        want_exception: yes
+      register: response
 
     - assert:
         fail_msg: "An invalid cert somehow did not cause a failure."
         that:
-          - response is failed
+          - response.inner is failed
           - response.msg is search('invalid certificate or no client certificate supplied')

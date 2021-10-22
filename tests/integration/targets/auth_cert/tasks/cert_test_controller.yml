@@ -5,8 +5,8 @@
       ca_cert: "{{ vault_cert_file }}"
     kwargs_mount: "{{ {} if is_default_path else {'mount_point': this_path} }}"
     kwargs_cert:
-      cert_pem: "{{ auth_cert_cert }}"
-      key_pem: "{{ auth_cert_key }}"
+      cert_auth_public_key: "{{ auth_cert_cert }}"
+      cert_auth_private_key: "{{ auth_cert_key }}"
     kwargs: "{{ kwargs_common | combine(kwargs_mount) | combine(kwargs_cert) }}"
   block:
     - name: Set the HTTPS connection address
@@ -30,8 +30,8 @@
     - name: Failure expected when erroneous credentials are used
       vars:
         kwargs_cert:
-          cert_pem: "{{ invalid_auth_cert_cert }}"
-          key_pem: "{{ invalid_auth_cert_key }}"
+          cert_auth_public_key: "{{ invalid_auth_cert_cert }}"
+          cert_auth_private_key: "{{ invalid_auth_cert_key }}"
       set_fact:
         response: "{{ lookup('vault_test_auth', '', want_exception=true, **kwargs) }}"
 
