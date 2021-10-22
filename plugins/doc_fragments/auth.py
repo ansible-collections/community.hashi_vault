@@ -247,16 +247,16 @@ class ModuleDocFragment(object):
           - section: hashi_vault_collection
             key: aws_iam_server_id
             version_added: 1.4.0
-      cert_pem:
+      cert_auth_public_key:
         env:
-          - name: ANSIBLE_HASHI_VAULT_CERT_PEM
+          - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PUBLIC_KEY
         ini:
           - section: hashi_vault_collection
-            key: cert_pem
-      key_pem:
+            key: cert_auth_public_key
+      cert_auth_private_key:
         env:
-          - name: ANSIBLE_HASHI_VAULT_KEY_PEM
+          - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PRIVATE_KEY
         ini:
           - section: hashi_vault_collection
-            key: key_pem
+            key: cert_auth_private_key
     '''
