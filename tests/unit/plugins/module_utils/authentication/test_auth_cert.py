@@ -54,10 +54,12 @@ class TestAuthCert(object):
 
     @pytest.mark.parametrize("use_token", [True, False], ids=lambda x: "use_token=%s" % x)
     @pytest.mark.parametrize("mount_point", [None, "other"], ids=lambda x: "mount_point=%s" % x)
-    def test_auth_cert_authenticate(self, auth_cert, client, adapter, mount_point, use_token, cert_login_response):
+    @pytest.mark.parametrize("role_id", [None, "cert"], ids=lambda x: "role_id=%s" % x)
+    def test_auth_cert_authenticate(self, auth_cert, client, adapter, mount_point, use_token, role_id,
+                                    cert_login_response):
         adapter.set_option("cert_pem", "/fake/path")
         adapter.set_option("key_pem", "/fake/path")
-        adapter.set_option("role_id", "cert")
+        adapter.set_option("role_id", role_id)
         adapter.set_option("mount_point", mount_point)
 
         expected_login_params = {
