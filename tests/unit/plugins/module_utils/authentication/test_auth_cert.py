@@ -36,15 +36,16 @@ class TestAuthCert(object):
         assert issubclass(HashiVaultAuthMethodCert, HashiVaultAuthMethodBase)
 
     def test_auth_cert_validate_direct(self, auth_cert, adapter):
-        adapter.set_option("cert_pem", "/fake/path")
-        adapter.set_option("key_pem", "/fake/path")
+        adapter.set_option("cert_auth_public_key", "/fake/path")
+        adapter.set_option("cert_auth_private_key", "/fake/path")
 
         auth_cert.validate()
 
     @pytest.mark.parametrize("opt_patch", [
         {},
-        {"cert_pem": ""},
-        {"key_pem": ""}
+        {"cert_auth_public_key": ""},
+        {"cert_auth_private_key": ""},
+        {"mount_point": ""}
     ])
     def test_auth_cert_validate_xfailures(self, auth_cert, adapter, opt_patch):
         adapter.set_options(**opt_patch)
@@ -57,8 +58,8 @@ class TestAuthCert(object):
     @pytest.mark.parametrize("role_id", [None, "cert"], ids=lambda x: "role_id=%s" % x)
     def test_auth_cert_authenticate(self, auth_cert, client, adapter, mount_point, use_token, role_id,
                                     cert_login_response):
-        adapter.set_option("cert_pem", "/fake/path")
-        adapter.set_option("key_pem", "/fake/path")
+        adapter.set_option("cert_auth_public_key", "/fake/path")
+        adapter.set_option("cert_auth_private_key", "/fake/path")
         adapter.set_option("role_id", role_id)
         adapter.set_option("mount_point", mount_point)
 

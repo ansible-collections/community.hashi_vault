@@ -10,17 +10,24 @@ class HashiVaultAuthMethodCert(HashiVaultAuthMethodBase):
     """HashiVault option group class for auth: cert"""
 
     NAME = "cert"
-    OPTIONS = ["cert_pem", "key_pem", "mount_point", "role_id"]
+    OPTIONS = ["cert_auth_public_key", "cert_auth_private_key", "mount_point", "role_id"]
 
     def __init__(self, option_adapter, warning_callback):
         super(HashiVaultAuthMethodCert, self).__init__(option_adapter, warning_callback)
 
     def validate(self):
-        self.validate_by_required_fields("cert_pem", "key_pem")
+        self.validate_by_required_fields("cert_auth_public_key", "cert_auth_private_key")
 
     def authenticate(self, client, use_token=True):
-        params = self._options.get_filled_options(*self.OPTIONS)
+        options = self._options.get_filled_options(*self.OPTIONS)
 
+        params = {
+            "cert_pem": options["cert_auth_public_key"],
+            "key_pem": options["cert_auth_private_key"]
+        }
+
+        if "mount_point" in options:
+            params["mount_point"] = options["mount_point"]
         if "role_id" in params:
             params["name"] = params.pop("role_id")
 
