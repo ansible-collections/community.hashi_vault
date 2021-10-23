@@ -35,6 +35,7 @@ In general, we recommend using the latest version of ``hvac`` that is supported 
 * ``hvac`` 0.9.6+ (to avoid most deprecation warnings)
 * ``hvac`` 0.10.5+ (for JWT auth)
 * ``hvac`` 0.10.6+ (to avoid deprecation warning for AppRole)
+* ``hvac`` 0.10.12+ (for cert auth)
 
 Other requirements
 ------------------
