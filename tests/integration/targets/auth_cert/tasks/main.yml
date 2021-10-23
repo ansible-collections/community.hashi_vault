@@ -13,6 +13,7 @@
     vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
     vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
     vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
   block:
     - name: Canary for cert auth
       vault_ci_read:
