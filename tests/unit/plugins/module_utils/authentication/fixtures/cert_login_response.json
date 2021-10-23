@@ -1,0 +1,35 @@
+{
+    "auth": {
+        "accessor": "f69aXFTLzAE1e5pPDpAqNAFW",
+        "client_token": "s.bJ8UmS3NbYH3XJD7P70Yiyml",
+        "entity_id": "84590d6b-54a2-7d81-201c-6107353169fb",
+        "lease_duration": 3600,
+        "metadata": {
+            "authority_key_id": "66:45:2e:ae:d1:39:c8:d8:0d:fd:e7:d8:0f:8a:49:ee:f7:cc:53:ae",
+            "cert_name": "vault_test",
+            "common_name": "vault-test",
+            "serial_number": "657513290402968240784573665154053221879835701422",
+            "subject_key_id": "66:45:2e:ae:d1:39:c8:d8:0d:fd:e7:d8:0f:8a:49:ee:f7:cc:53:ae"
+        },
+        "orphan": true,
+        "policies": [
+            "approle-policy",
+            "default",
+            "test-policy"
+        ],
+        "renewable": true,
+        "token_policies": [
+            "approle-policy",
+            "default",
+            "test-policy"
+        ],
+        "token_type": "service"
+    },
+    "data": null,
+    "lease_duration": 0,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "9016334e-8bbb-4390-5512-c9b526b39bd3",
+    "warnings": null,
+    "wrap_info": null
+}

@@ -16,6 +16,7 @@ __metaclass__ = type
 # please keep this list in alphabetical order of auth method name
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_approle import HashiVaultAuthMethodApprole
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_aws_iam_login import HashiVaultAuthMethodAwsIamLogin
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_cert import HashiVaultAuthMethodCert
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_jwt import HashiVaultAuthMethodJwt
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_ldap import HashiVaultAuthMethodLdap
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
@@ -33,6 +34,7 @@ class HashiVaultAuthenticator():
             'aws_iam_login',
             'jwt',
             'none',
+            'cert'
         ]),
         mount_point=dict(type='str'),
         token=dict(type='str', no_log=True, default=None),
@@ -50,6 +52,8 @@ class HashiVaultAuthenticator():
         aws_security_token=dict(type='str', no_log=False),
         region=dict(type='str'),
         aws_iam_server_id=dict(type='str'),
+        cert_auth_private_key=dict(type='path', no_log=False),
+        cert_auth_public_key=dict(type='path'),
     )
 
     def __init__(self, option_adapter, warning_callback):
@@ -59,6 +63,7 @@ class HashiVaultAuthenticator():
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
             'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
+            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),

@@ -1,0 +1,5 @@
+---
+dependencies:
+  - setup_cert_content
+  - setup_vault_legacy
+  - setup_vault_configure

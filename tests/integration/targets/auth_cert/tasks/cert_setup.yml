@@ -1,0 +1,31 @@
+---
+- name: "Setup block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+  block:
+    - name: "Enable the cert auth method"
+      vault_ci_enable_auth:
+        method_type: '{{ ansible_hashi_vault_auth_method }}'
+        path: "{{ omit if is_default_path else this_path }}"
+        config:
+          default_lease_ttl: 60m
+
+    - name: Create a cert policy
+      vault_ci_policy_put:
+        name: cert-policy
+        policy: |
+          path "auth/{{ this_path }}/login" {
+            capabilities = [ "create", "read" ]
+          }
+
+    - name: "Create a named role"
+      vault_ci_write:
+        path: "auth/{{ this_path }}/certs/vault_test"
+        data:
+          certificate: "{{ _auth_cert }}"
+          allowed_common_names: "{{ auth_cert_cn }}"
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},cert-policy"
+      vars:
+        _auth_cert: '{{ lookup("file", auth_cert_cert) }}'

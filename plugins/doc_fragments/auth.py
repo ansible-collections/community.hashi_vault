@@ -15,6 +15,7 @@ class ModuleDocFragment(object):
         description:
           - Authentication method to be used.
           - C(none) auth method was added in collection version C(1.2.0).
+          - C(cert) auth method was added in collection version C(1.4.0).
         choices:
           - token
           - userpass
@@ -22,6 +23,7 @@ class ModuleDocFragment(object):
           - approle
           - aws_iam_login
           - jwt
+          - cert
           - none
         default: token
         type: str
@@ -58,7 +60,9 @@ class ModuleDocFragment(object):
         description: Authentication password.
         type: str
       role_id:
-        description: Vault Role ID. Used in approle and aws_iam_login auth methods.
+        description:
+          - Vault Role ID or name. Used in C(approle), C(aws_iam_login), and C(cert) auth methods.
+          - For C(cert) auth, if no I(role_id) is supplied, the default behavior is to try all certificate roles and return any one that matches.
         type: str
       secret_id:
         description: Secret ID to be used for Vault AppRole authentication.
@@ -89,6 +93,14 @@ class ModuleDocFragment(object):
         required: False
         type: str
         version_added: '0.2.0'
+      cert_auth_public_key:
+        description: For C(cert) auth, path to the certificate file to authenticate with, in PEM format.
+        type: path
+        version_added: 1.4.0
+      cert_auth_private_key:
+        description: For C(cert) auth, path to the private key file to authenticate with, in PEM format.
+        type: path
+        version_added: 1.4.0
     '''
 
     PLUGINS = r'''
@@ -238,4 +250,16 @@ class ModuleDocFragment(object):
           - section: hashi_vault_collection
             key: aws_iam_server_id
             version_added: 1.4.0
+      cert_auth_public_key:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PUBLIC_KEY
+        ini:
+          - section: hashi_vault_collection
+            key: cert_auth_public_key
+      cert_auth_private_key:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PRIVATE_KEY
+        ini:
+          - section: hashi_vault_collection
+            key: cert_auth_private_key
     '''

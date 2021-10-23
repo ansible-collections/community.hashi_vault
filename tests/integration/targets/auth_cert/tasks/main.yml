@@ -1,0 +1,57 @@
+---
+# task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+# see: https://github.com/ansible/ansible/issues/73268
+- name: Persist defaults
+  set_fact:
+    '{{ item.key }}': "{{ lookup('vars', item.key) }}"
+  loop: "{{ lookup('file', role_path ~ '/defaults/main.yml') | from_yaml | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+  block:
+    - name: Canary for cert auth
+      vault_ci_read:
+        path: '{{ vault_cert_canary.path }}'
+      register: canary
+
+    - name: Configure cert
+      when: canary.result is none
+      loop: '{{ auth_paths }}'
+      include_tasks:
+        file: cert_setup.yml
+        apply:
+          vars:
+            default_path: '{{ ansible_hashi_vault_auth_method }}'
+            this_path: '{{ item }}'
+
+    - name: Write Canary
+      when: canary.result is none
+      vault_ci_write:
+        path: '{{ vault_cert_canary.path }}'
+        data:
+          value: '{{ vault_cert_canary.value }}'
+
+
+- name: Run cert tests (controller)
+  loop: '{{ auth_paths }}'
+  include_tasks:
+    file: cert_test_controller.yml
+    apply: &test_apply
+      vars:
+        default_path: '{{ ansible_hashi_vault_auth_method }}'
+        this_path: '{{ item }}'
+      module_defaults:
+        assert:
+          quiet: yes
+
+- name: Run cert tests (target)
+  loop: '{{ auth_paths }}'
+  include_tasks:
+    file: cert_test_target.yml
+    apply: *test_apply

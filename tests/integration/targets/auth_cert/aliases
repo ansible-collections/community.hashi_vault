@@ -1,0 +1,6 @@
+vault/auth/cert
+context/target
+needs/target/setup_vault_legacy
+needs/target/setup_vault_test_plugins
+needs/target/setup_vault_configure
+skip/python2.6  # Python 2.6 is not supported by the collection

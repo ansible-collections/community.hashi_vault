@@ -17,6 +17,7 @@ DOCUMENTATION = """
     - hvac 0.7.0+ (for namespace support)
     - hvac 0.9.6+ (to avoid most deprecation warnings)
     - hvac 0.10.5+ (for JWT auth)
+    - hvac 0.10.12+ (for cert auth)
     - hvac 0.10.6+ (to avoid deprecation warning for AppRole)
     - botocore (only if inferring aws params from boto)
     - boto3 (only if using a boto profile)
