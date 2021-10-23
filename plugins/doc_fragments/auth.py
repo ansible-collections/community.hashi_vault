@@ -15,6 +15,7 @@ class ModuleDocFragment(object):
         description:
           - Authentication method to be used.
           - C(none) auth method was added in collection version C(1.2.0).
+          - C(cert) auth method was added in collection version C(1.4.0).
         choices:
           - token
           - userpass
