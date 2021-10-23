@@ -5,7 +5,7 @@
   block:
     - name: "Enable the cert auth method"
       vault_ci_enable_auth:
-        method_type: cert
+        method_type: '{{ ansible_hashi_vault_auth_method }}'
         path: "{{ omit if is_default_path else this_path }}"
         config:
           default_lease_ttl: 60m

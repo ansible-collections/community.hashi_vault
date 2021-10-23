@@ -25,7 +25,7 @@ class HashiVaultAuthMethodCert(HashiVaultAuthMethodBase):
 
         params = {
             "cert_pem": options["cert_auth_public_key"],
-            "key_pem": options["cert_auth_private_key"]
+            "key_pem": options["cert_auth_private_key"],
         }
 
         if "mount_point" in options:

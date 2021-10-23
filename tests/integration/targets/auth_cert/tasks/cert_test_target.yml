@@ -6,7 +6,7 @@
     vault_test_auth:
       url: "{{ vault_test_server_https }}"
       ca_cert: "{{ vault_cert_file }}"
-      auth_method: "cert"
+      auth_method: "{{ ansible_hashi_vault_auth_method }}"
       mount_point: "{{ omit if is_default_path else this_path }}"
       cert_auth_public_key: "{{ auth_cert_cert }}"
       cert_auth_private_key: "{{ auth_cert_key }}"
