@@ -1,0 +1,96 @@
+---
+- name: state=present with an invalid token
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_multiple
+    data:
+      key1: value1
+    token: token
+  ignore_errors: true
+  register: write_invalid_token
+
+- assert:
+    that:
+      - write_invalid_token is failed
+      - write_invalid_token.msg is search("Invalid Vault Token")
+    fail_msg: "{{ write_invalid_token | string }}"
+
+- name: state=present write to a path the token has no permission for
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_no_permission
+    data:
+      key1: value1
+    token: "{{ test_policy_token }}"
+  ignore_errors: true
+  register: write_forbidden
+
+- assert:
+    that:
+      - write_forbidden is failed
+      - write_forbidden.msg is search("Permission denied")
+    fail_msg: "{{ write_forbidden | string }}"
+
+- name: state=present patch=true on a non-existent path
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_non_existent
+    data:
+      key1: value1
+    patch: true
+  ignore_errors: true
+  register: patch_non_existent
+
+- assert:
+    that:
+      - patch_non_existent is failed
+      - patch_non_existent is search("has not been written to previously")
+    fail_msg: "{{ patch_non_existent | string }}"
+
+- name: Ensure the cas test secret is absent
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/cas_failure
+    state: absent
+
+- name: Write a secret to test cas with
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/cas_failure
+    data:
+      key1: value1
+    cas_required: true
+
+- name: state=present patch=false cas=0 fails on a secret that already exists
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/cas_failure
+    data:
+      key1: value2
+    cas: 0
+  ignore_errors: true
+  register: cas_failure
+
+- assert:
+    that:
+      - cas_failure is failed
+
+- name: state=present patch=false cas=2 with wrong value for cas fails
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/cas_failure
+    data:
+      key1: value3
+    cas: 2
+  ignore_errors: true
+  register: cas_failure2
+
+- assert:
+    that:
+      - cas_failure2 is failed
+
+- name: state=present patch=true cas=1 fails
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/cas_failure
+    data:
+      key1: value3
+      cas: 2
+  ignore_errors: true
+  register: cas_patch_failure
+
+- assert:
+    that:
+      - cas_patch_failure is failed

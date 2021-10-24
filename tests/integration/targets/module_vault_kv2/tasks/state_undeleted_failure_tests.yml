@@ -1,0 +1,57 @@
+---
+- name: state=undeleted on a non-existent path
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_non_existent
+    state: undeleted
+  ignore_errors: true
+  register: undeleted_non_existent
+
+- assert:
+    that:
+      - undeleted_non_existent is failed
+      - undeleted_non_existent is search("Invalid path")
+    fail_msg: "{{ undeleted_non_existent | string }}"
+
+- name: state=undeleted given an invalid version
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    state: undeleted
+    versions:
+      - 100
+  ignore_errors: true
+  register: undeleted_invalid_version
+
+- assert:
+    that:
+      - undeleted_non_existent is failed
+      - undeleted_non_existent is search("Invalid path")
+    fail_msg: "{{ undeleted_invalid_version | string }}"
+
+- name: state=undeleted with a token lacking permissions
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    token: "{{ test_policy_token }}"
+    state: undeleted
+  ignore_errors: true
+  register: undeleted_forbidden
+
+- assert:
+    that:
+      - undeleted_forbidden is failed
+      - undeleted_forbidden is search("Permission denied")
+    fail_msg: "{{ undeleted_forbidden | string }}"
+
+
+- name: state=undeleted with an invalid token
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    token: token
+    state: undeleted
+  ignore_errors: true
+  register: undeleted_invalid_token
+
+- assert:
+    that:
+      - undeleted_invalid_token is failed
+      - undeleted_invalid_token is search("Invalid Vault Token")
+    fail_msg: "{{ undeleted_invalid_token | string }}"

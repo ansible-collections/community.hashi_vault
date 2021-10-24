@@ -1,0 +1,25 @@
+---
+- name: Test
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+    test_policy_token: "{{ test_policy_token_cmd.result.auth.client_token }}"
+    vault_kv2_path: kv2
+  module_defaults:
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_kv_get_version: "{{ vault_plugins_module_defaults_common | combine({'mount_point': 'kv2'}) }}"
+    vault_ci_kv_delete_all: "{{ vault_plugins_module_defaults_common }}"
+    community.hashi_vault.vault_kv2:
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      mount_point: kv2
+  block:
+    - import_tasks: state_present_tests.yml
+    - import_tasks: state_absent_tests.yml
+    - import_tasks: state_deleted_undeleted_latest_tests.yml
+    - import_tasks: state_deleted_undeleted_versions_tests.yml
+    - import_tasks: state_present_failure_tests.yml
+    - import_tasks: state_absent_failure_tests.yml
+    - import_tasks: state_deleted_failure_tests.yml
+    - import_tasks: state_destroyed_failure_tests.yml
+    - import_tasks: state_undeleted_failure_tests.yml

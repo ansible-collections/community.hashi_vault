@@ -1,0 +1,367 @@
+---
+- name: Delete secrets for tests
+  vault_ci_kv_delete_all:
+    path: "{{ item }}"
+    mount_point: kv2
+  with_items:
+    - "module_kv_v2/write1"
+    - "module_kv_v2/write_multiple"
+    - "module_kv_v2/write_cas"
+
+- name: state=present patch=false (single) (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key1: value1
+  check_mode: true
+  register: write_single_check
+
+- name: Try reading the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: write_single_check_read
+
+- assert:
+    that:
+      - write_single_check is changed
+      - write_single_check_read.result == None
+    fail_msg: "{{ write_single_check_read | string }}"
+
+- name: state=present patch=false (single)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key1: value1
+  register: write_single
+
+- name: Read the written secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: write_single_read
+
+- assert:
+    that:
+      - write_single is changed
+      - write_single_read.result.data.data | length == 1
+      - "'key1' in write_single_read.result.data.data"
+      - write_single_read.result.data.data.key1 == "value1"
+      - write_single_read.result.data.metadata.version == 1
+    fail_msg: "{{ write_single_read | string }}"
+
+- name: state=present patch=false (single) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key1: value1
+  register: write_single_idempotency
+
+- assert:
+    that:
+      - write_single_idempotency is not changed
+
+- name: Overwrite the secret (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key2: value2
+  check_mode: true
+  register: overwrite_check
+
+- name: Read the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: overwrite_check_read
+
+- assert:
+    that:
+      - overwrite_check is changed
+      - overwrite_check_read.result.data.data | length == 1
+      - "'key1' in overwrite_check_read.result.data.data"
+      - overwrite_check_read.result.data.data.key1 == "value1"
+      - overwrite_check_read.result.data.metadata.version == 1
+
+- name: Overwrite the secret
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key2: value2
+  register: overwrite_write
+
+- name: Read the written secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: overwrite_read
+
+- assert:
+    that:
+      - overwrite_write is changed
+      - overwrite_read.result.data.metadata.version == 2
+      - overwrite_read.result.data.data | length == 1
+      - "'key2' in overwrite_read.result.data.data"
+      - overwrite_read.result.data.data.key2 == "value2"
+    fail_msg: "{{ overwrite_read | string }}"
+
+- name: Patch the secret (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key3: value3
+    patch: true
+  check_mode: true
+  register: patch_check
+
+- name: Read the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: patch_check_read
+
+- assert:
+    that:
+      - patch_check is changed
+      - patch_check_read.result.data.metadata.version == 2
+      - patch_check_read.result.data.data | length == 1
+    fail_msg: "{{ patch_check_read | string }}"
+
+- name: Patch the secret
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key3: value3
+    patch: true
+  register: write3_patch
+
+- name: Read the written secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: write3_read
+
+- assert:
+    that:
+      - write3_patch is changed
+      - write3_read.result.data.metadata.version == 3
+      - write3_read.result.data.data | length == 2
+      - "'key2' in write3_read.result.data.data"
+      - write3_read.result.data.data.key2 == "value2"
+      - "'key3' in write3_read.result.data.data"
+      - write3_read.result.data.data.key3 == "value3"
+    fail_msg: "{{ write3_read | string }}"
+
+- name: Patch the secret (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key3: value3
+    patch: true
+  register: write3_idempotency
+
+- assert:
+    that:
+      - write3_idempotency is not changed
+
+- name: Patch the secret (multiple)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key4: value4
+      key5: value5
+    patch: true
+  register: write4_patch
+
+- name: Read the written secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: write4_read
+
+- assert:
+    that:
+      - write4_patch is changed
+      - write4_read.result.data.metadata.version == 4
+      - write4_read.result.data.data | length == 4
+      - "'key2' in write4_read.result.data.data"
+      - write4_read.result.data.data.key2 == "value2"
+      - "'key3' in write4_read.result.data.data"
+      - write4_read.result.data.data.key3 == "value3"
+      - "'key4' in write4_read.result.data.data"
+      - write4_read.result.data.data.key4 == "value4"
+      - "'key5' in write4_read.result.data.data"
+      - write4_read.result.data.data.key5 == "value5"
+    fail_msg: "{{ write4_read | string }}"
+
+- name: Patch the secret (multiple) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key4: value4
+      key5: value5
+    patch: true
+  register: write3_idempotency
+
+- assert:
+    that:
+      - write3_idempotency is not changed
+
+- name: Patch an existing key with a new value (multiple)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    data:
+      key4: new value
+    patch: true
+  register: patch_existing_key
+
+- name: Read the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write1"
+  register: secret_read
+
+- assert:
+    that:
+      - patch_existing_key is changed
+      - secret_read.result.data.data | length == 4
+      - "'key4' in secret_read.result.data.data"
+      - secret_read.result.data.data.key4 == "new value"
+
+- name: state=present patch=false (multiple k/v)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_multiple
+    data:
+      key1: value1
+      key2: value2
+  register: write_multiple
+
+- name: Read the written secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write_multiple"
+  register: write_multiple_read
+
+- assert:
+    that:
+      - write_multiple is changed
+      - write_multiple_read.result.data.data | length == 2
+      - "'key1' in write_multiple_read.result.data.data"
+      - write_multiple_read.result.data.data.key1 == "value1"
+      - "'key2' in write_multiple_read.result.data.data"
+      - write_multiple_read.result.data.data.key2 == "value2"
+    fail_msg: "{{ write3_read | string }}"
+
+- name: state=present patch=false (multiple k/v) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_multiple
+    data:
+      key1: value1
+      key2: value2
+  register: write_multiple_idempotency
+
+- assert:
+    that:
+      - write_multiple_idempotency is not changed
+
+- name: state=present cas_required=true
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/delete_version_after
+    data:
+      key3: value3
+    cas_required: true
+
+- name: Read the secret metadata
+  vault_ci_read:
+    path: "kv2/metadata/module_kv_v2/delete_version_after"
+  register: cas_required_meta
+
+- assert:
+    that:
+      - cas_required_meta.result.data.cas_required == true
+    fail_msg: "{{ cas_required_meta | string }}"
+
+- name: state=present patch=false cas=0 cas_required=true check_mode=true
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_cas
+    data:
+      key1: value1
+      key2: value2
+    cas: 0
+    cas_required: true
+  check_mode: true
+  register: cas_check_mode
+
+- name: Read the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/write_cas"
+  register: cas_check_mode_read
+
+- assert:
+    that:
+      - cas_check_mode is changed
+      - cas_check_mode_read.result == None
+    fail_msg: "{{ cas_check_mode_read | string }}"
+
+- name: state=present patch=false cas=0 cas_required=true
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_cas
+    data:
+      key1: value1
+      key2: value2
+    cas: 0
+    cas_required: true
+
+- name: state=present patch=false cas=0 (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_cas
+    data:
+      key1: value1
+      key2: value2
+    cas: 0
+  register: cas_idempotency
+
+- assert:
+    that:
+      - cas_idempotency is not changed
+
+- name: state=present patch=false cas=1
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_cas
+    data:
+      key1: value1
+      key2: value2
+    cas: 1
+
+- name: state=present patch=true cas=2 ignores cas
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_cas
+    data:
+      key3: value3
+    cas: 2
+    patch: true
+
+- name: state=present max_versions=2
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/max_versions
+    data:
+      key3: value3
+    max_versions: 2
+
+- name: Read the secret metadata
+  vault_ci_read:
+    path: "kv2/metadata/module_kv_v2/max_versions"
+  register: max_versions_meta
+
+- assert:
+    that:
+      - max_versions_meta.result.data.max_versions == 2
+    fail_msg: "{{ max_versions_meta | string }}"
+
+- name: state=present delete_version_after=2h
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/delete_version_after
+    data:
+      key3: value3
+    delete_version_after: 2h0m0s
+
+- name: Read the secret metadata
+  vault_ci_read:
+    path: "kv2/metadata/module_kv_v2/delete_version_after"
+  register: delete_version_after_meta
+
+- assert:
+    that:
+      - delete_version_after_meta.result.data.delete_version_after == "2h0m0s"
+    fail_msg: "{{ delete_version_after_meta | string }}"

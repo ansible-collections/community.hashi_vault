@@ -51,3 +51,21 @@ vault_alt_policy: |
   path "{{ vault_kv2_path }}/secret5" {
     capabilities = ["read"]
   }
+
+vault_kv2_rw_policy: |
+  {{ vault_base_policy }}
+  path "kv2/data/*" {
+    capabilities = ["create", "update", "read", "list", "delete"]
+  }
+  path "kv2/metadata/*" {
+    capabilities = ["create", "update", "read", "list", "delete"]
+  }
+  path "kv2/destroy/*" {
+    capabilities = ["update"]
+  }
+  path "kv2/delete/*" {
+    capabilities = ["update"]
+  }
+  path "kv2/undelete/*" {
+    capabilities = ["update"]
+  }

@@ -1,0 +1,56 @@
+---
+- name: state=destroyed given an invalid version
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    state: destroyed
+    versions:
+      - 100
+  ignore_errors: true
+  register: destroyed_invalid_version
+
+- assert:
+    that:
+      - destroyed_invalid_version is failed
+      - destroyed_invalid_version is search("Version 100 is not valid")
+    fail_msg: "{{ destroyed_invalid_version | string }}"
+
+- name: state=destroyed on a non-existent path
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_non_existent
+    state: destroyed
+  ignore_errors: true
+  register: destroyed_non_existent
+
+- assert:
+    that:
+      - destroyed_non_existent is failed
+      - destroyed_non_existent is search("Invalid path")
+    fail_msg: "{{ destroyed_non_existent | string }}"
+
+- name: state=destroyed with a token lacking permissions
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    token: "{{ test_policy_token }}"
+    state: destroyed
+  ignore_errors: true
+  register: destroyed_forbidden
+
+- assert:
+    that:
+      - destroyed_forbidden is failed
+      - destroyed_forbidden is search("Permission denied")
+    fail_msg: "{{ destroyed_forbidden | string }}"
+
+- name: state=destroyed with an invalid token
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    token: token
+    state: destroyed
+  ignore_errors: true
+  register: destroyed_invalid_token
+
+- assert:
+    that:
+      - destroyed_invalid_token is failed
+      - destroyed_invalid_token is search("Invalid Vault Token")
+    fail_msg: "{{ destroyed_invalid_token | string }}"

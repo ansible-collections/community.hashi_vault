@@ -1,0 +1,176 @@
+---
+- name: Setup
+  block:
+    - name: Ensure the test secret is absent
+      community.hashi_vault.vault_kv2:
+        path: module_kv_v2/undelete_delete_versions
+        state: absent
+
+    - name: Write a secret to test with (multiple versions)
+      community.hashi_vault.vault_kv2:
+        path: module_kv_v2/undelete_delete_versions
+        data:
+          key1: value{{ item }}
+          key2: value{{ item }}
+        state: present
+      with_items:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+
+- name: state=deleted (versions) (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete_versions
+    versions:
+      - 2
+      - 4
+    state: deleted
+  check_mode: true
+  register: state_deleted_versions_check
+
+- name: Read the secrets (versions) (check)
+  vault_ci_kv_get_version:
+    path: "module_kv_v2/undelete_delete_versions"
+    version: "{{ item }}"
+  ignore_errors: true
+  with_items:
+    - 2
+    - 4
+  register: state_deleted_versions_check_read
+
+- assert:
+    that:
+      - state_deleted_versions_check is changed
+      - state_deleted_versions_check_read.results[0] is not failed
+      - state_deleted_versions_check_read.results[1] is not failed
+    fail_msg: "{{ state_deleted_versions_check_read | string }}"
+
+- name: state=deleted (versions)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete_versions
+    versions:
+      - 2
+      - 4
+    state: deleted
+  register: state_deleted_versions
+
+- name: Try to read the deleted secret (versions)
+  vault_ci_kv_get_version:
+    path: "module_kv_v2/undelete_delete_versions"
+    version: "{{ item }}"
+  ignore_errors: true
+  with_items:
+    - 2
+    - 4
+  register: state_deleted_versions_read
+
+- assert:
+    that:
+      - state_deleted_versions is changed
+      - state_deleted_versions_read.results[0] is failed
+      - state_deleted_versions_read.results[1] is failed
+    fail_msg: "{{ state_deleted_versions_read | string }}"
+
+- name: state=deleted (versions) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete_versions
+    versions:
+      - 2
+      - 4
+    state: deleted
+  register: state_deleted_versions_idempotency
+
+- name: Try to read the deleted secret versions
+  vault_ci_kv_get_version:
+    path: "module_kv_v2/undelete_delete_versions"
+    version: "{{ item }}"
+  ignore_errors: true
+  with_items:
+    - 2
+    - 4
+  register: state_deleted_versions_idempotency_read
+
+- assert:
+    that:
+      - state_deleted_versions_idempotency_read.results[0] is failed
+      - state_deleted_versions_idempotency_read.results[1] is failed
+    fail_msg: "{{ state_deleted_versions_idempotency_read | string }}"
+
+- name: state=undeleted (versions) (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete_versions
+    state: undeleted
+    versions:
+      - 2
+      - 4
+  check_mode: true
+  register: state_undeleted_versions_check
+
+- name: Read the secrets (versions) (check)
+  vault_ci_kv_get_version:
+    path: "module_kv_v2/undelete_delete_versions"
+    version: "{{ item }}"
+  ignore_errors: true
+  with_items:
+    - 2
+    - 4
+  register: state_undeleted_versions_check_read
+
+- assert:
+    that:
+      - state_undeleted_versions_check is changed
+      - state_undeleted_versions_check_read.results[0] is failed
+      - state_undeleted_versions_check_read.results[1] is failed
+    fail_msg: "{{ state_undeleted_latest_read | string }}"
+
+- name: state=undeleted (versions)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete_versions
+    state: undeleted
+    versions:
+      - 2
+      - 4
+  register: state_undeleted_versions
+
+- name: Read the undeleted secrets (versions)
+  vault_ci_kv_get_version:
+    path: "module_kv_v2/undelete_delete_versions"
+    version: "{{ item }}"
+  with_items:
+    - 2
+    - 4
+  register: state_undeleted_versions_read
+
+- assert:
+    that:
+      - state_undeleted_versions is changed
+      - state_undeleted_versions_read.results[0] is not failed
+      - state_undeleted_versions_read.results[1] is not failed
+    fail_msg: "{{ state_undeleted_latest_read | string }}"
+
+- name: state=undeleted (versions) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete_versions
+    state: undeleted
+    versions:
+      - 2
+      - 4
+  register: state_undeleted_versions_idempotency
+
+- name: Read the undeleted secrets (versions) (idempotency)
+  vault_ci_kv_get_version:
+    path: "module_kv_v2/undelete_delete_versions"
+    version: "{{ item }}"
+  with_items:
+    - 2
+    - 4
+  register: state_undeleted_versions_idempotency_read
+
+- assert:
+    that:
+      - state_undeleted_versions_idempotency is not changed
+      - state_undeleted_versions_idempotency_read.results[0] is not failed
+      - state_undeleted_versions_idempotency_read.results[1] is not failed
+    fail_msg: "{{ state_undeleted_latest_read | string }}"

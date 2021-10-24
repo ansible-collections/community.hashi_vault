@@ -1,0 +1,28 @@
+---
+- name: state=absent with a token lacking permissions
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    token: "{{ test_policy_token }}"
+    state: absent
+  ignore_errors: true
+  register: absent_forbidden
+
+- assert:
+    that:
+      - absent_forbidden is failed
+      - absent_forbidden is search("Permission denied")
+    fail_msg: "{{ absent_forbidden | string }}"
+
+- name: state=absent with an invalid token
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write1
+    token: token
+    state: absent
+  ignore_errors: true
+  register: absent_invalid_token
+
+- assert:
+    that:
+      - absent_invalid_token is failed
+      - absent_invalid_token is search("Invalid Vault Token")
+    fail_msg: "{{ absent_invalid_token | string }}"

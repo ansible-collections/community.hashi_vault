@@ -1,0 +1,119 @@
+---
+- name: Setup
+  block:
+    - name: Ensure the test secret is absent
+      community.hashi_vault.vault_kv2:
+        path: module_kv_v2/undelete_delete
+        state: absent
+
+    - name: Write a secret to test with
+      community.hashi_vault.vault_kv2:
+        path: module_kv_v2/undelete_delete
+        data:
+          key1: value1
+          key2: value2
+        state: present
+
+- name: state=deleted (latest) (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete
+    state: deleted
+  check_mode: true
+  register: state_deleted_latest_check
+
+- name: Read the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/undelete_delete"
+  register: state_deleted_latest_check_read
+
+- assert:
+    that:
+      - state_deleted_latest_check is changed
+      - state_deleted_latest_check_read.result != None
+    fail_msg: "{{ state_deleted_latest_check_read | string }}"
+
+- name: state=deleted (latest)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete
+    state: deleted
+  register: state_deleted_latest
+
+- name: Try to read the deleted secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/undelete_delete"
+  register: state_deleted_latest_read
+
+- assert:
+    that:
+      - state_deleted_latest is changed
+      - state_deleted_latest_read.result == None
+    fail_msg: "{{ state_deleted_latest_read | string }}"
+
+- name: state=deleted (latest) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete
+    state: deleted
+  register: state_deleted_latest_idempotency
+
+- name: Try to read the deleted secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/undelete_delete"
+  register: state_deleted_latest_idempotency_read
+
+- assert:
+    that:
+      - state_deleted_latest_idempotency is not changed
+      - state_deleted_latest_idempotency_read.result == None
+    fail_msg: "{{ state_deleted_latest_idempotency_read | string }}"
+
+- name: state=undeleted (latest)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete
+    state: undeleted
+  check_mode: true
+  register: state_undeleted_latest_check
+
+- name: Read the secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/undelete_delete"
+  register: state_undeleted_latest_check_read
+
+- assert:
+    that:
+      - state_undeleted_latest_check is changed
+      - state_undeleted_latest_check_read.result == None
+    fail_msg: "{{ state_undeleted_latest_check_read | string }}"
+
+- name: state=undeleted (latest)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete
+    state: undeleted
+  register: state_undeleted_latest
+
+- name: Read the undeleted secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/undelete_delete"
+  register: state_undeleted_latest_read
+
+- assert:
+    that:
+      - state_undeleted_latest is changed
+      - state_undeleted_latest_read.result != None
+    fail_msg: "{{ state_undeleted_latest_read | string }}"
+
+- name: state=undeleted (latest) (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/undelete_delete
+    state: undeleted
+  register: state_undeleted_latest_idempotency
+
+- name: Read the undeleted secret
+  vault_ci_read:
+    path: "kv2/data/module_kv_v2/undelete_delete"
+  register: state_undeleted_latest_idempotency_read
+
+- assert:
+    that:
+      - state_undeleted_latest_idempotency is not changed
+      - state_undeleted_latest_idempotency_read.result != None
+    fail_msg: "{{ state_undeleted_latest_idempotency_read | string }}"

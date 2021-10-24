@@ -23,6 +23,11 @@
     name: alt-policy
     policy: "{{ vault_alt_policy }}"
 
+- name: 'Create a kv2-rw policy'
+  vault_ci_policy_put:
+    name: kv2-rw
+    policy: "{{ vault_kv2_rw_policy }}"
+
 - name: 'Create KV v1 secrets'
   loop: [1, 2, 3]
   vault_ci_kv_put:

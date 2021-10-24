@@ -1,0 +1,60 @@
+---
+- name: Setup
+  block:
+    - name: Ensure the test secret is absent
+      community.hashi_vault.vault_kv2:
+        path: module_kv_v2/state_absent
+        state: absent
+
+    - name: Write a secret to test with
+      community.hashi_vault.vault_kv2:
+        path: module_kv_v2/state_absent
+        data:
+          key1: value1
+          key2: value2
+        state: present
+
+- name: state=absent (check)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_multiple
+    state: absent
+  check_mode: true
+  register: state_absent_check
+
+- name: Read the metadata
+  vault_ci_read:
+    path: "kv2/metadata/module_kv_v2/write_multiple"
+  register: state_absent_check_read
+
+- assert:
+    that:
+      - state_absent_check is changed
+      - state_absent_check_read.result != None
+
+- name: state=absent
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_multiple
+    state: absent
+  register: state_absent
+
+- name: Try reading the metadata for the destroyed secret
+  vault_ci_read:
+    path: "kv2/metadata/module_kv_v2/write_multiple"
+  register: read_deleted
+
+- assert:
+    that:
+      - state_absent is changed
+      - read_deleted.result == None
+    fail_msg: "{{ read_deleted | string }}"
+
+- name: state=absent (idempotency)
+  community.hashi_vault.vault_kv2:
+    path: module_kv_v2/write_multiple
+    state: absent
+  register: state_absent_idempotency
+
+- assert:
+    that:
+      - state_absent_idempotency is not changed
+    fail_msg: "{{ state_absent_idempotency | string }}"
