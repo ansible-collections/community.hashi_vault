@@ -59,7 +59,7 @@ EXAMPLES = """
 
 RETURN = """
 data:
-  description: the raw result of the read against the given path.
+  description: The raw result of the read against the given path.
   returned: success
   type: dict
 """

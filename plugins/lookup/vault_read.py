@@ -75,7 +75,7 @@ EXAMPLES = """
 RETURN = """
 _raw:
   description:
-    - the raw result of the read against the given path.
+    - The raw result of the read against the given path.
   type: list
   elements: dict
 """
@@ -120,7 +120,6 @@ class LookupModule(HashiVaultLookupBase):
             try:
                 data = client.read(term)
             except hvac.exceptions.Forbidden:
-                # raise AnsibleError('term (%s): |%r|' % (str(type(term)), term))
                 raise AnsibleError("Forbidden: Permission Denied to path '%s'." % term)
 
             if data is None:

@@ -40,7 +40,7 @@ In general, we recommend using the latest version of ``hvac`` that is supported 
 Other requirements
 ------------------
 
-* ``botocore`` (only if inferring aws params from boto)
+* ``botocore`` (only if inferring AWS params from boto)
 * ``boto3`` (only if using a boto profile)
 
 Retrying failed requests
