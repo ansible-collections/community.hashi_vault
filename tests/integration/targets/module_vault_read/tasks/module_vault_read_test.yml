@@ -1,0 +1,61 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_read:
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+  block:
+    - name: 'Check kv2 secret read'
+      register: kv2_secret2
+      community.hashi_vault.vault_read:
+        path: "{{ vault_kv2_path }}/secret2"
+
+    - assert:
+        that:
+          - "'data' in kv2_secret2"
+          - "'data' in kv2_secret2['data']"
+          - "'data' in kv2_secret2['data']['data']"
+          - "'metadata' in kv2_secret2['data']['data']"
+        fail_msg: 'Return value did not contain expected fields.'
+
+    ### failure tests
+
+    - name: 'Failure expected when erroneous credentials are used'
+      register: test_wrong_cred
+      community.hashi_vault.vault_read:
+        path: "{{ vault_kv2_path }}/secret2"
+        token: wrong_token
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_wrong_cred is failed
+          - test_wrong_cred.msg is search('Invalid Vault Token')
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    - name: 'Failure expected when unauthorized secret is read'
+      register: test_unauthorized
+      community.hashi_vault.vault_read:
+        path: "{{ vault_kv2_path }}/secret3"
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_unauthorized is failed
+          - test_unauthorized.msg is search('Permission Denied')
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    - name: 'Failure expected when inexistent secret is read'
+      register: test_inexistent
+      community.hashi_vault.vault_read:
+        path: "{{ vault_kv2_path }}/non_existent_secret"
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_inexistent is failed
+          - test_inexistent.msg is search("doesn't seem to exist")
+        fail_msg: "Expected failure but got success or wrong failure message."
