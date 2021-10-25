@@ -1,3 +1,0 @@
----
-deprecated_features:
-  - lookup hashi_vault - the ``[lookup_hashi_vault]`` section in the ``ansible.cfg`` file is deprecated and will be removed in collection version ``3.0.0``. Instead, the section ``[hashi_vault_collection]`` can be used, which will apply to all plugins in the collection going forward (https://github.com/ansible-collections/community.hashi_vault/pull/144).
