@@ -1,4 +1,0 @@
----
-release_summary: |-
-  This release includes bugfixes, a new auth method (``cert``), and the first new content since the collection's formation, the ``vault_read`` module and lookup plugin.
-  We're also announcing the deprecation of the ``[lookup_hashi_vault]`` INI section (which will continue working up until its removal only for the ``hashi_vault`` lookup), to be replaced by the ``[hashi_vault_collection]`` section that will apply to all plugins in the collection.

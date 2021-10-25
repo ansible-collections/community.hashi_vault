@@ -5,6 +5,45 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.4.0
+======
+
+Release Summary
+---------------
+
+This release includes bugfixes, a new auth method (``cert``), and the first new content since the collection's formation, the ``vault_read`` module and lookup plugin.
+We're also announcing the deprecation of the ``[lookup_hashi_vault]`` INI section (which will continue working up until its removal only for the ``hashi_vault`` lookup), to be replaced by the ``[hashi_vault_collection]`` section that will apply to all plugins in the collection.
+
+Minor Changes
+-------------
+
+- community.hashi_vault collection - add cert auth method (https://github.com/ansible-collections/community.hashi_vault/pull/159).
+
+Deprecated Features
+-------------------
+
+- lookup hashi_vault - the ``[lookup_hashi_vault]`` section in the ``ansible.cfg`` file is deprecated and will be removed in collection version ``3.0.0``. Instead, the section ``[hashi_vault_collection]`` can be used, which will apply to all plugins in the collection going forward (https://github.com/ansible-collections/community.hashi_vault/pull/144).
+
+Bugfixes
+--------
+
+- aws_iam_login auth - the ``aws_security_token`` option was not used, causing assumed role credentials to fail (https://github.com/ansible-collections/community.hashi_vault/issues/160).
+- hashi_vault collection - a fallback import supporting the ``retries`` option for ``urllib3`` via ``requests.packages.urllib3`` was not correctly formed (https://github.com/ansible-collections/community.hashi_vault/issues/116).
+- hashi_vault collection - unhandled exception with ``token`` auth when ``token_file`` exists but is a directory (https://github.com/ansible-collections/community.hashi_vault/issues/152).
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- vault_read - Perform a read operation against HashiCorp Vault
+
+New Modules
+-----------
+
+- vault_read - Perform a read operation against HashiCorp Vault
+
 v1.3.2
 ======
 

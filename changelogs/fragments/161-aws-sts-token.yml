@@ -1,3 +1,0 @@
----
-bugfixes:
-  - aws_iam_login auth - the ``aws_security_token`` option was not used, causing assumed role credentials to fail (https://github.com/ansible-collections/community.hashi_vault/issues/160).
