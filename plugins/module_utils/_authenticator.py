@@ -33,8 +33,8 @@ class HashiVaultAuthenticator():
             'approle',
             'aws_iam_login',
             'jwt',
+            'cert',
             'none',
-            'cert'
         ]),
         mount_point=dict(type='str'),
         token=dict(type='str', no_log=True, default=None),

@@ -6,6 +6,14 @@ fixes:
   - "ansible_collections/community/hashi_vault/::"
 
 flags:
+  target_module_vault_read:
+    paths:
+      - plugins/modules/vault_read.py
+
+  target_lookup_vault_read:
+    paths:
+      - plugins/lookup/vault_read.py
+
   target_lookup_hashi_vault:
     paths:
       - plugins/lookup/hashi_vault.py

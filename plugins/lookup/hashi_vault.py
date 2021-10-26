@@ -13,16 +13,14 @@ DOCUMENTATION = """
     - Brian Scholer (@briantist)
   short_description: Retrieve secrets from HashiCorp's Vault
   requirements:
-    - hvac (python library)
-    - hvac 0.7.0+ (for namespace support)
-    - hvac 0.9.6+ (to avoid most deprecation warnings)
-    - hvac 0.10.5+ (for JWT auth)
-    - hvac 0.10.12+ (for cert auth)
-    - hvac 0.10.6+ (to avoid deprecation warning for AppRole)
-    - botocore (only if inferring aws params from boto)
-    - boto3 (only if using a boto profile)
+    - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+    - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
   description:
     - Retrieve secrets from HashiCorp's Vault.
+  seealso:
+    - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
+    - module: community.hashi_vault.vault_read
   notes:
     - Due to a current limitation in the HVAC library there won't necessarily be an error if a bad endpoint is specified.
     - As of community.hashi_vault 0.1.0, only the latest version of a secret is returned when specifying a KV v2 path.
