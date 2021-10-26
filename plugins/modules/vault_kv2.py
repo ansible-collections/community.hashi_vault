@@ -62,7 +62,7 @@ options:
       - C(destroyed) ensures the versions in I(versions) are permanently destroyed.
       - C(undeleted) ensures the versions in I(versions) are not soft deleted.
       - C(absent) ensures all metadata and versions for the secret are absent.
-  mount_point:
+  kv2_mount:
     type: str
     default: secret
     description: Mount point of the KV v2 secret store.
@@ -350,7 +350,7 @@ def run_module():
     argspec = HashiVaultModule.generate_argspec(
         path=dict(type="str", required=True),
         data=dict(type="dict"),
-        mount_point=dict(type="str", default="secret"),
+        kv2_mount=dict(type="str", default="secret"),
         patch=dict(type="bool", default=False),
         state=dict(type="str", default="present", choices=["present", "deleted", "destroyed", "absent", "undeleted"]),
         versions=dict(type="list", elements="int", default=[]),
@@ -380,7 +380,7 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     path = module.params.get("path")
-    mount_point = module.params.get("mount_point")
+    mount_point = module.params.get("kv2_mount")
     state = module.params.get("state")
 
     try:

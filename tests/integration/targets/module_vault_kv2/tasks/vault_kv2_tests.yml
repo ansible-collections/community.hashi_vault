@@ -12,7 +12,7 @@
       url: "{{ vault_test_server_http }}"
       auth_method: token
       token: "{{ user_token }}"
-      mount_point: kv2
+      kv2_mount: kv2
   block:
     - import_tasks: state_present_tests.yml
     - import_tasks: state_absent_tests.yml
