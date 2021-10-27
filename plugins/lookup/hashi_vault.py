@@ -416,7 +416,7 @@ class LookupModule(HashiVaultLookupBase):
 
             try:
                 self.authenticator.authenticate(self.client)
-            except NotImplementedError as e:
+            except (NotImplementedError, HashiVaultValueError) as e:
                 raise AnsibleError(e)
 
             ret.extend(self.get())
