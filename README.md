@@ -9,7 +9,7 @@ Browsing the [**latest** collection documentation](https://docs.ansible.com/ansi
 
 Browsing the [**devel** collection documentation](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault) shows docs for the _latest version released on Galaxy_.
 
-We also separately publish [**latest commit** collection documentation](https://community-hashi-vault-main.surge.sh) which shows docs for the _Latest commit in the `main` branch_.
+We also separately publish [**latest commit** collection documentation](https://community-hashi-vault-main.surge.sh) which shows docs for the _latest commit in the `main` branch_.
 
 If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **latest commit**.
 ## Tested with Ansible
@@ -17,6 +17,7 @@ If you use the Ansible package and don't update collections independently, use *
 * 2.9
 * 2.10
 * 2.11
+* 2.12
 * devel (latest development commit)
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
@@ -36,34 +37,26 @@ See [the CI configuration](https://github.com/ansible-collections/community.hash
 
 ## Python Requirements
 
-**[Support for Python 2 & Python 3.5 will be dropped in `v2.0.0` of the collection.](https://github.com/ansible-collections/community.hashi_vault/issues/81)**
+**Python 2.6 is not supported. [Support for Python 2.7 & Python 3.5 will be dropped in `v2.0.0` of the collection.](https://github.com/ansible-collections/community.hashi_vault/issues/81)**
 
-Currently we test against Python versions:
+Currently we support and test against Python versions:
 * 2.7
 * 3.5
 * 3.6
 * 3.7
 * 3.8
 * 3.9
-* 3.10 (support not yet guaranteed)
+* 3.10
 
+Note that for controller-side plugins, only the Python versions supported by the Ansible controller are supported (for example, you cannot use Python 3.7 with Ansible core 2.12).
 
 ## External requirements
 
-**NOTE:** `hvac` versions `0.10.12` and `0.10.13` inadvertently did not work with Python 2.
-
-  - `hvac` (python library)
-    - `hvac` 0.7.0+ (for namespace support)
-    - `hvac` 0.9.6+ (to avoid all deprecation warnings)
-    - `hvac` 0.10.5+ (for JWT auth support)
-    - `hvac` 0.10.6+ (to avoid deprecation warning for AppRole)
-  - `botocore` (only if inferring aws params from boto)
-  - `boto3` (only if using a boto profile)
+The `hvac` Python library is required for this collection. [For full requirements and details, see the collection's User Guide](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/docsite/user_guide.html#requirements).
 
 ## Included content
 
-- Lookup Plugins
-  - `hashi_vault`
+[See the list of included content in the docsite](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/#plugin-index).
 
 ## Using this collection
 
