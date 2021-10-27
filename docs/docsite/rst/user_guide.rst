@@ -40,8 +40,7 @@ In general, we recommend using the latest version of ``hvac`` that is supported 
 Other requirements
 ------------------
 
-* ``botocore`` (only if inferring AWS params from boto)
-* ``boto3`` (only if using a boto profile)
+* ``boto3`` (only if loading credentials from a boto session, for example using an AWS profile or IAM role credentials)
 
 Retrying failed requests
 ========================
