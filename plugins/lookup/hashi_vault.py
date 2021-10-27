@@ -384,6 +384,7 @@ from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
@@ -430,7 +431,7 @@ class LookupModule(HashiVaultLookupBase):
 
         try:
             self.authenticator.validate()
-        except NotImplementedError as e:
+        except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
         # secret field splitter
