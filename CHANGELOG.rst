@@ -5,6 +5,19 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.4.1
+======
+
+Release Summary
+---------------
+
+This release contains a bugfix for ``aws_iam_login`` authentication.
+
+Bugfixes
+--------
+
+- aws_iam_login auth method - fix incorrect use of ``boto3``/``botocore`` that prevented proper loading of AWS IAM role credentials (https://github.com/ansible-collections/community.hashi_vault/issues/167).
+
 v1.4.0
 ======
 

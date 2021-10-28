@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This release contains a bugfix for ``aws_iam_login`` authentication.
