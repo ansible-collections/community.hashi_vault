@@ -268,3 +268,13 @@ releases:
         name: vault_read
         namespace: null
     release_date: '2021-10-25'
+  1.4.1:
+    changes:
+      bugfixes:
+      - aws_iam_login auth method - fix incorrect use of ``boto3``/``botocore`` that
+        prevented proper loading of AWS IAM role credentials (https://github.com/ansible-collections/community.hashi_vault/issues/167).
+      release_summary: This release contains a bugfix for ``aws_iam_login`` authentication.
+    fragments:
+    - 1.4.1.yml
+    - 168-aws_auth-boto-bug.yml
+    release_date: '2021-10-28'

@@ -1,3 +1,0 @@
----
-bugfixes:
-  - aws_iam_login auth method - fix incorrect use of ``boto3``/``botocore`` that prevented proper loading of AWS IAM role credentials (https://github.com/ansible-collections/community.hashi_vault/issues/167).
