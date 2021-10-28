@@ -65,11 +65,15 @@ class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
         if not (params['access_key'] and params['secret_key']):
             try:
                 import boto3
+                import botocore
             except ImportError:
                 raise HashiVaultValueError("boto3 is required for loading a profile or IAM role credentials.")
 
             profile = self._options.get_option_default('aws_profile')
-            session_credentials = boto3.session.Session(profile_name=profile).get_credentials()
+            try:
+                session_credentials = boto3.session.Session(profile_name=profile).get_credentials()
+            except botocore.exceptions.ProfileNotFound:
+                raise HashiVaultValueError("The AWS profile '%s' was not found." % profile)
 
             if not session_credentials:
                 raise HashiVaultValueError("No AWS credentials supplied or available.")
