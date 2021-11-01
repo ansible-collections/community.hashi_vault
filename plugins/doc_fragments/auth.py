@@ -122,6 +122,17 @@ class ModuleDocFragment(object):
         vars:
           - name: ansible_hashi_vault_auth_method
             version_added: 1.2.0
+      mount_point:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_MOUNT_POINT
+            version_added: 1.5.0
+        ini:
+          - section: hashi_vault_collection
+            key: mount_point
+            version_added: 1.5.0
+        vars:
+          - name: ansible_hashi_vault_mount_point
+            version_added: 1.5.0
       token:
         env:
           - name: ANSIBLE_HASHI_VAULT_TOKEN
