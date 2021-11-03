@@ -107,12 +107,6 @@ class ModuleDocFragment(object):
     options:
       auth_method:
         env:
-          - name: VAULT_AUTH_METHOD
-            deprecated:
-              why: standardizing environment variables
-              version: 2.0.0
-              collection_name: community.hashi_vault
-              alternatives: ANSIBLE_HASHI_VAULT_AUTH_METHOD
           - name: ANSIBLE_HASHI_VAULT_AUTH_METHOD
             version_added: 0.2.0
         ini:
