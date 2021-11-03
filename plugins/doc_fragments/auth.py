@@ -125,12 +125,6 @@ class ModuleDocFragment(object):
             version_added: 1.2.0
       token_path:
         env:
-          - name: VAULT_TOKEN_PATH
-            deprecated:
-              why: standardizing environment variables
-              version: 2.0.0
-              collection_name: community.hashi_vault
-              alternatives: ANSIBLE_HASHI_VAULT_TOKEN_PATH
           - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
             version_added: 0.2.0
         ini:
@@ -142,12 +136,6 @@ class ModuleDocFragment(object):
             version_added: 1.2.0
       token_file:
         env:
-          - name: VAULT_TOKEN_FILE
-            deprecated:
-              why: standardizing environment variables
-              version: 2.0.0
-              collection_name: community.hashi_vault
-              alternatives: ANSIBLE_HASHI_VAULT_TOKEN_FILE
           - name: ANSIBLE_HASHI_VAULT_TOKEN_FILE
             version_added: 0.2.0
         ini:
