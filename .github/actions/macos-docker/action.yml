@@ -12,8 +12,8 @@ runs:
         mkdir -p ~/.docker/machine/cache
         curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
 
-        mkdir -p /etc/vbox
-        echo '* 0.0.0.0/0 ::/0' > /etc/vbox/networks.conf
+        sudo mkdir -p /etc/vbox
+        sudo echo '* 0.0.0.0/0 ::/0' > /etc/vbox/networks.conf
 
         brew install docker-machine docker
         docker --version
