@@ -29,10 +29,10 @@ class TestHashiVaultLookup(object):
     def test_is_hashi_vault_lookup_base(self, hashi_vault_lookup_module):
         assert issubclass(type(hashi_vault_lookup_module), HashiVaultLookupBase)
 
+    # TODO: this test should be decoupled from the hashi_vault lookup and moved to the connection options tests
     @pytest.mark.parametrize(
         'envpatch,expected',
         [
-            ({}, 'http://127.0.0.1:8200'),
             ({'VAULT_ADDR': 'http://vault:0'}, 'http://vault:0'),
             ({'ANSIBLE_HASHI_VAULT_ADDR': 'https://vaultalt'}, 'https://vaultalt'),
             ({'VAULT_ADDR': 'https://vaultlow:8443', 'ANSIBLE_HASHI_VAULT_ADDR': 'http://vaulthigh:8200'}, 'http://vaulthigh:8200'),
