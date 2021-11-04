@@ -11,5 +11,5 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def skip_python():
-    if sys.version_info < (2, 7):
-        pytest.skip('Skipping on Python %s. community.hashi_vault supports Python 2.7 and higher.' % sys.version)
+    if sys.version_info < (3, 6):
+        pytest.skip('Skipping on Python %s. community.hashi_vault supports Python 3.6 and higher.' % sys.version)
