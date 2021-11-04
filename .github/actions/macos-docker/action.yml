@@ -11,7 +11,7 @@ runs:
       run: |
         mkdir -p ~/.docker/machine/cache
         curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
-        brew install docker-machine docker@20.10.9
+        brew install docker-machine https://github.com/Homebrew/homebrew-core/raw/2cef961d06de4622c78d873822f05accc773991f/Formula/docker.rb
         docker --version
         docker-machine create --driver virtualbox default
         docker-machine env default
