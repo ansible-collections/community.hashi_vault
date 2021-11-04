@@ -15,7 +15,7 @@ class ModuleDocFragment(object):
         description:
           - URL to the Vault service.
           - If not specified by any other means, the value of the C(VAULT_ADDR) environment variable will be used.
-          - If C(VAULT_ADDR) is also not defined then a default of C(http://127.0.0.1:8200) will be used.
+          - If C(VAULT_ADDR) is also not defined then an error will be raised.
         type: str
       proxies:
         description:
