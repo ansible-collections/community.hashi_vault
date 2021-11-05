@@ -1,3 +1,0 @@
----
-minor_changes:
-  - add the ``community.hashi_vault.vault`` action group (https://github.com/ansible-collections/community.hashi_vault/pull/172).
