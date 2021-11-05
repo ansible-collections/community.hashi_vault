@@ -25,11 +25,7 @@ class TestHashiVaultAuthenticator(object):
     def test_method_validate_is_called(self, authenticator, fake_auth_class):
         authenticator.validate()
 
-        # TODO: revisit in 2.0.0 when py3.5 is dropped
-        if sys.version_info < (3, 6):
-            assert fake_auth_class.validate.call_count == 1
-        else:
-            fake_auth_class.validate.assert_called_once()
+        fake_auth_class.validate.assert_called_once()
 
     def test_validate_not_implemented(self, authenticator, fake_auth_class):
         with pytest.raises(NotImplementedError):
