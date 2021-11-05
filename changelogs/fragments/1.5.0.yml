@@ -1,0 +1,4 @@
+---
+release_summary: |-
+  This release includes a new action group for use with ``module_defaults``, and additional ways of specifying the ``mount_point`` option for plugins.
+  This will be the last ``1.x`` release.
