@@ -5,6 +5,21 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v1.5.0
+======
+
+Release Summary
+---------------
+
+This release includes a new action group for use with ``module_defaults``, and additional ways of specifying the ``mount_point`` option for plugins.
+This will be the last ``1.x`` release.
+
+Minor Changes
+-------------
+
+- add the ``community.hashi_vault.vault`` action group (https://github.com/ansible-collections/community.hashi_vault/pull/172).
+- auth methods - Add support for configuring the ``mount_point`` auth method option in plugins via the ``ANSIBLE_HASHI_VAULT_MOUNT_POINT`` environment variable, ``ansible_hashi_vault_mount_point`` ansible variable, or ``mount_point`` INI section (https://github.com/ansible-collections/community.hashi_vault/pull/171).
+
 v1.4.1
 ======
 

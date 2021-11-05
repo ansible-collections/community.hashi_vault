@@ -278,3 +278,20 @@ releases:
     - 1.4.1.yml
     - 168-aws_auth-boto-bug.yml
     release_date: '2021-10-28'
+  1.5.0:
+    changes:
+      minor_changes:
+      - add the ``community.hashi_vault.vault`` action group (https://github.com/ansible-collections/community.hashi_vault/pull/172).
+      - auth methods - Add support for configuring the ``mount_point`` auth method
+        option in plugins via the ``ANSIBLE_HASHI_VAULT_MOUNT_POINT`` environment
+        variable, ``ansible_hashi_vault_mount_point`` ansible variable, or ``mount_point``
+        INI section (https://github.com/ansible-collections/community.hashi_vault/pull/171).
+      release_summary: 'This release includes a new action group for use with ``module_defaults``,
+        and additional ways of specifying the ``mount_point`` option for plugins.
+
+        This will be the last ``1.x`` release.'
+    fragments:
+    - 1.5.0.yml
+    - 172-action_group.yml
+    - pr-171-envvar-for-mount-point.yaml
+    release_date: '2021-11-05'
