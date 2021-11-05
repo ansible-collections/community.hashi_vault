@@ -202,7 +202,7 @@ class HashiVaultOptionGroupBase:
         # key = option_name
         # value = dict with "env" key which is a list of env vars (in order of those checked first; process stops when value is found),
         # and an optional "default" key whose value will be set if none of the env vars are found.
-        # An optional boolean required key can be used to specify that a value is required, so raise if one is not found.
+        # An optional boolean "required" key can be used to specify that a value is required, so raise if one is not found.
 
         for opt, config in option_vars.items():
             for env in config['env']:
