@@ -5,7 +5,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
 import pytest
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
