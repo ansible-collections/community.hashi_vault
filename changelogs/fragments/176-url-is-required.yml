@@ -1,3 +1,0 @@
----
-breaking_changes:
-  - connection options - there is no longer a default value for the ``url`` option (the Vault address), so a value must be supplied (https://github.com/ansible-collections/community.hashi_vault/issues/83).

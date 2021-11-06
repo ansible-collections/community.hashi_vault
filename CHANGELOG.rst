@@ -5,6 +5,26 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v2.0.0
+======
+
+Release Summary
+---------------
+
+Version 2.0.0 of the collection drops support for Python 2 & Python 3.5, making Python 3.6 the minimum supported version.
+Some deprecated features and settings have been removed as well.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- connection options - there is no longer a default value for the ``url`` option (the Vault address), so a value must be supplied (https://github.com/ansible-collections/community.hashi_vault/issues/83).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- drop support for Python 2 and Python 3.5 (https://github.com/ansible-collections/community.hashi_vault/issues/81).
+- support for the following deprecated environment variables has been removed: ``VAULT_AUTH_METHOD``, ``VAULT_TOKEN_PATH``, ``VAULT_TOKEN_FILE``, ``VAULT_ROLE_ID``, ``VAULT_SECRET_ID`` (https://github.com/ansible-collections/community.hashi_vault/pull/173).
+
 v1.5.0
 ======
 
