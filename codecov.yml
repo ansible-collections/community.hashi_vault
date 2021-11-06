@@ -26,6 +26,10 @@ flags:
     paths:
       - plugins/module_utils/_auth_method_aws_iam_login.py
 
+  target_auth_cert:
+    paths:
+      - plugins/module_utils/_auth_method_cert.py
+
   target_auth_jwt:
     paths:
       - plugins/module_utils/_auth_method_jwt.py
