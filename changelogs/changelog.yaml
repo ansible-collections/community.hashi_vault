@@ -295,3 +295,23 @@ releases:
     - 172-action_group.yml
     - pr-171-envvar-for-mount-point.yaml
     release_date: '2021-11-05'
+  2.0.0:
+    changes:
+      breaking_changes:
+      - connection options - there is no longer a default value for the ``url`` option
+        (the Vault address), so a value must be supplied (https://github.com/ansible-collections/community.hashi_vault/issues/83).
+      release_summary: 'Version 2.0.0 of the collection drops support for Python 2
+        & Python 3.5, making Python 3.6 the minimum supported version.
+
+        Some deprecated features and settings have been removed as well.'
+      removed_features:
+      - drop support for Python 2 and Python 3.5 (https://github.com/ansible-collections/community.hashi_vault/issues/81).
+      - 'support for the following deprecated environment variables has been removed:
+        ``VAULT_AUTH_METHOD``, ``VAULT_TOKEN_PATH``, ``VAULT_TOKEN_FILE``, ``VAULT_ROLE_ID``,
+        ``VAULT_SECRET_ID`` (https://github.com/ansible-collections/community.hashi_vault/pull/173).'
+    fragments:
+    - 173-deprecated-env-vars.yml
+    - 176-url-is-required.yml
+    - 177-drop-py2-3.5.yml
+    - 2.0.0.yml
+    release_date: '2021-11-06'
