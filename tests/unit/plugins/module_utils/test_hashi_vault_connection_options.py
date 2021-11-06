@@ -13,6 +13,7 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultOptionGroupBase,
     HashiVaultOptionAdapter,
+    HashiVaultValueError,
 )
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
@@ -21,7 +22,7 @@ from requests import Session
 
 
 CONNECTION_OPTIONS = {
-    'url': 'https://127.0.0.1:8200',
+    'url': 'url-is-required',
     'proxies': None,
     'namespace': None,
     'validate_certs': None,
@@ -262,3 +263,9 @@ class TestHashiVaultConnectionOptions(object):
 
         with pytest.raises(NotImplementedError):
             connection_options.get_hvac_connection_options()
+
+    def test_url_is_required(self, connection_options, adapter):
+        adapter.set_option('url', None)
+
+        with pytest.raises(HashiVaultValueError, match=r'Required option url was not set'):
+            connection_options.process_connection_options()

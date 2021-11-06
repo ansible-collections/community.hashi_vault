@@ -64,7 +64,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     )
 
     _LATE_BINDING_ENV_VAR_OPTIONS = {
-        'url': dict(env=['VAULT_ADDR'], default='http://127.0.0.1:8200'),
+        'url': dict(env=['VAULT_ADDR'], required=True),
         'ca_cert': dict(env=['VAULT_CACERT']),
         'namespace': dict(env=['VAULT_NAMESPACE']),
     }

@@ -202,6 +202,7 @@ class HashiVaultOptionGroupBase:
         # key = option_name
         # value = dict with "env" key which is a list of env vars (in order of those checked first; process stops when value is found),
         # and an optional "default" key whose value will be set if none of the env vars are found.
+        # An optional boolean "required" key can be used to specify that a value is required, so raise if one is not found.
 
         for opt, config in option_vars.items():
             for env in config['env']:
@@ -212,8 +213,12 @@ class HashiVaultOptionGroupBase:
                 # in the argspec if it has late binding env vars.
                 if self._options.has_option(opt) and self._options.get_option(opt) is None:
                     self._options.set_option(opt, os.environ.get(env))
+
             if 'default' in config and self._options.has_option(opt) and self._options.get_option(opt) is None:
                 self._options.set_option(opt, config['default'])
+
+            if 'required' in config and self._options.get_option_default(opt) is None:
+                raise HashiVaultValueError("Required option %s was not set." % opt)
 
 
 class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
