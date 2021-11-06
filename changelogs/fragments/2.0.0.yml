@@ -1,0 +1,4 @@
+---
+release_summary: |-
+  Version 2.0.0 of the collection drops support for Python 2 & Python 3.5, making Python 3.6 the minimum supported version.
+  Some deprecated features and settings have been removed as well.
