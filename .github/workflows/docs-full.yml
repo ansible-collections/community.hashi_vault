@@ -1,7 +1,7 @@
 ---
 name: Collection Docs (Full)
 concurrency:
-  group: docs-full-${{ github.ref }}
+  group: docs-full-${{ github.head_ref }}
   cancel-in-progress: true
 on:
   pull_request_target:
