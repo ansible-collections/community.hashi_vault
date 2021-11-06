@@ -86,7 +86,7 @@ jobs:
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -156,7 +156,7 @@ jobs:
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -274,7 +274,7 @@ jobs:
 
         # ansible-test support producing code coverage data
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -406,7 +406,7 @@ jobs:
         # ansible-test support producing code coverage data
       - name: Generate coverage report
         if: ${{ matrix.docker }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
@@ -451,7 +451,7 @@ jobs:
         with:
           directory: ./cov-units-pre2.12
           additional-flags: units
-          file-flag-pattern: coverage=units=units={env_%}=python-{py%}.xml
+          file-flag-pattern: coverage=units=units={env_%}.xml
           directory-flag-pattern: =ansible_{ansible-%}=
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault

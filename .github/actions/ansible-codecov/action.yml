@@ -16,14 +16,14 @@ inputs:
     required: false
   file-flag-pattern:
     description: |
-      A pattern to infer flags from coverage reports. For example the default pattern:
+      A pattern to infer flags from coverage reports. For example this pattern:
         coverage={%}={target_%}={env_%}=python-{py%}.xml
       applied to a file name like:
         coverage=integration=lookup_some_plugin=docker-default=python-3.9.xml
       Results in the flags:
         integration,target_lookup_some_plugin,env_docker-default,py3.9
     required: false
-    default: coverage={%}={target_%}={env_%}=python-{py%}.xml
+    default: coverage={%}={target_%}={env_%}.xml
   directory:
     description: The directory to scan recursively. Defaults to current working directory.
     required: false
