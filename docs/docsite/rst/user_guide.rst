@@ -8,7 +8,7 @@ The `community.hashi_vault collection <https://galaxy.ansible.com/community/hash
 
 .. note::
 
-  This guide is a work-in-progress and should not be considered complete. Use it in conjunction with plugin documentation.
+  This guide is a duck-in-progress and should not be considered complete. Use it in conjunction with plugin documentation.
 
 .. contents::
   :local:
