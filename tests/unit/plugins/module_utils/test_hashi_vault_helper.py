@@ -29,7 +29,6 @@ def vault_token_via_env(vault_token):
         yield
 
 
-@pytest.mark.skipif(sys.version_info < (2, 7), reason="Python 2.7 or higher is required.")
 class TestHashiVaultHelper(object):
 
     def test_get_vault_client_without_logout_explicit_token(self, hashi_vault_helper, vault_token):

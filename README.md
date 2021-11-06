@@ -37,11 +37,9 @@ See [the CI configuration](https://github.com/ansible-collections/community.hash
 
 ## Python Requirements
 
-**Python 2.6 is not supported. [Support for Python 2.7 & Python 3.5 will be dropped in `v2.0.0` of the collection.](https://github.com/ansible-collections/community.hashi_vault/issues/81)**
+**Python 2.6, 2.7, and 3.5 are not supported in version `2.0.0` or later of the collection.**
 
 Currently we support and test against Python versions:
-* 2.7
-* 3.5
 * 3.6
 * 3.7
 * 3.8
