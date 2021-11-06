@@ -49,7 +49,7 @@ jobs:
         with:
           env: |
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-            TEST_INVOCATION="sanity --docker ${{ matrix.test_container }} -v --color --coverage"
+            TEST_INVOCATION="sanity --docker ${{ matrix.test_container }} -v --color ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -86,10 +86,12 @@ jobs:
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        if: ${{ github.event_name != 'schedule' }}
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
+        if: ${{ github.event_name != 'schedule' }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
@@ -122,7 +124,7 @@ jobs:
         with:
           env: |
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-            TEST_INVOCATION="units --color --docker ${{ matrix.test_container }} --coverage"
+            TEST_INVOCATION="units --color --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -156,10 +158,12 @@ jobs:
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        if: ${{ github.event_name != 'schedule' }}
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
+        if: ${{ github.event_name != 'schedule' }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
@@ -212,7 +216,7 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage --docker-network hashi_vault_default"
+            TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }} --docker-network hashi_vault_default"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -274,10 +278,12 @@ jobs:
 
         # ansible-test support producing code coverage data
       - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        if: ${{ github.event_name != 'schedule' }}
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
+        if: ${{ github.event_name != 'schedule' }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
@@ -318,7 +324,7 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} --coverage"
+            DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -405,12 +411,12 @@ jobs:
 
         # ansible-test support producing code coverage data
       - name: Generate coverage report
-        if: ${{ matrix.docker }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version --group-by environment --group-by target
+        if: ${{ matrix.docker && github.event_name != 'schedule' }}
+        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
-        if: ${{ matrix.docker }}
+        if: ${{ matrix.docker && github.event_name != 'schedule' }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage=${{ github.job }}=${{ matrix.runner }}=${{ matrix.docker }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
@@ -423,6 +429,9 @@ jobs:
       - units
       - integration
       - local_test_invocation
+    # don't upload coverage on scheduled runs
+    # https://github.com/ansible-collections/community.hashi_vault/issues/180
+    if: ${{ github.event_name != 'schedule' }}
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
@@ -451,7 +460,7 @@ jobs:
         with:
           directory: ./cov-units-pre2.12
           additional-flags: units
-          file-flag-pattern: coverage=units=units={env_%}=python-{py%}.xml
+          file-flag-pattern: coverage=units=units={env_%}.xml
           directory-flag-pattern: =ansible_{ansible-%}=
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
