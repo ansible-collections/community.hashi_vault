@@ -1,0 +1,14 @@
+---
+ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+ansible_hashi_vault_auth_method: userpass
+
+auth_paths:
+  - userpass
+  - userpass-alt
+
+userpass_username: testuser
+userpass_password: testpass
+
+vault_userpass_canary:
+  path: cubbyhole/configure_userpass
+  value: complete  # value does not matter
