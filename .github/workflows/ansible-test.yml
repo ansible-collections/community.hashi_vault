@@ -293,7 +293,7 @@ jobs:
 
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
-    name: LI - ${{ matrix.runner }} [${{ matrix.docker && '+' || '-' }}d4r] (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
       # needed to prevent Ansible crashing on MacOS
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
@@ -303,18 +303,18 @@ jobs:
         ansible:
           - stable-2.12
         python:
-          - 3.8
+          - 3.9
         runner:
           - ubuntu-latest
-          - macos-latest
+          - macos-10.15
+          # macos-11 will not support virtualbox, so we can't run docker
+          # when macos-10.15 support is dropped we will have to stop testing on it
+          # unless a solution for docker/virtualbox is found.
+          # See also:
+          # - https://github.com/actions/virtual-environments/issues/4060
+          # - https://github.com/actions/virtual-environments/pull/4010
         test_container:
           - default
-        docker:
-          - true
-          - false
-        exclude:
-          - runner: ubuntu-latest
-            docker: false
 
     steps:
       - name: Initialize env vars
@@ -352,31 +352,30 @@ jobs:
         with:
           collection: community.docker
 
-      - name: Install community.general
-        uses: ./.github/actions/collection-via-git
-        if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
-        with:
-          collection: community.general
+      # - name: Install community.general
+      #   uses: ./.github/actions/collection-via-git
+      #   if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
+      #   with:
+      #     collection: community.general
 
-      - name: legacy integration - use sample integration_config
-        working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-        run: |
-          cp "integration_config.yml.sample" "integration_config.yml"
-          echo -e "\n\ngithub_token: ${{ secrets.GITHUB_TOKEN }}" >> "integration_config.yml"
+      # - name: legacy integration - use sample integration_config
+      #   working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
+      #   run: |
+      #     cp "integration_config.yml.sample" "integration_config.yml"
+      #     echo -e "\n\ngithub_token: ${{ secrets.GITHUB_TOKEN }}" >> "integration_config.yml"
 
-      - name: legacy integration - venv
-        if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
-        working-directory: ${{ env.COLLECTION_PATH }}
+      # - name: legacy integration - venv
+      #   if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
+      #   run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
+      #   working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Install Docker on MacOS
-        if: ${{ matrix.runner == 'macos-latest' && matrix.docker }}
+        if: ${{ startsWith(matrix.runner, 'macos') }}
         timeout-minutes: 6
         # sometimes this hangs forever waiting for an IP
         uses: ./.github/actions/macos-docker
 
       - name: Pull Ansible test images
-        if: ${{ matrix.docker }}
         timeout-minutes: 5
         continue-on-error: true
         uses: ./.github/actions/pull-ansible-test-images
@@ -384,19 +383,18 @@ jobs:
           working-directory: ${{ env.COLLECTION_PATH }}
           ansible-test-invocation: ${{ env.DOCKER_TEST_INVOCATION }}
 
-      - name: legacy integration - docker
-        if: ${{ matrix.docker }}
-        run: |
-          ansible-test ${{ env.DOCKER_TEST_INVOCATION }}
-        working-directory: ${{ env.COLLECTION_PATH }}
+      # - name: legacy integration - docker
+      #   if: ${{ matrix.docker }}
+      #   run: |
+      #     ansible-test ${{ env.DOCKER_TEST_INVOCATION }}
+      #   working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: legacy integration - remove integration_config
-        if: ${{ matrix.docker }}
-        working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-        run: rm -f "integration_config.yml"
+      # - name: legacy integration - remove integration_config
+      #   if: ${{ matrix.docker }}
+      #   working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
+      #   run: rm -f "integration_config.yml"
 
       - name: localenv_docker - setup
-        if: ${{ matrix.docker }}
         run: |
           pwd
           pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
@@ -404,7 +402,6 @@ jobs:
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
       - name: localenv_docker - Run integration test (in docker)
-        if: ${{ matrix.docker }}
         run: |
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
