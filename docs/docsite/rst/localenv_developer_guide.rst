@@ -40,8 +40,7 @@ Relevant ``integration_config.yml`` variables
   "``vault_test_server_http``", "``http://myvault:8200``", "The full HTTP URL of your Vault test server."
   "``vault_test_server_https``", "``https://myvault:8300``", "The full HTTPS URL of your Vault test server."
   "``vault_dev_root_token_id``", "``3ee9a1f7-f115-4f7c-90a3-d3c73361bcb5``", "The root token used to authenticate to Vault."
-  "``vault_version``", "``1.7.3``", "The desired version of Vault to download (only used by legacy setup). Can use the value ``latest``."
-  "``vault_integration_legacy``", "``false``", "When ``true`` legacy integration will be used (see legacy section)."
+  "``vault_version``", "``1.7.3``", "The version of Vault in use (usually this is written by a localenv, so a value set manually is not used anywhere)."
   "``vault_cert_content``", "``-----BEGIN CERTIFICATE-----<snip>``", "The public cert of the CA that signed the cert used for Vault's TLS listener (or the cert itself if self-signed)."
 
 
@@ -69,4 +68,4 @@ localenv role conventions
 * Consider providing a ``setup.sh`` to avoid having to manually run ``ansible-`` commands. It should ideally operate correctly regardless of the current working directory.
 * Generate a usable ``integration_config.yml`` that allows for using the result of the localenv. Generate it within the role output, not outside the role. Copy it to the right location, but do not overwrite an existing one.
 * If the role has external dependencies, try to codify those in file(s) that can be used by the right tool, like ``requirements.yml`` for ``ansible-galaxy``, etc.
-* localenv roles are meant to run **outside** of the ``ansible-test`` environment, but they can make (re)use of other roles; for example a localenv that seeks to run Vault directly on the local machine could reuse the setup roles for downloading and launching Vault that are used (within the test environment) by the legacy integration.
+* localenv roles are meant to run **outside** of the ``ansible-test`` environment, but they can make (re)use of other roles.

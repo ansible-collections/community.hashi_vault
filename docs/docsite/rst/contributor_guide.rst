@@ -83,64 +83,17 @@ First, :ref:`review the guidance on testing collections <testing_collections>`, 
 Integration Tests
 -----------------
 
-Unlike other collections, we now require an `integration_config.yml <https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html#integration-config-yml>`_ file for properly running integration tests, as the tests require external dependencies (like a Vault server) and they need to know where to find those dependencies.
+Unlike other collections, we require an `integration_config.yml <https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html#integration-config-yml>`_ file for properly running integration tests, as the tests require external dependencies (like a Vault server) and they need to know where to find those dependencies.
 
-If you have contributed to this collection or to the ``hashi_vault`` lookup plugin in the past, you might remember that the integration tests used to download, extract, and run a Vault server during the course of the tests, by default. This **legacy mode** is not recommended but is still available (for now) via opt-in.
+If you have contributed to this collection or to the ``hashi_vault`` lookup plugin in the past, you might remember that the integration tests used to download, extract, and run a Vault server during the course of the tests, by default. This *legacy mode* is **no longer available**.
 
-.. note::
-
-  Legacy mode is not recommended because a new Vault server and proxy server will be downloaded, set up, configured, and/or uninstalled, for every *target*. Historically, we only had one target, and so it was a good way to go, but that's no longer true. This will make it slower and slower as more targets are added because you will incur the overhead on every target, in every run.
-
-  Skip to :ref:`ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker` for a method that is nearly as easy as legacy mode, and far more efficient (docker-compose).
-
-Legacy mode
-^^^^^^^^^^^
-
-To get started quickly without having to set anything else, you can use legacy mode by copying the included integration config sample:
-
-.. code-block:: shell-session
-
-    $ cp tests/integration/integration_config.yml.sample tests/integration/integration_config.yml
-
-That file has everything configured to be able to run the integration tests and have them set up the dependencies for you.
-
-.. warning::
-
-  Legacy mode uses the GitHub API to figure out the latest version of HashiCorp Vault. This API has a `strict rate limit <https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>`_ on anonymous requests and it's easy to hit that limit. You may set ``github_token`` within ``integration_config.yml`` to provide a token to use, which will give a much higher limit, however if you find yourself hitting the limit, it's probably easier to instead set ``vault_version`` to a specific version, which avoids the API call altogether.
-
-You will also need the following additional Ansible collections:
-
-* `community.crypto <https://galaxy.ansible.com/community/crypto>`_
-* `community.general <https://galaxy.ansible.com/community/general>`_ (MacOS local/venv only)
-
-Running legacy mode tests in docker (**recommended**):
-
-.. code-block:: shell-session
-
-    $ ansible-test integration --docker default -v
-
-Running legacy mode tests in a controlled python virtual environment (**not recommended**):
-
-.. code-block:: shell-session
-
-    $ ansible-test integration --venv --requirements --allow-destructive -v
-
-.. warning::
-
-  In legacy mode, your system packages may be manipulated by running locally or in a venv (not in docker).
-
-If you must use legacy mode testing, you can make it more efficient by limiting your test run to the specific target needed, to avoid the overhead of creating and destroying the dependencies for each target. For example:
-
-.. code-block:: shell-session
-
-    $ ansible-test integration --docker default -v lookup_hashi_vault
 
 .. _ansible_collections.community.hashi_vault.docsite.contributor_guide.localenv_docker:
 
 Docker Compose localenv
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The recommended way to run the tests has Vault and tinyproxy running in their own containers, set up via docker-compose, and the integration tests run in their own container separately.
+The recommended way to run the tests has Vault and other dependencies running in their own containers, set up via docker-compose, and the integration tests run in their own container separately.
 
 We have a pre-defined "localenv" setup role for this purpose.
 
