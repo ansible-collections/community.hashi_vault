@@ -5,3 +5,6 @@ skip_list:
   - truthy
   - var-naming
   - meta-no-info
+  - ignore-errors
+  - risky-file-permissions
+  - command-instead-of-shell

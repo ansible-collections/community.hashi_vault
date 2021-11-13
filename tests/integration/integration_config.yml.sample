@@ -1,10 +1,12 @@
-# copy this file to integration_config.yml to use the legacy style all-in-one setup
-# for best results, consider a different localenv setup.
-# See the additional documentation at https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/
+# Running integration tests requires you set up an integration_config.yml that
+# tells the tests where to find Vault and other dependencies.
+# See the contributor guide at:
+# https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/docsite/contributor_guide.html#integration-tests
 ---
-# With legacy integration mode, vault_version should be a specific version, or the special value "latest".
+# this is just a small sample of what the file looks like,
+# this file is not valid on its own. See the guide for details.
+
 vault_version: latest
-vault_integration_legacy: true
 
 vault_dev_root_token_id: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
 
