@@ -380,15 +380,15 @@ jobs:
 
         # ansible-test support producing code coverage data
       - name: Generate coverage report
-        if: ${{ matrix.docker && github.event_name != 'schedule' }}
+        if: ${{ github.event_name != 'schedule' }}
         run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
         working-directory: ${{ env.COLLECTION_PATH }}
 
       - name: Upload ${{ github.job }} coverage reports
-        if: ${{ matrix.docker && github.event_name != 'schedule' }}
+        if: ${{ github.event_name != 'schedule' }}
         uses: actions/upload-artifact@v2
         with:
-          name: coverage=${{ github.job }}=${{ matrix.runner }}=${{ matrix.docker }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+          name: coverage=${{ github.job }}=${{ matrix.runner }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
