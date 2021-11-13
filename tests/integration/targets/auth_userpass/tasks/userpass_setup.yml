@@ -1,0 +1,27 @@
+- name: "Setup block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+  block:
+    - name: 'Enable the userpass auth method'
+      vault_ci_enable_auth:
+        method_type: userpass
+        path: '{{ omit if is_default_path else this_path }}'
+        config:
+          default_lease_ttl: 60m
+
+    - name: 'Create a userpass policy'
+      vault_ci_policy_put:
+        name: userpass-policy
+        policy: |
+          path "auth/{{ this_path }}/login" {
+            capabilities = [ "create", "read" ]
+          }
+
+    - name: 'Create a named role'
+      vault_ci_write:
+        path: 'auth/{{ this_path }}/users/{{ userpass_username }}'
+        data:
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},userpass-policy"
+          password: '{{ userpass_password }}'
