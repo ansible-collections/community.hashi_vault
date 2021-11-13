@@ -42,6 +42,8 @@ class HashiVaultAuthMethodJwt(HashiVaultAuthMethodBase):
 
         # must manually set the client token with JWT login
         # see https://github.com/hvac/hvac/issues/644
+        # fixed in https://github.com/hvac/hvac/pull/746
+        # but we do it manually to maintain compatibilty with older hvac versions.
         if use_token:
             client.token = response['auth']['client_token']
 
