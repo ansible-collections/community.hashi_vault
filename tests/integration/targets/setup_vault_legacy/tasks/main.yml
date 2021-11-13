@@ -1,8 +1,0 @@
----
-- include_role:
-    name: setup_vault_server
-  when: vault_integration_legacy | bool
-
-- include_role:
-    name: setup_tinyproxy_server
-  when: vault_integration_legacy | bool

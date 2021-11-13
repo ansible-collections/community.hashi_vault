@@ -1,4 +1,0 @@
-hidden
-destructive
-needs/target/setup_vault_server
-needs/target/setup_tinyproxy_server
