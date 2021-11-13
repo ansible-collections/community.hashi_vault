@@ -352,23 +352,6 @@ jobs:
         with:
           collection: community.docker
 
-      # - name: Install community.general
-      #   uses: ./.github/actions/collection-via-git
-      #   if: ${{ matrix.runner == 'macos-latest' }}  # we need community.general.homebrew
-      #   with:
-      #     collection: community.general
-
-      # - name: legacy integration - use sample integration_config
-      #   working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-      #   run: |
-      #     cp "integration_config.yml.sample" "integration_config.yml"
-      #     echo -e "\n\ngithub_token: ${{ secrets.GITHUB_TOKEN }}" >> "integration_config.yml"
-
-      # - name: legacy integration - venv
-      #   if: ${{ matrix.runner != 'macos-latest' || !matrix.docker }}
-      #   run: ansible-test integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --venv --requirements --allow-destructive #--coverage
-      #   working-directory: ${{ env.COLLECTION_PATH }}
-
       - name: Install Docker on MacOS
         if: ${{ startsWith(matrix.runner, 'macos') }}
         timeout-minutes: 6
@@ -382,17 +365,6 @@ jobs:
         with:
           working-directory: ${{ env.COLLECTION_PATH }}
           ansible-test-invocation: ${{ env.DOCKER_TEST_INVOCATION }}
-
-      # - name: legacy integration - docker
-      #   if: ${{ matrix.docker }}
-      #   run: |
-      #     ansible-test ${{ env.DOCKER_TEST_INVOCATION }}
-      #   working-directory: ${{ env.COLLECTION_PATH }}
-
-      # - name: legacy integration - remove integration_config
-      #   if: ${{ matrix.docker }}
-      #   working-directory: ${{ env.COLLECTION_INTEGRATION_PATH }}
-      #   run: rm -f "integration_config.yml"
 
       - name: localenv_docker - setup
         run: |
