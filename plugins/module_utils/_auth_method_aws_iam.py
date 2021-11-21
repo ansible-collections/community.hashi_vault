@@ -19,10 +19,10 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 )
 
 
-class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
+class HashiVaultAuthMethodAwsIam(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: userpass'''
 
-    NAME = 'aws_iam_login'
+    NAME = 'aws_iam'
     OPTIONS = [
         'aws_profile',
         'aws_access_key',
@@ -34,7 +34,7 @@ class HashiVaultAuthMethodAwsIamLogin(HashiVaultAuthMethodBase):
     ]
 
     def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodAwsIamLogin, self).__init__(option_adapter, warning_callback)
+        super(HashiVaultAuthMethodAwsIam, self).__init__(option_adapter, warning_callback)
 
     def validate(self):
         params = {
