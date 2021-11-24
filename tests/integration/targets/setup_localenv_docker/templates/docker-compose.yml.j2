@@ -19,3 +19,14 @@ services:
     ports:
       - '{{ proxy_port }}:{{ proxy_port }}'
     command: ANY
+  mmock:
+    image: jordimartin/mmock
+    container_name: '{{ mmock_container_name }}'
+    ports:
+      - '{{ mmock_server_port }}:{{ mmock_server_port }}'
+      - '{{ mmock_console_port }}:{{ mmock_console_port }}'
+    volumes:
+      - '{{ mmock_config_path }}:/config'
+    command: >-
+      -console-port {{ mmock_console_port }}
+      -server-port {{ mmock_server_port }}

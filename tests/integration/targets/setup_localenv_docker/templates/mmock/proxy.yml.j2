@@ -1,0 +1,7 @@
+---
+request:
+  method: 'GET|HEAD|POST|PUT|DELETE|OPTIONS'
+  path: '/v1/*'
+control:
+  priority: 1
+  proxyBaseUrl: '{{ integration_config.vault_test_server_http }}/v1'
