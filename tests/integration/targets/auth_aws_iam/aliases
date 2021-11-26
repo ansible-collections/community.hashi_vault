@@ -1,2 +1,2 @@
-vault/auth/userpass
+vault/auth/aws_iam
 context/target
