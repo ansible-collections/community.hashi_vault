@@ -19,6 +19,12 @@ proxy_port: 8888
 proxy_container_name: tinyproxy
 proxy_target_name: '{{ proxy_container_name }}'
 
+mmock_server_port: 8900
+mmock_console_port: 8901
+mmock_container_name: mmock
+mmock_target_name: '{{ mmock_container_name }}'
+mmock_config_path: '{{ output_dir }}/mmock_config'
+
 output_dir: '{{ role_path }}/files/.output'
 
 docker_compose_output: '{{ output_dir }}/{{ docker_compose_project_name }}'

@@ -15,7 +15,7 @@ __metaclass__ = type
 
 # please keep this list in alphabetical order of auth method name
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_approle import HashiVaultAuthMethodApprole
-from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_aws_iam_login import HashiVaultAuthMethodAwsIamLogin
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_aws_iam import HashiVaultAuthMethodAwsIam
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_cert import HashiVaultAuthMethodCert
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_jwt import HashiVaultAuthMethodJwt
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_ldap import HashiVaultAuthMethodLdap
@@ -31,6 +31,7 @@ class HashiVaultAuthenticator():
             'userpass',
             'ldap',
             'approle',
+            'aws_iam',
             'aws_iam_login',
             'jwt',
             'cert',
@@ -62,7 +63,7 @@ class HashiVaultAuthenticator():
             # please keep this list in alphabetical order of auth method name
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
-            'aws_iam_login': HashiVaultAuthMethodAwsIamLogin(option_adapter, warning_callback),
+            'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback),
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
@@ -71,9 +72,19 @@ class HashiVaultAuthenticator():
             'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
         }
 
+        self.warn = warning_callback
+
     def _get_method_object(self, method=None):
         if method is None:
             method = self._options.get_option('auth_method')
+
+        # TODO: remove in 3.0.0
+        if method == 'aws_iam_login':
+            method = 'aws_iam'
+            self.warn(
+                "[DEPRECATION WARNING]: auth method 'aws_iam_login' is renamed to 'aws_iam'. "
+                "The 'aws_iam_login' name will be removed in community.hashi_vault 3.0.0."
+            )
 
         try:
             o_method = self._selector[method]

@@ -22,9 +22,9 @@ flags:
     paths:
       - plugins/module_utils/_auth_method_approle.py
 
-  target_auth_aws_iam_login:
+  target_auth_aws_iam:
     paths:
-      - plugins/module_utils/_auth_method_aws_iam_login.py
+      - plugins/module_utils/_auth_method_aws_iam.py
 
   target_auth_cert:
     paths:

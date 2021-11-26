@@ -60,6 +60,28 @@ Relevant ``integration_config.yml`` variables
 
   "``vault_proxy_server``", "``http://proxy:8080``", "The full HTTP URL of your proxy server."
 
+
+MMock server
+------------
+
+`MMock (short for Monster Mock) <https://github.com/jmartin82/mmock>`_ is an HTTP server designed for mocking HTTP responses. It can also transparently proxy through to a real server. We use it to proxy our test Vault server while intercepting certain API calls to Vault and returning mocked responses.
+
+This is useful for Vault integrations that are more difficult to set up in our CI environment.
+
+For example, we use this for testing the ``aws_iam`` auth method, since we don't have an AWS account we can use and configure and connect to from our GitHub CI.
+
+For these integration tests, all Vault interactions are directed to MMock rather than directly to Vault, and we pre-configure MMock to respond to the relevant calls in a way that models a real Vault server's success and failure responses.
+
+Relevant ``integration_config.yml`` variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. csv-table::
+  :header: "var", "example", "description"
+  :widths: 15, 20, 65
+
+  "``vault_mmock_server_http``", "``http://mmock:8900``", "The full HTTP URL of the MMock server."
+
+
 localenv role conventions
 =========================
 

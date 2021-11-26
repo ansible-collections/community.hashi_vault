@@ -1,0 +1,25 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]'
+---
+request:
+  method: POST|PUT
+  path: "/v1/auth/aws*/login"
+  body: '*fail-me-role*'
+control:
+  priority: 11
+response:
+  statusCode: 400
+  headers:
+    Content-Type:
+      - application/json
+  body: >-
+    {
+      "error": "error making upstream request: received error code 403 from STS:
+        <ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+        <Error>
+          <Type>Sender</Type>
+          <Code>ExpiredToken</Code>
+          <Message>The security token included in the request is expired</Message>
+        </Error>
+        <RequestId>{{fake.UUID}}</RequestId>
+      </ErrorResponse>"
+    }

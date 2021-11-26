@@ -13,9 +13,14 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._authenticat
 
 
 @pytest.fixture
-def authenticator(fake_auth_class, adapter):
-    a = HashiVaultAuthenticator(adapter, mock.MagicMock())
-    a._selector = {fake_auth_class.NAME: fake_auth_class}
+def mock_warner():
+    return mock.MagicMock()
+
+
+@pytest.fixture
+def authenticator(fake_auth_class, adapter, mock_warner):
+    a = HashiVaultAuthenticator(adapter, mock_warner)
+    a._selector.update({fake_auth_class.NAME: fake_auth_class})
 
     return a
 
@@ -52,3 +57,29 @@ class TestHashiVaultAuthenticator(object):
             authenticator.validate(method='missing')
 
         fake_auth_class.authenticate.assert_not_called()
+
+    def test_get_method_object_explicit(self, authenticator):
+        for auth_method, obj in authenticator._selector.items():
+            assert authenticator._get_method_object(method=auth_method) == obj
+
+    def test_get_method_object_missing(self, authenticator):
+        with pytest.raises(NotImplementedError, match=r"auth method 'missing' is not implemented in HashiVaultAuthenticator"):
+            authenticator._get_method_object(method='missing')
+
+    def test_get_method_object_implicit(self, authenticator, adapter, fake_auth_class):
+        adapter.set_option('auth_method', fake_auth_class.NAME)
+
+        obj = authenticator._get_method_object()
+
+        assert isinstance(obj, type(fake_auth_class))
+
+    # TODO: remove in 3.0.0 when aws_iam_login name is removed
+    # https://github.com/ansible-collections/community.hashi_vault/pull/193
+    def test_get_method_object_deprecated_aws_iam_login(self, authenticator, mock_warner):
+        obj = authenticator._get_method_object('aws_iam_login')
+
+        assert obj == authenticator._selector['aws_iam']
+        mock_warner.assert_called_once_with(
+            "[DEPRECATION WARNING]: auth method 'aws_iam_login' is renamed to 'aws_iam'. "
+            "The 'aws_iam_login' name will be removed in community.hashi_vault 3.0.0."
+        )

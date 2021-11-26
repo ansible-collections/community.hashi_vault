@@ -16,11 +16,13 @@ class ModuleDocFragment(object):
           - Authentication method to be used.
           - C(none) auth method was added in collection version C(1.2.0).
           - C(cert) auth method was added in collection version C(1.4.0).
+          - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0). The old name will be removed in C(3.0.0).
         choices:
           - token
           - userpass
           - ldap
           - approle
+          - aws_iam
           - aws_iam_login
           - jwt
           - cert
@@ -61,7 +63,7 @@ class ModuleDocFragment(object):
         type: str
       role_id:
         description:
-          - Vault Role ID or name. Used in C(approle), C(aws_iam_login), and C(cert) auth methods.
+          - Vault Role ID or name. Used in C(approle), C(aws_iam), and C(cert) auth methods.
           - For C(cert) auth, if no I(role_id) is supplied, the default behavior is to try all certificate roles and return any one that matches.
         type: str
       secret_id:

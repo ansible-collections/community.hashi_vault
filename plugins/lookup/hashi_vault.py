@@ -279,9 +279,9 @@ EXAMPLES = """
 # AWS IAM authentication method
 # uses Ansible standard AWS options
 
-- name: authenticate with aws_iam_login
+- name: authenticate with aws_iam
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='aws_iam_login', role_id='myroleid', profile=my_boto_profile) }}"
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hello:value', auth_method='aws_iam', role_id='myroleid', profile=my_boto_profile) }}"
 
 # JWT auth
 

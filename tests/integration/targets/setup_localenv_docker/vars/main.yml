@@ -6,3 +6,4 @@ integration_config:
   vault_dev_root_token_id: '{{ vault_dev_root_token_id }}'
   vault_proxy_server: 'http://{{ proxy_target_name }}:{{ proxy_port }}'
   vault_cert_content: "{{ lookup('file', vault_cert_file) }}"
+  vault_mmock_server_http: 'http://{{ mmock_target_name }}:{{ mmock_server_port }}'

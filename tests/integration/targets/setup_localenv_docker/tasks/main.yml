@@ -6,6 +6,7 @@
   loop:
     - '{{ docker_compose_output }}'
     - '{{ vault_config_output }}'
+    - '{{ mmock_config_path }}'
 
 - name: "Create the docker-compose definition"
   template:
@@ -48,6 +49,16 @@
   template:
     src: vault_config.hcl.j2
     dest: '{{ vault_config_output }}/vault_config.hcl'
+
+- name: "Template mmock configs"
+  loop: "{{ query('fileglob', role_path ~ '/templates/mmock/*.j2') }}"
+  loop_control:
+    label: '{{ dest_name }}'
+  vars:
+    dest_name: '{{ item | basename | splitext | first }}'
+  template:
+    src: '{{ item }}'
+    dest: '{{ mmock_config_path }}/{{ dest_name }}'
 
 - include_tasks: docker.yml
   when: docker_compose != 'none'

@@ -1,0 +1,10 @@
+---
+ansible_hashi_vault_url: '{{ vault_mmock_server_http }}'
+ansible_hashi_vault_auth_method: aws_iam
+
+auth_paths:
+  - aws
+  - aws-alt
+
+aws_access_key: abc
+aws_secret_key: xyz

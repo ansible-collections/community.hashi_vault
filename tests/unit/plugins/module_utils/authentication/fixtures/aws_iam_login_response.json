@@ -1,0 +1,30 @@
+{
+    "request_id": "ec0d300f-ac44-4f5b-9feb-282d3a6686a7",
+    "lease_id": "",
+    "lease_duration": 0,
+    "renewable": false,
+    "data": null,
+    "warnings": null,
+    "auth": {
+        "client_token": "s.YXZDqrOgv3mhlcPXpRBrS2cE",
+        "accessor": "Xkad5E1bHRBJApR03pGrp1a0",
+        "policies": [
+            "default",
+            "aws-sample-policy"
+        ],
+        "token_policies": [
+            "default",
+            "aws-sample-policy"
+        ],
+        "identity_policies": null,
+        "metadata": {
+            "account_id": "064281349855",
+            "auth_type": "iam",
+            "role_id": "b9462e71-e600-418d-b14e-fa69627470ec"
+        },
+        "orphan": true,
+        "entity_id": "e23d3bad-7485-4330-bf74-d64fc1e774e4",
+        "lease_duration": 1800,
+        "renewable": true
+    }
+}
