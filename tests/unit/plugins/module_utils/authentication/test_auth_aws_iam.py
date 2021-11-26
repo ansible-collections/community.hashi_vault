@@ -40,7 +40,7 @@ def mock_import_error(*names):
 @pytest.fixture
 def option_dict():
     return {
-        'auth_method': 'aws',
+        'auth_method': 'aws_iam',
         'aws_access_key': None,
         'aws_secret_key': None,
         'aws_profile': None,
