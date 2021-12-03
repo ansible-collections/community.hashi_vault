@@ -5,6 +5,25 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v2.1.0
+======
+
+Release Summary
+---------------
+
+The most important change in this release is renaming the ``aws_iam_login`` auth method to ``aws_iam`` and deprecating the old name. This release also announces the deprecation of Ansible 2.9 and ansible-base 2.10 support in 3.0.0.
+
+Deprecated Features
+-------------------
+
+- Support for Ansible 2.9 and ansible-base 2.10 is deprecated, and will be removed in the next major release (community.hashi_vault 3.0.0) next spring (https://github.com/ansible-community/community-topics/issues/50, https://github.com/ansible-collections/community.hashi_vault/issues/189).
+- aws_iam_login auth method - the ``aws_iam_login`` method has been renamed to ``aws_iam``. The old name will be removed in collection version ``3.0.0``. Until then both names will work, and a warning will be displayed when using the old name (https://github.com/ansible-collections/community.hashi_vault/pull/193).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- the "legacy" integration test setup has been removed; this does not affect end users and is only relevant to contributors (https://github.com/ansible-collections/community.hashi_vault/pull/191).
+
 v2.0.0
 ======
 

@@ -1,3 +1,0 @@
----
-release_summary: |-
-  The most important change in this release is renaming the ``aws_iam_login`` auth method to ``aws_iam`` and deprecating the old name. This release also announces the deprecation of Ansible 2.9 and ansible-base 2.10 support in 3.0.0.

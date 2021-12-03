@@ -1,3 +1,0 @@
----
-removed_features:
-  - the "legacy" integration test setup has been removed; this does not affect end users and is only relevant to contributors (https://github.com/ansible-collections/community.hashi_vault/pull/191).
