@@ -1,0 +1,28 @@
+{
+    "request_id": "30fd9f34-83af-4921-be0c-b93e41dc3959",
+    "lease_id": "",
+    "lease_duration": 0,
+    "renewable": false,
+    "data": {},
+    "warnings": null,
+    "auth": {
+        "client_token": "s.fjXSOvsGY3Q95XGyJKnDw7OC",
+        "accessor": "VnnNWBasAnVn1YO4cVL9jJei",
+        "policies": [
+            "default",
+            "test-policy"
+        ],
+        "token_policies": [
+            "default",
+            "test-policy"
+        ],
+        "identity_policies": null,
+        "metadata": {
+            "username": "ldapuser"
+        },
+        "orphan": true,
+        "entity_id": "08e5b262-7dc2-4edd-8fc7-77882ca7cc1b",
+        "lease_duration": 3600,
+        "renewable": true
+    }
+}
