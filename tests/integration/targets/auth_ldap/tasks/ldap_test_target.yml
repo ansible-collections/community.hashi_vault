@@ -1,0 +1,37 @@
+- name: "Test block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+  module_defaults:
+    vault_test_auth:
+      url: '{{ ansible_hashi_vault_url }}'
+      auth_method: '{{ ansible_hashi_vault_auth_method }}'
+      mount_point: '{{ omit if is_default_path else this_path }}'
+      username: '{{ ldap_username }}'
+      password: '{{ ldap_password }}'
+  block:
+    # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
+    # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
+    # is default, and success when the mount is alternate
+    - name: Check auth mount differing result
+      register: response
+      vault_test_auth:
+
+    - assert:
+        fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
+        that:
+          - ('ldap-sample-policy' in response.login.auth.policies) | bool == is_default_path
+          - ('ldap-sample-policy' not in response.login.auth.policies) | bool != is_default_path
+          - ('ldap-alt-sample-policy' in response.login.auth.policies) | bool != is_default_path
+          - ('ldap-alt-sample-policy' not in response.login.auth.policies) | bool == is_default_path
+
+    - name: Failure expected when something goes wrong (simulated)
+      register: response
+      vault_test_auth:
+        username: fail-me-username
+        want_exception: yes
+
+    - assert:
+        fail_msg: "An invalid request somehow did not cause a failure."
+        that:
+          - response.inner is failed
+          - "response.msg is search('ldap operation failed: failed to bind as user')"

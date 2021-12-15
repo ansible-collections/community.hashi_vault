@@ -1,0 +1,23 @@
+---
+# task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+# see: https://github.com/ansible/ansible/issues/73268
+- name: Persist defaults
+  set_fact:
+    '{{ item.key }}': "{{ lookup('vars', item.key) }}"
+  loop: "{{ lookup('file', role_path ~ '/defaults/main.yml') | from_yaml | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+
+# there's no setup for this auth method because its API is mocked
+
+- name: Run ldap tests
+  loop: '{{ auth_paths | product(["target", "controller"]) | list }}'
+  include_tasks:
+    file: ldap_test_{{ item[1] }}.yml
+    apply:
+      vars:
+        default_path: ldap
+        this_path: '{{ item[0] }}'
+      module_defaults:
+        assert:
+          quiet: yes

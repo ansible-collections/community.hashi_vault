@@ -1,0 +1,18 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]'
+---
+request:
+  method: POST|PUT
+  path: "/v1/auth/ldap*/login/fail-me-username"
+control:
+  priority: 11
+response:
+  statusCode: 400
+  headers:
+    Content-Type:
+      - application/json
+  body: >-
+    {
+        "errors": [
+            "ldap operation failed: failed to bind as user"
+        ]
+    }

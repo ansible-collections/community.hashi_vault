@@ -1,0 +1,10 @@
+---
+ansible_hashi_vault_url: '{{ vault_mmock_server_http }}'
+ansible_hashi_vault_auth_method: ldap
+
+auth_paths:
+  - ldap
+  - ldap-alt
+
+ldap_username: ldapuser
+ldap_password: ldappass
