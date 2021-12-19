@@ -159,3 +159,141 @@ Customization
 * ``vault_port_http``, ``vault_port_https``, ``proxy_port`` -- all of the ports are exposed to the host, so if you already have any of the default ports in use on your host, you may need to override these.
 * ``vault_container_name``, ``proxy_container_name`` -- these are the names for their respective containers, which will also be the DNS names used within the container network. In case you have the default names in use you may need to override these.
 * ``docker_compose_project_name`` -- unlikely to need to be changed, but it affects the name of the docker network which will be needed for your ``ansible-test`` invocation, so it's worth mentioning. For example, if you set this to ``ansible_hashi_vault`` then the docker network name will be ``ansible_hashi_vault_default``.
+
+.. _ansible_collections.community.hashi_vault.docsite.contributor_guide.contributing_auth_methods:
+
+Contributing auth methods
+=========================
+
+In this collection, auth methods are shared among all plugins and modules rather than being re-implemented in each one. This saves the effort of re-inventing the wheel, prevents test bloat by having to test functionality across auth methods, and provides a consistent experience.
+
+File location & scope
+---------------------
+
+Auth methods are implemented as classes in ``module_utils``, in a file named ``plugins/module_utils/_auth_method_<method_name>.py``. The leading underscore indicates that the module util is private to the collection and that it is not intended to be used outside the collection; this lets us make changes as needed without needing to release a new major version, and clearly indicates to would-be downstream users that they should not rely on these utils outside content within the collection.
+
+In addition, all module utils within the collection must contain a comment explaining this, like so:
+
+.. code-block:: python
+
+    # FOR INTERNAL COLLECTION USE ONLY
+    # The interfaces in this file are meant for use within the community.hashi_vault collection
+    # and may not remain stable to outside uses. Changes may be made in ANY release, even a bugfix release.
+    # See also: https://github.com/ansible/community/issues/539#issuecomment-780839686
+    # Please open an issue if you have questions about this.
+
+It is best to look at `existing auth methods <https://github.com/ansible-collections/community.hashi_vault/tree/main/plugins/module_utils>`_ to get a feel for how they are implemented.
+
+Class anatomy
+-------------
+
+Each auth method class should be named ``HashiVaultAuthMethod<MethodName>`` and inherit from ``HashiVaultAuthMethodBase``.
+
+The base class provides some common functionality, like standardizing a way to emit warnings and providing a common function for validating required options.
+
+An auth method must run the base class's ``__init__`` function.
+
+It must implement two methods:
+
+* ``validate()`` -- this method does everything it can to ensure that the requirements are met for performing authentication with this particular auth method. This may include checking for required options, validating the values of those options, pulling in additional information and context from the environment, preparing that information for use by ``authenticate()``, etc. Generally speaking, it should not contact Vault, and should minimize reliance on external sources and services, but that is a guideline and the details will depend on the specifics of the auth method in question. ``validate()`` raises an exception if validation fails. If it succeeds, nothing is returned.
+* ``authenticate(client, use_token=False)`` -- this method performs the actual authentication, and it returns the API result of the authentication (which will include the token, lease information, etc.). The HVAC client object is passed in, as well an optional parameter ``use_token`` which specifies whether the client should have its token field set to the result of authentication (typically this is desired).
+
+The auth method class should also contain two fields:
+
+* ``NAME`` -- the name of the auth method.
+* ``OPTIONS`` -- a list containing the name of every option that may be used by the auth method, including optional options; this list should not include the ``auth_method`` option.
+
+Raising exceptions and warnings
+-------------------------------
+
+Becuase auth methods are shared among both Ansible modules and Ansible plugins, any exceptions raised must be applicable to both. Standard Python exceptions like ``KeyError`` can be raised if they appropriate.
+
+In situations where you would normally raise ``AnsibleError`` (in plugins), or call ``module.fail_json()`` (in modules), you may raise ``HashiVaultValueError`` with your error message. Plugins and modules in this collection should expect this type and act accordingly.
+
+Similarly for warnings, because plugins and modules implement warnings differently, module util code that needs to warn takes a warning callback, and this is true for auth methods as well.
+
+The base class provides a ``warn()`` method that handles calling the callback specified at class init, so a simple ``self.warn()`` can be used in auth method code.
+
+Accessing options
+-----------------
+
+Because auth methods are shared among both Ansible modules and Ansible plugins, which do not access options in the same way, this collection implements a class called ``HashiVaultOptionAdapter``. This class provides a standard interface for accessing option values in code that must work in both plugins and modules.
+
+It implements the following methods:
+
+* ``get_option(key)`` -- gets the option with the specified name. Raises ``KeyError`` if the option is not present.
+* ``get_option_default(key, default=None)`` -- gets the option with the specified name. If it's not present, returns the value of ``default``.
+* ``set_option(key, value)`` -- sets the value of the specified option ``key`` to ``value``.
+* ``set_option_default(key, default=None)`` -- returns the value of the option ``key``. If the key is not present, sets its value to ``default`` and returns that value.
+* ``has_option(key)`` -- returns ``True`` if the specified option *is present* (``None`` value counts as present).
+* ``set_options(**kwargs)`` -- sets options to the key/value pairs specified in ``kwargs``.
+* ``get_options(*args)`` -- returns a dict of the option names specified in ``args``.
+* ``get_filtered_options(filter, *args)`` -- returns a dict of the option names specified in ``args``, if the callable ``filter`` (which has ``key`` and ``value`` passed into it) returns ``True`` for the given key/value pair.
+* ``get_filled_options(*args)`` -- returns a dict of the option names specified in ``*args`` that are not ``None``.
+
+The authenticator
+-----------------
+
+The ``HashiVaultAuthenticator`` class is how most of the content in the collection will handle authentication, rather than having to directly references each individual auth method. As a result, ``_authenticator.py`` needs to be modified for every new auth method, because it imports and directly references each class. See `the implementation of this class <https://github.com/ansible-collections/community.hashi_vault/blob/main/plugins/module_utils/_authenticator.py>`_ to find the places that need to be modified.
+
+Auth method options and documentation
+-------------------------------------
+
+Because auth methods are shared among collection content, their options are documented in doc_fragment plugins. Because many options end up being shared among many auth methods (for example ``role_id``, ``username``, ``password``), we do not have a separate doc fragment for each auth method, as this would end up with duplicated option documentation.
+
+Instead, all of the options for auth methods are in ``plugins/doc_fragments/auth.py``.
+
+This contains the standard ``DOCUMENTATION`` field, as well as a ``PLUGINS`` field. The reason for this split is that there are certain parts of the documentation that are only applicable to plugins; namely the ``env``, ``ini``, and ``vars`` entries.
+
+``DOCUMENTATION`` should contains all fields common to both, like ``description``, ``type``, ``version_added``, ``required``, etc., while anything plugin-specific goes in ``PLUGINS``.
+
+Since plugins and modules will reference the doc fragments, it's not usually required to modify the docstrings in the content directly; if it seems necessary, please raise an issue to discuss.
+
+Wherever possible, we should provide ``env``, ``ini``, and ``vars`` alternatives for specifying options, to give maximum flexibility for plugins. Occsionally, these won't make sense, like providing ``token`` (a sensitive value) in ``ini``.
+
+When deciding to implement new options for an auth method, consider whether existing options can or should be reused. If a new option is needed, consider scoping its name to the auth method, in order to differentiate it from current or future option names that could be confusing in another context.
+
+For example ``cert_auth_public_key`` and ``cert_auth_private_key`` were named that way to prevent them being confused with other certificate options that relate to the Vault connection, or other contexts where specific plugins or modules might need key pairs.
+
+Testing auth methods
+--------------------
+
+Because auth methods are shared across the collection, we want them to be very well tested. Auth methods have both unit and integration tests, and the combination of those should give us high confidence that the methods work as intended.
+
+Unit tests
+^^^^^^^^^^
+
+Unit tests allow us to check some of the functionality that is difficult to test effectively in integration tests, like checking that every possible combination of options behaves as it should, or simulating conditions that we can't easily reproduce. The coverage of varius scenarios should be extensive, and the details of which, or how complext they are, will depend on the intracacies of the auth method itself. Looking at existing examples is highly recommended.
+
+A pytest fixture is provided to load fixtures files that contain sample Vault API responses. Using these allows for mocking of the HVAC authentication calls within the unit tests.
+
+Integration tests
+^^^^^^^^^^^^^^^^^
+
+Our integration tests provide a running Vault server, and with that we can set up any auth methods we want (in theory). In practice, auth methods often require external services to integrate with. When possible, we should consider setting up such external services so that we can create a meaningful, real life integration and test it.
+
+Often however, this is ot possible, or difficult. We must consider that tests are not only run in CI, but should be able to be run locally as well.
+
+Mocking integrations
+""""""""""""""""""""
+
+We have implemented `MMock (Monster Mock) <https://github.com/jmartin82/mmock>`_ in our integration test setup to help with this. This server is setup to proxy its requests to the test Vault server, but you can write configurations that allow it to return different data for specific requests. By carefully constructing these responses, we can simulate the Vault API's response to login requests for specific auth methods, and also simulate its failures. With that, we can then run integration tests that hopefully provide us some assurance that we are implementing it correctly.
+
+Testing plugin and module Usage
+"""""""""""""""""""""""""""""""
+
+Auth methods are usable from modules and plugins, so integration tests for an auth method must test it via both plugins and modules.
+
+We provide custom modules and plugins specifically for testing auth methods within the integration tests. These are simplified implementations but they use the common code that should be used by all content, and they can be set to return some useful information about the login process. See the existing tests for details.
+
+Test coverage
+^^^^^^^^^^^^^
+
+In CI, we use CodeCov to track coverage. We also set some specific "tags" in coverage, and one of those is to tag individual auth methods as targets for integration tests. This happens automatically in CI, however new auth methods need an entry into ``codecov.yml`` that maps the coverage flag to the file where the auth method is implemented. For example:
+
+.. code:: yaml
+
+    flags:
+      target_auth_aws_iam:
+        paths:
+          - plugins/module_utils/_auth_method_aws_iam.py
