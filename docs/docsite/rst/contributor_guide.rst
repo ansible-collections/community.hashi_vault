@@ -172,7 +172,7 @@ File location & scope
 
 Auth methods are implemented as classes in ``module_utils``, in a file named ``plugins/module_utils/_auth_method_<method_name>.py``. The leading underscore indicates that the module util is private to the collection and that it is not intended to be used outside the collection; this lets us make changes as needed without needing to release a new major version, and clearly indicates to would-be downstream users that they should not rely on these utils outside content within the collection.
 
-In addition, all module utils within the collection must contain a comment explaining this, like so:
+In addition, all auth method module utils within the collection must contain a comment explaining this, such as:
 
 .. code-block:: python
 
@@ -206,7 +206,7 @@ The auth method class should also contain two fields:
 Raising exceptions and warnings
 -------------------------------
 
-Becuase auth methods are shared among both Ansible modules and Ansible plugins, any exceptions raised must be applicable to both. Standard Python exceptions like ``KeyError`` can be raised if they appropriate.
+Because auth methods are shared among both Ansible modules and Ansible plugins, any exceptions raised must be applicable to both. Standard Python exceptions like ``KeyError`` can be raised if they appropriate.
 
 In situations where you would normally raise ``AnsibleError`` (in plugins), or call ``module.fail_json()`` (in modules), you may raise ``HashiVaultValueError`` with your error message. Plugins and modules in this collection should expect this type and act accordingly.
 
@@ -249,7 +249,7 @@ This contains the standard ``DOCUMENTATION`` field, as well as a ``PLUGINS`` fie
 
 Since plugins and modules will reference the doc fragments, it's not usually required to modify the docstrings in the content directly; if it seems necessary, please raise an issue to discuss.
 
-Wherever possible, we should provide ``env``, ``ini``, and ``vars`` alternatives for specifying options, to give maximum flexibility for plugins. Occsionally, these won't make sense, like providing ``token`` (a sensitive value) in ``ini``.
+Wherever possible, we should provide ``env``, ``ini``, and ``vars`` alternatives for specifying options, to give maximum flexibility for plugins. Occasionally, these won't make sense, like providing ``token`` (a sensitive value) in ``ini``.
 
 When deciding to implement new options for an auth method, consider whether existing options can or should be reused. If a new option is needed, consider scoping its name to the auth method, in order to differentiate it from current or future option names that could be confusing in another context.
 
@@ -263,7 +263,7 @@ Because auth methods are shared across the collection, we want them to be very w
 Unit tests
 ^^^^^^^^^^
 
-Unit tests allow us to check some of the functionality that is difficult to test effectively in integration tests, like checking that every possible combination of options behaves as it should, or simulating conditions that we can't easily reproduce. The coverage of varius scenarios should be extensive, and the details of which, or how complext they are, will depend on the intracacies of the auth method itself. Looking at existing examples is highly recommended.
+Unit tests allow us to check some of the functionality that is difficult to test effectively in integration tests, like checking that every possible combination of options behaves as it should, or simulating conditions that we can't easily reproduce. The coverage of various scenarios should be extensive, and the details of which, or how complex they are, will depend on the intricacies of the auth method itself. Looking at existing examples is highly recommended.
 
 A pytest fixture is provided to load fixtures files that contain sample Vault API responses. Using these allows for mocking of the HVAC authentication calls within the unit tests.
 
@@ -272,7 +272,7 @@ Integration tests
 
 Our integration tests provide a running Vault server, and with that we can set up any auth methods we want (in theory). In practice, auth methods often require external services to integrate with. When possible, we should consider setting up such external services so that we can create a meaningful, real life integration and test it.
 
-Often however, this is ot possible, or difficult. We must consider that tests are not only run in CI, but should be able to be run locally as well.
+Often however, this is not possible, or difficult. We must consider that tests are not only run in CI, but should be able to be run locally as well.
 
 Mocking integrations
 """"""""""""""""""""
