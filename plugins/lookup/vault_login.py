@@ -17,8 +17,13 @@ DOCUMENTATION = """
     - Performs a login operation against a given path in HashiCorp Vault, returning the login response, including the token.
   seealso:
     - module: community.hashi_vault.vault_login
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+      description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   notes:
     - This lookup does not use the term string and will not work correctly in loops. Only a single response will be returned.
+    - "A login is a write operation (creating a token persisted to storage), so this module always reports C(changed=True),
+      except when used with C(token) auth, because no new token is created in that case. For the purposes of Ansible playbooks however,
+      it may be more useful to set C(changed_when=false) if you're doing idempotency checks against the target system."
     - The C(none) auth method is not valid for this plugin because there is no response to return.
     - "With C(token) auth, no actual login is performed.
       Instead, the given token's additional information is returned in a structure that resembles what login responses look like."
@@ -38,44 +43,25 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'secret/data/hello', url='https://vault:8201') }}"
+- name: Set a fact with a lookup result
+  set_fact:
+    login_data: "{{ lookup('community.hashi_vault.vault_login', '', url='https://vault', auth_method='userpass', username=user, password=pwd) }}"
 
-- name: Retrieve an approle role ID
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
+- name: Retrieve an approle role ID (token via filter)
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    auth_method: token
+    token: '{{ login_data | community.hashi_vault.vault_login_token }}'
+    path: auth/approle/role/role-name/role-id
+  register: approle_id
 
-- name: Perform multiple reads with a single Vault login
-  vars:
-    paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
-
-- name: Perform multiple reads with a single Vault login in a loop
-  vars:
-    paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
-  ansible.builtin.debug:
-    msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
-
-- name: Perform multiple reads with a single Vault login in a loop (via with_)
-  vars:
-    ansible_hashi_vault_auth_method: userpass
-    ansible_hashi_vault_username: '{{ user }}'
-    ansible_hashi_vault_passowrd: '{{ pwd }}'
-  ansible.builtin.debug:
-    msg: '{{ item }}'
-  with_community.hashi_vault.vault_read:
-    - secret/data/hello
-    - auth/approle/role/role-one/role-id
-    - auth/approle/role/role-two/role-id
+- name: Retrieve an approle role ID (token via direct dict access)
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    auth_method: token
+    token: '{{ login_data.auth.client_token }}'
+    path: auth/approle/role/role-name/role-id
+  register: approle_id
 """
 
 RETURN = """
