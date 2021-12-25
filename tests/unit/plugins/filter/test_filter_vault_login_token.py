@@ -9,7 +9,7 @@ import pytest
 
 from ansible.errors import AnsibleError
 
-from ansible_collections.community.hashi_vault.plugins.filter.hashi_vault_filters import vault_login_token
+from ansible_collections.community.hashi_vault.plugins.filter.vault_login_token import vault_login_token
 
 
 @pytest.fixture
