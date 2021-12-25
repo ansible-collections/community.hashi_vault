@@ -20,42 +20,51 @@ DOCUMENTATION = """
   seealso:
     - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+      description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.auth
   notes:
+    - "A login is a write operation (creating a token persisted to storage), so this module always reports C(changed=True),
+      except when used with C(token) auth, because no new token is created in that case. For the purposes of Ansible playbooks however,
+      it may be more useful to set C(changed_when=false) if you're doing idempotency checks against the target system."
     - The C(none) auth method is not valid for this module because there is no response to return.
     - "With C(token) auth, no actual login is performed.
       Instead, the given token's additional information is returned in a structure that resembles what login responses look like."
     - "The C(token) auth method will only return full information if I(token_validate=True).
       If the token does not have the C(lookup-self) capability, this will fail. If I(token_validate=False), only the token value itself
       will be returned in the structure."
+    - "In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
+      However this may not be useful if the token is required for follow on tasks.
+      It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
   options: {}
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret from Vault via the remote host with userpass auth
-  community.hashi_vault.vault_read:
+- name: Login and use the resulting token
+  community.hashi_vault.vault_login:
     url: https://vault:8201
-    path: secret/data/hello
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
-  register: secret
+  register: login_data
 
-- name: Display the secret data
-  ansible.builtin.debug:
-    msg: "{{ secret.data.data.data }}"
-
-- name: Retrieve an approle role ID from Vault via the remote host
+- name: Retrieve an approle role ID (token via filter)
   community.hashi_vault.vault_read:
     url: https://vault:8201
+    auth_method: token
+    token: '{{ login_data | community.hashi_vault.vault_login_token }}'
     path: auth/approle/role/role-name/role-id
   register: approle_id
 
-- name: Display the role ID
-  ansible.builtin.debug:
-    msg: "{{ approle_id.data.data.role_id }}"
+- name: Retrieve an approle role ID (token via direct dict access)
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    auth_method: token
+    token: '{{ login_data.login.auth.client_token }}'
+    path: auth/approle/role/role-name/role-id
+  register: approle_id
 """
 
 RETURN = """
@@ -99,8 +108,17 @@ def run_module():
         supports_check_mode=True
     )
 
-    if module.params.get('auth_method') == 'none':
+    # a login is technically a write operation, using storage and resources
+    changed = True
+    auth_method = module.params.get('auth_method')
+
+    if auth_method == 'none':
         module.fail_json(msg="The 'none' auth method is not valid for this module.")
+
+    if auth_method == 'token':
+        # with the token auth method, we don't actually perform a login operation
+        # nor change the state of Vault; it's read-only (to lookup the token's info)
+        changed = False
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -108,11 +126,14 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        response = module.authenticator.authenticate(client)
+        if module.check_mode:
+            response = {'auth': {'client_token': None}}
+        else:
+            response = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    module.exit_json(login=response)
+    module.exit_json(changed=changed, login=response)
 
 
 def main():

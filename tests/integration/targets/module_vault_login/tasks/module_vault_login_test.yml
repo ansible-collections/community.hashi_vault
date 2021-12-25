@@ -35,6 +35,19 @@
           - result.login.auth.client_token == user_token
           - "'policies' not in result.login.auth"
 
+    - name: Try a login in check mode
+      register: result
+      community.hashi_vault.vault_login:
+      check_mode: yes
+
+    - assert:
+        that:
+          - result is not changed  # because of token auth not because of check mode
+          - "'login' in result"
+          - "'auth' in result.login"
+          - "'client_token' in result.login.auth"
+          - result.login.auth.client_token == None  # no token returned in check mode, just an empty structure
+
 
     ### failure tests
 
