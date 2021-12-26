@@ -75,7 +75,7 @@ Here's an example usage with the ``vault_login`` module and lookup.
       block:
         - name: Perform a login with a lookup and display the token
           vars:
-            login_response: "{{ lookup('community.hashi_vault.vault_login', '') }}"
+            login_response: "{{ lookup('community.hashi_vault.vault_login') }}"
           debug:
             msg: "The token is {{ login_response | community.hashi_vault.vault_login_token }}"
 

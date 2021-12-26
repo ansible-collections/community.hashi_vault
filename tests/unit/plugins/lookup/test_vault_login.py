@@ -44,16 +44,10 @@ class TestVaultLoginLookup(object):
 
     def test_vault_login_auth_none(self, vault_login_lookup):
         with pytest.raises(AnsibleError, match=r"The 'none' auth method is not valid for this lookup"):
-            vault_login_lookup.run(terms=[''], variables={'ansible_hashi_vault_auth_method': 'none'})
+            vault_login_lookup.run(terms=[], variables={'ansible_hashi_vault_auth_method': 'none'})
 
     def test_vault_login_extra_terms(self, vault_login_lookup, mock_authenticator, minimal_vars):
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_login.display.warning') as warning:
             with mock.patch.object(vault_login_lookup, 'authenticator', new=mock_authenticator):
                 vault_login_lookup.run(terms=['', ''], variables=minimal_vars)
-                warning.assert_called_once_with("Multiple terms were supplied and will be ignored. This lookup does not use term strings.")
-
-    def test_vault_login_termnot_empty(self, vault_login_lookup, mock_authenticator, minimal_vars):
-        with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_login.display.warning') as warning:
-            with mock.patch.object(vault_login_lookup, 'authenticator', new=mock_authenticator):
-                vault_login_lookup.run(terms=['termval'], variables=minimal_vars)
-                warning.assert_called_once_with("Supplied term string 'termval' will be ignored. This lookup does not use term strings.")
+                warning.assert_called_once_with("Supplied term strings will be ignored. This lookup does not use term strings.")

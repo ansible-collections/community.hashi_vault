@@ -37,7 +37,7 @@ DOCUMENTATION = """
     - community.hashi_vault.auth.plugins
   options:
     _terms:
-      description: This is unused and should be an empty string.
+      description: This is unused and any terms supplied will be ignored.
       type: str
       required: True
 """
@@ -45,7 +45,7 @@ DOCUMENTATION = """
 EXAMPLES = """
 - name: Set a fact with a lookup result
   set_fact:
-    login_data: "{{ lookup('community.hashi_vault.vault_login', '', url='https://vault', auth_method='userpass', username=user, password=pwd) }}"
+    login_data: "{{ lookup('community.hashi_vault.vault_login', url='https://vault', auth_method='userpass', username=user, password=pwd) }}"
 
 - name: Retrieve an approle role ID (token via filter)
   community.hashi_vault.vault_read:
@@ -109,11 +109,8 @@ class LookupModule(HashiVaultLookupBase):
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
 
-        if len(terms) > 1:
-            display.warning("Multiple terms were supplied and will be ignored. This lookup does not use term strings.")
-
-        if len(terms[0]) > 0:
-            display.warning("Supplied term string '%s' will be ignored. This lookup does not use term strings." % (terms[0],))
+        if len(terms) != 0:
+            display.warning("Supplied term strings will be ignored. This lookup does not use term strings.")
 
         try:
             self.authenticator.validate()
