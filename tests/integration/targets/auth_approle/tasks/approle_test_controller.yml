@@ -34,7 +34,7 @@
           {{ {} }}
           {% endif %}
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', **kwargs) }}"
 
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
@@ -46,7 +46,7 @@
 
     - name: Failure expected when erroneous credentials are used and secret ID is required
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', secret_id='fake', want_exception=true, **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', secret_id='fake', want_exception=true, **kwargs) }}"
 
     - assert:
         fail_msg: "An invalid secret ID somehow did not cause a failure."

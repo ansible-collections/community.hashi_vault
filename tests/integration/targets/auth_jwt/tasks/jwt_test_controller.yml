@@ -15,7 +15,7 @@
     # is default, and success when the mount is alternate
     - name: Check auth mount differing result
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', **kwargs) }}"
 
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
@@ -30,7 +30,7 @@
         kwargs_jwt:
           jwt: '{{ jwt_invalid }}'
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', want_exception=true, **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', want_exception=true, **kwargs) }}"
 
     - assert:
         fail_msg: "An invalid JWT somehow did not cause a failure."

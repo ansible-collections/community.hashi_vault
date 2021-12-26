@@ -9,7 +9,7 @@
   block:
     - name: Login with token
       vars:
-        result: "{{ lookup('community.hashi_vault.vault_login', '', **kwargs) }}"
+        result: "{{ lookup('community.hashi_vault.vault_login', **kwargs) }}"
       assert:
         that:
           - "'auth' in result"
@@ -21,7 +21,7 @@
 
     - name: Login with token without validation
       vars:
-        result: "{{ lookup('community.hashi_vault.vault_login', '', token_validate=False, **kwargs) }}"
+        result: "{{ lookup('community.hashi_vault.vault_login', token_validate=False, **kwargs) }}"
       assert:
         that:
           - "'auth' in result"
@@ -43,7 +43,7 @@
 
     - name: none auth method is not supported
       vars:
-        result: "{{ query('community.hashi_vault.vault_login', '', auth_method='none', **kwargs) }}"
+        result: "{{ query('community.hashi_vault.vault_login', auth_method='none', **kwargs) }}"
       debug:
         msg: "{{ result }} should have failed."
       register: none_result
@@ -57,7 +57,7 @@
     - name: Try to lookup-self without permission
       vars:
         user_token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
-        result: "{{ lookup('community.hashi_vault.vault_login', '', **kwargs) }}"
+        result: "{{ lookup('community.hashi_vault.vault_login', **kwargs) }}"
       debug:
         msg: "{{ result }} should have failed."
       register: lookup_result
