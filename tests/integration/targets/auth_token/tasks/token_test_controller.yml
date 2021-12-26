@@ -12,7 +12,7 @@
 
     - name: Authenticate with a 'no default policy' token (failure expected)
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', want_exception=true) }}"
+        response: "{{ lookup('vault_test_auth', want_exception=true) }}"
 
     - assert:
         that:
@@ -23,7 +23,7 @@
       vars:
         ansible_hashi_vault_token_validate: false
       set_fact:
-        response: "{{ lookup('vault_test_auth', '') }}"
+        response: "{{ lookup('vault_test_auth') }}"
 
     - assert:
         that: response.login.auth.client_token == user_token
@@ -44,7 +44,7 @@
 
     - name: Authenticate with an invalid token - with no validation
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', token='fake', token_validate=false) }}"
+        response: "{{ lookup('vault_test_auth', token='fake', token_validate=false) }}"
 
     - assert:
         that: response.login.auth.client_token == 'fake'
@@ -70,7 +70,7 @@
   block:
     - name: Authenticate with a token
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', token=user_token) }}"
+        response: "{{ lookup('vault_test_auth', token=user_token) }}"
 
     - assert:
         that:
@@ -80,7 +80,7 @@
 
     - name: Authenticate with an invalid token
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', token='fake', want_exception=true) }}"
+        response: "{{ lookup('vault_test_auth', token='fake', want_exception=true) }}"
 
     - assert:
         that:

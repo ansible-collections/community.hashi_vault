@@ -11,7 +11,7 @@
     # is default, and success when the mount is alternate
     - name: Check auth mount differing result
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', password=userpass_password, **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', password=userpass_password, **kwargs) }}"
 
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
@@ -23,7 +23,7 @@
 
     - name: Failure expected when erroneous credentials are used
       set_fact:
-        response: "{{ lookup('vault_test_auth', '', password='fake', want_exception=true, **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', password='fake', want_exception=true, **kwargs) }}"
 
     - assert:
         fail_msg: "An invalid password somehow did not cause a failure."

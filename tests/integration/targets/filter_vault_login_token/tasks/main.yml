@@ -1,0 +1,17 @@
+---
+- vars:
+    token: token_value
+    login_result:
+      auth:
+        client_token: '{{ token }}'
+    module_login_result:
+      login: '{{ login_result }}'
+    alternate_field_result:
+      alt: '{{ login_result }}'
+  block:
+    - assert:
+        that:
+          - login_result | community.hashi_vault.vault_login_token == token
+          - login_result | community.hashi_vault.vault_login_token(optional_field='missing') == token
+          - module_login_result | community.hashi_vault.vault_login_token == token
+          - alternate_field_result | community.hashi_vault.vault_login_token(optional_field='alt') == token

@@ -1,0 +1,7 @@
+---
+add plugin.filter:
+  - name: vault_login_token
+    description: Extracts the client token from a Vault login response
+
+minor_changes:
+  - The Filter guide has been added to the collection's docsite.

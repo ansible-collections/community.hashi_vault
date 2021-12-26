@@ -1,0 +1,69 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    ansible_hashi_vault_auth_method: token
+    kwargs:
+      url: '{{ vault_test_server_http }}'
+      token: '{{ user_token }}'
+  block:
+    - name: Login with token
+      vars:
+        result: "{{ lookup('community.hashi_vault.vault_login', **kwargs) }}"
+      assert:
+        that:
+          - "'auth' in result"
+          - "'client_token' in result.auth"
+          - result.auth.client_token == user_token
+          - "'policies' in result.auth"
+          - "'test-policy' in result.auth.policies"
+          - "'default' in result.auth.policies"
+
+    - name: Login with token without validation
+      vars:
+        result: "{{ lookup('community.hashi_vault.vault_login', token_validate=False, **kwargs) }}"
+      assert:
+        that:
+          - "'auth' in result"
+          - "'client_token' in result.auth"
+          - result.auth.client_token == user_token
+          - "'policies' not in result.auth"
+
+    # This won't actually fail if warnings aren't produced, but if the code crashes, we'll catch it here.
+    # Unit tests check for the correct warnings.
+    - name: Login with token (should produce warnings about term strings)
+      vars:
+        result: "{{ query('community.hashi_vault.vault_login', 'first-term', 'second-term', token_validate=False, **kwargs) }}"
+      assert:
+        that:
+          - result | count == 1
+        fail_msg: 'vault_login should only ever return 1 result. Got: {{ result }}'
+
+    ### failure tests
+
+    - name: none auth method is not supported
+      vars:
+        result: "{{ query('community.hashi_vault.vault_login', auth_method='none', **kwargs) }}"
+      debug:
+        msg: "{{ result }} should have failed."
+      register: none_result
+      ignore_errors: true
+
+    - assert:
+        that:
+          - none_result is failed
+          - none_result.msg is search("The 'none' auth method is not valid for this lookup.")
+
+    - name: Try to lookup-self without permission
+      vars:
+        user_token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
+        result: "{{ lookup('community.hashi_vault.vault_login', **kwargs) }}"
+      debug:
+        msg: "{{ result }} should have failed."
+      register: lookup_result
+      ignore_errors: true
+
+    - assert:
+        that:
+          - lookup_result is failed
+          - lookup_result.msg is search('Invalid Vault Token Specified')

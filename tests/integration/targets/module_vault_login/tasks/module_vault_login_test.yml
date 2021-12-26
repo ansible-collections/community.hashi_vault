@@ -1,0 +1,74 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_login:
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+  block:
+    - name: Login with token
+      register: result
+      community.hashi_vault.vault_login:
+
+    - assert:
+        that:
+          - "'login' in result"
+          - "'auth' in result.login"
+          - "'client_token' in result.login.auth"
+          - result.login.auth.client_token == user_token
+          - "'policies' in result.login.auth"
+          - "'test-policy' in result.login.auth.policies"
+          - "'default' in result.login.auth.policies"
+
+    - name: Login with token without validation
+      register: result
+      community.hashi_vault.vault_login:
+        token_validate: false
+
+    - assert:
+        that:
+          - "'login' in result"
+          - "'auth' in result.login"
+          - "'client_token' in result.login.auth"
+          - result.login.auth.client_token == user_token
+          - "'policies' not in result.login.auth"
+
+    - name: Try a login in check mode
+      register: result
+      community.hashi_vault.vault_login:
+      check_mode: yes
+
+    - assert:
+        that:
+          - result is not changed  # because of token auth not because of check mode
+          - "'login' in result"
+          - "'auth' in result.login"
+          - "'client_token' in result.login.auth"
+          - result.login.auth.client_token == None  # no token returned in check mode, just an empty structure
+
+
+    ### failure tests
+
+    - name: none auth method is not supported
+      register: none_result
+      community.hashi_vault.vault_login:
+        auth_method: none
+      ignore_errors: true
+
+    - assert:
+        that:
+          - none_result is failed
+          - none_result.msg is search("The 'none' auth method is not valid for this module.")
+
+    - name: Try to lookup-self without permission
+      register: lookup_result
+      community.hashi_vault.vault_login:
+        token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
+      ignore_errors: true
+
+    - assert:
+        that:
+          - lookup_result is failed
+          - lookup_result.msg is search('Invalid Vault Token Specified')

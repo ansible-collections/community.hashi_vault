@@ -6,9 +6,21 @@ fixes:
   - "ansible_collections/community/hashi_vault/::"
 
 flags:
+  target_filter_vault_login_token:
+    paths:
+      - plugins/filter/vault_login_token.py
+
+  target_module_vault_login:
+    paths:
+      - plugins/modules/vault_login.py
+
   target_module_vault_read:
     paths:
       - plugins/modules/vault_read.py
+
+  target_lookup_vault_login:
+    paths:
+      - plugins/lookup/vault_login.py
 
   target_lookup_vault_read:
     paths:
