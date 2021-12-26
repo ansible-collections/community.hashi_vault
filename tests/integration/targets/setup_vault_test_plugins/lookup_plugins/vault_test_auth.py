@@ -47,36 +47,38 @@ class LookupModule(HashiVaultLookupBase):
         err = response = msg = None
         ret = []
 
-        for term in terms:
-            opts = kwargs.copy()
-            self.set_options(direct=opts, var_options=variables)
-            self.connection_options.process_connection_options()
-            client_args = self.connection_options.get_hvac_connection_options()
-            client = self.helper.get_vault_client(**client_args)
+        if len(terms) != 0:
+            raise AnsibleError("Don't use a term string with this.")
 
+        opts = kwargs.copy()
+        self.set_options(direct=opts, var_options=variables)
+        self.connection_options.process_connection_options()
+        client_args = self.connection_options.get_hvac_connection_options()
+        client = self.helper.get_vault_client(**client_args)
+
+        try:
             try:
-                try:
-                    self.authenticator.validate()
-                    response = self.authenticator.authenticate(client)
-                except NotImplementedError as e:
-                    raise AnsibleError(e)
-            except Exception as e:
-                if options.get_option('want_exception'):
-                    err = dictify(e)
-                    msg = str(e)
-                else:
-                    raise
+                self.authenticator.validate()
+                response = self.authenticator.authenticate(client)
+            except NotImplementedError as e:
+                raise AnsibleError(e)
+        except Exception as e:
+            if options.get_option('want_exception'):
+                err = dictify(e)
+                msg = str(e)
+            else:
+                raise
 
-            rob = {
-                'login': response,
-                'failed': False,
-            }
+        rob = {
+            'login': response,
+            'failed': False,
+        }
 
-            if err is not None:
-                rob['failed'] = True
-                rob['exception'] = err
-                rob['msg'] = msg
+        if err is not None:
+            rob['failed'] = True
+            rob['exception'] = err
+            rob['msg'] = msg
 
-            ret.extend([rob])
+        ret.extend([rob])
 
         return ret
