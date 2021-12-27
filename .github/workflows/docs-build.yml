@@ -48,7 +48,7 @@ jobs:
 
       - name: Build test
         env:
-          ANSIBLE_COLLECTIONS_PATHS: ansible_collections/community/hashi_vault
+          ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
         run: |
           echo "::echo::on"
           echo "${{ toJSON(steps) }}"
