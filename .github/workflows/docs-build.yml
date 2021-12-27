@@ -44,9 +44,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: ansible_collections/${{ inputs.collection }}
+          path: ansible_collections/community/hashi_vault   #${{ inputs.collection }}
 
       - name: Build test
         env:
-          ANSIBLE_COLLECTIONS_PATHS: ansible_collections/${{ inputs.collections }}
+          ANSIBLE_COLLECTIONS_PATHS: ansible_collections/community/hashi_vault
         run: ${{ steps.init.outputs.build-script }}
