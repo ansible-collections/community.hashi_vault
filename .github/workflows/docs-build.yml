@@ -6,6 +6,9 @@ on:
       collections:
         required: false
         type: string
+      python:
+        required: false
+        type: string
 
     # outputs:
 
@@ -14,6 +17,11 @@ jobs:
     name: Build Ansible Docs
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Python
+        if: inputs.python != ''
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python }}
 
       - name: Initialize the build environment
         uses: ./.github/actions/docs/ansible-docs-build-init
