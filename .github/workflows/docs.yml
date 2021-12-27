@@ -17,7 +17,8 @@ jobs:
     name: Build Ansible Docs
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build.yml@docs/build-v2
     with:
-      collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
+      collections: community.hashi_vault
+      # collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
       python: '3.9'
 
     # runs-on: ubuntu-latest
