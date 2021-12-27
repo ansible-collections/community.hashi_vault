@@ -15,16 +15,21 @@ jobs:
   build-docs:
     if: github.event.action != 'closed'
     name: Build Ansible Docs
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
+    uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build.yml@docs/build-v2
+    with:
+      collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
+      python: '3.9'
 
-      - name: Initialize the build environment
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
-        with:
-          collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
+    # runs-on: ubuntu-latest
+    # permissions:
+    #   contents: read
+    # steps:
+    #   - name: Set up Python
+    #     uses: actions/setup-python@v2
+    #     with:
+    #       python-version: 3.9
+
+    #   - name: Initialize the build environment
+    #     uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
+    #     with:
+    #       collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
