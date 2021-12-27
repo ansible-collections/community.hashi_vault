@@ -1,0 +1,64 @@
+---
+name: Invoke an Ansible docs build
+description: Builds the docs. Requires initialized build environment.
+inputs:
+  build-script:
+    description: The path to the build script.
+    required: false
+    default: ${{ runner.temp }}/docsbuild/build.sh
+  build-html:
+    description: The path where the build script will output the HTML.
+    required: false
+    default: ${{ runner.temp }}/docsbuild/build/html
+  artifact-upload:
+    description: If true then upload the rendered docs as a build artifact.
+    required: false
+    default: 'true'
+  artifact-name:
+    description: The name of the build artifact.
+    required: false
+    default: ${{ github.event.repository.name }}_docs
+  artifact-retention-days:
+    description: Number of days to keep the artifact.
+    required: false
+    default: '7'
+  # ansible-collection-dir:
+  #   description: |
+  #     Limit the docs build to one or more collections, in the form namespace.collection.
+  #     Multiple collections should be separated by spaces.
+  #     If this isn't limited, then all collections in the collections path will be included in the built docs.
+  #   required: false
+  # skip-init:
+  #   description: |
+  #     If 'true', dest-dir will be assumed to already be initialized, so this action will only install
+  #     antsibull and the contents of the requirements.txt file in dest-dir.
+  #   required: false
+  #   default: 'false'
+outputs:
+  hash:
+    description: The hash of the generated docs.
+    value: ${{ steps.build.outputs.hash }}
+  # build-html:
+  #   description: The path of the build's html output directory.
+  #   value: ${{ steps.init.outputs.build-html }}
+
+runs:
+  using: composite
+  steps:
+    - name: Invoke build
+      id: build
+      shell: bash
+      run: |
+        echo "::group::Invoke build script '${{ inputs.build-script }}'"
+        "${{ inputs.build-script }}"
+        echo "::endgroup::"
+
+        echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
+
+    - name: Upload artifact
+      if: fromJSON(inputs.artifact-upload)
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ inputs.build-html }}
+        name: ${{ inputs.artifact-name }}
+        retention-days: ${{ fromJSON(inputs.artifact-retention-days) }}

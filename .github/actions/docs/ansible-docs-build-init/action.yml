@@ -29,7 +29,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Download and verify codecov uploader
+    - name: Install Antsibull and Initialize Sphinx
       id: init
       shell: bash
       run: |

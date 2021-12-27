@@ -47,11 +47,17 @@ jobs:
           path: ansible_collections/community/hashi_vault   #${{ inputs.collection }}
 
       - name: Build test
+        id: build
         env:
           ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
-        run: |
-          echo "::echo::on"
-          echo "${{ toJSON(steps) }}"
-          export SCRIPT="${{ steps.init.outputs.build-script }}"
-          echo "Build script: '$SCRIPT'"
-          $SCRIPT
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
+        with:
+          build-script: ${{ steps.init.outputs.build-script }}
+          build-html: ${{ steps.init.outputs.build-html }}
+
+        # run: |
+        #   echo "::echo::on"
+        #   echo "${{ toJSON(steps) }}"
+        #   export SCRIPT="${{ steps.init.outputs.build-script }}"
+        #   echo "Build script: '$SCRIPT'"
+        #   $SCRIPT
