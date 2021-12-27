@@ -21,10 +21,10 @@ inputs:
 outputs:
   build-script:
     description: The path of the build script to execute.
-    value: ${{ steps.init.build-script }}
+    value: ${{ steps.init.outputs.build-script }}
   build-html:
     description: The path of the build's html output directory.
-    value: ${{ steps.init.build-html }}
+    value: ${{ steps.init.outputs.build-html }}
 
 runs:
   using: composite
