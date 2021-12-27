@@ -48,5 +48,5 @@ jobs:
 
       - name: Build test
         env:
-          ANSIBLE_COLLECTIONS_PATHS: ansible_collections/${{ inputs.collection }}
+          ANSIBLE_COLLECTIONS_PATHS: ansible_collections/${{ inputs.collections }}
         run: ${{ steps.init.outputs.build-script }}
