@@ -9,6 +9,11 @@ on:
       python:
         required: false
         type: string
+        default: '3.9'
+      ansible-ref:
+        required: false
+        type: string
+        default: milestone
 
     # outputs:
 
@@ -24,6 +29,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ inputs.python }}
+
+      - name: Install Ansible
+        run: pip install https://github.com/ansible/ansible/archive/${{ inputs.ansible-ref }}.tar.gz --disable-pip-version-check
 
       - name: Initialize the build environment
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
