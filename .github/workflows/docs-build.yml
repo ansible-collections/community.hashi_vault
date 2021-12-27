@@ -50,6 +50,7 @@ jobs:
         env:
           ANSIBLE_COLLECTIONS_PATHS: ansible_collections/community/hashi_vault
         run: |
+          echo "${{ toJSON(steps) }}"
           export SCRIPT="${{ steps.init.outputs.build-script }}"
           echo "Build script: '$SCRIPT'"
           $SCRIPT
