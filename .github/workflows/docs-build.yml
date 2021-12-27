@@ -49,4 +49,7 @@ jobs:
       - name: Build test
         env:
           ANSIBLE_COLLECTIONS_PATHS: ansible_collections/community/hashi_vault
-        run: ${{ steps.init.outputs.build-script }}
+        run: |
+          export SCRIPT="${{ steps.init.outputs.build-script }}"
+          echo "Build script: '$SCRIPT'"
+          $SCRIPT
