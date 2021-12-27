@@ -16,6 +16,8 @@ jobs:
   build-ansible-docs:
     name: Build Ansible Docs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Set up Python
         if: inputs.python != ''
