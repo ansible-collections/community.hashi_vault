@@ -1,0 +1,21 @@
+---
+name: Ansible docs build
+on:
+  workflow_call:
+    inputs:
+      collections:
+        required: false
+        type: string
+
+    # outputs:
+
+jobs:
+  build-ansible-docs:
+    name: Build Ansible Docs
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Initialize the build environment
+        uses: ./.github/actions/docs/ansible-docs-build-init
+        with:
+          collections: ${{ inputs.collections }}
