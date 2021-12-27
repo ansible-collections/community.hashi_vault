@@ -26,6 +26,6 @@ jobs:
           python-version: ${{ inputs.python }}
 
       - name: Initialize the build environment
-        uses: ./.github/actions/docs/ansible-docs-build-init
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
           collections: ${{ inputs.collections }}
