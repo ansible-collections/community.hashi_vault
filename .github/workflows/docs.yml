@@ -1,4 +1,4 @@
-name: Collection Docs (Full)
+name: Collection Docs (v2)
 # concurrency:
 #   group: docs-full-${{ github.head_ref }}
 #   cancel-in-progress: true
