@@ -1,0 +1,25 @@
+name: Collection Docs (Full)
+# concurrency:
+#   group: docs-full-${{ github.head_ref }}
+#   cancel-in-progress: true
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed]
+
+env:
+  NAMESPACE: community
+  COLLECTION_NAME: hashi_vault
+  # NOT_A_FORK: ${{ github.repository == 'ansible-collections/community.hashi_vault' }}
+
+jobs:
+  build-docs:
+    if: github.event.action != 'closed'
+    name: Build Ansible Docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Initialize the build environment
+        uses: ./.github/actions/docs/ansible-docs-build-init
+        with:
+          collections: ${{ inputs.collections }}
