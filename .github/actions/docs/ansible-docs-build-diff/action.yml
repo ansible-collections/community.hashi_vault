@@ -90,16 +90,16 @@ runs:
               }
           }
 
-          // start the process to get the diff text
-          const getDiffOutput = exec.exec('git'[
-              '--no-pager', 'diff', '--histogram', '--no-index',
-              '--relative', '--diff-filter=ad', pathA, pathB
-          ], diffOpts)
+# // start the process to get the diff text
+# const getDiffOutput = exec.exec('git'[
+#     '--no-pager', 'diff', '--histogram', '--no-index',
+#     '--relative', '--diff-filter=ad', pathA, pathB
+# ], diffOpts)
 
-          // start the process to get the diff file list
-          const getFileList = exec.exec('git', [
-              '--no-pager', 'diff', '--name-status', '--no-index',
-              '--relative', pathA, pathB
-          ], fileListOpts)
+# // start the process to get the diff file list
+# const getFileList = exec.exec('git', [
+#     '--no-pager', 'diff', '--name-status', '--no-index',
+#     '--relative', pathA, pathB
+# ], fileListOpts)
 
-          await Promise.all(getFileList, getDiffOutput)
+# await Promise.all(getFileList, getDiffOutput)
