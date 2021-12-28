@@ -47,9 +47,9 @@ runs:
       with:
         script: |
           // attribution: https://stackoverflow.com/a/3561711/3905079
-          // function escapeRegex(string) {
-          //     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-          // }
+          function escapeRegex(string) {
+              return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          }
 
           const inputs = JSON.parse("${{ toJSON(inputs) }}")
 
@@ -57,49 +57,49 @@ runs:
           const pathB = inputs['build-html-b']
           const maxLen = Number(inputs['diff-size-limit'])
 
-          // const regEscPathA = escapeRegex(pathA)
-          // const regEscPathB = escapeRegex(pathB)
+          const regEscPathA = escapeRegex(pathA)
+          const regEscPathB = escapeRegex(pathB)
 
-          // const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
+          const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
           const regPathReplacer = '$1 $3'
 
-# const fileListOpts = {
-#     listeners: {
-#         stdout: (data) => {
-#             fileListRaw = data.toString()
-#             fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
+          const fileListOpts = {
+              listeners: {
+                  stdout: (data) => {
+                      fileListRaw = data.toString()
+                      fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
 
-#             core.setOutput('files-raw', fileListRaw)
-#             core.setOutput('files-trimmed', fileListTrimmed)
-#         }
-#     }
-# }
-# const diffOpts = {
-#     listeners: {
-#         stdout: (data) => {
-#             diff = data.toString()
-#             truncated = false
-#             if (diff.length > maxLen) {
-#                 diff = diff.substring(0, maxLen)
-#                 truncated = true
-#             }
+                      core.setOutput('files-raw', fileListRaw)
+                      core.setOutput('files-trimmed', fileListTrimmed)
+                  }
+              }
+          }
+          const diffOpts = {
+              listeners: {
+                  stdout: (data) => {
+                      diff = data.toString()
+                      truncated = false
+                      if (diff.length > maxLen) {
+                          diff = diff.substring(0, maxLen)
+                          truncated = true
+                      }
 
-#             core.setOutput('truncated', truncated)
-#             core.setOutput('diff', diff)
-#         }
-#     }
-# }
+                      core.setOutput('truncated', truncated)
+                      core.setOutput('diff', diff)
+                  }
+              }
+          }
 
-# // start the process to get the diff text
-# const getDiffOutput = exec.exec('git'[
-#     '--no-pager', 'diff', '--histogram', '--no-index',
-#     '--relative', '--diff-filter=ad', pathA, pathB
-# ], diffOpts)
+          // start the process to get the diff text
+          const getDiffOutput = exec.exec('git'[
+              '--no-pager', 'diff', '--histogram', '--no-index',
+              '--relative', '--diff-filter=ad', pathA, pathB
+          ], diffOpts)
 
-# // start the process to get the diff file list
-# const getFileList = exec.exec('git', [
-#     '--no-pager', 'diff', '--name-status', '--no-index',
-#     '--relative', pathA, pathB
-# ], fileListOpts)
+          // start the process to get the diff file list
+          const getFileList = exec.exec('git', [
+              '--no-pager', 'diff', '--name-status', '--no-index',
+              '--relative', pathA, pathB
+          ], fileListOpts)
 
-# await Promise.all(getFileList, getDiffOutput)
+          await Promise.all(getFileList, getDiffOutput)
