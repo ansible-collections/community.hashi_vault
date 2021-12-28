@@ -60,31 +60,12 @@ runs:
           const regEscPathA = escapeRegex(pathA)
           const regEscPathB = escapeRegex(pathB)
 
-          // ^([A-Z])\s+(${base_docs_escaped}|${pr_docs_escaped})\/html\/(.*?)$
           const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
           const regPathReplacer = '$1 $3'
-          // const regPathReplacer = '> * `$1` [$3]\(${site_name_escaped}\/\3\)
-
-          let stdout = ''
-          let stdoutLines = []
-          let stderr = ''
-          let stderrLines = []
-
-          const execOpts = {}
-          execOpts.listeners = {
-              stdout: (data: Buffer) => {
-                  stdout += data.toString()
-                  stdoutLines = stdout.split(/\r?\n/g)
-              },
-              stderr: (data: Buffer) => {
-                  stderr += data.toString()
-                  stderrLines = stderr.split(/\r?\n/g)
-              }
-          }
 
           const fileListOpts = {
               listeners: {
-                  stdout: (data: Buffer) => {
+                  stdout: (data) => {
                       fileListRaw = data.toString()
                       fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
 
@@ -95,7 +76,7 @@ runs:
           }
           const diffOpts = {
               listeners: {
-                  stdout: (data: Buffer) => {
+                  stdout: (data) => {
                       diff = data.toString()
                       truncated = false
                       if (diff.length > maxLen) {
