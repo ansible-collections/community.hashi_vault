@@ -29,6 +29,16 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: troubleshooting
+        uses: actions/github-script@v5
+        with:
+          script: |
+            return {
+                context: context,
+                github: github,
+                env: process.env
+            }
+
       - name: Variable setup
         id: vars
         uses: actions/github-script@v5
