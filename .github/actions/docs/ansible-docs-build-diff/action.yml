@@ -13,36 +13,24 @@ inputs:
     required: false
     default: '60000'
 
-  # artifact-upload:
-  #   description: If true then upload the rendered docs as a build artifact.
-  #   required: false
-  #   default: 'true'
-  # artifact-name:
-  #   description: The name of the build artifact.
-  #   required: false
-  #   default: ${{ github.event.repository.name }}_docs
-  # artifact-retention-days:
-  #   description: Number of days to keep the artifact.
-  #   required: false
-  #   default: '7'
 outputs:
   diff:
     description: The diff text.
-    value: ${{ steps.outs.vars.diff }}
+    value: ${{ steps.diff.vars.diff }}
   truncated:
     description: Will be 'true' if the output was truncated, otherwise 'false'.
-    value: ${{ steps.outs.vars.truncated }}
+    value: ${{ steps.diff.vars.truncated }}
   files-raw:
     description: The unmodified diff file list output.
-    value: ${{ steps.vars.outputs.files-raw }}
+    value: ${{ steps.diff.outputs.files-raw }}
   files-trimmed:
     description: The diff output with paths trimmed to be relative to the doc root
-    value: ${{ steps.vars.outputs.files-trimmed }}
+    value: ${{ steps.diff.outputs.files-trimmed }}
 runs:
   using: composite
   steps:
     - name: Prepare vars
-      id: vars
+      id: diff
       uses: actions/github-script@v5
       with:
         script: |
@@ -50,8 +38,6 @@ runs:
           function escapeRegex(string) {
               return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           }
-          const testInput = core.getInput('build-html-a', { required: true })
-          core.warning(`Input test: ${testInput}`)
 
           const inputs = ${{ toJSON(inputs) }}
 
@@ -72,10 +58,7 @@ runs:
                       fileListRaw = data.toString()
                       fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
 
-                      core.warning(`files-raw: ${fileListRaw}`)
                       core.setOutput('files-raw', fileListRaw)
-
-                      core.warning(`files-trimmed: ${fileListTrimmed}`)
                       core.setOutput('files-trimmed', fileListTrimmed)
                   }
               }
@@ -87,14 +70,12 @@ runs:
                       diff = data.toString()
                       truncated = false
                       if (diff.length > maxLen) {
-                          core.warning(`max (${maxLen}) reached`)
+                          core.information(`Diff output exceeded ${maxLen} and will be truncated.`)
                           diff = diff.substring(0, maxLen)
                           truncated = true
                       }
-                      core.warning(`truncated: ${truncated}`)
-                      core.setOutput('truncated', truncated)
 
-                      core.warning(`diff: ${diff}`)
+                      core.setOutput('truncated', truncated)
                       core.setOutput('diff', diff)
                   }
               }
