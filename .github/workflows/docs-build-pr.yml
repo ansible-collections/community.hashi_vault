@@ -31,13 +31,12 @@ jobs:
     steps:
       - name: Variable setup
         id: vars
-        if: inputs.collection-path == ''
         uses: actions/github-script@v5
         with:
           script: |
-            var colpath = context.payload.inputs.collection-path
+            var colpath = context.payload.inputs['collection-path']
             if (colpath == '') {
-                colpath = context.payload.inputs.collection-name.replace('.', '/')
+                colpath = context.payload.inputs['collection-name'].replace('.', '/')
             }
 
             core.exportVariable('ANSIBLE_COLLECTIONS_PATHS', process.env.GITHUB_WORKSPACE)
