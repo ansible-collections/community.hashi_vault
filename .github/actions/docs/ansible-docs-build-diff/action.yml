@@ -51,7 +51,7 @@ runs:
           //     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           // }
 
-          const inputs = JSON.parse("${{ toJSON(inputs) || '{}' }}")
+          const inputs = JSON.parse("${{ toJSON(inputs) }}")
 
           const pathA = inputs['build-html-a']
           const pathB = inputs['build-html-b']
