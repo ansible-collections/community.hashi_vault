@@ -102,4 +102,4 @@ runs:
               '--relative', pathA, pathB
           ], fileListOpts)
 
-          await Promise.all(getFileList, getDiffOutput)
+          await Promise.all([getFileList, getDiffOutput])
