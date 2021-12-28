@@ -29,23 +29,6 @@ jobs:
     permissions:
       contents: read
     steps:
-      # - name: troubleshooting
-      #   id: wot
-      #   uses: actions/github-script@v5
-      #   with:
-      #     script: |
-      #       return {
-      #           context: context,
-      #           github: github,
-      #           env: process.env
-      #       }
-
-      # - name: show
-      #   run: |
-      #     echo <<EOF
-      #     ${{ toJSON(fromJSON(steps.wot.outputs.result)) }}
-      #     EOF
-
       - name: Variable setup
         id: vars
         uses: actions/github-script@v5
@@ -83,8 +66,6 @@ jobs:
 
       - name: Build BASE test
         id: build-base
-        # env:
-        #   ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
           build-script: ${{ steps.init-base.outputs.build-script }}
@@ -106,8 +87,6 @@ jobs:
 
       - name: Build HEAD test
         id: build-head
-        # env:
-        #   ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
           build-script: ${{ steps.init-head.outputs.build-script }}
@@ -116,10 +95,3 @@ jobs:
       - run: |
           echo "::warning::BASE hash: ${{ steps.build-base.outputs.hash }}"
           echo "::warning::HEAD hash: ${{ steps.build-head.outputs.hash }}"
-
-        # run: |
-        #   echo "::echo::on"
-        #   echo "${{ toJSON(steps) }}"
-        #   export SCRIPT="${{ steps.init.outputs.build-script }}"
-        #   echo "Build script: '$SCRIPT'"
-        #   $SCRIPT

@@ -22,26 +22,10 @@ inputs:
     description: Number of days to keep the artifact.
     required: false
     default: '7'
-  # ansible-collection-dir:
-  #   description: |
-  #     Limit the docs build to one or more collections, in the form namespace.collection.
-  #     Multiple collections should be separated by spaces.
-  #     If this isn't limited, then all collections in the collections path will be included in the built docs.
-  #   required: false
-  # skip-init:
-  #   description: |
-  #     If 'true', dest-dir will be assumed to already be initialized, so this action will only install
-  #     antsibull and the contents of the requirements.txt file in dest-dir.
-  #   required: false
-  #   default: 'false'
 outputs:
   hash:
     description: The hash of the generated docs. This will be empty unless the build-html path is within the Workspace.
-    value: ${{ steps.outputs.outputs.hash }}
-  # build-html:
-  #   description: The path of the build's html output directory.
-  #   value: ${{ steps.init.outputs.build-html }}
-
+    value: ${{ steps.build.outputs.hash }}
 runs:
   using: composite
   steps:
@@ -53,18 +37,7 @@ runs:
         "${{ inputs.build-script }}"
         echo "::endgroup::"
 
-    - name: Set outputs
-      id: outputs
-      shell: bash
-      run: |
-        echo "::warning::path: ${{ inputs.build-html }}"
-        ls -alh "${{ inputs.build-html }}"
-        export HASH="${{ hashFiles(inputs.build-html) }}"
-        echo "::warning::HASH=${HASH}"
-        echo "::set-output name=hash::${HASH}"
-
-    - shell: bash
-      run: echo "::warning::output hash=${{ steps.outputs.outputs.hash }}"
+        echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
 
     - name: Upload artifact
       if: fromJSON(inputs.artifact-upload)
