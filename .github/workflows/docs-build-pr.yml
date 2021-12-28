@@ -95,7 +95,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: ansible_collections/${{ steps.vars.output.col-path }}
+          path: ansible_collections/${{ steps.vars.outputs.col-path }}
 
       - name: Initialize the build environment (HEAD)
         id: init-head
@@ -103,14 +103,6 @@ jobs:
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ runner.temp }}/docsbuild/head
-
-      - run: |
-          cd "${{ steps.init-head.output.build-script }}/.."
-          ls -alh
-          cat build.sh
-
-          cd "ansible_collections/${{ steps.vars.output.col-path }}/docs/docsite/rst" || true
-          ls -alh
 
       - name: Build HEAD test
         id: build-head
