@@ -64,6 +64,7 @@ runs:
           const regPathReplacer = '$1 $3'
 
           const fileListOpts = {
+              ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
                       fileListRaw = data.toString()
@@ -75,6 +76,7 @@ runs:
               }
           }
           const diffOpts = {
+              ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
                       diff = data.toString()
