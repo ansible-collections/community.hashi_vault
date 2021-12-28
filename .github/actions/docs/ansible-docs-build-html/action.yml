@@ -56,6 +56,8 @@ runs:
     - name: Set outputs
       shell: bash
       run: |
+        echo "::warning::path: ${{ inputs.build-html }}"
+        ls -alh "${{ inputs.build-html }}"
         echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
 
     - name: Upload artifact
