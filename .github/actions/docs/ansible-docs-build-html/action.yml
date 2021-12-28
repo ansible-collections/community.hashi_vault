@@ -25,7 +25,7 @@ inputs:
 outputs:
   hash:
     description: The hash of the generated docs. This will be empty unless the build-html path is within the Workspace.
-    value: ${{ steps.build.outputs.hash }}
+    value: ${{ steps.outs.outputs.hash }}
 runs:
   using: composite
   steps:
@@ -37,7 +37,10 @@ runs:
         "${{ inputs.build-script }}"
         echo "::endgroup::"
 
-        echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
+    - name: Output step
+      id: outs
+      shell: bash
+      run: echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
 
     - name: Upload artifact
       if: fromJSON(inputs.artifact-upload)
