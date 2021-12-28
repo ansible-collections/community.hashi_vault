@@ -29,31 +29,32 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: troubleshooting
-        id: wot
-        uses: actions/github-script@v5
-        with:
-          script: |
-            return {
-                context: context,
-                github: github,
-                env: process.env
-            }
+      # - name: troubleshooting
+      #   id: wot
+      #   uses: actions/github-script@v5
+      #   with:
+      #     script: |
+      #       return {
+      #           context: context,
+      #           github: github,
+      #           env: process.env
+      #       }
 
-      - name: show
-        run: |
-          echo <<EOF
-          ${{ toJSON(fromJSON(steps.wot.outputs.result)) }}
-          EOF
+      # - name: show
+      #   run: |
+      #     echo <<EOF
+      #     ${{ toJSON(fromJSON(steps.wot.outputs.result)) }}
+      #     EOF
 
       - name: Variable setup
         id: vars
         uses: actions/github-script@v5
         with:
           script: |
-            var colpath = context.payload.inputs['collection-path']
+            const inputs = JSON.parse(`{"inputs": "${{ toJSON(inputs) }}"}`).inputs
+            var colpath = inputs['collection-path']
             if (colpath == '') {
-                colpath = context.payload.inputs['collection-name'].replace('.', '/')
+                colpath = inputs['collection-name'].replace('.', '/')
             }
 
             core.exportVariable('ANSIBLE_COLLECTIONS_PATHS', process.env.GITHUB_WORKSPACE)
