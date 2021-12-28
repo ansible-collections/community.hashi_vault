@@ -104,6 +104,14 @@ jobs:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ runner.temp }}/docsbuild/head
 
+      - run: |
+          cd "${{ steps.init-head.output.build-script }}/.."
+          ls -alh
+          cat build.sh
+
+          cd "ansible_collections/${{ steps.vars.output.col-path }}/docs/docsite/rst" || true
+          ls -alh
+
       - name: Build HEAD test
         id: build-head
         # env:
