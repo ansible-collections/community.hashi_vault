@@ -60,7 +60,7 @@ runs:
           // const regEscPathA = escapeRegex(pathA)
           // const regEscPathB = escapeRegex(pathB)
 
-          const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
+          // const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
           const regPathReplacer = '$1 $3'
 
 # const fileListOpts = {
