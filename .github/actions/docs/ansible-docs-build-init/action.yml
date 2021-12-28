@@ -3,7 +3,7 @@ name: Initialize the environment for building Ansible docs
 description: Sets up various requirements and preparation for building Ansible docs. Requires Python.
 inputs:
   dest-dir:
-    description: The destination directory for preparing the build environment.
+    description: The destination directory for preparing the build environment. Note that this must be within the Workspace for hashes to be calculated.
     required: false
     default: ${{ runner.temp }}/docsbuild
   collections:

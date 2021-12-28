@@ -79,7 +79,7 @@ jobs:
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
           collections: ${{ inputs.collection-name }}
-          dest-dir: ${{ runner.temp }}/docsbuild/base
+          dest-dir: ${{ github.workspace }}/docsbuild/base
 
       - name: Build BASE test
         id: build-base
@@ -102,7 +102,7 @@ jobs:
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
           collections: ${{ inputs.collection-name }}
-          dest-dir: ${{ runner.temp }}/docsbuild/head
+          dest-dir: ${{ github.workspace }}/docsbuild/head
 
       - name: Build HEAD test
         id: build-head

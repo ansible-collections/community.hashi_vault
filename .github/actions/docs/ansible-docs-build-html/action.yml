@@ -36,7 +36,7 @@ inputs:
   #   default: 'false'
 outputs:
   hash:
-    description: The hash of the generated docs.
+    description: The hash of the generated docs. This will be empty unless the build-html path is within the Workspace.
     value: ${{ steps.outputs.outputs.hash }}
   # build-html:
   #   description: The path of the build's html output directory.
