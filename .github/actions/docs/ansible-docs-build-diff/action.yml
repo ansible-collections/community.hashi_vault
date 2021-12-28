@@ -1,0 +1,124 @@
+---
+name: Calculate diff output between two Ansible docs builds
+description: Compare two builds of docs (HTML files) and produce diff output.
+inputs:
+  build-html-a:
+    description: The path to the HTML files (set A).
+    required: true
+  build-html-b:
+    description: The path to the HTML files (set B).
+    required: true
+  diff-size-limit:
+    description: The maximum size of the diff output. Larger output will be truncated.
+    required: false
+    default: '60000'
+
+  # artifact-upload:
+  #   description: If true then upload the rendered docs as a build artifact.
+  #   required: false
+  #   default: 'true'
+  # artifact-name:
+  #   description: The name of the build artifact.
+  #   required: false
+  #   default: ${{ github.event.repository.name }}_docs
+  # artifact-retention-days:
+  #   description: Number of days to keep the artifact.
+  #   required: false
+  #   default: '7'
+outputs:
+  diff:
+    description: The diff text.
+    value: ${{ steps.outs.vars.diff }}
+  truncated:
+    description: Will be 'true' if the output was truncated, otherwise 'false'.
+    value: ${{ steps.outs.vars.truncated }}
+  files-raw:
+    description: The unmodified diff file list output.
+    value: ${{ steps.vars.outputs.files-raw }}
+  files-trimmed:
+    description: The diff output with paths trimmed to be relative to the doc root
+    value: ${{ steps.vars.outputs.files-trimmed }}
+runs:
+  using: composite
+  steps:
+    - name: Prepare vars
+      id: vars
+      uses: actions/github-script@v5
+      with:
+        script: |
+          // attribution: https://stackoverflow.com/a/3561711/3905079
+          function escapeRegex(string) {
+              return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          }
+
+          const inputs = JSON.parse('${{ toJSON(inputs) || '{}' }}'')
+
+          const pathA = inputs['build-html-a']
+          const pathB = inputs['build-html-b']
+          const maxLen = Number(inputs['diff-size-limit'])
+
+          const regEscPathA = escapeRegex(pathA)
+          const regEscPathB = escapeRegex(pathB)
+
+          // ^([A-Z])\s+(${base_docs_escaped}|${pr_docs_escaped})\/html\/(.*?)$
+          const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
+          const regPathReplacer = '$1 $3'
+          // const regPathReplacer = '> * `$1` [$3]\(${site_name_escaped}\/\3\)
+
+          let stdout = ''
+          let stdoutLines = []
+          let stderr = ''
+          let stderrLines = []
+
+          const execOpts = {}
+          execOpts.listeners = {
+              stdout: (data: Buffer) => {
+                  stdout += data.toString()
+                  stdoutLines = stdout.split(/\r?\n/g)
+              },
+              stderr: (data: Buffer) => {
+                  stderr += data.toString()
+                  stderrLines = stderr.split(/\r?\n/g)
+              }
+          }
+
+          const fileListOpts = {
+              listeners: {
+                  stdout: (data: Buffer) => {
+                      fileListRaw = data.toString()
+                      fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
+
+                      core.setOutput('files-raw', fileListRaw)
+                      core.setOutput('files-trimmed', fileListTrimmed)
+                  }
+              }
+          }
+          const diffOpts = {
+              listeners: {
+                  stdout: (data: Buffer) => {
+                      diff = data.toString()
+                      truncated = false
+                      if (diff.length > maxLen) {
+                          diff = diff.substring(0, maxLen)
+                          truncated = true
+                      }
+
+                      core.setOutput('truncated', truncated)
+                      core.setOutput('diff', diff)
+                  }
+              }
+          }
+
+          // start the process to get the diff text
+          const getDiffOutput = exec.exec('git'[
+              '--no-pager', 'diff', '--histogram', '--no-index',
+              '--relative', '--diff-filter=ad', pathA, pathB
+          ], diffOpts)
+
+          // start the process to get the diff file list
+          const getFileList = exec.exec('git', [
+              '--no-pager', 'diff', '--name-status', '--no-index',
+              '--relative', pathA, pathB
+          ], fileListOpts)
+
+          await Promise.all(getFileList, getDiffOutput)
