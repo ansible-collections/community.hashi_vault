@@ -98,6 +98,8 @@ runs:
               '--relative', '--diff-filter=ad', pathA, pathB
           ], diffOpts)
 
+          await getDiffOutput
+
           // start the process to get the diff file list
           const getFileList = exec.exec('git', [
               '--no-pager', 'diff', '--name-status', '--no-index',
