@@ -3,7 +3,7 @@ name: Ansible collection docs build (PR)
 on:
   workflow_call:
     inputs:
-      collection:
+      collection-name:
         required: false
         type: string
         default: ${{ github.event.repository.name }}
@@ -61,7 +61,7 @@ jobs:
         id: init-base
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
-          collections: ${{ inputs.collection }}
+          collections: ${{ inputs.collection-name }}
           dest-dir: ${{ runner.temp }}/docsbuild/base
 
       - name: Build BASE test
@@ -78,13 +78,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: ansible_collections/${{ steps.vars.output.col-path }}   #${{ inputs.collection }}
+          path: ansible_collections/${{ steps.vars.output.col-path }}
 
       - name: Initialize the build environment (HEAD)
         id: init-head
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
-          collections: ${{ inputs.collection }}
+          collections: ${{ inputs.collection-name }}
           dest-dir: ${{ runner.temp }}/docsbuild/head
 
       - name: Build HEAD test
