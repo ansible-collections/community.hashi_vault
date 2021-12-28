@@ -3,7 +3,7 @@ name: Ansible collection docs build (PR)
 on:
   workflow_call:
     inputs:
-      collection-name:
+      collection:
         required: false
         type: string
         default: ${{ github.event.repository.name }}
