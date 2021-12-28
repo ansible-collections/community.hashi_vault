@@ -95,3 +95,17 @@ jobs:
       - run: |
           echo "::warning::BASE hash: ${{ steps.build-base.outputs.hash }}"
           echo "::warning::HEAD hash: ${{ steps.build-head.outputs.hash }}"
+
+      - name: Get a diff of the changes
+        if: steps.build-base.outputs.hash != steps.build-head.outputs.hash
+        id: diff
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-diff@docs/build-v2
+        with:
+          build-html-a: ${{ steps.init-base.outputs.build-html }}
+          build-html-b: ${{ steps.init-head.outputs.build-html }}
+
+      - shell: bash
+        run: |
+          echo <<EOF
+          ${{ toJSON(steps.diff.outputs) }}
+          EOF
