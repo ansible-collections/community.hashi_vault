@@ -63,32 +63,32 @@ runs:
           const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
           const regPathReplacer = '$1 $3'
 
-          const fileListOpts = {
-              listeners: {
-                  stdout: (data) => {
-                      fileListRaw = data.toString()
-                      fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
+# const fileListOpts = {
+#     listeners: {
+#         stdout: (data) => {
+#             fileListRaw = data.toString()
+#             fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
 
-                      core.setOutput('files-raw', fileListRaw)
-                      core.setOutput('files-trimmed', fileListTrimmed)
-                  }
-              }
-          }
-          const diffOpts = {
-              listeners: {
-                  stdout: (data) => {
-                      diff = data.toString()
-                      truncated = false
-                      if (diff.length > maxLen) {
-                          diff = diff.substring(0, maxLen)
-                          truncated = true
-                      }
+#             core.setOutput('files-raw', fileListRaw)
+#             core.setOutput('files-trimmed', fileListTrimmed)
+#         }
+#     }
+# }
+# const diffOpts = {
+#     listeners: {
+#         stdout: (data) => {
+#             diff = data.toString()
+#             truncated = false
+#             if (diff.length > maxLen) {
+#                 diff = diff.substring(0, maxLen)
+#                 truncated = true
+#             }
 
-                      core.setOutput('truncated', truncated)
-                      core.setOutput('diff', diff)
-                  }
-              }
-          }
+#             core.setOutput('truncated', truncated)
+#             core.setOutput('diff', diff)
+#         }
+#     }
+# }
 
 # // start the process to get the diff text
 # const getDiffOutput = exec.exec('git'[
