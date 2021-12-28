@@ -54,6 +54,7 @@ runs:
         echo "::endgroup::"
 
     - name: Set outputs
+      shell: bash
       run: |
         echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
 
