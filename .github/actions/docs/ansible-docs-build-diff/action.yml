@@ -70,7 +70,10 @@ runs:
                       fileListRaw = data.toString()
                       fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
 
+                      core.warning(`files-raw: ${fileListRaw}`)
                       core.setOutput('files-raw', fileListRaw)
+
+                      core.warning(`files-trimmed: ${fileListTrimmed}`)
                       core.setOutput('files-trimmed', fileListTrimmed)
                   }
               }
@@ -82,11 +85,14 @@ runs:
                       diff = data.toString()
                       truncated = false
                       if (diff.length > maxLen) {
+                          core.warning(`max (${maxLen}) reached`)
                           diff = diff.substring(0, maxLen)
                           truncated = true
                       }
-
+                      core.warning(`truncated: ${truncated}`)
                       core.setOutput('truncated', truncated)
+
+                      core.warning(`diff: ${diff}`)
                       core.setOutput('diff', diff)
                   }
               }
@@ -97,8 +103,6 @@ runs:
               '--no-pager', 'diff', '--histogram', '--no-index',
               '--relative', '--diff-filter=ad', pathA, pathB
           ], diffOpts)
-
-          await getDiffOutput
 
           // start the process to get the diff file list
           const getFileList = exec.exec('git', [
