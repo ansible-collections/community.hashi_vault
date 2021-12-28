@@ -47,9 +47,9 @@ runs:
       with:
         script: |
           // attribution: https://stackoverflow.com/a/3561711/3905079
-          function escapeRegex(string) {
-              return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-          }
+          // function escapeRegex(string) {
+          //     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          // }
 
           const inputs = JSON.parse("${{ toJSON(inputs) || '{}' }}")
 
@@ -57,8 +57,8 @@ runs:
           const pathB = inputs['build-html-b']
           const maxLen = Number(inputs['diff-size-limit'])
 
-          const regEscPathA = escapeRegex(pathA)
-          const regEscPathB = escapeRegex(pathB)
+          // const regEscPathA = escapeRegex(pathA)
+          // const regEscPathB = escapeRegex(pathB)
 
           const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
           const regPathReplacer = '$1 $3'
