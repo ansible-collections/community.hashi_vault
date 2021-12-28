@@ -34,7 +34,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            const inputs = JSON.parse(`{"inputs": ${{ toJSON(inputs) }}}`).inputs
+            const inputs = JSON.parse('${{ toJSON(inputs) || '{}' }}'')
             var colpath = inputs['collection-path']
             if (colpath == '') {
                 colpath = inputs['collection-name'].replace('.', '/')
