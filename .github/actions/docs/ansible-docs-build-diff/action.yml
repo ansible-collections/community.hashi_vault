@@ -50,6 +50,8 @@ runs:
           function escapeRegex(string) {
               return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           }
+          const testInput = core.getInput('build-html-a', { required: true })
+          core.warning(`Input test: ${testInput}`)
 
           const inputs = ${{ toJSON(inputs) }}
 
