@@ -30,6 +30,7 @@ jobs:
       contents: read
     steps:
       - name: troubleshooting
+        id: wot
         uses: actions/github-script@v5
         with:
           script: |
@@ -38,6 +39,12 @@ jobs:
                 github: github,
                 env: process.env
             }
+
+      - name: show
+        run: |
+          echo <<EOF
+          ${{ toJSON(fromJSON(steps.wot.outputs.result)) }}
+          EOF
 
       - name: Variable setup
         id: vars
