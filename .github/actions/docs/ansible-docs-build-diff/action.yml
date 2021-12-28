@@ -16,10 +16,10 @@ inputs:
 outputs:
   diff:
     description: The diff text.
-    value: ${{ steps.diff.vars.diff }}
+    value: ${{ steps.diff.outputs.diff }}
   truncated:
     description: Will be 'true' if the output was truncated, otherwise 'false'.
-    value: ${{ steps.diff.vars.truncated }}
+    value: ${{ steps.diff.outputs.truncated }}
   files-raw:
     description: The unmodified diff file list output.
     value: ${{ steps.diff.outputs.files-raw }}
