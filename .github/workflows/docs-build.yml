@@ -1,9 +1,13 @@
 ---
-name: Ansible docs build
+name: Ansible collection docs build (PR)
 on:
   workflow_call:
     inputs:
-      collections:
+      collection-name:
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
+      collection-path:
         required: false
         type: string
       python:
@@ -15,6 +19,7 @@ on:
         type: string
         default: milestone
 
+
     # outputs:
 
 jobs:
@@ -24,8 +29,21 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Variable setup
+        id: vars
+        if: inputs.collection-path == ''
+        uses: actions/github-script@v5
+        with:
+          script: |
+            var colpath = context.payload.inputs.collection-path
+            if (colpath == '') {
+                colpath = context.payload.inputs.collection-name.replace('.', '/')
+            }
+
+            core.exportVariable('ANSIBLE_COLLECTIONS_PATHS', process.env.GITHUB_WORKSPACE)
+            core.setOutput('col-path', colpath)
+
       - name: Set up Python
-        if: inputs.python != ''
         uses: actions/setup-python@v2
         with:
           python-version: ${{ inputs.python }}
@@ -33,27 +51,54 @@ jobs:
       - name: Install Ansible
         run: pip install https://github.com/ansible/ansible/archive/${{ inputs.ansible-ref }}.tar.gz --disable-pip-version-check
 
-      - name: Initialize the build environment
-        id: init
+      - name: Checkout BASE test
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: ansible_collections/${{ steps.vars.outputs.col-path }}
+
+      - name: Initialize the build environment (BASE)
+        id: init-base
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
-          collections: ${{ inputs.collections }}
+          collections: ${{ inputs.collection }}
+          dest-dir: ${{ runner.temp }}/docsbuild/base
 
-      - name: Checkout test
-        # if: github.event_name == 'pull_request_target'
+      - name: Build BASE test
+        id: build-base
+        # env:
+        #   ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
+        with:
+          build-script: ${{ steps.init-base.outputs.build-script }}
+          build-html: ${{ steps.init-base.outputs.build-html }}
+          artifact-upload: 'false'
+
+      - name: Checkout HEAD test
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: ansible_collections/community/hashi_vault   #${{ inputs.collection }}
+          path: ansible_collections/${{ steps.vars.output.col-path }}   #${{ inputs.collection }}
 
-      - name: Build test
-        id: build
-        env:
-          ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
+      - name: Initialize the build environment (HEAD)
+        id: init-head
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
+        with:
+          collections: ${{ inputs.collection }}
+          dest-dir: ${{ runner.temp }}/docsbuild/head
+
+      - name: Build HEAD test
+        id: build-head
+        # env:
+        #   ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }} # ansible_collections/community/hashi_vault
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
-          build-script: ${{ steps.init.outputs.build-script }}
-          build-html: ${{ steps.init.outputs.build-html }}
+          build-script: ${{ steps.init-head.outputs.build-script }}
+          build-html: ${{ steps.init-head.outputs.build-html }}
+
+      - run: |
+          echo "::warning::BASE hash: ${{ steps.build-base.outputs.hash }}"
+          echo "::warning::HEAD hash: ${{ steps.build-head.outputs.hash }}"
 
         # run: |
         #   echo "::echo::on"
