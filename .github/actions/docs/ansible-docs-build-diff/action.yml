@@ -61,7 +61,7 @@ runs:
           const regEscPathB = escapeRegex(pathB)
 
           // ^([A-Z])\s+(${base_docs_escaped}|${pr_docs_escaped})\/html\/(.*?)$
-          const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
+          const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)\$`, 'gm')
           const regPathReplacer = '$1 $3'
           // const regPathReplacer = '> * `$1` [$3]\(${site_name_escaped}\/\3\)
 
