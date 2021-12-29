@@ -26,5 +26,6 @@ jobs:
     with:
       artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
       surge-site-name: community-hashi-vault-main.surge.sh
+      init-dest-dir: docs/preview
     secrets:
       SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
