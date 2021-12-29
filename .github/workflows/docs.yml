@@ -40,13 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-docs, publish-docs]
     name: PR comments
-
     steps:
-      - run: |
-          echo <<EOF
-          ${{ toJSON(needs.build-docs.outputs) }}
-          EOF
-
       - name: PR comment
         env:
           PR_SITE_URL: https://${{ env.SURGE_PR_SITE }}
