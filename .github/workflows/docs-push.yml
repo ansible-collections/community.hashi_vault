@@ -16,6 +16,8 @@ jobs:
       contents: read
     name: Build Ansible Docs
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-push.yml@docs/build-v2
+    with:
+      init-dest-dir: docs/preview
 
   publish-docs:
     permissions:
@@ -26,6 +28,5 @@ jobs:
     with:
       artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
       surge-site-name: community-hashi-vault-main.surge.sh
-      init-dest-dir: docs/preview
     secrets:
       SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
