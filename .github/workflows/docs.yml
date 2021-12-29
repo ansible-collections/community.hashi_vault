@@ -55,7 +55,7 @@ jobs:
         with:
           body-includes: '##Docs Build'
           reactions: heart
-          action: ${{ needs.build-docs.outputs.changed == 'true' && '' || 'remove' }}
+          action: ${{ needs.build-docs.outputs.changed != 'true' && 'remove' || '' }}
           on-closed-body: |
             ##Docs Build 📝
 
@@ -79,10 +79,10 @@ jobs:
             ${{ env.PR_MAIN_URL }}
 
             The docsite for **this PR** is also available for download as an artifact from this run:
-            ${{ needs.build-docs.artifact-url }}
+            ${{ needs.build-docs.outputs.artifact-url }}
 
             File changes:
 
-            ${{ needs.build-docs.files-rendered }}
+            ${{ needs.build-docs.outputs.files-rendered }}
 
-            ${{ needs.build-docs.diff-rendered }}
+            ${{ needs.build-docs.outputs.diff-rendered }}
