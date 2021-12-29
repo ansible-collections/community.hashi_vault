@@ -30,7 +30,8 @@ jobs:
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-publish-surge.yml@docs/build-v2
     with:
       artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
-      surge_token: ${{ secrets.SURGE_TOKEN }}
+    secrets:
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
     # runs-on: ubuntu-latest
     # steps:
     #   - run: |

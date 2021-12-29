@@ -8,7 +8,7 @@ on:
         required: true
         type: string
     secrets:
-      surge_token:
+      SURGE_TOKEN:
         description: The token used for publishing to surge.
         required: true
 jobs:
@@ -44,4 +44,4 @@ jobs:
         env:
           SITE_NAME: community-hashi-vault-docstest
         working-directory: html
-        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.surge_token }}
+        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
