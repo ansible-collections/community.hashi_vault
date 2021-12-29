@@ -142,7 +142,7 @@ runs:
                           diff: diff
                       }
 
-                      const renderedDiff = string.replace(/\$\{(?<var>[^}]+)\}/g, function(match, g1, offset, string, groups){
+                      const renderedDiff = diff.replace(/\$\{(?<var>[^}]+)\}/g, function(match, g1, offset, string, groups){
                           return _diff_vars[g1]
                       })
 
