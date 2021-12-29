@@ -95,5 +95,5 @@ runs:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         issue-number: ${{ inputs.pr-number }}
         reactions: ${{ inputs.reactions }}
-        body: ${{ steps.vars.outputs.action.body }}
+        body: ${{ steps.vars.outputs.body }}
         edit-mode: replace
