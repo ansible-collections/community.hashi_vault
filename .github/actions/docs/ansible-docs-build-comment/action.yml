@@ -65,25 +65,32 @@ runs:
         script: |
           const inputs = ${{ toJSON(inputs )}}
 
-          if (inputs.action) {
+          core.warning(`inputs.action: '${inputs.action}'`)
+          core.warning(`context.payload: '${JSON.stringify(context.payload)}'`)
+
+          if (inputs.action != '') {
+              core.warning('111111111111111111')
               core.setOutput('action', inputs.action)
               core.setOutput('body', inputs.body)
           } else if (context.payload.action == 'closed') {
               if (context.payload.pull_request.merged) {
+                  core.warning('2222222AAAAAAAA')
                   core.setOutput('action', inputs['on-merged-action'])
                   core.setOutput('body', inputs['on-merged-body'])
               } else {
+                  core.warning('2222222BBBBBBBB')
                   core.setOutput('action', inputs['on-closed-action'])
                   core.setOutput('body', inputs['on-closed-body'])
               }
           } else {
+              core.warning('3333333333333333333')
               core.setOutput('action', 'update')
               core.setOutput('body', inputs.body)
           }
 
     - name: Remove comment
       if: >-
-        steps.id.outputs.action == 'remove'
+        steps.vars.outputs.action == 'remove'
         && steps.fc.outputs.comment-id
       uses: actions/github-script@v5
       with:
@@ -96,7 +103,7 @@ runs:
 
     - name: Post or update comment
       id: comment
-      if: steps.id.outputs.action == 'update'
+      if: steps.vars.outputs.action == 'update'
       uses: peter-evans/create-or-update-comment@v1
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
