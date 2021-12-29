@@ -22,6 +22,10 @@ on:
         required: false
         type: string
         default: milestone
+      init-dest-dir:
+        description: A directory relative to the checkout where the init process has already been run.
+        required: false
+        type: string
       artifact-name:
         description: The name of the artifact to upload.
         required: false
@@ -77,6 +81,8 @@ jobs:
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
           collections: ${{ inputs.collection-name }}
+          dest-dir: ${{ inputs.init-dest-dir || format('{0}/docsbuild', runner.temp) }}
+          skip-init: ${{ inputs.init-dest-dir || 'false' }}
 
       - name: Build
         id: build
