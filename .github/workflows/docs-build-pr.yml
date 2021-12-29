@@ -160,7 +160,7 @@ jobs:
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ inputs.init-dest-dir || format('{0}/docsbuild/base', github.workspace) }}
-          skip-init: ${{ inputs.init-dest-dir || 'false' }}
+          skip-init: ${{ inputs.init-dest-dir != '' }}
 
       - name: Build BASE
         id: build-base
@@ -182,7 +182,7 @@ jobs:
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ inputs.init-dest-dir || format('{0}/docsbuild/head', github.workspace) }}
-          skip-init: ${{ inputs.init-dest-dir || 'false' }}
+          skip-init: ${{ inputs.init-dest-dir != '' }}
 
       - name: Build HEAD
         id: build-head

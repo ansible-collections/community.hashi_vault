@@ -82,7 +82,7 @@ jobs:
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ inputs.init-dest-dir || format('{0}/docsbuild', runner.temp) }}
-          skip-init: ${{ inputs.init-dest-dir || 'false' }}
+          skip-init: ${{ inputs.init-dest-dir != '' }}
 
       - name: Build
         id: build
