@@ -39,19 +39,19 @@ on:
         value: ${{ inputs.artifact-name }}
       changed:
         description: If false, the PR does not change the documentation.
-        value: ${{ steps.build-base.outputs.hash != steps.build-head.outputs.hash }}
+        value: ${{ jobs.build-ansible-docs.outputs.changed }}
       diff:
         description: The diff between the base and head of the PR.
-        value: ${{ steps.diff.outputs.diff }}
+        value: ${{ jobs.build-ansible-docs.outputs.diff }}
       diff-truncated:
         description: If true, the diff was truncated because it exceeded the max size.
-        value: ${{ steps.diff.outputs.truncated }}
+        value: ${{ jobs.build-ansible-docs.outputs.diff-truncated }}
       diff-files:
         description: The raw file list from the diff output.
-        value: ${{ steps.diff.outputs.files }}
+        value: ${{ jobs.build-ansible-docs.outputs.diff-files }}
       diff-files-trimmed:
         description: The file list from the diff with the paths trimmed.
-        value: ${{ steps.diff.outputs.files-trimmed }}
+        value: ${{ jobs.build-ansible-docs.outputs.diff-files-trimmed }}
 
 jobs:
   build-ansible-docs:
@@ -59,6 +59,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      changed: ${{ steps.build-base.outputs.hash != steps.build-head.outputs.hash }}
+      diff: ${{ steps.diff.outputs.diff }}
+      diff-truncated: ${{ steps.diff.outputs.truncated }}
+      diff-files: ${{ steps.diff.outputs.files }}
+      diff-files-trimmed: ${{ steps.diff.outputs.files-trimmed }}
     steps:
       - name: Variable setup
         id: vars
