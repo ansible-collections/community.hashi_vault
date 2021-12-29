@@ -18,7 +18,7 @@ jobs:
     name: Build Ansible Docs
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-pr.yml@docs/build-v2
     with:
-      render-file-line: '> * `$<status>` [$<path_tail>](https://${{ env.SURGE_PR_SITE }}/$<path_tail>)'
+      render-file-line: '> * `$<status>` [$<path_tail>](https://community-hashi-vault-pr${{ github.event.number }}/$<path_tail>)'
   publish-docs:
     permissions:
       contents: read
