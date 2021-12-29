@@ -43,11 +43,9 @@ jobs:
 
     steps:
       - run: |
-          echo "::group::BUILD"
           echo <<EOF
-          ${{ toJSON(needs) }}
+          ${{ toJSON(needs.build-docs.outputs) }}
           EOF
-          echo "::endgroup::"
 
       # - name: Choose comment body
       #   run: |
@@ -67,7 +65,7 @@ jobs:
         with:
           body-includes: '##Docs Build'
           reactions: heart
-          action: ${{ needs.build-docs.outputs.changed && '' || 'remove' }}
+          action: ${{ needs.build-docs.outputs.changed == 'true' && '' || 'remove' }}
           on-closed-body: |
             ##Docs Build 📝
 

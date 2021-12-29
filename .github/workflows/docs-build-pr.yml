@@ -104,7 +104,7 @@ on:
         value: ${{ jobs.build-ansible-docs.outputs.diff-files-trimmed }}
       diff-files-rendered:
         description: The markdown rendered file list from the diff.
-        value: ${{ jobs.build-ansible-docs.outputs.diff-files-trimmed }}
+        value: ${{ jobs.build-ansible-docs.outputs.diff-files-rendered }}
 
 jobs:
   build-ansible-docs:
@@ -118,7 +118,7 @@ jobs:
       diff: ${{ steps.diff.outputs.diff }}
       diff-truncated: ${{ steps.diff.outputs.truncated }}
       diff-rendered: ${{ steps.diff.outputs.diff-rendered }}
-      diff-files: ${{ steps.diff.outputs.files }}
+      diff-files: ${{ steps.diff.outputs.files-raw }}
       diff-files-trimmed: ${{ steps.diff.outputs.files-trimmed }}
       diff-files-rendered: ${{ steps.diff.outputs.files-rendered }}
     steps:

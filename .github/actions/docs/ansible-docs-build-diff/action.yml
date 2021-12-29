@@ -148,7 +148,7 @@ runs:
 
                       core.setOutput('truncated', truncated)
                       core.setOutput('diff', diff)
-                      core.setOutput('rendered-diff', renderedDiff)
+                      core.setOutput('diff-rendered', renderedDiff)
                   }
               }
           }
