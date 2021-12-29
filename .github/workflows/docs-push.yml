@@ -1,0 +1,30 @@
+name: Collection Docs
+concurrency:
+  group: docs-${{ github.sha }}
+  cancel-in-progress: true
+on:
+  push:
+    branches:
+      - main
+      - docs/build-v2
+  schedule:
+    - cron: '0 13 * * *'
+
+jobs:
+  build-docs:
+    permissions:
+      contents: read
+    name: Build Ansible Docs
+    uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-push.yml@docs/build-v2
+
+  publish-docs:
+    permissions:
+      contents: read
+    needs: build-docs
+    name: Publish Ansible Docs
+    uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-publish-surge.yml@docs/build-v2
+    with:
+      artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
+      surge-site-name: community-hashi-vault-main.surge.sh
+    secrets:
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
