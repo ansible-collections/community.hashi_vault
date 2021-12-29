@@ -194,3 +194,6 @@ jobs:
           build-html-a: ${{ steps.init-base.outputs.build-html }}
           build-html-b: ${{ steps.init-head.outputs.build-html }}
           diff-size-limit: ${{ inputs.diff-size-limit }}
+          render-file-line: ${{ inputs.render-file-line }}
+          render-diff-truncate-text: ${{ inputs.render-diff-truncate-text }}
+          render-diff: ${{ inputs.render-diff }}

@@ -43,6 +43,12 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: DEBUG
+      run: |
+        echo <<EOF
+        ${{ toJSON(inputs) }}
+        EOF
+
     - name: Look for an existing comment
       id: fc
       uses: peter-evans/find-comment@v1
