@@ -37,8 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-docs, publish-docs]
     env:
-      PR_SITE_URL: https://${{ env.SURGE_PR_SITE }}
-      MAIN_SITE_URL: https://${{ env.SURGE_MAIN_SITE }}
+      PR_SITE_URL: https://community-hashi-vault-pr${{ github.event.number }}.surge.sh
+      MAIN_SITE_URL: https://community-hashi-vault-main.surge.sh
       PR_MERGED_COMMENT: |
         ##Docs Build 📝
 
