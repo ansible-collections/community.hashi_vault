@@ -1,0 +1,47 @@
+---
+name: Ansible collection docs publish to Surge
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: The build artifact that contains the rendered HTML.
+        required: true
+        type: string
+    secrets:
+      surge_token:
+        description: The token used for publishing to surge.
+        required: true
+jobs:
+  build-ansible-docs:
+    name: Build Ansible Docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: DEBUG
+        run: |
+          echo <<EOF
+          ${{ toJSON(inputs) }}
+          EOF
+
+      - name: Retrieve rendered docs
+        id: download
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: html
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Surge
+        run: npm install -g surge
+
+      - name: Publish site
+        env:
+          SITE_NAME: community-hashi-vault-docstest
+        working-directory: html
+        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.surge_token }}

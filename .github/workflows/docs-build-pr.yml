@@ -37,6 +37,9 @@ on:
       artifact-name:
         description: The same artifact name as passed in, available as an output.
         value: ${{ inputs.artifact-name }}
+      artifact-url:
+        description: The URL to the build artifacts.
+        value: ${{ jobs.build-ansible-docs.outputs.artifact-url }}
       changed:
         description: If false, the PR does not change the documentation.
         value: ${{ jobs.build-ansible-docs.outputs.changed }}
@@ -60,6 +63,7 @@ jobs:
     permissions:
       contents: read
     outputs:
+      artifact-url: ${{ steps.build-head.outputs.artifact-url }}
       changed: ${{ steps.build-base.outputs.hash != steps.build-head.outputs.hash }}
       diff: ${{ steps.diff.outputs.diff }}
       diff-truncated: ${{ steps.diff.outputs.truncated }}

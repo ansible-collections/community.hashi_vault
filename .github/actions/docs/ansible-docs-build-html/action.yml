@@ -26,6 +26,9 @@ outputs:
   hash:
     description: The hash of the generated docs. This will be empty unless the build-html path is within the Workspace.
     value: ${{ steps.outs.outputs.hash }}
+  artifact-url:
+    description: The URL to the artifact.
+    value: ${{ steps.outs.outputs.artifact-url }}
 runs:
   using: composite
   steps:
@@ -37,11 +40,6 @@ runs:
         "${{ inputs.build-script }}"
         echo "::endgroup::"
 
-    - name: Output step
-      id: outs
-      shell: bash
-      run: echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
-
     - name: Upload artifact
       if: fromJSON(inputs.artifact-upload)
       uses: actions/upload-artifact@v2
@@ -49,3 +47,12 @@ runs:
         path: ${{ inputs.build-html }}
         name: ${{ inputs.artifact-name }}
         retention-days: ${{ fromJSON(inputs.artifact-retention-days) }}
+
+    - name: Output step
+      id: outs
+      shell: bash
+      run: |
+        echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
+        if [[ "${{ inputs.artifact-upload }}" == "true" ]] ; then
+            echo "::set-output name=artifact-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        fi

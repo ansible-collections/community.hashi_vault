@@ -22,14 +22,21 @@ jobs:
     #   python: '3.9'
   publish-docs:
     if: github.event.action != 'closed'
+    permissions:
+      contents: write
+      pull-requests: write
     needs: build-docs
     name: Publish Ansible Docs
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo <<EOF
-          ${{ toJSON(needs.build-docs.outputs) }}
-          EOF
+    uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-publish-surge.yml@docs/build-v2
+    with:
+      artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
+      surge_token: ${{ secrets.SURGE_TOKEN }}
+    # runs-on: ubuntu-latest
+    # steps:
+    #   - run: |
+    #       echo <<EOF
+    #       ${{ toJSON(needs.build-docs.outputs) }}
+    #       EOF
 
     # runs-on: ubuntu-latest
     # permissions:
