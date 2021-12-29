@@ -1,0 +1,61 @@
+---
+name: Post, edit, or remove a PR comment.
+description: Handles the docs build PR comment operations.
+inputs:
+  pr-number:
+    description: The PR in question.
+    required: false
+    default: ${{ github.event.number }}
+  body-includes:
+    description: Text to search for in comments to identify an existing comment to be edited.
+    required: true
+  body:
+    description: The body of the comment to post. Required when action == 'update'.
+    required: false
+  reactions:
+    description: |
+      A comma separated list of reactions to add to the comment. Can be any of:
+      +1, -1, laugh, confused, heart, hooray, rocket, eyes
+    required: false
+  action:
+    description: Which action to take. 'update' means create or update a comment. 'remove' means to remove any existing comment.
+    required: false
+    default: update
+outputs:
+  comment-id:
+    description: The ID of the comment.
+    value: ${{ steps.comment.outputs.comment-id }}
+runs:
+  using: composite
+  steps:
+    - name: Look for an existing comment
+      id: fc
+      uses: peter-evans/find-comment@v1
+      with:
+        issue-number: ${{ inputs.pr-number }}
+        body-includes: ${{ inputs.body-includes }}
+        comment-author: 'github-actions[bot]'
+
+    - name: Remove comment
+      if: >-
+        inputs.action == 'remove'
+        && steps.fc.outputs.comment-id
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.issues.deleteComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: ${{ steps.fc.outputs.comment-id }}
+          })
+
+    - name: Post or update comment
+      id: comment
+      if: inputs.action == 'update'
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ inputs.pr-number }}
+        reactions: ${{ inputs.reactions }}
+        body: ${{ inputs.body }}
+        edit-mode: replace

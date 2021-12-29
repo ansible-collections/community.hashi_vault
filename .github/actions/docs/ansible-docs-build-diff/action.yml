@@ -12,6 +12,46 @@ inputs:
     description: The maximum size of the diff output. Larger output will be truncated.
     required: false
     default: '60000'
+  sort-files:
+    description: If true, sort the trimmed and rendered list of files.
+    required: false
+    default: 'true'
+  render-file-line:
+    description: |
+      A template used to render each line of the file list as markdown. This will be processed as a JavaScript regex replace string,
+      and the following named capture groups can be referenced:
+      - $<status> -- the single character "status" letter in the file list, like "A" or an added file or "M" for a modified file.
+      - $<path_stub> -- the part of the path that will be discarded in the "trimmed" file list.
+      - $<path_tail> -- the relative part of the path; this can be used to concatenate to a URL to create links to the published site.
+
+      Note that literal $ characters must be escaped as $$ and literal backslashes must be escaped as \\
+    required: false
+    default: '> * `$<status>` $<path_tail>'
+  render-diff-truncate-text:
+    description: Markdown text to be used if the diff text was truncated. It will be available in the render-diff template.
+    required: false
+    default: '**The diff output was truncated because it exceeded the maximum size.**'
+  render-diff:
+    description: |
+      A template used to render the diff output as markdown. It will be interpreted as a pseudo-JavaScript template literal and the following
+      variables are available for ${var} interpolation:
+      - ${diff} -- the diff text
+      - ${truncated_msg} -- empty if the diff is not truncated, otherwise the value of render-diff-truncate-text
+    required: false
+    default: |
+      <details>
+      <summary>Click to see the diff comparison.</summary>
+
+      **NOTE:** only file modifications are shown here. New and deleted files are excluded.
+      See the file list and check the published docs to see those files.
+
+      ${truncated_msg}
+
+      ```diff
+      ${diff}
+      ```
+
+      </details>
 
 outputs:
   diff:
@@ -24,12 +64,18 @@ outputs:
     description: The unmodified diff file list output.
     value: ${{ steps.diff.outputs.files-raw }}
   files-trimmed:
-    description: The diff output with paths trimmed to be relative to the doc root
+    description: The diff output with paths trimmed to be relative to the doc root.
     value: ${{ steps.diff.outputs.files-trimmed }}
+  files-rendered:
+    description: The markdown rendered file list of files.
+    value: ${{ steps.diff.outputs.files-rendered }}
+  diff-rendered:
+    description: The markdown rendered diff output.
+    value: ${{ steps.diff.outputs.diff-rendered }}
 runs:
   using: composite
   steps:
-    - name: Prepare vars
+    - name: Create diff
       id: diff
       uses: actions/github-script@v5
       with:
@@ -48,18 +94,32 @@ runs:
           const regEscPathA = escapeRegex(pathA)
           const regEscPathB = escapeRegex(pathB)
 
-          const regPathSearcher = new RegExp(`^([A-Z])\\s+(${regEscPathA}|${regEscPathB})\\/(.*?)$`, 'gm')
-          const regPathReplacer = '$1 $3'
+          const regPathSearcher = new RegExp(`^(?<status>[A-Z])\\s+(?<path_stub>${regEscPathA}|${regEscPathB})\\/(?<path_tail>.*?)$`)
+          const regPathReplacer = '$<status> $<path_tail>'
+          const regPathRenderedReplacer = inputs['render-file-line']
+
 
           const fileListOpts = {
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
                       fileListRaw = data.toString()
-                      fileListTrimmed = fileListRaw.replace(regPathSearcher, regPathReplacer)
+                      fileListArr = fileListRaw.split(/\r?\n/)
+                      if (inputs['sort-files'] === 'true') {
+                          fileListArr.sort()
+                      }
+
+                      fileListTrimmed = fileListArr.map(function(x) {
+                          return x.replace(regPathSearcher, regPathReplacer)
+                      }).join('\n')
+
+                      fileListRendered = fileListArr.map(function(x) {
+                          return x.replace(regPathSearcher, regPathRenderedReplacer)
+                      }).join('\n')
 
                       core.setOutput('files-raw', fileListRaw)
                       core.setOutput('files-trimmed', fileListTrimmed)
+                      core.setOutput('files-rendered', fileListRendered)
                   }
               }
           }
@@ -69,14 +129,26 @@ runs:
                   stdout: (data) => {
                       diff = data.toString()
                       truncated = false
+                      truncatedMsg = ''
                       if (diff.length > maxLen) {
                           core.information(`Diff output exceeded ${maxLen} and will be truncated.`)
                           diff = diff.substring(0, maxLen)
+                          truncatedMsg = inputs['render-diff-truncate-text']
                           truncated = true
                       }
 
+                      const _diff_vars = {
+                          truncated_msg: truncatedMsg,
+                          diff: diff
+                      }
+
+                      const renderedDiff = string.replace(/\$\{(?<var>[^}]+)\}/g, function(match, g1, offset, string, groups){
+                          return _diff_vars[g1]
+                      })
+
                       core.setOutput('truncated', truncated)
                       core.setOutput('diff', diff)
+                      core.setOutput('rendered-diff', renderedDiff)
                   }
               }
           }
