@@ -47,16 +47,6 @@ jobs:
           ${{ toJSON(needs.build-docs.outputs) }}
           EOF
 
-      # - name: Choose comment body
-      #   run: |
-      #     echo 'COMMENT_BODY<<EOF' >> $GITHUB_ENV
-      #     if [[ "${{ github.event.action }}" == "closed" ]] ; then
-      #         echo "${${{ github.event.pull_request.merged && 'PR_MERGED_COMMENT' || 'PR_CLOSED_COMMENT' }}}" >> $GITHUB_ENV
-      #     else
-      #         echo "${PR_CHANGE_COMMENT}"
-      #     fi
-      #     echo 'EOF' >> $GITHUB_ENV
-
       - name: PR comment
         env:
           PR_SITE_URL: https://${{ env.SURGE_PR_SITE }}
