@@ -54,7 +54,7 @@ jobs:
         with:
           body-includes: '##Docs Build'
           reactions: heart
-          action: ${{ needs.build-docs.outputs.changed != 'true' && 'remove' || '' }}
+          action: ${{ (needs.build-docs.result == 'success' && needs.build-docs.outputs.changed != 'true') && 'remove' || '' }}
           on-closed-body: |
             ##Docs Build 📝
 
