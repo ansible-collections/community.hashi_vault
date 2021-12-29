@@ -23,7 +23,7 @@ jobs:
   publish-docs:
     if: github.event.action != 'closed'
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
     needs: build-docs
     name: Publish Ansible Docs
