@@ -1,10 +1,14 @@
 ---
-name: Ansible collection docs publish to Surge
+name: Ansible collection docs - post comment and publish to Surge
 on:
   workflow_call:
     inputs:
       artifact-name:
         description: The build artifact that contains the rendered HTML.
+        required: true
+        type: string
+      surge-site-name:
+        description: The full surge site domain to publish to.
         required: true
         type: string
     secrets:
@@ -13,7 +17,7 @@ on:
         required: true
 jobs:
   build-ansible-docs:
-    name: Build Ansible Docs
+    name: Publish to Surge.sh
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,7 +45,5 @@ jobs:
         run: npm install -g surge
 
       - name: Publish site
-        env:
-          SITE_NAME: community-hashi-vault-docstest
         working-directory: html
-        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+        run: surge ./ "${{ inputs.surge-site-name }}" --token ${{ secrets.SURGE_TOKEN }}

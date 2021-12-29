@@ -6,20 +6,11 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, closed]
 
-env:
-  NAMESPACE: community
-  COLLECTION_NAME: hashi_vault
-  # NOT_A_FORK: ${{ github.repository == 'ansible-collections/community.hashi_vault' }}
-
 jobs:
   build-docs:
     if: github.event.action != 'closed'
     name: Build Ansible Docs
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-pr.yml@docs/build-v2
-    # with:
-    #   collection-name: ${{ github.event.repository.name }}
-    #   # collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
-    #   python: '3.9'
   publish-docs:
     if: github.event.action != 'closed'
     permissions:
@@ -30,6 +21,7 @@ jobs:
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-publish-surge.yml@docs/build-v2
     with:
       artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
+      surge-site-name: community-hashi-vault-pr${{github.event.number }}.surge.sh
     secrets:
       SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
     # runs-on: ubuntu-latest
@@ -38,17 +30,3 @@ jobs:
     #       echo <<EOF
     #       ${{ toJSON(needs.build-docs.outputs) }}
     #       EOF
-
-    # runs-on: ubuntu-latest
-    # permissions:
-    #   contents: read
-    # steps:
-    #   - name: Set up Python
-    #     uses: actions/setup-python@v2
-    #     with:
-    #       python-version: 3.9
-
-    #   - name: Initialize the build environment
-    #     uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
-    #     with:
-    #       collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
