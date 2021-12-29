@@ -37,26 +37,20 @@ on:
       artifact-name:
         description: The same artifact name as passed in, available as an output.
         value: ${{ inputs.artifact-name }}
-        type: string
       changed:
         description: If false, the PR does not change the documentation.
-        type: boolean
         value: ${{ steps.build-base.outputs.hash != steps.build-head.outputs.hash }}
       diff:
         description: The diff between the base and head of the PR.
-        type: string
         value: ${{ steps.diff.outputs.diff }}
       diff-truncated:
         description: If true, the diff was truncated because it exceeded the max size.
-        type: boolean
-        value: ${{ fromJSON(steps.diff.outputs.truncated) }}
+        value: ${{ steps.diff.outputs.truncated }}
       diff-files:
         description: The raw file list from the diff output.
-        type: string
         value: ${{ steps.diff.outputs.files }}
       diff-files-trimmed:
         description: The file list from the diff with the paths trimmed.
-        type: string
         value: ${{ steps.diff.outputs.files-trimmed }}
 
 jobs:
