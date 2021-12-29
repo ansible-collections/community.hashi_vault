@@ -4,23 +4,60 @@ on:
   workflow_call:
     inputs:
       collection-name:
+        description: The collection name in the form namespace/collection.
         required: false
         type: string
         default: ${{ github.event.repository.name }}
       collection-path:
+        description: This is the relative path component of the collection in question, for example community/general.
         required: false
         type: string
       python:
+        description: The version of Python to install.
         required: false
         type: string
         default: '3.9'
       ansible-ref:
+        description: The ref from which to install ansible, for example "stable-2.12" or "milestone".
         required: false
         type: string
         default: milestone
+      artifact-name:
+        description: The name of the artifact to upload.
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}_docs_${{ github.event.pull_request.head.sha }}
+      diff-size-limit:
+        description: The max size of the diff, past which it will be truncated.
+        required: false
+        type: number
+        default: 60000
 
-
-    # outputs:
+    outputs:
+      artifact-name:
+        description: The same artifact name as passed in, available as an output.
+        value: ${{ inputs.artifact-name }}
+        type: string
+      changed:
+        description: If false, the PR does not change the documentation.
+        type: boolean
+        value: ${{ steps.build-base.outputs.hash != steps.build-head.outputs.hash }}
+      diff:
+        description: The diff between the base and head of the PR.
+        type: string
+        value: ${{ steps.diff.outputs.diff }}
+      diff-truncated:
+        description: If true, the diff was truncated because it exceeded the max size.
+        type: boolean
+        value: ${{ fromJSON(steps.diff.outputs.truncated) }}
+      diff-files:
+        description: The raw file list from the diff output.
+        type: string
+        value: ${{ steps.diff.outputs.files }}
+      diff-files-trimmed:
+        description: The file list from the diff with the paths trimmed.
+        type: string
+        value: ${{ steps.diff.outputs.files-trimmed }}
 
 jobs:
   build-ansible-docs:
@@ -51,7 +88,7 @@ jobs:
       - name: Install Ansible
         run: pip install https://github.com/ansible/ansible/archive/${{ inputs.ansible-ref }}.tar.gz --disable-pip-version-check
 
-      - name: Checkout BASE test
+      - name: Checkout BASE
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.base.sha }}
@@ -64,7 +101,7 @@ jobs:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ github.workspace }}/docsbuild/base
 
-      - name: Build BASE test
+      - name: Build BASE
         id: build-base
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
@@ -72,7 +109,7 @@ jobs:
           build-html: ${{ steps.init-base.outputs.build-html }}
           artifact-upload: 'false'
 
-      - name: Checkout HEAD test
+      - name: Checkout HEAD
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -85,16 +122,13 @@ jobs:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ github.workspace }}/docsbuild/head
 
-      - name: Build HEAD test
+      - name: Build HEAD
         id: build-head
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
           build-script: ${{ steps.init-head.outputs.build-script }}
           build-html: ${{ steps.init-head.outputs.build-html }}
-
-      - run: |
-          echo "::warning::BASE hash: ${{ steps.build-base.outputs.hash }}"
-          echo "::warning::HEAD hash: ${{ steps.build-head.outputs.hash }}"
+          artifact-name: ${{ inputs.artifact-name }}
 
       - name: Get a diff of the changes
         if: steps.build-base.outputs.hash != steps.build-head.outputs.hash
@@ -103,9 +137,4 @@ jobs:
         with:
           build-html-a: ${{ steps.init-base.outputs.build-html }}
           build-html-b: ${{ steps.init-head.outputs.build-html }}
-
-      - shell: bash
-        run: |
-          echo <<EOF
-          ${{ toJSON(steps.diff.outputs) }}
-          EOF
+          diff-size-limit: ${{ inputs.diff-size-limit }}

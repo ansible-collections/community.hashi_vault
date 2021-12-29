@@ -16,10 +16,20 @@ jobs:
     if: github.event.action != 'closed'
     name: Build Ansible Docs
     uses: ansible-collections/community.hashi_vault/.github/workflows/docs-build-pr.yml@docs/build-v2
-    with:
-      collection-name: ${{ github.event.repository.name }}
-      # collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
-      python: '3.9'
+    # with:
+    #   collection-name: ${{ github.event.repository.name }}
+    #   # collections: ${{ env.NAMESPACE }}.${{ env.COLLECTION_NAME }}
+    #   python: '3.9'
+  publish-docs:
+    if: github.event.action != 'closed'
+    needs: build-docs
+    name: Publish Ansible Docs
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo <<EOF
+          ${{ toJSON(needs.build-docs.outputs) }}
+          EOF
 
     # runs-on: ubuntu-latest
     # permissions:
