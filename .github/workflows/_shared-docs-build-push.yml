@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       collection-name:
-        description: The collection name in the form namespace/collection.
+        description: The collection name in the form namespace.collection.
         required: false
         type: string
         default: ${{ github.event.repository.name }}
@@ -56,6 +56,12 @@ jobs:
           script: |
             const inputs = ${{ toJSON(inputs) }}
             var colpath = inputs['collection-path']
+            var colname = inputs['collection-name']
+
+            if (colname == '') {
+                colname = process.env.GITHUB_REPOSITORY.split('/')[1]
+            }
+
             if (colpath == '') {
                 colpath = inputs['collection-name'].replace('.', '/')
             }
@@ -64,6 +70,7 @@ jobs:
 
             const checkoutPath = `ansible_collections/${colpath}`
 
+            core.setOutput('col-name', colname)
             core.setOutput('col-path', colpath)
             core.setOutput('checkout-path', checkoutPath)
 
@@ -95,7 +102,7 @@ jobs:
         id: init
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@main
         with:
-          collections: ${{ inputs.collection-name }}
+          collections: ${{ steps.vars.outputs.col-name }}
           dest-dir: ${{ steps.vars.outputs.init-dir }}
           skip-init: ${{ steps.vars.outputs.skip-init }}
 
