@@ -1,0 +1,66 @@
+---
+name: Ansible collection docs - publish to Surge
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: The build artifact that contains the rendered HTML. Required when action == 'publish'
+        required: false
+        type: string
+      surge-site-name:
+        description: The full surge site domain to publish or teardown.
+        required: true
+        type: string
+      action:
+        description: Action to perform. 'publish' to publish the site, 'teardown' to tear it down.
+        required: false
+        default: 'publish'
+        type: string
+    secrets:
+      SURGE_TOKEN:
+        description: The token used for publishing to surge.
+        required: true
+jobs:
+  build-ansible-docs:
+    name: Publish to Surge.sh
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: DEBUG
+        run: |
+          echo <<EOF
+          ${{ toJSON(inputs) }}
+          EOF
+
+      - name: Check required
+        if: inputs.action == 'publish' && inputs.artifact-name == ''
+        run: |
+          echo "::error title=Missing artifact-name::action was 'publish' but artifact-name was not supplied."
+          exit 1
+
+      - name: Retrieve rendered docs
+        if: inputs.action == 'publish'
+        id: download
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: html
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Surge
+        run: npm install -g surge
+
+      - name: Publish site
+        if: inputs.action == 'publish'
+        working-directory: html
+        run: surge ./ "${{ inputs.surge-site-name }}" --token ${{ secrets.SURGE_TOKEN }}
+
+      - name: Teardown site
+        if: inputs.action == 'teardown'
+        run: surge teardown "${{ inputs.surge-site-name }}" --token ${{ secrets.SURGE_TOKEN }}
+        continue-on-error: true

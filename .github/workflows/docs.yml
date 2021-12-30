@@ -1,315 +1,88 @@
----
 name: Collection Docs
 concurrency:
-  group: docs-${{ github.head_ref }}-${{ github.event_name }}-${{ github.event.action }}
+  group: docs-${{ github.head_ref }}
   cancel-in-progress: true
 on:
-  push:
-    branches:
-      - main
   pull_request_target:
     types: [opened, synchronize, reopened, closed]
-  schedule:
-    - cron: '0 13 * * *'
 
 env:
-  NAMESPACE: community
-  COLLECTION_NAME: hashi_vault
-  NOT_A_FORK: ${{ github.repository == 'ansible-collections/community.hashi_vault' }}
+  SURGE_PR_SITE: community-hashi-vault-pr${{ github.event.number }}.surge.sh
+  SURGE_MAIN_SITE: community-hashi-vault-main.surge.sh
 
 jobs:
-  unpublish:
-    name: Clean up closed PR
+  build-docs:
+    if: github.event.action != 'closed'
+    permissions:
+      contents: read
+    name: Build Ansible Docs
+    uses: ansible-collections/community.hashi_vault/.github/workflows/_shared-docs-build-pr.yml@main
+    with:
+      init-dest-dir: docs/preview
+      render-file-line: '> * `$<status>` [$<path_tail>](https://community-hashi-vault-pr${{ github.event.number }}.surge.sh/$<path_tail>)'
+
+  publish-docs:
+    permissions:
+      contents: read
+    needs: build-docs
     if: >-
-      github.event_name == 'pull_request_target'
-      && github.event.action == 'closed'
-      && github.repository == 'ansible-collections/community.hashi_vault'
+      always()
+      && (needs.build-docs.result == 'success' || github.event.action == 'closed')
+    name: Publish Ansible Docs
+    uses: ansible-collections/community.hashi_vault/.github/workflows/_shared-docs-build-publish-surge.yml@main
+    with:
+      artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
+      surge-site-name: community-hashi-vault-pr${{ github.event.number }}.surge.sh
+      action: ${{ (github.event.action == 'closed' || !needs.build-docs.outputs.changed) && 'teardown' || 'publish' }}
+    secrets:
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+
+  comment:
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
+    needs: [build-docs, publish-docs]
+    if: >-
+      always()
+      && (needs.build-docs.result == 'success' || github.event.action == 'closed')
+    name: PR comments
     steps:
-      - name: Set up env vars
-        uses: briantist/ezenv@v1
+      - name: PR comment
+        env:
+          PR_SITE_URL: https://${{ env.SURGE_PR_SITE }}
+          MAIN_SITE_URL: https://${{ env.SURGE_MAIN_SITE }}
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-comment@main
         with:
-          env: |
-            SITE_STUB=community-hashi-vault
-            SITE_NAME_MAIN=${SITE_STUB}-main
-            SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}
+          body-includes: '##Docs Build'
+          reactions: heart
+          action: ${{ (needs.build-docs.result == 'success' && needs.build-docs.outputs.changed != 'true') && 'remove' || '' }}
+          on-closed-body: |
+            ##Docs Build 📝
 
-      - name: Install Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
-      - name: Install Surge
-        run: npm install -g surge
-
-      - name: Unpublish site
-        continue-on-error: true
-        run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-
-      - name: Look for existing comment
-        id: fc
-        uses: peter-evans/find-comment@v1
-        with:
-          issue-number: ${{ github.event.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: "##Docs Build"
-
-      - name: Post a comment on a merged PR
-        if: github.event.pull_request.merged == true && steps.fc.outputs.comment-id
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.number }}
-          edit-mode: replace
-          body: |
+            This PR is closed and any previously published docsite has been unpublished.
+          on-merged-body: |
             ##Docs Build 📝
 
             Thank you for contribution!✨
 
             This PR has been merged and the docs are now incorporated into `main`:
-            https://${{ env.SITE_NAME_MAIN }}.surge.sh
-
-      - name: Post a comment on a closed PR
-        if: github.event.pull_request.merged == false && steps.fc.outputs.comment-id
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.number }}
-          edit-mode: replace
-          body: |
-            ##Docs Build 📝
-
-            This PR is closed and any previously published docsite has been unpublished.
-
-  docs:
-    name: Collection Docs Lint & Build
-    if: >-
-      github.event_name != 'pull_request_target'
-      || github.event.action != 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up env vars
-        uses: briantist/ezenv@v1
-        with:
-          env: |
-            SITE_STUB=community-hashi-vault
-            SITE_NAME_MAIN=${SITE_STUB}-main
-            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-            DOCS=${COLLECTION_PATH}/docs
-            DOCS_PREVIEW=${DOCS}/preview
-            DOCS_BUILD=${DOCS_PREVIEW}/build
-            HTML=${DOCS_BUILD}/html
-            BASE_DOCS_RENDERED=${{ runner.temp }}/html/base
-            PR_DOCS_RENDERED=${{ runner.temp }}/html/pr
-
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          path: ${{ env.COLLECTION_PATH }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
-      - name: Install Ansible and other requirements
-        working-directory: ${{ env.DOCS_PREVIEW }}
-        run: |
-          pip install https://github.com/ansible/ansible/archive/milestone.tar.gz --disable-pip-version-check
-          pip install -r requirements.txt --disable-pip-version-check
-
-      - name: Build the preview docs (HEAD)
-        env:
-          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
-        run: ${DOCS_PREVIEW}/build.sh
-
-      - name: Save the base build & hash # and discard the build
-        run: |
-          echo "BASE_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
-          mkdir -p "${BASE_DOCS_RENDERED}"
-          rsync -avc --delete-after "${HTML}" "${BASE_DOCS_RENDERED}"
-
-
-      ######## IMPORTANT
-      # Do not change these checkout and apply tasks lightly, we only want the docs from the PR side.
-      # Please read ALL of this document before changing these:
-      # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
-      - name: Check out PR to temp location
-        if: github.event_name == 'pull_request_target'
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: __pr
-
-      - name: Apply docs changes from PR
-        if: github.event_name == 'pull_request_target'
-        working-directory: ${{ env.COLLECTION_PATH }}
-        run: |
-          rsync -avc --delete-after "${{ github.workspace }}/__pr/docs/docsite/" docs/docsite/
-          rm -rf "${{ github.workspace }}/__pr"
-
-      - name: Lint Collection Docs
-        working-directory: ${{ env.COLLECTION_PATH }}
-        run: antsibull-lint collection-docs -v .
-
-      - name: Build the preview docs (${{ github.head_ref }})
-        if: github.event_name == 'pull_request_target'
-        env:
-          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
-        run: |
-          # discard previous build if any
-          rm -rf "${DOCS_BUILD}"
-          ${DOCS_PREVIEW}/build.sh
-
-      - name: Save the head hash
-        if: github.event_name == 'pull_request_target'
-        run: |
-          echo "HEAD_DOCS_HASH=${{ hashFiles(env.HTML) }}" >> $GITHUB_ENV
-          mkdir -p "${PR_DOCS_RENDERED}"
-          rsync -avc --delete-after "${HTML}" "${PR_DOCS_RENDERED}"
-
-      - name: Should publish?
-        run: |
-          if [[ "${{ github.event_name }}" != "pull_request_target" ]] || [[ "${BASE_DOCS_HASH}" != "${HEAD_DOCS_HASH}" ]]
-          then
-            echo "PUBLISH=true" >> $GITHUB_ENV
-          else
-            echo "PUBLISH=false" >> $GITHUB_ENV
-          fi
-
-      - name: Determine docsite subdomain
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
-            echo "SITE_NAME=${SITE_STUB}-pr${{ github.event.number }}" >> $GITHUB_ENV
-          else
-            echo "SITE_NAME=${SITE_NAME_MAIN}" >> $GITHUB_ENV
-          fi
-
-      - name: Generate docs diff
-        if: fromJSON(env.PUBLISH)
-        run: |
-          # ':(exclude)**/*.js' ':(exclude)**/*.inv'
-          # doesn't work with --no-index
-          # TODO: instead of using --no-index, make one or both of the html directories a git repo
-          #
-
-          # https://stackoverflow.com/a/29613573/3905079
-          sed_regex_escape='s/[^^]/[&]/g; s/\^/\\^/g'
-          sed_repl_escape='s/[&/\]/\\&/g'
-
-          base_docs_escaped=$(sed "${sed_regex_escape}" <<<"${BASE_DOCS_RENDERED}")
-          pr_docs_escaped=$(sed "${sed_regex_escape}" <<<"${PR_DOCS_RENDERED}")
-
-          site_name_escaped=$(sed "${sed_repl_escape}" <<<"https://${SITE_NAME}.surge.sh")
-
-          path_search="^([A-Z])\s+(${base_docs_escaped}|${pr_docs_escaped})\/html\/(.*?)$"
-          path_repl="\> \* \`\1\` \[\3\]\(${site_name_escaped}\/\3\)"
-
-          DIFF_FILES=$(git --no-pager diff --name-status --no-index --relative "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" | sed -E "s/${path_search}/${path_repl}/g" | sort || true)
-          DIFF=$(git --no-pager diff --histogram --no-index --relative --diff-filter=ad "${BASE_DOCS_RENDERED}" "${PR_DOCS_RENDERED}" || true)
-          echo 'DOC_DIFF_FILES<<EOF' >> ${GITHUB_ENV}
-          echo "$DIFF_FILES" >> ${GITHUB_ENV}
-          echo 'EOF' >> ${GITHUB_ENV}
-
-          echo 'DOC_DIFF<<EOF' >> ${GITHUB_ENV}
-          if (( ${#DIFF} > 60000 )); then
-              echo "Diff output too large to display."
-          else
-              echo "$DIFF" >> ${GITHUB_ENV}
-          fi
-          echo 'EOF' >> ${GITHUB_ENV}
-
-      - name: Upload Docsite artifact
-        if: fromJSON(env.PUBLISH)
-        uses: actions/upload-artifact@v2
-        with:
-          name: html_docsite
-          path: ${{ env.HTML }}
-          retention-days: 7
-
-      - name: Install Node
-        if: fromJSON(env.NOT_A_FORK)
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
-      - name: Install Surge
-        if: fromJSON(env.NOT_A_FORK)
-        run: npm install -g surge
-
-      - name: Publish site
-        if: >-
-          fromJSON(env.NOT_A_FORK)
-          && fromJSON(env.PUBLISH)
-        working-directory: ${{ env.HTML }}
-        run: surge ./ ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-
-      # there might have been changes published before, which were removed in a subsequent commit
-      - name: Unpublish site
-        if: >-
-          fromJSON(env.NOT_A_FORK)
-          && !fromJSON(env.PUBLISH)
-        continue-on-error: true
-        run: surge teardown ${SITE_NAME}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-
-      - name: Look for existing comment
-        if: github.event_name == 'pull_request_target'
-        id: fc
-        uses: peter-evans/find-comment@v1
-        with:
-          issue-number: ${{ github.event.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: "##Docs Build"
-
-      - name: Remove previous comment
-        if: >-
-          fromJSON(env.NOT_A_FORK)
-          && !fromJSON(env.PUBLISH)
-          && steps.fc.outputs.comment-id
-        uses: actions/github-script@v4
-        with:
-          script: |
-            github.issues.deleteComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: ${{ steps.fc.outputs.comment-id }}
-            })
-
-      - name: Post a comment on the PR
-        if: >-
-          github.event_name == 'pull_request_target'
-          && fromJSON(env.PUBLISH)
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.number }}
-          edit-mode: replace
+            ${{ env.MAIN_SITE_URL }}
           body: |
             ##Docs Build 📝
 
             Thank you for contribution!✨
 
-            The docs for **this PR** have been published here (docsite changes only):
-            https://${{ env.SITE_NAME }}.surge.sh
+            The docs for **this PR** have been published here:
+            ${{ env.PR_SITE_URL }}
 
             You can compare to the docs for the `main` branch here:
-            https://${{ env.SITE_NAME_MAIN }}.surge.sh
+            ${{ env.PR_MAIN_URL }}
 
             The docsite for **this PR** is also available for download as an artifact from this run:
-            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            ${{ needs.build-docs.outputs.artifact-url }}
 
             File changes:
 
-            ${{ env.DOC_DIFF_FILES }}
+            ${{ needs.build-docs.outputs.diff-files-rendered }}
 
-            <details>
-            <summary>Click to see the diff comparison.</summary>
-
-            **NOTE:** only file modifications are shown here. New and deleted files are excluded.
-            See the file list and check the published docs to see those files.
-
-            ```diff
-            ${{ env.DOC_DIFF }}
-            ```
-
-            </details>
+            ${{ needs.build-docs.outputs.diff-rendered }}

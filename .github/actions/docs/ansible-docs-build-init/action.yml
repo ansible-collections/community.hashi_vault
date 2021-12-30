@@ -1,0 +1,55 @@
+---
+name: Initialize the environment for building Ansible docs
+description: Sets up various requirements and preparation for building Ansible docs. Requires Python.
+inputs:
+  dest-dir:
+    description: The destination directory for preparing the build environment. Note that this must be within the Workspace for hashes to be calculated.
+    required: false
+    default: ${{ runner.temp }}/docsbuild
+  collections:
+    description: |
+      Limit the docs build to one or more collections, in the form namespace.collection.
+      Multiple collections should be separated by spaces.
+      If this isn't limited, then all collections in the collections path will be included in the built docs.
+    required: false
+  skip-init:
+    description: |
+      If 'true', dest-dir will be assumed to already be initialized, so this action will only install
+      antsibull and the contents of the requirements.txt file in dest-dir.
+    required: false
+    default: 'false'
+outputs:
+  build-script:
+    description: The path of the build script to execute.
+    value: ${{ steps.init.outputs.build-script }}
+  build-html:
+    description: The path of the build's html output directory.
+    value: ${{ steps.init.outputs.build-html }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install Antsibull and Initialize Sphinx
+      id: init
+      shell: bash
+      run: |
+        echo "::group::Installing Antsibull"
+        pip install antsibull --disable-pip-version-check
+        echo "::endgroup::"
+
+        if [[ "${{ inputs.skip-init }}" != "true" ]] ; then
+            echo "::group::Create destination directory"
+            mkdir -p "${{ inputs.dest-dir }}"
+            echo "::endgroup::"
+
+            echo "::group::Initialize Sphinx"
+            antsibull-docs sphinx-init --use-current --dest-dir "${{ inputs.dest-dir }}" ${{ inputs.collections }}
+            echo "::endgroup::"
+        fi
+
+        echo "::group::Install additional requirements"
+        pip install -r "${{ inputs.dest-dir }}/requirements.txt" --disable-pip-version-check
+        echo "::endgroup::"
+
+        echo "::set-output name=build-script::${{ inputs.dest-dir }}/build.sh"
+        echo "::set-output name=build-html::${{ inputs.dest-dir }}/build/html"

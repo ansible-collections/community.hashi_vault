@@ -4,13 +4,15 @@ on:
   push:
     paths-ignore:
       - 'docs/**'
-      - '.github/workflows/docs.yml'
-      - '.github/workflows/docs-full.yml'
+      - '.github/workflows/_shared-*'
+      - '.github/workflows/docs*.yml'
+      - '.github/actions/docs/**'
   pull_request:
     paths-ignore:
       - 'docs/**'
-      - '.github/workflows/docs.yml'
-      - '.github/workflows/docs-full.yml'
+      - '.github/workflows/_shared-*'
+      - '.github/workflows/docs*.yml'
+      - '.github/actions/docs/**'
   schedule:
     - cron: '0 14 * * *'
 env:

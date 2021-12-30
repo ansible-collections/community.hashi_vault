@@ -1,0 +1,99 @@
+---
+name: Post, edit, or remove a PR comment.
+description: Handles the docs build PR comment operations.
+inputs:
+  pr-number:
+    description: The PR in question.
+    required: false
+    default: ${{ github.event.number }}
+  body-includes:
+    description: Text to search for in comments to identify an existing comment to be edited.
+    required: true
+  body:
+    description: The body of the comment to post. Required when action == 'update' or PR is not closed.
+    required: false
+  on-merged-body:
+    description: A comment body to use when a PR is merged.
+    required: false
+  on-closed-body:
+    description: A comment body to use when a PR is closed without being merged.
+    required: false
+  on-merged-action:
+    description: Action to take when a PR is merged.
+    required: false
+    default: update
+  on-closed-action:
+    description: Action to take when a PR is closed without being merged.
+    required: false
+    default: update
+  reactions:
+    description: |
+      A comma separated list of reactions to add to the comment. Can be any of:
+      +1, -1, laugh, confused, heart, hooray, rocket, eyes
+    required: false
+  action:
+    description: |
+      Unconditional action to take. 'update' means create or update a comment. 'remove' means to remove any existing comment.
+      Takes precedence over conditional actions.
+    required: false
+outputs:
+  comment-id:
+    description: The ID of the comment.
+    value: ${{ steps.comment.outputs.comment-id }}
+runs:
+  using: composite
+  steps:
+    - name: Look for an existing comment
+      id: fc
+      uses: peter-evans/find-comment@v1
+      with:
+        issue-number: ${{ inputs.pr-number }}
+        body-includes: ${{ inputs.body-includes }}
+        comment-author: 'github-actions[bot]'
+
+    - name: Determine actions
+      id: vars
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const inputs = ${{ toJSON(inputs )}}
+
+          if (inputs.action != '') {
+              core.setOutput('action', inputs.action)
+              core.setOutput('body', inputs.body)
+          } else if (context.payload.action == 'closed') {
+              if (context.payload.pull_request.merged) {
+                  core.setOutput('action', inputs['on-merged-action'])
+                  core.setOutput('body', inputs['on-merged-body'])
+              } else {
+                  core.setOutput('action', inputs['on-closed-action'])
+                  core.setOutput('body', inputs['on-closed-body'])
+              }
+          } else {
+              core.setOutput('action', 'update')
+              core.setOutput('body', inputs.body)
+          }
+
+    - name: Remove comment
+      if: >-
+        steps.vars.outputs.action == 'remove'
+        && steps.fc.outputs.comment-id
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.issues.deleteComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: ${{ steps.fc.outputs.comment-id }}
+          })
+
+    - name: Post or update comment
+      id: comment
+      if: steps.vars.outputs.action == 'update'
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ inputs.pr-number }}
+        reactions: ${{ inputs.reactions }}
+        body: ${{ steps.vars.outputs.body }}
+        edit-mode: replace
