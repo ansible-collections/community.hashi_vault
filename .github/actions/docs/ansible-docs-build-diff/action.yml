@@ -127,7 +127,7 @@ runs:
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
-                      core.warning("###### DIFF LISTENER")
+                      core.warning("###### DIFF LISTENER" + Date.now())
                       diff = data.toString()
                       truncated = false
                       truncatedMsg = ''
