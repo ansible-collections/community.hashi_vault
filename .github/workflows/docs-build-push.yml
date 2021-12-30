@@ -65,15 +65,15 @@ jobs:
             core.setOutput('checkout-path', `ansible_collections/${colpath}`)
 
             var initPath = '${{ runner.temp }}/docsbuild'
-            var doInit = true
+            var skipInit = false
 
             if (inputs['init-dest-dir'] != '') {
                 initPath = inputs['init-dest-dir']
-                doInit = false
+                skipInit = true
             }
 
             core.setOutput('init-dir', initPath)
-            core.setOutput('do-init', doInit)
+            core.setOutput('skip-init', skipInit)
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -94,7 +94,7 @@ jobs:
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ steps.vars.outputs.init-dir }}
-          skip-init: ${{ steps.vars.outputs.do-init }}
+          skip-init: ${{ steps.vars.outputs.skip-init }}
 
       - name: Build
         id: build
