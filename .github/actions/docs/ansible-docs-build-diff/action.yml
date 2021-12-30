@@ -98,59 +98,25 @@ runs:
           const regPathReplacer = '$<status> $<path_tail>'
           const regPathRenderedReplacer = inputs['render-file-line']
 
+          var fileListRaw = ''
 
           const fileListOpts = {
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
                       core.warning("###### FILES LISTENER @ " + Date.now())
-                      fileListRaw = data.toString()
-                      fileListArr = fileListRaw.split(/\r?\n/)
-                      if (inputs['sort-files'] === 'true') {
-                          fileListArr.sort()
-                      }
-
-                      fileListTrimmed = fileListArr.map(function(x) {
-                          return x.replace(regPathSearcher, regPathReplacer)
-                      }).join('\n')
-
-                      fileListRendered = fileListArr.map(function(x) {
-                          return x.replace(regPathSearcher, regPathRenderedReplacer)
-                      }).join('\n')
-
-                      core.setOutput('files-raw', fileListRaw)
-                      core.setOutput('files-trimmed', fileListTrimmed)
-                      core.setOutput('files-rendered', fileListRendered)
+                      fileListRaw += data.toString()
                   }
               }
           }
+
+          var diff = ''
           const diffOpts = {
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
                       core.warning("###### DIFF LISTENER @ " + Date.now())
-                      diff = data.toString()
-                      truncated = false
-                      truncatedMsg = ''
-                      if (diff.length > maxLen) {
-                          core.information(`Diff output exceeded ${maxLen} and will be truncated.`)
-                          diff = diff.substring(0, maxLen)
-                          truncatedMsg = inputs['render-diff-truncate-text']
-                          truncated = true
-                      }
-
-                      const _diff_vars = {
-                          truncated_msg: truncatedMsg,
-                          diff: diff
-                      }
-
-                      const renderedDiff = inputs['render-diff'].replace(/\$\{(?<var>[^}]+)\}/g, function(match, g1, offset, string, groups){
-                          return _diff_vars[g1]
-                      })
-
-                      core.setOutput('truncated', truncated)
-                      core.setOutput('diff', diff)
-                      core.setOutput('diff-rendered', renderedDiff)
+                      diff += data.toString()
                   }
               }
           }
@@ -167,4 +133,50 @@ runs:
               '--relative', pathA, pathB
           ], fileListOpts)
 
-          await Promise.all([getFileList, getDiffOutput])
+          // wait for file listing and process
+          await getFileList
+
+          fileListArr = fileListRaw.split(/\r?\n/)
+          if (inputs['sort-files'] === 'true') {
+              fileListArr.sort()
+          }
+
+          fileListTrimmed = fileListArr.map(function(x) {
+              return x.replace(regPathSearcher, regPathReplacer)
+          }).join('\n')
+
+          fileListRendered = fileListArr.map(function(x) {
+              return x.replace(regPathSearcher, regPathRenderedReplacer)
+          }).join('\n')
+
+          core.setOutput('files-raw', fileListRaw)
+          core.setOutput('files-trimmed', fileListTrimmed)
+          core.setOutput('files-rendered', fileListRendered)
+          // end file listing processing
+
+          // wait for diff output and process
+          await getDiffOutput
+
+          truncated = false
+          truncatedMsg = ''
+          if (diff.length > maxLen) {
+              core.information(`Diff output exceeded ${maxLen} and will be truncated.`)
+              diff = diff.substring(0, maxLen)
+              truncatedMsg = inputs['render-diff-truncate-text']
+              truncated = true
+          }
+
+          const _diff_vars = {
+              truncated_msg: truncatedMsg,
+              diff: diff
+          }
+
+          const renderedDiff = inputs['render-diff'].replace(/\$\{(?<var>[^}]+)\}/g, function(match, g1, offset, string, groups){
+              return _diff_vars[g1]
+          })
+
+          core.setOutput('truncated', truncated)
+          core.setOutput('diff', diff)
+          core.setOutput('diff-rendered', renderedDiff)
+
+          // await Promise.all([getFileList, getDiffOutput])
