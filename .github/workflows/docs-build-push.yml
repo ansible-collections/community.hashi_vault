@@ -62,6 +62,18 @@ jobs:
 
             core.exportVariable('ANSIBLE_COLLECTIONS_PATHS', process.env.GITHUB_WORKSPACE)
             core.setOutput('col-path', colpath)
+            core.setOutput('checkout-path', `ansible_collections/${colpath}`)
+
+            var initPath = '${{ runner.temp }}/docsbuild'
+            var doInit = true
+
+            if (inputs['init-dest-dir'] != '') {
+                initPath = inputs['init-dest-dir']
+                doInit = false
+            }
+
+            core.setOutput('init-dir', initPath)
+            core.setOutput('do-init', doInit)
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -74,15 +86,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/${{ steps.vars.outputs.col-path }}
+          path: ${{ steps.vars.outputs.checkout-path }}
 
       - name: Initialize the build environment
         id: init
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
         with:
           collections: ${{ inputs.collection-name }}
-          dest-dir: ${{ inputs.init-dest-dir || format('{0}/docsbuild', runner.temp) }}
-          skip-init: ${{ inputs.init-dest-dir != '' }}
+          dest-dir: ${{ steps.vars.outputs.init-dir }}
+          skip-init: ${{ steps.vars.outputs.do-init }}
 
       - name: Build
         id: build
