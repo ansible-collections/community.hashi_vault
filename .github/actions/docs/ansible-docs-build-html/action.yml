@@ -10,6 +10,11 @@ inputs:
     description: The path where the build script will output the HTML.
     required: false
     default: ${{ runner.temp }}/docsbuild/build/html
+  move-build:
+    description: |
+      If set, move the built HTML to this path after building, and set the build-html output to this path instead.
+      This is useful if you need to do multiple builds from the same environment, or otherwise need the files to be elsewhere.
+    required: false
   artifact-upload:
     description: If true then upload the rendered docs as a build artifact.
     required: false
@@ -29,6 +34,9 @@ outputs:
   artifact-url:
     description: The URL to the artifact.
     value: ${{ steps.outs.outputs.artifact-url }}
+  build-html:
+    description: The end location of the built HTML files.
+    value: ${{ steps.build.outputs.build-html }}
 runs:
   using: composite
   steps:
@@ -40,11 +48,24 @@ runs:
         "${{ inputs.build-script }}"
         echo "::endgroup::"
 
+        HTML="${{ inputs.build-html }}"
+        MOVE_BUILD="${{ inputs.move-build }}"
+
+        if [[ "$MOVE_BUILD" != "" ]] ; then
+            echo "::group::Move the build files"
+            mkdir -p "$MOVE_BUILD"
+            rsync -avc --delete-after "$HTML" "$MOVE_BUILD"
+            echo "::set-output name=build-html::$MOVE_BUILD"
+            echo ::endgroup::"
+        else
+            echo "::set-output name=build-html::$HTML"
+        fi
+
     - name: Upload artifact
       if: fromJSON(inputs.artifact-upload)
       uses: actions/upload-artifact@v2
       with:
-        path: ${{ inputs.build-html }}
+        path: ${{ steps.build.outputs.build-html }}
         name: ${{ inputs.artifact-name }}
         retention-days: ${{ fromJSON(inputs.artifact-retention-days) }}
 
@@ -52,7 +73,7 @@ runs:
       id: outs
       shell: bash
       run: |
-        echo "::set-output name=hash::${{ hashFiles(inputs.build-html) }}"
+        echo "::set-output name=hash::${{ hashFiles(steps.build.outputs.build-html) }}"
         if [[ "${{ inputs.artifact-upload }}" == "true" ]] ; then
             echo "::set-output name=artifact-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         fi
