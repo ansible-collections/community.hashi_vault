@@ -224,10 +224,3 @@ jobs:
           render-file-line: ${{ inputs.render-file-line }}
           render-diff-truncate-text: ${{ inputs.render-diff-truncate-text }}
           render-diff: ${{ inputs.render-diff }}
-
-      - name: DEBUG
-        shell: bash
-        run: |
-          echo <<_____EOF
-          ${{ toJSON(steps.diff.outputs) }}
-          _____EOF

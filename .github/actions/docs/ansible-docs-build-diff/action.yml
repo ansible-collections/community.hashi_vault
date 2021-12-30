@@ -104,7 +104,6 @@ runs:
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
-                      core.warning("###### FILES LISTENER @ " + Date.now())
                       fileListRaw += data.toString()
                   }
               }
@@ -115,7 +114,6 @@ runs:
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
-                      core.warning("###### DIFF LISTENER @ " + Date.now())
                       diff += data.toString()
                   }
               }
@@ -152,7 +150,6 @@ runs:
           core.setOutput('files-raw', fileListRaw)
           core.setOutput('files-trimmed', fileListTrimmed)
           core.setOutput('files-rendered', fileListRendered)
-          // end file listing processing
 
           // wait for diff output and process
           await getDiffOutput
@@ -178,5 +175,3 @@ runs:
           core.setOutput('truncated', truncated)
           core.setOutput('diff', diff)
           core.setOutput('diff-rendered', renderedDiff)
-
-          // await Promise.all([getFileList, getDiffOutput])
