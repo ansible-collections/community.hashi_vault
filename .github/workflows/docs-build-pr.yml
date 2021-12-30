@@ -186,7 +186,7 @@ jobs:
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
           build-script: ${{ steps.init-base.outputs.build-script }}
-          build-html: ${{ steps.init-base.outputs.build-html }}
+          build-html: ${{ steps.init-base.outputs.build-html }}/base
           artifact-upload: 'false'
 
       - name: Checkout HEAD
@@ -208,7 +208,7 @@ jobs:
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
         with:
           build-script: ${{ steps.init-head.outputs.build-script }}
-          build-html: ${{ steps.init-head.outputs.build-html }}
+          build-html: ${{ steps.init-head.outputs.build-html }}/head
           artifact-name: ${{ inputs.artifact-name }}
 
       - name: Get a diff of the changes
@@ -216,8 +216,8 @@ jobs:
         id: diff
         uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-diff@docs/build-v2
         with:
-          build-html-a: ${{ steps.init-base.outputs.build-html }}
-          build-html-b: ${{ steps.init-head.outputs.build-html }}
+          build-html-a: ${{ steps.init-base.outputs.build-html }}/base
+          build-html-b: ${{ steps.init-head.outputs.build-html }}/head
           diff-size-limit: ${{ inputs.diff-size-limit }}
           render-file-line: ${{ inputs.render-file-line }}
           render-diff-truncate-text: ${{ inputs.render-diff-truncate-text }}
