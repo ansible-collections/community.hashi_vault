@@ -93,7 +93,7 @@ jobs:
 
       - name: Initialize the build environment
         id: init
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@main
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ steps.vars.outputs.init-dir }}
@@ -101,7 +101,7 @@ jobs:
 
       - name: Build
         id: build
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@main
         with:
           build-script: ${{ steps.init.outputs.build-script }}
           build-html: ${{ steps.init.outputs.build-html }}

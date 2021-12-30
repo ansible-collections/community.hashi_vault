@@ -175,7 +175,7 @@ jobs:
 
       - name: Initialize the build environment (BASE)
         id: init-base
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@main
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ steps.vars.outputs.init-dir-base }}
@@ -183,7 +183,7 @@ jobs:
 
       - name: Build BASE
         id: build-base
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@main
         with:
           build-script: ${{ steps.init-base.outputs.build-script }}
           build-html: ${{ steps.init-base.outputs.build-html }}
@@ -198,7 +198,7 @@ jobs:
 
       - name: Initialize the build environment (HEAD)
         id: init-head
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-init@main
         with:
           collections: ${{ inputs.collection-name }}
           dest-dir: ${{ steps.vars.outputs.init-dir-head }}
@@ -206,7 +206,7 @@ jobs:
 
       - name: Build HEAD
         id: build-head
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-html@main
         with:
           build-script: ${{ steps.init-head.outputs.build-script }}
           build-html: ${{ steps.init-head.outputs.build-html }}
@@ -216,7 +216,7 @@ jobs:
       - name: Get a diff of the changes
         if: steps.build-base.outputs.hash != steps.build-head.outputs.hash
         id: diff
-        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-diff@docs/build-v2
+        uses: ansible-collections/community.hashi_vault/.github/actions/docs/ansible-docs-build-diff@main
         with:
           build-html-a: ${{ steps.build-base.outputs.build-html }}
           build-html-b: ${{ steps.build-head.outputs.build-html }}
