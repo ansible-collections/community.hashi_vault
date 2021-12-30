@@ -103,6 +103,7 @@ runs:
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
+                      core.warning("###### FILES LISTENER @ " + Date.now())
                       fileListRaw = data.toString()
                       fileListArr = fileListRaw.split(/\r?\n/)
                       if (inputs['sort-files'] === 'true') {
@@ -127,7 +128,7 @@ runs:
               ignoreReturnCode: true, // git diff sets return code to 1 when there are differences
               listeners: {
                   stdout: (data) => {
-                      core.warning("###### DIFF LISTENER" + Date.now())
+                      core.warning("###### DIFF LISTENER @ " + Date.now())
                       diff = data.toString()
                       truncated = false
                       truncatedMsg = ''
