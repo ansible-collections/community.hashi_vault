@@ -56,7 +56,7 @@ runs:
             mkdir -p "$MOVE_BUILD"
             rsync -avc --delete-after "$HTML" "$MOVE_BUILD"
             echo "::set-output name=build-html::$MOVE_BUILD"
-            echo ::endgroup::"
+            echo "::endgroup::"
         else
             echo "::set-output name=build-html::$HTML"
         fi
