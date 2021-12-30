@@ -61,14 +61,17 @@ jobs:
             }
 
             core.exportVariable('ANSIBLE_COLLECTIONS_PATHS', process.env.GITHUB_WORKSPACE)
+
+            const checkoutPath = `ansible_collections/${colpath}`
+
             core.setOutput('col-path', colpath)
-            core.setOutput('checkout-path', `ansible_collections/${colpath}`)
+            core.setOutput('checkout-path', checkoutPath)
 
             var initPath = '${{ runner.temp }}/docsbuild'
             var skipInit = false
 
             if (inputs['init-dest-dir'] != '') {
-                initPath = inputs['init-dest-dir']
+                initPath = `${checkoutPath}/${inputs['init-dest-dir']}`
                 skipInit = true
             }
 
