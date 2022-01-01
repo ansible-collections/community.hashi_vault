@@ -157,7 +157,7 @@ runs:
           truncated = false
           truncatedMsg = ''
           if (diff.length > maxLen) {
-              core.information(`Diff output exceeded ${maxLen} and will be truncated.`)
+              core.notice(`Diff output exceeded ${maxLen} and will be truncated.`)
               diff = diff.substring(0, maxLen)
               truncatedMsg = inputs['render-diff-truncate-text']
               truncated = true
