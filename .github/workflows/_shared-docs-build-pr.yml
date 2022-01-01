@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       collection-name:
-        description: The collection name in the form namespace/collection.
+        description: The collection name in the form namespace.collection.
         required: false
         type: string
         default: ${{ github.event.repository.name }}
