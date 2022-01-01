@@ -63,7 +63,7 @@ jobs:
             }
 
             if (colpath == '') {
-                colpath = inputs['collection-name'].replace('.', '/')
+                colpath = colname.replace('.', '/')
             }
 
             core.exportVariable('ANSIBLE_COLLECTIONS_PATHS', process.env.GITHUB_WORKSPACE)
