@@ -34,6 +34,9 @@ outputs:
   artifact-url:
     description: The URL to the artifact.
     value: ${{ steps.outs.outputs.artifact-url }}
+  artifact-name:
+    description: The name of the uploaded artifact.
+    value: ${{ inputs.artifact-name }}
   build-html:
     description: The end location of the built HTML files.
     value: ${{ steps.build.outputs.build-html }}
