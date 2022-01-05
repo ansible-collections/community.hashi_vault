@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This release contains a new lookup/module combo for logging in to Vault, and includes our first filter plugin.

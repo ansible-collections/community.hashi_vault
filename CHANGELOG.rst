@@ -5,6 +5,37 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v2.2.0
+======
+
+Release Summary
+---------------
+
+This release contains a new lookup/module combo for logging in to Vault, and includes our first filter plugin.
+
+Minor Changes
+-------------
+
+- The Filter guide has been added to the collection's docsite.
+
+New Plugins
+-----------
+
+Filter
+~~~~~~
+
+- vault_login_token - Extracts the client token from a Vault login response
+
+Lookup
+~~~~~~
+
+- vault_login - Perform a login operation against HashiCorp Vault
+
+New Modules
+-----------
+
+- vault_login - Perform a login operation against HashiCorp Vault
+
 v2.1.0
 ======
 
