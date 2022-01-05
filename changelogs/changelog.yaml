@@ -338,3 +338,26 @@ releases:
     - 193-rename-aws-iam-auth.yml
     - 2.1.0.yml
     release_date: '2021-12-03'
+  2.2.0:
+    changes:
+      minor_changes:
+      - The Filter guide has been added to the collection's docsite.
+      release_summary: This release contains a new lookup/module combo for logging
+        in to Vault, and includes our first filter plugin.
+    fragments:
+    - 199-vault_login-vault_login_token.yml
+    - 2.2.0.yml
+    modules:
+    - description: Perform a login operation against HashiCorp Vault
+      name: vault_login
+      namespace: ''
+    plugins:
+      filter:
+      - description: Extracts the client token from a Vault login response
+        name: vault_login_token
+        namespace: null
+      lookup:
+      - description: Perform a login operation against HashiCorp Vault
+        name: vault_login
+        namespace: null
+    release_date: '2022-01-05'
