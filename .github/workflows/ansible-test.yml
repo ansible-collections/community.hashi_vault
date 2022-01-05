@@ -397,6 +397,7 @@ jobs:
 
   upload-coverage:
     needs:
+      - sanity
       - units
       - integration
       - local_test_invocation
