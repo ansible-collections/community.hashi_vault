@@ -19,6 +19,7 @@ jobs:
       init-dest-dir: docs/preview
 
   publish-docs:
+    if: secrets.SURGE_TOKEN != ''
     permissions:
       contents: read
     needs: build-docs
