@@ -4,5 +4,6 @@ sections:
     toctree:
       - filter_guide
       - user_guide
+      - lookup_guide
       - contributor_guide
       - localenv_developer_guide
