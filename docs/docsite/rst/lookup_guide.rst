@@ -119,7 +119,7 @@ Consider the following example:
       ansible.builtin.debug:
         msg: "Secret value A is '{{ value_a }}' while value B is '{{ value_b }}'."
 
-Since templating is recursive and evaluated lazily, this will unfortunately *not* result in a single login, resuing the token to perform a single secret read, which is then used is dictionary lookups.
+Since templating is recursive and evaluated lazily, this will unfortunately *not* result in a single login, reusing the token to perform a single secret read, which is then used is dictionary lookups.
 
 Instead, evaluation of ``value_a`` and ``value_b`` will *each* cause separate evaluation of ``secret``, so that lookup will be performed twice, and *each of those lookups* will cause a separate evaluation of ``token``, which will perform two separate logins, resulting in two tokens being created, and two reads of the exact same secret being performed.
 
