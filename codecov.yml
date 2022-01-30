@@ -18,6 +18,10 @@ flags:
     paths:
       - plugins/modules/vault_read.py
 
+  target_module_vault_token_create:
+    paths:
+      - plugins/modules/vault_token_create.py
+
   target_lookup_vault_login:
     paths:
       - plugins/lookup/vault_login.py
