@@ -95,6 +95,31 @@ display = Display()
 
 
 class LookupModule(HashiVaultLookupBase):
+    PASS_THRU_OPTION_NAMES = [
+        'no_parent',
+        'no_default_policy',
+        'policies',
+        'id',
+        'role_name',
+        'meta',
+        'renewable',
+        'ttl',
+        'type',
+        'explicit_max_ttl',
+        'display_name',
+        'num_uses',
+        'period',
+        'entity_alias',
+        'wrap_ttl',
+    ]
+
+    LEGACY_OPTION_TRANSLATION = {
+        'id': 'token_id',
+        'role_name': 'role',
+        'type': 'token_type',
+    }
+
+
     def run(self, terms, variables=None, **kwargs):
 
         self.set_options(direct=kwargs, var_options=variables)
@@ -114,31 +139,7 @@ class LookupModule(HashiVaultLookupBase):
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
-        pass_thru_option_names = [
-            'no_parent',
-            'no_default_policy',
-            'policies',
-            'id',
-            'role_name',
-            'meta',
-            'renewable',
-            'ttl',
-            'type',
-            'explicit_max_ttl',
-            'display_name',
-            'num_uses',
-            'period',
-            'entity_alias',
-            'wrap_ttl',
-        ]
-
-        legacy_option_translation = {
-            'id': 'token_id',
-            'role_name': 'role',
-            'type': 'token_type',
-        }
-
-        pass_thru_options = self._options_adapter.get_filled_options(*pass_thru_option_names)
+        pass_thru_options = self._options_adapter.get_filled_options(*self.PASS_THRU_OPTION_NAMES)
 
         if self.get_option('orphan'):
             pass_thru_options['no_parent'] = True
@@ -146,8 +147,8 @@ class LookupModule(HashiVaultLookupBase):
         legacy_options = pass_thru_options.copy()
 
         for key in pass_thru_options.keys():
-            if key in legacy_option_translation:
-                legacy_options[legacy_option_translation[key]] = legacy_options.pop(key)
+            if key in self.LEGACY_OPTION_TRANSLATION:
+                legacy_options[self.LEGACY_OPTION_TRANSLATION[key]] = legacy_options.pop(key)
 
         response = None
 

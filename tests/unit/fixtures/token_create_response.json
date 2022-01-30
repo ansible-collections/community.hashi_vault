@@ -1,0 +1,27 @@
+{
+  "auth": {
+    "accessor": "ag7UbiKYw1HNvkUlz0EAmJF1",
+    "client_token": "s.rlwajI2bblHAWU7uPqZhLru3",
+    "entity_id": "44133048-b0f9-c0b1-29dc-5d2e62f73b0c",
+    "lease_duration": 60,
+    "metadata": null,
+    "orphan": false,
+    "policies": [
+      "test",
+      "default"
+    ],
+    "renewable": true,
+    "token_policies": [
+      "test",
+      "default"
+    ],
+    "token_type": "service"
+  },
+  "data": null,
+  "lease_duration": 0,
+  "lease_id": "",
+  "renewable": false,
+  "request_id": "61138ea3-a6ff-8735-102f-4e0087e1b3f4",
+  "warnings": null,
+  "wrap_info": null
+}
