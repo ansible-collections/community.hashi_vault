@@ -119,7 +119,6 @@ class LookupModule(HashiVaultLookupBase):
         'type': 'token_type',
     }
 
-
     def run(self, terms, variables=None, **kwargs):
 
         self.set_options(direct=kwargs, var_options=variables)

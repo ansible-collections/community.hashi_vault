@@ -189,6 +189,7 @@ class TestVaultTokenCreateLookup(object):
                     )
                     assert call_kwargs[legacy] == pass_thru_options.get(name), (
                         "Expected legacy param '%s' not found or value did not match:\nvalue: %r\nexpected: %r" % (
+                            legacy,
                             call_kwargs.get(legacy),
                             pass_thru_options.get(name),
                         )
@@ -196,7 +197,7 @@ class TestVaultTokenCreateLookup(object):
 
     def test_vault_token_create_legacy_fallback(self, vault_token_create_lookup, mock_authenticator, minimal_vars, pass_thru_options, token_create_response):
         client = mock.MagicMock()
-        client.create_token.side_effect=AttributeError
+        client.create_token.side_effect = AttributeError
         client.auth.token.create.return_value = token_create_response
 
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create.display.warning') as warning:
