@@ -119,21 +119,6 @@ class TestVaultTokenCreateLookup(object):
             )
         )
 
-    # @pytest.mark.parametrize('no_parent', [None, True, False], ids=lambda x: 'no_parent=%s' % x)
-    # @pytest.mark.parametrize('no_default_policy', [None, True, False], ids=lambda x: 'no_default_policy=%s' % x)
-    # @pytest.mark.parametrize('policies', [None, [], ['one', 'two']], ids=lambda x: 'policies=%s' % x)
-    # @pytest.mark.parametrize('id', [None, 'id'], ids=lambda x: 'id=%s' % x)
-    # @pytest.mark.parametrize('role_name', [None, 'role_name'], ids=lambda x: 'role_name=%s' % x)
-    # @pytest.mark.parametrize('meta', [None, {}, {'a': 'valA', 'b': 'valB'}], ids=lambda x: 'meta=%s' % x)
-    # @pytest.mark.parametrize('renewable', [None, True, False], ids=lambda x: 'renewable=%s' % x)
-    # @pytest.mark.parametrize('ttl', [None, '1h'], ids=lambda x: 'ttl=%s' % x)
-    # @pytest.mark.parametrize('type', [None, 'batch', 'service'], ids=lambda x: 'type=%s' % x)
-    # @pytest.mark.parametrize('explicit_max_ttl', [None, '2h'], ids=lambda x: 'explicit_max_ttl=%s' % x)
-    # @pytest.mark.parametrize('display_name', [None, 'display_name'], ids=lambda x: 'display_name=%s' % x)
-    # @pytest.mark.parametrize('num_uses', [None, 0, 9], ids=lambda x: 'num_uses=%s' % x)
-    # @pytest.mark.parametrize('period', [None, '4h'], ids=lambda x: 'period=%s' % x)
-    # @pytest.mark.parametrize('entity_alias', [None, 'alias'], ids=lambda x: 'entity_alias=%s' % x)
-    # @pytest.mark.parametrize('wrap_ttl', [None, '8h'], ids=lambda x: 'wrap_ttl=%s' % x)
     def test_vault_token_create_passthru_options(self, vault_token_create_lookup, mock_authenticator, minimal_vars, pass_thru_options, token_create_response):
 
         client = mock.MagicMock()
