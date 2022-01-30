@@ -1,0 +1,171 @@
+# (c) 2022, Brian Scholer (@briantist)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+DOCUMENTATION = """
+  lookup: vault_login
+  version_added: 2.3.0
+  author:
+    - Brian Scholer (@briantist)
+  short_description: Create a HashiCorp Vault token
+  requirements:
+    - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+    - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+  description:
+    - Creates a token in HashiCorp Vault, returning the response, including the token.
+  seealso:
+    - module: community.hashi_vault.vault_token_create
+    - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
+    - module: community.hashi_vault.vault_login
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+      description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
+  notes:
+    - Token creation is a write operation (creating a token persisted to storage), so this module always reports C(changed=True).
+    - "For the purposes of Ansible playbooks however,
+      it may be more useful to set C(changed_when=false) if you're doing idempotency checks against the target system."
+    - "In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
+      However this may not be useful if the token is required for follow on tasks.
+      It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
+  extends_documentation_fragment:
+    - community.hashi_vault.connection
+    - community.hashi_vault.connection.plugins
+    - community.hashi_vault.auth
+    - community.hashi_vault.auth.plugins
+    - community.hashi_vault.token_create
+  options:
+    _terms:
+      description: This is unused and any terms supplied will be ignored.
+      type: str
+      required: false
+"""
+
+EXAMPLES = """
+- name: Set a fact with a lookup result
+  set_fact:
+    login_data: "{{ lookup('community.hashi_vault.vault_login', url='https://vault', auth_method='userpass', username=user, password=pwd) }}"
+
+- name: Retrieve an approle role ID (token via filter)
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    auth_method: token
+    token: '{{ login_data | community.hashi_vault.vault_login_token }}'
+    path: auth/approle/role/role-name/role-id
+  register: approle_id
+
+- name: Retrieve an approle role ID (token via direct dict access)
+  community.hashi_vault.vault_read:
+    url: https://vault:8201
+    auth_method: token
+    token: '{{ login_data.auth.client_token }}'
+    path: auth/approle/role/role-name/role-id
+  register: approle_id
+"""
+
+RETURN = """
+_raw:
+  description: The result of the token creation operation.
+  returned: success
+  type: dict
+  contains:
+    auth:
+      description: The C(auth) member of the token response.
+      returned: success
+      type: dict
+      contains:
+        client_token:
+          description: Contains the newly created token.
+          returned: success
+          type: str
+    data:
+      description: The C(data) member of the token response.
+      returned: success, when available
+      type: dict
+"""
+
+from ansible.errors import AnsibleError
+from ansible.utils.display import Display
+
+from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+
+display = Display()
+
+
+class LookupModule(HashiVaultLookupBase):
+    def run(self, terms, variables=None, **kwargs):
+
+        self.set_options(direct=kwargs, var_options=variables)
+        # TODO: remove process_deprecations() if backported fix is available (see method definition)
+        self.process_deprecations()
+
+        self.connection_options.process_connection_options()
+        client_args = self.connection_options.get_hvac_connection_options()
+        client = self.helper.get_vault_client(**client_args)
+
+        if len(terms) != 0:
+            display.warning("Supplied term strings will be ignored. This lookup does not use term strings.")
+
+        try:
+            self.authenticator.validate()
+            self.authenticator.authenticate(client)
+        except (NotImplementedError, HashiVaultValueError) as e:
+            raise AnsibleError(e)
+
+        pass_thru_option_names = [
+            'no_parent',
+            'no_default_policy',
+            'policies',
+            'id',
+            'role_name',
+            'meta',
+            'renewable',
+            'ttl',
+            'type',
+            'explicit_max_ttl',
+            'display_name',
+            'num_uses',
+            'period',
+            'entity_alias',
+            'wrap_ttl',
+        ]
+
+        legacy_option_translation = {
+            'id': 'token_id',
+            'role_name': 'role',
+            'type': 'token_type',
+        }
+
+        pass_thru_options = self._options_adapter.get_filled_options(*pass_thru_option_names)
+
+        if self.get_option('orphan'):
+            pass_thru_options['no_parent'] = True
+
+        legacy_options = pass_thru_options.copy()
+
+        for key in pass_thru_options.keys():
+            if key in legacy_option_translation:
+                legacy_options[legacy_option_translation[key]] = legacy_options.pop(key)
+
+        response = None
+
+        if self.get_option('orphan'):
+            # this method is deprecated, but it's the only way through hvac to get
+            # at the /create-orphan endpoint at this time.
+            # See: https://github.com/hvac/hvac/issues/758
+            try:
+                response = client.create_token(orphan=True, **legacy_options)
+            except AttributeError:
+                display.warning("'create_token' method was not found. Attempting method that requires root or sudo privileges.")
+            except Exception as e:
+                raise AnsibleError(e)
+
+        if response is None:
+            try:
+                response = client.auth.token.create(**pass_thru_options)
+            except Exception as e:
+                raise AnsibleError(e)
+
+        return [response]

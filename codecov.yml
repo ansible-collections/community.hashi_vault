@@ -30,6 +30,10 @@ flags:
     paths:
       - plugins/lookup/vault_read.py
 
+  target_lookup_vault_token_create:
+    paths:
+      - plugins/lookup/vault_token_create.py
+
   target_lookup_hashi_vault:
     paths:
       - plugins/lookup/hashi_vault.py
