@@ -4,7 +4,7 @@ sections:
     toctree:
       - filter_guide
       - user_guide
-      - hashi_vault_lookup
+      - about_hashi_vault_lookup
       - lookup_guide
       - contributor_guide
       - localenv_developer_guide

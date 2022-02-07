@@ -1,4 +1,4 @@
-.. _ansible_collections.community.hashi_vault.docsite.hashi_vault_lookup:
+.. _ansible_collections.community.hashi_vault.docsite.about_hashi_vault_lookup:
 
 ********************************
 About the ``hashi_vault`` lookup

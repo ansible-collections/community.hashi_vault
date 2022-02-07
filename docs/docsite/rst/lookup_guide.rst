@@ -6,7 +6,7 @@ Lookup guide
 
 This guide is not a comprehensive listing of included lookup plugins and how to use them, rather it is intended to explain the role of the lookup plugins in ``community.hashi_vault`` and how they are they used, especially when compared to modules of the same name.
 
-For information about the ``hashi_vault`` lookup specifically, see :ref:`this page that covers it in detail <ansible_collections.community.hashi_vault.docsite.hashi_vault_lookup>`.
+For information about the ``hashi_vault`` lookup specifically, see :ref:`this page that covers it in detail <ansible_collections.community.hashi_vault.docsite.about_hashi_vault_lookup>`.
 
 .. contents::
   :local:
