@@ -23,7 +23,7 @@ Due to the history of the ``hashi_vault`` lookup plugin, it does many jobs. It i
 
 The ``hashi_vault`` lookup plugin performs three main tasks:
 
- - authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
+- authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
 - a generic read operation, which allows it to read any kind of Vault path, without having to be written with that type of path in mind.
 - transforming responses that look like ``kv2`` responses into simpler responses that resemble those from ``kv1``.
 
@@ -77,7 +77,7 @@ Lookups and writes
 ==================
 
 
-Most Ansible lookups perform read-only, non-destructive operations. They are run in templating, they generally *return*  values, and they **do not run differently in check mode** (that is they do the same thing they would in normal mode, even if that means changing something). However, some lookups do change state, sometimes by performing write operations. For example, the ``password`` :ref:`lookup <ansible_collections.ansible.builtin.password_lookup>` writes a generated password to a file, to act as a sort of cache, and the ``pipe`` :ref:`lookup <ansible_collections.ansible.builtin.pipe_lookup>` runs an arbitrary shell command so it could easily write or change state. 
+Most Ansible lookups perform read-only, non-destructive operations. They are run in templating, they generally *return*  values, and they **do not run differently in check mode** (that is they do the same thing they would in normal mode, even if that means changing something). However, some lookups do change state, sometimes by performing write operations. For example, the ``password`` :ref:`lookup <ansible_collections.ansible.builtin.password_lookup>` writes a generated password to a file, to act as a sort of cache, and the ``pipe`` :ref:`lookup <ansible_collections.ansible.builtin.pipe_lookup>` runs an arbitrary shell command so it could easily write or change state.
 
 Writes in Vault
 ---------------
