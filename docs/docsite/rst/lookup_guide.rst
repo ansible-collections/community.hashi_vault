@@ -21,13 +21,13 @@ The ``hashi_vault`` lookup plugin is the oldest Vault-related content in Ansible
 
 Due to the history of the ``hashi_vault`` lookup plugin, it does many jobs. It is versatile, but sometimes unintuitive.
 
-First, the lookup does authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
+The ``hashi_vault`` lookup plugin performs three main tasks:
 
-Second, the lookup does a generic read. That makes it very useful because it can read any kind of Vault path, without having to be written with that type of path in mind.
+ - authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
+- a generic read operation, which allows it to read any kind of Vault path, without having to be written with that type of path in mind.
+- reading secrets.
 
-It's worth understanding that by far the most common use case is reading secrets, and by far the most common secret store is the ``kv`` (key/value) store that's built into Vault. Most implementations are using v2 of the ``kv`` store.
-
-So the third thing the lookup does is assume that you're probably trying to read a ``kv`` secret, and to then try to infer if the response is from ``kv2``, because the responses from version 2 include metadata and have the secret value additionally wrappped in another structure. In that way, it seeks to make the response from version 2 look more like the response from version 1.
+Reading secrets is the most common use case, with the ``kv`` (key/value) store built into Vault as by far the most common secret store. Most implementations use v2 of the ``kv`` store. To make reading v2 ``kv`` secrets easy, the lookup plugin assumes that you're probably trying to read a ``kv`` secret, and tries to infer if the response is from ``kv2``, because the responses from version 2 include metadata and have the secret value additionally wrapped in another structure. The lookup plugin seeks to make ``kv2`` responses look more like responses from version 1.
 
 Since the ``kv`` store has one or more key/value pairs in each secret, the lookup also supports a non-standard suffix in its path that can be used to access a value belonging to one specific key, via the ``:keyname`` syntax. While this is useful to provide a compact way to access a single secret value (admittedly a very common use case), it complicates the implementation and leads to bad habits.
 
