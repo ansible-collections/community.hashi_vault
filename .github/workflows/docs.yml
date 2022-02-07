@@ -21,6 +21,8 @@ jobs:
       render-file-line: '> * `$<status>` [$<path_tail>](https://community-hashi-vault-pr${{ github.event.number }}.surge.sh/$<path_tail>)'
 
   publish-docs:
+    # for now we won't run this on forks
+    if: github.repository == 'ansible-collections/community.hashi_vault'
     permissions:
       contents: read
     needs: build-docs
@@ -46,22 +48,22 @@ jobs:
           MAIN_SITE_URL: https://${{ env.SURGE_MAIN_SITE }}
         uses: ansible-community/github-docs-build/actions/ansible-docs-build-comment@main
         with:
-          body-includes: '##Docs Build'
+          body-includes: '## Docs Build'
           reactions: heart
           action: ${{ needs.build-docs.outputs.changed != 'true' && 'remove' || '' }}
           on-closed-body: |
-            ##Docs Build 📝
+            ## Docs Build 📝
 
             This PR is closed and any previously published docsite has been unpublished.
           on-merged-body: |
-            ##Docs Build 📝
+            ## Docs Build 📝
 
             Thank you for contribution!✨
 
             This PR has been merged and the docs are now incorporated into `main`:
             ${{ env.MAIN_SITE_URL }}
           body: |
-            ##Docs Build 📝
+            ## Docs Build 📝
 
             Thank you for contribution!✨
 

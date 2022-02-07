@@ -19,6 +19,8 @@ jobs:
       init-dest-dir: docs/preview
 
   publish-docs:
+    # for now we won't run this on forks
+    if: github.repository == 'ansible-collections/community.hashi_vault'
     permissions:
       contents: read
     needs: build-docs
