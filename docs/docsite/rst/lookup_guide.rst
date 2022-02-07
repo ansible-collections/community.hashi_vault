@@ -4,7 +4,7 @@
 Lookup guide
 ************
 
-This guide is not a comprehensive listing of included lookup plugins and how to use them, rather it is intended to explain the role of the lookup plugins in this collection and how they are they used, especially when compared to modules of the same name.
+This guide is not a comprehensive listing of included lookup plugins and how to use them, rather it is intended to explain the role of the lookup plugins in ``community.hashi_vault`` and how they are they used, especially when compared to modules of the same name.
 
 .. contents::
   :local:
@@ -14,12 +14,12 @@ This guide is not a comprehensive listing of included lookup plugins and how to 
 About the ``hashi_vault`` lookup
 ================================
 
-Before this collection existed, the ``hashi_vault`` lookup plugin was the only Vault-related content included in Ansible. Eventually it was moved to :ref:`community.general <plugins_in_community.general>` before being split out into this collection, where it was the only content in the collection for a long time. As a result, it's the most used plugin for Vault, and the one most people are familiar with.
+The ``hashi_vault`` lookup plugin is the oldest Vault-related content in Ansible. It was included in pre-collections Ansible (<2.10). As a result, it's the most used plugin for Vault, and the one most people are familiar with.
 
 ``hashi_vault`` lookup considerations
 -------------------------------------
 
-Due to the history of the ``hashi_vault`` lookup's development, and it being the only one around, it kind of does many jobs, making it versatile, but sometimes unintuitive.
+Due to the history of the ``hashi_vault`` lookup plugin, it does many jobs. It is versatile, but sometimes unintuitive.
 
 First, the lookup does authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
 
@@ -40,7 +40,7 @@ Another downside of this is that it prevents us from effectively re-using the au
 All of these considerations make sense in context, but it somewhat muddles the purpose of the lookup:
 
 * If a response from a completely different endpoint ended up looking like a ``kv2`` response, it would return an unexpected result.
-* If you try to give the path of a ``kv2`` secret direcrly, it will not work unless you insert a ``/data/`` component into the path, in order to match the *API path* rather than the path people are usually familiar with.
+* If you try to give the path of a ``kv2`` secret directly, it will not work unless you insert a ``/data/`` component into the path, in order to match the *API path* rather than the path people are usually familiar with.
 * If you want the metadata returned along with a ``kv2`` response, you cannot get it.
 * Other features of ``kv2`` like secret versioning cannot directly be used, unless you modify the URL, which is error prone and unintuitive.
 * Getting access to the token created by the internal login, in order to re-use it, is not possible.
@@ -123,7 +123,7 @@ Since templating is recursive and evaluated lazily, this will unfortunately *not
 
 Instead, evaluation of ``value_a`` and ``value_b`` will *each* cause separate evaluation of ``secret``, so that lookup will be performed twice, and *each of those lookups* will cause a separate evaluation of ``token``, which will perform two separate logins, resulting in two tokens being created, and two reads of the exact same secret being performed.
 
-If you combine this with loops, or resuing vars over multiple tasks, you can very quickly multiply the number of requests being made to Vault, and in the case of writes, the number of objects being created.
+If you combine this with loops, or reusing vars over multiple tasks, you can very quickly multiply the number of requests being made to Vault, and in the case of writes, the number of objects being created.
 
 Tasks can be better for this, since they execute when encountered without being accidentally repeated, and the values they return are static.
 
