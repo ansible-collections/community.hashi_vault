@@ -76,7 +76,8 @@ New features and functionality are unlikely to be added or accepted in the ``has
 Lookups and writes
 ==================
 
-Lookups in Ansible kind of imply a read-only/non-destructive operation. Being run in templating, the expected result is that they *return* a value, and check mode has no effect on lookups. But there is no actual restriction on what a lookup can do, and some lookups do perform writes or otherwise change some state. For example, the ``password`` :ref:`lookup <ansible_collections.ansible.builtin.password_lookup>` writes a generated password to a file, to act as a sort of cache, and the ``pipe`` :ref:`lookup <ansible_collections.ansible.builtin.pipe_lookup>` runs an arbitrary shell command so it could easy write or change state.
+
+Most Ansible lookups perform read-only, non-destructive operations. They are run in templating, they generally *return*  values, and they do not generally run in check mode. However, some lookups do change state, sometimes by performing write operations. For example, the ``password`` :ref:`lookup <ansible_collections.ansible.builtin.password_lookup>` writes a generated password to a file, to act as a sort of cache, and the ``pipe`` :ref:`lookup <ansible_collections.ansible.builtin.pipe_lookup>` runs an arbitrary shell command so it could easy write or change state. The ``hashi_vault`` lookup also performs write operations.
 
 Writes in Vault
 ---------------
