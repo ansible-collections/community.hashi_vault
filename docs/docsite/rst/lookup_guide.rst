@@ -23,9 +23,9 @@ Due to the history of the ``hashi_vault`` lookup plugin, it does many jobs. It i
 
 The ``hashi_vault`` lookup plugin performs three main tasks:
 
-- authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
-- a generic read operation, which allows it to read any kind of Vault path, without having to be written with that type of path in mind.
-- transforming responses that look like ``kv2`` responses into simpler responses that resemble those from ``kv1``.
+* authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.
+* a generic read operation, which allows it to read any kind of Vault path, without having to be written with that type of path in mind.
+* transforming responses that look like ``kv2`` responses into simpler responses that resemble those from ``kv1``.
 
 Reading secrets is the most common use case, with the ``kv`` (key/value) store built into Vault as by far the most common secret store. Most implementations use v2 of the ``kv`` store. To make reading v2 ``kv`` secrets easy, the lookup plugin assumes that you're probably trying to read a ``kv`` secret, and tries to infer if the response is from ``kv2``, because the responses from version 2 include metadata and have the secret value additionally wrapped in another structure. The lookup plugin seeks to make ``kv2`` responses look more like responses from version 1.
 
