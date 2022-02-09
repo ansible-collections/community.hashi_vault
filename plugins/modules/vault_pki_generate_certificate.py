@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
   module: vault_pki_generate_certificate
-  version_added: 2.11.6
+  version_added: 2.3.0
   author:
     - Florent David <florent.david@gmail.com>
   short_description: Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI
@@ -28,74 +28,74 @@ DOCUMENTATION = """
     - community.hashi_vault.connection
     - community.hashi_vault.auth
   options:
-    - alt_names:
-        description:
-          - Specifies requested Subject Alternative Names.
-          - These can be host names or email addresses; they will be parsed into their respective fields.
-          - If any requested names do not match role policy, the entire request will be denied.
-        type: list
-    - common_name:
-        description:
-          - Specifies the requested CN for the certificate.
-          - If the CN is allowed by role policy, it will be issued.
-        type: str
-        required: true
-    - exclude_cn_from_sans:
-        description:
-          - If true, the given I(common_name) will not be included in DNS or Email Subject Alternate Names (as appropriate).
-          - Useful if the CN is not a hostname or email address, but is instead some human-readable identifier.
-        type: bool
-    - format:
-        description:
-          - Specifies the format for returned data.
-          - Can be C(pem), C(der), or C(pem_bundle).
-          - If C(der), the output is base64 encoded.
-          - >-
-            If C(pem_bundle), the C(certificate) field will contain the private key and certificate, concatenated; if the issuing CA is not a Vault-derived
-            self-signed root, this will be included as well.
-        type: str
-        choices: [pem, der, pem_bundle]
-        default: pem
-    - ip_sans:
-        description:
-          - Specifies requested IP Subject Alternative Names.
-          - Only valid if the role allows IP SANs (which is the default).
-        type: list
-    - name:
-        description:
-          - Specifies the name of the role to create the certificate against.
-        type: str
-        required: true
-    - other_sans:
-        description:
-          - Specifies custom OID/UTF8-string SANs.
-          - These must match values specified on the role in C(allowed_other_sans).
-          - The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8).
-        type: list
-    - path:
-        description:
-          - Specify the mount point used by the PKI engine.
-        type: str
-        default: pki
-    - private_key_format:
-        description:
-          - Specifies the format for marshaling the private key.
-          - Defaults to C(der) which will return either base64-encoded DER or PEM-encoded DER, depending on the value of I(format).
-          - The other option is C(pkcs8) which will return the key marshalled as PEM-encoded PKCS8.
-        type: str
-        choices: [der, pkcs8]
-        default: der
-    - ttl:
-        description:
-          - Specifies requested Time To Live.
-          - Cannot be greater than the role's C(max_ttl) value.
-          - If not provided, the role's C(ttl) value will be used.
-          - Note that the role values default to system values if not explicitly set.
-        type: str
-    - uri_sans:
-        description:
-          - Specifies the requested URI Subject Alternative Names.
-        type: list
+    alt_names:
+      description:
+        - Specifies requested Subject Alternative Names.
+        - These can be host names or email addresses; they will be parsed into their respective fields.
+        - If any requested names do not match role policy, the entire request will be denied.
+      type: list
+    common_name:
+      description:
+        - Specifies the requested CN for the certificate.
+        - If the CN is allowed by role policy, it will be issued.
+      type: str
+      required: true
+    exclude_cn_from_sans:
+      description:
+        - If true, the given I(common_name) will not be included in DNS or Email Subject Alternate Names (as appropriate).
+        - Useful if the CN is not a hostname or email address, but is instead some human-readable identifier.
+      type: bool
+    format:
+      description:
+        - Specifies the format for returned data.
+        - Can be C(pem), C(der), or C(pem_bundle).
+        - If C(der), the output is base64 encoded.
+        - >-
+          If C(pem_bundle), the C(certificate) field will contain the private key and certificate, concatenated; if the issuing CA is not a Vault-derived
+          self-signed root, this will be included as well.
+      type: str
+      choices: [pem, der, pem_bundle]
+      default: pem
+    ip_sans:
+      description:
+        - Specifies requested IP Subject Alternative Names.
+        - Only valid if the role allows IP SANs (which is the default).
+      type: list
+    name:
+      description:
+        - Specifies the name of the role to create the certificate against.
+      type: str
+      required: true
+    other_sans:
+      description:
+        - Specifies custom OID/UTF8-string SANs.
+        - These must match values specified on the role in C(allowed_other_sans).
+        - The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8).
+      type: list
+    path:
+      description:
+        - Specify the mount point used by the PKI engine.
+      type: str
+      default: pki
+    private_key_format:
+      description:
+        - Specifies the format for marshaling the private key.
+        - Defaults to C(der) which will return either base64-encoded DER or PEM-encoded DER, depending on the value of I(format).
+        - The other option is C(pkcs8) which will return the key marshalled as PEM-encoded PKCS8.
+      type: str
+      choices: [der, pkcs8]
+      default: der
+    ttl:
+      description:
+        - Specifies requested Time To Live.
+        - Cannot be greater than the role's C(max_ttl) value.
+        - If not provided, the role's C(ttl) value will be used.
+        - Note that the role values default to system values if not explicitly set.
+      type: str
+    uri_sans:
+      description:
+        - Specifies the requested URI Subject Alternative Names.
+      type: list
 """
 
 EXAMPLES = """
@@ -189,6 +189,7 @@ data:
 
 import traceback
 
+from ansible.errors import AnsibleError
 from ansible.module_utils._text import to_native
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
@@ -204,6 +205,9 @@ except ImportError:
 
 
 def run_module():
+    if not HAS_HVAC:
+        raise AnsibleError("Please pip install hvac to use the hashi_vault modules.")
+
     argspec = HashiVaultModule.generate_argspec(
         name=dict(type='str', required=True),
         common_name=dict(type='str', required=True),
