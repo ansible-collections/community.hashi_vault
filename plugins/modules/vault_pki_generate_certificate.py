@@ -223,8 +223,7 @@ def run_module():
     )
 
     module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
+        argument_spec=argspec
     )
 
     name = module.params.get('name')
