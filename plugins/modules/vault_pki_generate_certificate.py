@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# (c) 2022, Florent David <florent.david@gmail.com>
+# (c) 2022, Florent David (@Ripolin)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
@@ -10,7 +10,7 @@ DOCUMENTATION = """
   module: vault_pki_generate_certificate
   version_added: 2.3.0
   author:
-    - Florent David <florent.david@gmail.com>
+    - Florent David (@Ripolin)
   short_description: Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI
   requirements:
     - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
@@ -34,6 +34,7 @@ DOCUMENTATION = """
         - These can be host names or email addresses; they will be parsed into their respective fields.
         - If any requested names do not match role policy, the entire request will be denied.
       type: list
+      elements: str
     common_name:
       description:
         - Specifies the requested CN for the certificate.
@@ -45,6 +46,7 @@ DOCUMENTATION = """
         - If true, the given I(common_name) will not be included in DNS or Email Subject Alternate Names (as appropriate).
         - Useful if the CN is not a hostname or email address, but is instead some human-readable identifier.
       type: bool
+      default: False
     format:
       description:
         - Specifies the format for returned data.
@@ -61,6 +63,7 @@ DOCUMENTATION = """
         - Specifies requested IP Subject Alternative Names.
         - Only valid if the role allows IP SANs (which is the default).
       type: list
+      elements: str
     name:
       description:
         - Specifies the name of the role to create the certificate against.
@@ -70,8 +73,9 @@ DOCUMENTATION = """
       description:
         - Specifies custom OID/UTF8-string SANs.
         - These must match values specified on the role in C(allowed_other_sans).
-        - The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8).
+        - "The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8)."
       type: list
+      elements: str
     path:
       description:
         - Specify the mount point used by the PKI engine.
@@ -96,6 +100,7 @@ DOCUMENTATION = """
       description:
         - Specifies the requested URI Subject Alternative Names.
       type: list
+      elements: str
 """
 
 EXAMPLES = """
@@ -134,12 +139,12 @@ data:
     lease_id:
       description: Vault lease attached to certificate
       returned: success
-      type: string
+      type: str
       sample: pki/issue/test/7ad6cfa5-f04f-c62a-d477-f33210475d05
     renewable:
       description: Is certificate renewable ?
       returned: success
-      type: boolean
+      type: bool
       sample: false
     lease_duration:
       description: Vault lease duration
@@ -154,43 +159,44 @@ data:
         certificate:
           description: Newly generated X509 certificate
           returned: success
-          type: string
+          type: str
           sample: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"
         issuing_ca:
           description: Certificate Authority X509 certificate
           returned: success
-          type: string
+          type: str
           sample: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"
         ca_chain:
           description: Linked list of Certificate Authorities X509 certificates
           returned: success
           type: list
+          elements: str
           sample: ["-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"]
         private_key:
           description: Private key used to generate certificate
           returned: success
-          type: string
+          type: str
           sample: "-----BEGIN RSA PRIVATE KEY-----...-----END RSA PRIVATE KEY-----"
         private_key_type:
           description: Private key algorithm
           returned: success
-          type: string
+          type: str
           sample: rsa
         serial_number:
           description: Certificate's serial number
           returned: success
-          type: string
+          type: str
           sample: 39:dd:2e:90:b7:23:1f:8d:d3:7d:31:c5:1b:da:84:d0:5b:65:31:58
     warning:
       description: Warning throw during generation
       returned: success
-      type: string
+      type: str
 """
 
 import traceback
 
-from ansible.errors import AnsibleError
 from ansible.module_utils._text import to_native
+from ansible.module_utils.basic import missing_required_lib
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
@@ -201,13 +207,12 @@ try:
     from hvac.api.secrets_engines.pki import DEFAULT_MOUNT_POINT
     HAS_HVAC = True
 except ImportError:
+    HVAC_IMPORT_ERROR = traceback.format_exc()
+    DEFAULT_MOUNT_POINT = 'pki'
     HAS_HVAC = False
 
 
 def run_module():
-    if not HAS_HVAC:
-        raise AnsibleError("Please pip install hvac to use the hashi_vault modules.")
-
     argspec = HashiVaultModule.generate_argspec(
         name=dict(type='str', required=True),
         common_name=dict(type='str', required=True),
@@ -225,6 +230,10 @@ def run_module():
     module = HashiVaultModule(
         argument_spec=argspec
     )
+
+    if not HAS_HVAC:
+        module.fail_json(msg=missing_required_lib('hvac'), exception=HVAC_IMPORT_ERROR)
+        return
 
     name = module.params.get('name')
     common_name = module.params.get('common_name')
