@@ -157,17 +157,17 @@ data:
       type: complex
       contains:
         certificate:
-          description: Newly generated X509 certificate
+          description: Generated certificate
           returned: success
           type: str
           sample: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"
         issuing_ca:
-          description: Certificate Authority X509 certificate
+          description: CA certificate
           returned: success
           type: str
           sample: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"
         ca_chain:
-          description: Linked list of Certificate Authorities X509 certificates
+          description: Linked list of CA certificates
           returned: success
           type: list
           elements: str
