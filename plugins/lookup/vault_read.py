@@ -63,7 +63,7 @@ EXAMPLES = """
   vars:
     ansible_hashi_vault_auth_method: userpass
     ansible_hashi_vault_username: '{{ user }}'
-    ansible_hashi_vault_passowrd: '{{ pwd }}'
+    ansible_hashi_vault_password: '{{ pwd }}'
   ansible.builtin.debug:
     msg: '{{ item }}'
   with_community.hashi_vault.vault_read:
