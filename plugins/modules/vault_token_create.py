@@ -167,8 +167,6 @@ def run_module():
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-
-
     pass_thru_options = module.adapter.get_filled_options(*PASS_THRU_OPTION_NAMES)
 
     if module.adapter.get_option('orphan'):
