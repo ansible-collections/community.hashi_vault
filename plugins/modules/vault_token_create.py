@@ -106,6 +106,32 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 
+PASS_THRU_OPTION_NAMES = [
+    'no_parent',
+    'no_default_policy',
+    'policies',
+    'id',
+    'role_name',
+    'meta',
+    'renewable',
+    'ttl',
+    'type',
+    'explicit_max_ttl',
+    'display_name',
+    'num_uses',
+    'period',
+    'entity_alias',
+    'wrap_ttl',
+]
+
+
+LEGACY_OPTION_TRANSLATION = {
+    'id': 'token_id',
+    'role_name': 'role',
+    'type': 'token_type',
+}
+
+
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
         orphan=dict(type='bool', default=False),
@@ -141,31 +167,9 @@ def run_module():
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    pass_thru_option_names = [
-        'no_parent',
-        'no_default_policy',
-        'policies',
-        'id',
-        'role_name',
-        'meta',
-        'renewable',
-        'ttl',
-        'type',
-        'explicit_max_ttl',
-        'display_name',
-        'num_uses',
-        'period',
-        'entity_alias',
-        'wrap_ttl',
-    ]
 
-    legacy_option_translation = {
-        'id': 'token_id',
-        'role_name': 'role',
-        'type': 'token_type',
-    }
 
-    pass_thru_options = module.adapter.get_filled_options(*pass_thru_option_names)
+    pass_thru_options = module.adapter.get_filled_options(*PASS_THRU_OPTION_NAMES)
 
     if module.adapter.get_option('orphan'):
         pass_thru_options['no_parent'] = True
@@ -173,8 +177,8 @@ def run_module():
     legacy_options = pass_thru_options.copy()
 
     for key in pass_thru_options.keys():
-        if key in legacy_option_translation:
-            legacy_options[legacy_option_translation[key]] = legacy_options.pop(key)
+        if key in LEGACY_OPTION_TRANSLATION:
+            legacy_options[LEGACY_OPTION_TRANSLATION[key]] = legacy_options.pop(key)
 
     # token creation is a write operation, using storage and resources
     changed = True
