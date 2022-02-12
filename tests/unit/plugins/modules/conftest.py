@@ -48,7 +48,8 @@ def patch_ansible_module(request, module_warn):
             raise Exception('Malformed data to the patch_ansible_module pytest fixture')
 
         with mock.patch('ansible.module_utils.basic._ANSIBLE_ARGS', to_bytes(args)):
-            with mock.patch('ansible.module_utils.basic.warn', module_warn):
+            # TODO: in 2.10+ we can patch basic.warn instead of basic.AnsibleModule.warn
+            with mock.patch('ansible.module_utils.basic.AnsibleModule.warn', module_warn):
                 yield
 
 
