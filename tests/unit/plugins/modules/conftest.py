@@ -1,5 +1,5 @@
-# Copyright (c) 2017 Ansible Project
 # Copyright (c) 2022 Brian Scholer (@briantist)
+# Copyright (c) 2017 Ansible Project
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
@@ -18,22 +18,38 @@ from ...compat import mock
 from .....plugins.module_utils._authenticator import HashiVaultAuthenticator
 
 
-@pytest.fixture
-def patch_ansible_module(request, mocker):
-    if isinstance(request.param, string_types):
-        args = request.param
-    elif isinstance(request.param, MutableMapping):
-        if 'ANSIBLE_MODULE_ARGS' not in request.param:
-            request.param = {'ANSIBLE_MODULE_ARGS': request.param}
-        if '_ansible_remote_tmp' not in request.param['ANSIBLE_MODULE_ARGS']:
-            request.param['ANSIBLE_MODULE_ARGS']['_ansible_remote_tmp'] = '/tmp'
-        if '_ansible_keep_remote_files' not in request.param['ANSIBLE_MODULE_ARGS']:
-            request.param['ANSIBLE_MODULE_ARGS']['_ansible_keep_remote_files'] = False
-        args = json.dumps(request.param)
-    else:
-        raise Exception('Malformed data to the patch_ansible_module pytest fixture')
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "no_ansible_module_patch: causes the patch_ansible_module fixture to have no effect"
+    )
 
-    mocker.patch('ansible.module_utils.basic._ANSIBLE_ARGS', to_bytes(args))
+
+@pytest.fixture
+def module_warn():
+    return mock.MagicMock()
+
+
+@pytest.fixture
+def patch_ansible_module(request, module_warn):
+    if 'no_ansible_module_patch' in request.keywords:
+        yield
+    else:
+        if isinstance(request.param, string_types):
+            args = request.param
+        elif isinstance(request.param, MutableMapping):
+            if 'ANSIBLE_MODULE_ARGS' not in request.param:
+                request.param = {'ANSIBLE_MODULE_ARGS': request.param}
+            if '_ansible_remote_tmp' not in request.param['ANSIBLE_MODULE_ARGS']:
+                request.param['ANSIBLE_MODULE_ARGS']['_ansible_remote_tmp'] = '/tmp'
+            if '_ansible_keep_remote_files' not in request.param['ANSIBLE_MODULE_ARGS']:
+                request.param['ANSIBLE_MODULE_ARGS']['_ansible_keep_remote_files'] = False
+            args = json.dumps(request.param)
+        else:
+            raise Exception('Malformed data to the patch_ansible_module pytest fixture')
+
+        with mock.patch('ansible.module_utils.basic._ANSIBLE_ARGS', to_bytes(args)):
+            with mock.patch('ansible.module_utils.basic.warn', module_warn):
+                yield
 
 
 @pytest.fixture
