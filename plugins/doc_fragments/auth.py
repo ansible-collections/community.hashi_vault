@@ -27,7 +27,7 @@ class ModuleDocFragment(object):
           - jwt
           - cert
           - none
-          - k8s
+          - kubernetes
         default: token
         type: str
       mount_point:
@@ -72,6 +72,9 @@ class ModuleDocFragment(object):
         type: str
       jwt:
         description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
+        type: str
+      kubernetes_token:
+        description: The Kubernetes Token (JWT) to use for Kubernetes authentication to Vault.
         type: str
       aws_profile:
         description: The AWS profile
