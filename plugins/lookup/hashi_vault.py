@@ -205,6 +205,30 @@ DOCUMENTATION = """
         - section: hashi_vault_collection
           key: aws_iam_server_id
           version_added: 1.4.0
+    kubernetes_token:
+      ini:
+        - section: lookup_hashi_vault
+          key: kubernetes_token
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: kubernetes_token
+          version_added: 2.3.0          
+    kubernetes_token_path:
+      ini:
+        - section: lookup_hashi_vault
+          key: kubernetes_token_path
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: token_path
+          version_added: 2.3.0
 """
 
 EXAMPLES = """
