@@ -64,7 +64,7 @@ DOCUMENTATION = """
         - Only valid if the role allows IP SANs (which is the default).
       type: list
       elements: str
-    name:
+    role_name:
       description:
         - Specifies the name of the role to create the certificate against.
       type: str
@@ -114,7 +114,7 @@ EXAMPLES = """
 
 - name: Generate a certificate with a existing token
   community.hashi_vault.vault_pki_generate_certificate:
-    name: test.example.org
+    role_name: test.example.org
     common_name: test.example.org
     ttl: 8760h
     alt_names:
@@ -214,7 +214,7 @@ except ImportError:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        name=dict(type='str', required=True),
+        role_name=dict(type='str', required=True),
         common_name=dict(type='str', required=True),
         alt_names=dict(type='list', elements='str', required=False, default=[]),
         ip_sans=dict(type='list', elements='str', required=False, default=[]),
@@ -235,7 +235,7 @@ def run_module():
         module.fail_json(msg=missing_required_lib('hvac'), exception=HVAC_IMPORT_ERROR)
         return
 
-    name = module.params.get('name')
+    role_name = module.params.get('role_name')
     common_name = module.params.get('common_name')
     path = module.params.get('path')
 
@@ -261,8 +261,10 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        data = client.secrets.pki.generate_certificate(name, common_name,
-                                                       extra_params=extra_params, mount_point=path)
+        data = client.secrets.pki.generate_certificate(
+            name=role_name, common_name=common_name,
+            extra_params=extra_params, mount_point=path
+        )
     except hvac.exceptions.VaultError as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 

@@ -11,7 +11,7 @@
     - name: Generate a dummy certificate
       register: cert_data
       community.hashi_vault.vault_pki_generate_certificate:
-        name: test.example.org
+        role_name: test.example.org
         common_name: dummy.test.example.org
         alt_names:
           - dummy2.test.example.org
