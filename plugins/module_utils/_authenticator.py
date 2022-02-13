@@ -57,7 +57,6 @@ class HashiVaultAuthenticator():
         aws_iam_server_id=dict(type='str'),
         cert_auth_private_key=dict(type='path', no_log=False),
         cert_auth_public_key=dict(type='path'),
-        role=dict(type='str'),
     )
 
     def __init__(self, option_adapter, warning_callback):
