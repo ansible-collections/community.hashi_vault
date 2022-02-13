@@ -20,8 +20,8 @@
       vault_ci_write:
         path: /pki/config/urls
         data:
-          issuing_certificates: http://127.0.0.1:8200/v1/pki/ca
-          crl_distribution_points: http://127.0.0.1:8200/v1/pki/crl
+          issuing_certificates: http://myvault:8200/v1/pki/ca
+          crl_distribution_points: http://myvault:8200/v1/pki/crl
 
     - name: Creating test role
       vault_ci_write:
