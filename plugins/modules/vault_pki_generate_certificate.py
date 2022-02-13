@@ -263,10 +263,10 @@ def run_module():
         if module.check_mode:
             data = {}
         else:
-          data = client.secrets.pki.generate_certificate(
-              name=role_name, common_name=common_name,
-              extra_params=extra_params, mount_point=engine_mount_point
-          )
+            data = client.secrets.pki.generate_certificate(
+                name=role_name, common_name=common_name,
+                extra_params=extra_params, mount_point=engine_mount_point
+            )
     except hvac.exceptions.VaultError as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
@@ -274,7 +274,7 @@ def run_module():
     module.exit_json(changed=True, data=data)
 
 
-def main() -> None:
+def main():
     run_module()
 
 
