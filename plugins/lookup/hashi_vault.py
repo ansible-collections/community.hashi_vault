@@ -61,6 +61,190 @@ DOCUMENTATION = """
         - raw
       default: dict
       aliases: [ as ]
+<<<<<<< HEAD
+=======
+    url:
+      ini:
+        - section: lookup_hashi_vault
+          key: url
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: url
+          version_added: 1.4.0
+    proxies:
+      ini:
+        - section: lookup_hashi_vault
+          key: proxies
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: proxies
+          version_added: 1.4.0
+    ca_cert:
+      ini:
+        - section: lookup_hashi_vault
+          key: ca_cert
+          version_added: 1.2.0
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: ca_cert
+          version_added: 1.4.0
+    namespace:
+      ini:
+        - section: lookup_hashi_vault
+          key: namespace
+          version_added: 0.2.0
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: namespace
+          version_added: 1.4.0
+    timeout:
+      ini:
+        - section: lookup_hashi_vault
+          key: timeout
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: timeout
+          version_added: 1.4.0
+    retries:
+      ini:
+        - section: lookup_hashi_vault
+          key: retries
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: retries
+          version_added: 1.4.0
+    retry_action:
+      ini:
+        - section: lookup_hashi_vault
+          key: retry_action
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: retry_action
+          version_added: 1.4.0
+    auth_method:
+      ini:
+        - section: lookup_hashi_vault
+          key: auth_method
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: auth_method
+          version_added: 1.4.0
+    token_path:
+      ini:
+        - section: lookup_hashi_vault
+          key: token_path
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: token_path
+          version_added: 1.4.0
+    token_file:
+      ini:
+        - section: lookup_hashi_vault
+          key: token_file
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: token_file
+          version_added: 1.4.0
+    token_validate:
+      ini:
+        - section: lookup_hashi_vault
+          key: token_validate
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: token_validate
+          version_added: 1.4.0
+    role_id:
+      ini:
+        - section: lookup_hashi_vault
+          key: role_id
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: role_id
+          version_added: 1.4.0
+    aws_iam_server_id:
+      ini:
+        - section: lookup_hashi_vault
+          key: aws_iam_server_id
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: aws_iam_server_id
+          version_added: 1.4.0
+    kubernetes_token:
+      ini:
+        - section: lookup_hashi_vault
+          key: kubernetes_token
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: kubernetes_token
+          version_added: 2.3.0          
+    kubernetes_token_path:
+      ini:
+        - section: lookup_hashi_vault
+          key: kubernetes_token_path
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: token_path
+          version_added: 2.3.0
 """
 
 EXAMPLES = """
