@@ -232,7 +232,6 @@ def run_module():
 
     if not HAS_HVAC:
         module.fail_json(msg=missing_required_lib('hvac'), exception=HVAC_IMPORT_ERROR)
-        return
 
     role_name = module.params.get('role_name')
     common_name = module.params.get('common_name')
