@@ -181,6 +181,18 @@ DOCUMENTATION = """
         - section: hashi_vault_collection
           key: token_validate
           version_added: 1.4.0
+    role:
+      ini:
+        - section: lookup_hashi_vault
+          key: role
+          deprecated:
+            why: collection-wide config section
+            version: 3.0.0
+            collection_name: community.hashi_vault
+            alternatives: use section [hashi_vault_collection]
+        - section: hashi_vault_collection
+          key: role
+          version_added: 2.3.0
     role_id:
       ini:
         - section: lookup_hashi_vault
