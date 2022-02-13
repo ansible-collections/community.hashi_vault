@@ -227,7 +227,8 @@ def run_module():
     )
 
     module = HashiVaultModule(
-        argument_spec=argspec
+        argument_spec=argspec,
+        supports_check_mode=True
     )
 
     if not HAS_HVAC:
@@ -259,10 +260,13 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        data = client.secrets.pki.generate_certificate(
-            name=role_name, common_name=common_name,
-            extra_params=extra_params, mount_point=engine_mount_point
-        )
+        if module.check_mode:
+            data = {}
+        else:
+          data = client.secrets.pki.generate_certificate(
+              name=role_name, common_name=common_name,
+              extra_params=extra_params, mount_point=engine_mount_point
+          )
     except hvac.exceptions.VaultError as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
