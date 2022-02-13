@@ -380,6 +380,11 @@ jobs:
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
+      - name: Run integration again (ensure tests do not break against still-running containers)
+        run: |
+          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
+        working-directory: ${{ env.COLLECTION_PATH }}
+
         # ansible-test support producing code coverage data
       - name: Generate coverage report
         if: ${{ github.event_name != 'schedule' }}
