@@ -2,7 +2,7 @@
 # Copyright (c) 2021 FERREIRA Christophe (@chris93111)
 # Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
 
-'''Python versions supported: all controller-side versions, all remote-side versions except 2.6'''
+'''Python versions supported: >=3.6'''
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
