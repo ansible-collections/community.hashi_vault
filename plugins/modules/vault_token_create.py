@@ -192,7 +192,7 @@ def run_module():
         try:
             response = client.create_token(orphan=True, **legacy_options)
         except AttributeError:
-            module.warn("'create_token' method was not found. Attempting method that requires root or sudo privileges.")
+            module.warn("'create_token' method was not found. Attempting method that requires root privileges.")
         except Exception as e:
             module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 

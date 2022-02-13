@@ -190,7 +190,7 @@ class TestVaultTokenCreateLookup(object):
                 with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
                     result = vault_token_create_lookup.run(terms=[], variables=minimal_vars, orphan=True, **pass_thru_options)
 
-                    warning.assert_called_once_with("'create_token' method was not found. Attempting method that requires root or sudo privileges.")
+                    warning.assert_called_once_with("'create_token' method was not found. Attempting method that requires root privileges.")
                     client.auth.token.create.assert_called_once()
 
                     assert result[0] == token_create_response, (

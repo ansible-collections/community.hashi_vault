@@ -186,7 +186,7 @@ class TestModuleVaultTokenCreate():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
-        module_warn.assert_called_once_with("'create_token' method was not found. Attempting method that requires root or sudo privileges.")
+        module_warn.assert_called_once_with("'create_token' method was not found. Attempting method that requires root privileges.")
         client.auth.token.create.assert_called_once()
 
         assert result['login'] == token_create_response, (

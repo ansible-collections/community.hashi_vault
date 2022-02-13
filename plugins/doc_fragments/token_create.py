@@ -13,16 +13,16 @@ class ModuleDocFragment(object):
 options:
   orphan:
     description:
-      - When C(true), uses the C(/create-orphan) API endpoint, which does not require root to create an orphan.
+      - When C(true), uses the C(/create-orphan) API endpoint, which requires C(sudo) (but not C(root)) to create an orphan.
       - Implies I(no_parent=true).
       - B(NOTE:) as of this writing, the underlying endpoint in the C(hvac) library to support this is deprecated and scheduled for removal in C(v1.0.0).
-      - If I(orphan=true) and we cannot access the intended enpoint, the call will be attempted with the C(/create) endpoint, which requires root or sudo.
+      - If I(orphan=true) and we cannot access the intended enpoint, the call will be attempted with the C(/create) endpoint, which requires root.
       - If a replacement is provided in C(hvac), we will add support for it.
     type: bool
     default: false
   no_parent:
     description:
-      - This option only has effect if used by a root or sudo caller, or in combination with I(orphan=true).
+      - This option only has effect if used by a C(root) or C(sudo) caller, or in combination with I(orphan=true).
       - When C(true), the token created will not have a parent.
     type: bool
   no_default_policy:
@@ -84,7 +84,7 @@ options:
     description:
       - If specified, the token will be periodic.
       - It will have no maximum TTL (unless an I(explicit_max_ttl) is also set) but every renewal will use the given period.
-      - Requires a root token or one with the sudo capability.
+      - Requires a root token or one with the C(sudo) capability.
     type: str
   entity_alias:
     description:
