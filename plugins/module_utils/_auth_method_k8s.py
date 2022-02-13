@@ -13,8 +13,10 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase
-
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+    HashiVaultAuthMethodBase,
+    HashiVaultValueError,
+)
 
 class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: k8s'''
