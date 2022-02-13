@@ -99,7 +99,7 @@
       block:
         - name: Create a child token
           vars:
-            result: "{{ lookup('community.hashi_vault.vault_token_create', **kwargs) }}"
+            result: "{{ lookup('community.hashi_vault.vault_token_create', policies=['test-policy'], **kwargs) }}"
           assert:
             that:
               - "'auth' in result"
@@ -112,7 +112,7 @@
 
         - name: Create an orphan token with orphan=true
           vars:
-            result: "{{ lookup('community.hashi_vault.vault_token_create', orphan=True, **kwargs) }}"
+            result: "{{ lookup('community.hashi_vault.vault_token_create', orphan=True, policies=['test-policy'], **kwargs) }}"
           assert:
             that:
               - "'auth' in result"
@@ -125,7 +125,7 @@
 
         - name: Create an orphan token with no_parent=true
           vars:
-            result: "{{ lookup('community.hashi_vault.vault_token_create', no_parent=True, **kwargs) }}"
+            result: "{{ lookup('community.hashi_vault.vault_token_create', no_parent=True, policies=['test-policy'], **kwargs) }}"
           assert:
             that:
               - "'auth' in result"
