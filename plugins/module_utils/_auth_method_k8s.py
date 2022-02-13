@@ -20,25 +20,29 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: k8s'''
 
     NAME = 'kubernetes'
-    OPTIONS = ['kubernetes_token', 'role_id', 'mount_point']
+    OPTIONS = ['kubernetes_token', 'kubernetes_token_path', 'role_id', 'mount_point']
 
     def __init__(self, option_adapter, warning_callback):
         super(HashiVaultAuthMethodKubernetes, self).__init__(option_adapter, warning_callback)
 
     def validate(self):
         self.validate_by_required_fields('role_id')
+ 
+        if self._options.get_option_default('kubernetes_token') is None and self._options.get_option_default('kubernetes_token_path') is not None:
+            token_filename = self._options.get_option('kubernetes_token_path')
+            if os.path.exists(token_filename):
+                if not os.path.isfile(token_filename):
+                    raise HashiVaultValueError("The Kubernetes token file '%s' was found but is not a file." % token_filename)
+                with open(token_filename) as token_file:
+                    self._options.set_option('kubernetes_token', token_file.read().strip())
 
+        if self._options.get_option_default('kubernetes_token') is None:
+            raise HashiVaultValueError("No Kubernetes Token specified or discovered.")
+        
+        params['role'] = params.pop('role_id')
+        
     def authenticate(self, client, use_token=True):
         params = self._options.get_filled_options(*self.OPTIONS)
-        if not params.get('kubernetes_token'):
-            # Mode in cluster fetch jwt in pods
-            try:
-                f = open('/var/run/secrets/kubernetes.io/serviceaccount/token')
-                jwt = f.read()
-                params['kubernetes_token'] = jwt
-            except:
-                raise NotImplementedError("Can't read jwt in /var/run/secrets/kubernetes.io/serviceaccount/token")
-        params['role'] = params.pop('role_id')
         
         try:
             response = client.auth_kubernetes(**params)
