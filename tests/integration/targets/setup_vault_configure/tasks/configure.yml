@@ -23,6 +23,16 @@
     name: alt-policy
     policy: "{{ vault_alt_policy }}"
 
+- name: Create a token creator policy
+  vault_ci_policy_put:
+    name: token-creator
+    policy: '{{ vault_token_creator_policy }}'
+
+- name: Create an orphan creator policy
+  vault_ci_policy_put:
+    name: orphan-creator
+    policy: '{{ vault_orphan_creator_policy }}'
+
 - name: 'Create KV v1 secrets'
   loop: [1, 2, 3]
   vault_ci_kv_put:
