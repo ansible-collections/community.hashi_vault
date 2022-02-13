@@ -22,7 +22,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import HashiVaultAuthMethodToken
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_userpass import HashiVaultAuthMethodUserpass
-from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_k8s import HashiVaultAuthMethodK8S
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_k8s import HashiVaultAuthMethodKubernetes
 
 
 class HashiVaultAuthenticator():
@@ -37,7 +37,7 @@ class HashiVaultAuthenticator():
             'jwt',
             'cert',
             'none',
-            'k8s',
+            'kubernetes',
         ]),
         mount_point=dict(type='str'),
         token=dict(type='str', no_log=True, default=None),
@@ -49,6 +49,7 @@ class HashiVaultAuthenticator():
         role_id=dict(type='str'),
         secret_id=dict(type='str', no_log=True),
         jwt=dict(type='str', no_log=True),
+        kubernetes_token=dict(type='str', no_log=True),
         aws_profile=dict(type='str', aliases=['boto_profile']),
         aws_access_key=dict(type='str', aliases=['aws_access_key_id'], no_log=False),
         aws_secret_key=dict(type='str', aliases=['aws_secret_access_key'], no_log=True),
@@ -68,7 +69,7 @@ class HashiVaultAuthenticator():
             'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback),
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
-            'k8s': HashiVaultAuthMethodK8S(option_adapter, warning_callback),
+            'kubernetes': HashiVaultAuthMethodKubernetes(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
