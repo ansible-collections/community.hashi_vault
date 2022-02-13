@@ -43,15 +43,15 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Set a fact with a lookup result
+- name: Login via userpass and create a child token
   set_fact:
-    login_data: "{{ lookup('community.hashi_vault.vault_login', url='https://vault', auth_method='userpass', username=user, password=pwd) }}"
+    token_data: "{{ lookup('community.hashi_vault.vault_token_create', url='https://vault', auth_method='userpass', username=user, password=passwd) }}"
 
-- name: Retrieve an approle role ID (token via filter)
+- name: Retrieve an approle role ID using the child token (token via filter)
   community.hashi_vault.vault_read:
     url: https://vault:8201
     auth_method: token
-    token: '{{ login_data | community.hashi_vault.vault_login_token }}'
+    token: '{{ token_data | community.hashi_vault.vault_login_token }}'
     path: auth/approle/role/role-name/role-id
   register: approle_id
 
@@ -59,9 +59,14 @@ EXAMPLES = """
   community.hashi_vault.vault_read:
     url: https://vault:8201
     auth_method: token
-    token: '{{ login_data.auth.client_token }}'
+    token: '{{ token_data.auth.client_token }}'
     path: auth/approle/role/role-name/role-id
   register: approle_id
+
+# implicitly uses url & token auth with a token from the environment
+- name: Create an orphaned token with a short TTL and display the full response
+  ansible.builtin.debug:
+    var: lookup('community.hashi_vault.vault_token_create', orphan=True, ttl='60s')
 """
 
 RETURN = """
