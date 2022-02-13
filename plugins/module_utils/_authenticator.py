@@ -22,6 +22,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import HashiVaultAuthMethodToken
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_userpass import HashiVaultAuthMethodUserpass
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_k8s import HashiVaultAuthMethodK8S
 
 
 class HashiVaultAuthenticator():
@@ -36,6 +37,7 @@ class HashiVaultAuthenticator():
             'jwt',
             'cert',
             'none',
+            'k8s',
         ]),
         mount_point=dict(type='str'),
         token=dict(type='str', no_log=True, default=None),
@@ -55,6 +57,7 @@ class HashiVaultAuthenticator():
         aws_iam_server_id=dict(type='str'),
         cert_auth_private_key=dict(type='path', no_log=False),
         cert_auth_public_key=dict(type='path'),
+        role=dict(type='str'),
     )
 
     def __init__(self, option_adapter, warning_callback):
@@ -66,6 +69,7 @@ class HashiVaultAuthenticator():
             'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback),
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
+            'k8s': HashiVaultAuthMethodK8S(option_adapter, warning_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
