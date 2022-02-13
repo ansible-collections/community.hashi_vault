@@ -50,6 +50,7 @@ class HashiVaultAuthenticator():
         secret_id=dict(type='str', no_log=True),
         jwt=dict(type='str', no_log=True),
         kubernetes_token=dict(type='str', no_log=True),
+        kubernetes_token_path=dict(type='str', default='/var/run/secrets/kubernetes.io/serviceaccount/token', no_log=False),
         aws_profile=dict(type='str', aliases=['boto_profile']),
         aws_access_key=dict(type='str', aliases=['aws_access_key_id'], no_log=False),
         aws_secret_key=dict(type='str', aliases=['aws_secret_access_key'], no_log=True),
