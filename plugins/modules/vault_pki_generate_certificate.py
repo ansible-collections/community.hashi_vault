@@ -13,16 +13,16 @@ DOCUMENTATION = """
     - Florent David (@Ripolin)
   short_description: Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI
   requirements:
-    - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+    - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/changelog.html#may-25th-2019)) version C(0.9.1) or higher
     - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
   description:
-    - Generates a new set of credentials (private key and certificate) based on a role named and depending PKI's mount point.
+    - Generates a new set of credentials (private key and certificate) based on a Vault PKI role.
   seealso:
-    - name: Hashicorp Vault PKI Secrets Engine API
-      description: API documentation for the Hashicorp Vault PKI secrets engine.
+    - name: HashiCorp Vault PKI Secrets Engine API
+      description: API documentation for the HashiCorp Vault PKI secrets engine.
       link: https://www.vaultproject.io/api/secret/pki#generate-certificate
     - name: HVAC library reference
-      description: Reference of the HVAC library about PKI engine.
+      description: HVAC library reference about the PKI engine.
       link: https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#generate-certificate
   extends_documentation_fragment:
     - community.hashi_vault.connection
@@ -53,7 +53,7 @@ DOCUMENTATION = """
         - Can be C(pem), C(der), or C(pem_bundle).
         - If C(der), the output is base64 encoded.
         - >-
-          If C(pem_bundle), the C(certificate) field will contain the private key and certificate, concatenated; if the issuing CA is not a Vault-derived
+          If C(pem_bundle), the C(certificate) field will contain the private key and certificate, concatenated. If the issuing CA is not a Vault-derived
           self-signed root, this will be included as well.
       type: str
       choices: [pem, der, pem_bundle]
@@ -112,7 +112,7 @@ EXAMPLES = """
     password: "{{ user_passwd }}"
   register: login_data
 
-- name: Generate a certificate with a existing token
+- name: Generate a certificate with an existing token
   community.hashi_vault.vault_pki_generate_certificate:
     role_name: test.example.org
     common_name: test.example.org
@@ -137,17 +137,17 @@ data:
   type: complex
   contains:
     lease_id:
-      description: Vault lease attached to certificate
+      description: Vault lease attached to certificate.
       returned: success
       type: str
       sample: pki/issue/test/7ad6cfa5-f04f-c62a-d477-f33210475d05
     renewable:
-      description: Is certificate renewable ?
+      description: True if certificate is renewable.
       returned: success
       type: bool
       sample: false
     lease_duration:
-      description: Vault lease duration
+      description: Vault lease duration.
       returned: success
       type: int
       sample: 21600
@@ -157,38 +157,38 @@ data:
       type: complex
       contains:
         certificate:
-          description: Generated certificate
+          description: Generated certificate.
           returned: success
           type: str
           sample: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"
         issuing_ca:
-          description: CA certificate
+          description: CA certificate.
           returned: success
           type: str
           sample: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"
         ca_chain:
-          description: Linked list of CA certificates
+          description: Linked list of CA certificates.
           returned: success
           type: list
           elements: str
           sample: ["-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----"]
         private_key:
-          description: Private key used to generate certificate
+          description: Private key used to generate certificate.
           returned: success
           type: str
           sample: "-----BEGIN RSA PRIVATE KEY-----...-----END RSA PRIVATE KEY-----"
         private_key_type:
-          description: Private key algorithm
+          description: Private key algorithm.
           returned: success
           type: str
           sample: rsa
         serial_number:
-          description: Certificate's serial number
+          description: Certificate's serial number.
           returned: success
           type: str
           sample: 39:dd:2e:90:b7:23:1f:8d:d3:7d:31:c5:1b:da:84:d0:5b:65:31:58
     warning:
-      description: Warning throw during generation
+      description: Warnings returned by Vault during generation.
       returned: success
       type: str
 """
