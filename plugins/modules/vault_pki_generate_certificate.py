@@ -274,7 +274,7 @@ def run_module():
     module.exit_json(changed=True, data=data)
 
 
-def main():
+def main() -> None:
     run_module()
 
 
