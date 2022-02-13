@@ -1,0 +1,171 @@
+---
+- name: Defaults block
+  module_defaults:
+    community.hashi_vault.vault_token_create:
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      ttl: 5m
+  block:
+    - name: Test with a child token creator
+      vars:
+        user_token: '{{ child_token_cmd.result.auth.client_token }}'
+      block:
+        - name: Create a child token
+          register: result
+          community.hashi_vault.vault_token_create:
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != user_token
+              - "'policies' in result.login.auth"
+              - "'test-policy' in result.login.auth.policies"
+              - "'default' in result.login.auth.policies"
+              - result.login.auth.orphan == False
+
+        - name: (xfail) Create an orphan token with orphan=true
+          register: orphan_result
+          community.hashi_vault.vault_token_create:
+            orphan: true
+          ignore_errors: true
+
+        - assert:
+            that:
+              - orphan_result is failed
+              - orphan_result.msg is search('root or sudo privileges required to create orphan token')
+
+        - name: (xfail) Create an orphan token with no_parent=true
+          register: no_parent_result
+          community.hashi_vault.vault_token_create:
+            no_parent: true
+          ignore_errors: true
+
+        - assert:
+            that:
+              - no_parent_result is failed
+              - no_parent_result.msg is search('root or sudo privileges required to create orphan token')
+
+    - name: Test with a orphan token creator
+      vars:
+        user_token: '{{ orphan_token_cmd.result.auth.client_token }}'
+      block:
+        - name: Create a child token
+          register: result
+          community.hashi_vault.vault_token_create:
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != user_token
+              - "'policies' in result.login.auth"
+              - "'test-policy' in result.login.auth.policies"
+              - "'default' in result.login.auth.policies"
+              - result.login.auth.orphan == False
+
+        - name: Create an orphan token with orphan=true
+          register: result
+          community.hashi_vault.vault_token_create:
+            orphan: true
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != user_token
+              - "'policies' in result.login.auth"
+              - "'test-policy' in result.login.auth.policies"
+              - "'default' in result.login.auth.policies"
+              - result.login.auth.orphan == True
+
+        - name: (xfail) Create an orphan token with no_parent=true
+          register: no_parent_result
+          community.hashi_vault.vault_token_create:
+            no_parent: true
+          ignore_errors: true
+
+        - assert:
+            that:
+              - no_parent_result is failed
+              - no_parent_result.msg is search('root or sudo privileges required to create orphan token')
+
+    - name: Test with a root token
+      vars:
+        user_token: '{{ vault_dev_root_token_id }}'
+      block:
+        - name: Create a child token
+          register: result
+          community.hashi_vault.vault_token_create:
+            policies: [test-policy]
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != user_token
+              - "'policies' in result.login.auth"
+              - "'test-policy' in result.login.auth.policies"
+              - "'default' in result.login.auth.policies"
+              - result.login.auth.orphan == False
+
+        - name: Create an orphan token with orphan=true
+          register: result
+          community.hashi_vault.vault_token_create:
+            policies: [test-policy]
+            orphan: true
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != user_token
+              - "'policies' in result.login.auth"
+              - "'test-policy' in result.login.auth.policies"
+              - "'default' in result.login.auth.policies"
+              - result.login.auth.orphan == True
+
+        - name: Create an orphan token with no_parent=true
+          register: result
+          community.hashi_vault.vault_token_create:
+            policies: [test-policy]
+            no_parent: true
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != user_token
+              - "'policies' in result.login.auth"
+              - "'test-policy' in result.login.auth.policies"
+              - "'default' in result.login.auth.policies"
+              - result.login.auth.orphan == True
+
+        - name: Test check mode
+          register: result
+          community.hashi_vault.vault_token_create:
+            id: static_token
+          check_mode: true
+
+        - assert:
+            that:
+              - result is changed
+              - "'login' in result"
+              - "'auth' in result.login"
+              - "'client_token' in result.login.auth"
+              - result.login.auth.client_token != 'static_token'
+              - result.login.auth.client_token == None
+              - lookup('vault_test_auth', token='static_token', url=vault_test_server_http, want_exception=True) is failed
