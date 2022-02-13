@@ -27,6 +27,7 @@ class ModuleDocFragment(object):
           - jwt
           - cert
           - none
+          - k8s
         default: token
         type: str
       mount_point:
