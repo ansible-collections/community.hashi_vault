@@ -16,26 +16,26 @@ __metaclass__ = type
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase
 
 
-class HashiVaultAuthMethodK8S(HashiVaultAuthMethodBase):
+class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: k8s'''
 
-    NAME = 'k8s'
-    OPTIONS = ['jwt', 'role_id', 'mount_point']
+    NAME = 'kubernetes'
+    OPTIONS = ['kubernetes_token', 'role_id', 'mount_point']
 
     def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodK8S, self).__init__(option_adapter, warning_callback)
+        super(HashiVaultAuthMethodKubernetes, self).__init__(option_adapter, warning_callback)
 
     def validate(self):
         self.validate_by_required_fields('role_id')
 
     def authenticate(self, client, use_token=True):
         params = self._options.get_filled_options(*self.OPTIONS)
-        if not params.get('jwt'):
+        if not params.get('kubernetes_token'):
             # Mode in cluster fetch jwt in pods
             try:
                 f = open('/var/run/secrets/kubernetes.io/serviceaccount/token')
                 jwt = f.read()
-                params['jwt'] = jwt
+                params['kubernetes_token'] = jwt
             except:
                 raise NotImplementedError("Can't read jwt in /var/run/secrets/kubernetes.io/serviceaccount/token")
         params['role'] = params.pop('role_id')
@@ -43,6 +43,6 @@ class HashiVaultAuthMethodK8S(HashiVaultAuthMethodBase):
         try:
             response = client.auth_kubernetes(**params)
         except (NotImplementedError, AttributeError):
-            raise NotImplementedError("K8S authentication requires HVAC version 0.8.0 or higher.")
+            raise NotImplementedError("Kubernetes authentication requires HVAC version 0.8.0 or higher.")
 
         return response
