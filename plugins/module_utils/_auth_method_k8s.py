@@ -20,13 +20,13 @@ class HashiVaultAuthMethodK8S(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: k8s'''
 
     NAME = 'k8s'
-    OPTIONS = ['jwt', 'role', 'mount_point']
+    OPTIONS = ['jwt', 'role_id', 'mount_point']
 
     def __init__(self, option_adapter, warning_callback):
         super(HashiVaultAuthMethodK8S, self).__init__(option_adapter, warning_callback)
 
     def validate(self):
-        self.validate_by_required_fields('role')
+        self.validate_by_required_fields('role_id')
 
     def authenticate(self, client, use_token=True):
         params = self._options.get_filled_options(*self.OPTIONS)
@@ -38,6 +38,8 @@ class HashiVaultAuthMethodK8S(HashiVaultAuthMethodBase):
                 params['jwt'] = jwt
             except:
                 raise NotImplementedError("Can't read jwt in /var/run/secrets/kubernetes.io/serviceaccount/token")
+        params['role'] = params.pop('role_id')
+        
         try:
             response = client.auth_kubernetes(**params)
         except (NotImplementedError, AttributeError):
