@@ -30,7 +30,7 @@ class HashiVaultAuthMethodK8S(HashiVaultAuthMethodBase):
 
     def authenticate(self, client, use_token=True):
         params = self._options.get_filled_options(*self.OPTIONS)
-        if not params['jwt']:
+        if not params.get('jwt'):
             # Mode in cluster fetch jwt in pods
             try:
                 f = open('/var/run/secrets/kubernetes.io/serviceaccount/token')
