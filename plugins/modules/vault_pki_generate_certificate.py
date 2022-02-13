@@ -76,11 +76,11 @@ DOCUMENTATION = """
         - "The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8)."
       type: list
       elements: str
-    path:
+    engine_mount_point:
       description:
         - Specify the mount point used by the PKI engine.
+        - Defaults to the default used by C(hvac).
       type: str
-      default: pki
     private_key_format:
       description:
         - Specifies the format for marshaling the private key.
@@ -208,7 +208,6 @@ try:
     HAS_HVAC = True
 except ImportError:
     HVAC_IMPORT_ERROR = traceback.format_exc()
-    DEFAULT_MOUNT_POINT = 'pki'
     HAS_HVAC = False
 
 
@@ -224,7 +223,7 @@ def run_module():
         format=dict(type='str', required=False, choices=['pem', 'der', 'pem_bundle'], default='pem'),
         private_key_format=dict(type='str', required=False, choices=['der', 'pkcs8'], default='der'),
         exclude_cn_from_sans=dict(type='bool', required=False, default=False),
-        path=dict(type='str', required=False, default=DEFAULT_MOUNT_POINT)
+        engine_mount_point=dict(type='str', required=False)
     )
 
     module = HashiVaultModule(
@@ -237,7 +236,7 @@ def run_module():
 
     role_name = module.params.get('role_name')
     common_name = module.params.get('common_name')
-    path = module.params.get('path')
+    engine_mount_point = module.params.get('engine_mount_point') or DEFAULT_MOUNT_POINT
 
     extra_params = {
         'alt_names': ','.join(module.params.get('alt_names')),
@@ -263,7 +262,7 @@ def run_module():
     try:
         data = client.secrets.pki.generate_certificate(
             name=role_name, common_name=common_name,
-            extra_params=extra_params, mount_point=path
+            extra_params=extra_params, mount_point=engine_mount_point
         )
     except hvac.exceptions.VaultError as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
