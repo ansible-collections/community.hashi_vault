@@ -23,6 +23,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import HashiVaultAuthMethodToken
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_userpass import HashiVaultAuthMethodUserpass
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_k8s import HashiVaultAuthMethodKubernetes
 
 
 class HashiVaultAuthenticator():
@@ -35,6 +36,7 @@ class HashiVaultAuthenticator():
             'aws_iam',
             'jwt',
             'cert',
+            'kubernetes',
             'none',
         ]),
         mount_point=dict(type='str'),
@@ -48,6 +50,8 @@ class HashiVaultAuthenticator():
         role_id=dict(type='str'),
         secret_id=dict(type='str', no_log=True),
         jwt=dict(type='str', no_log=True),
+        kubernetes_token=dict(type='str', no_log=True),
+        kubernetes_token_path=dict(type='str', default='/var/run/secrets/kubernetes.io/serviceaccount/token', no_log=False),
         aws_profile=dict(type='str', aliases=['boto_profile']),
         aws_access_key=dict(type='str', aliases=['aws_access_key_id'], no_log=False),
         aws_secret_key=dict(type='str', aliases=['aws_secret_access_key'], no_log=True),
@@ -63,14 +67,15 @@ class HashiVaultAuthenticator():
         self._selector = {
             # please keep this list in alphabetical order of auth method name
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
-            'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback, deprecate_callback),
-            'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback, deprecate_callback),
-            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback, deprecate_callback),
-            'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback, deprecate_callback),
-            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback, deprecate_callback),
-            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback, deprecate_callback),
-            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback, deprecate_callback),
-            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback, deprecate_callback),
+            'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
+            'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback),
+            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
+            'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
+            'kubernetes': HashiVaultAuthMethodKubernetes(option_adapter, warning_callback),
+            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
+            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
+            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
+            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
         }
 
         self.warn = warning_callback
