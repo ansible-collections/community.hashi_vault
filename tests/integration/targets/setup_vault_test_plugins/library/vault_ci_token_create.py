@@ -15,7 +15,7 @@ def main():
             url=dict(type='str', required=True),
             token=dict(type='str', required=True),
             no_default_policy=dict(type='bool', default=False),
-            policies=dict(type='str'),
+            policies=dict(type='list'),
             ttl=dict(type=str, default='1h'),
         ),
     )
