@@ -5,7 +5,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
 import pytest
 
 import json
@@ -96,9 +95,6 @@ class TestModuleVaultPkiGenerateCertificate():
         with pytest.raises(SystemExit) as e:
             vault_pki_generate_certificate.main()
 
-        if e.value.code != 0:
-            raise e.value
-
         out, err = capfd.readouterr()
         result = json.loads(out)
 
@@ -107,6 +103,7 @@ class TestModuleVaultPkiGenerateCertificate():
         assert result['data'] == pki_generate_certificate_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['data'], pki_generate_certificate_response)
         )
+        assert e.value.code == 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_pki_generate_certificate_no_hvac(self, pki_generate_certificate_response, vault_client, capfd):
@@ -117,13 +114,11 @@ class TestModuleVaultPkiGenerateCertificate():
             with pytest.raises(SystemExit) as e:
                 vault_pki_generate_certificate.main()
 
-        if e.value.code == 0:
-            raise e.value
-
         out, err = capfd.readouterr()
         result = json.loads(out)
 
         assert result['msg'] == missing_required_lib('hvac')
+        assert e.value.code != 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_pki_generate_certificate_vault_exception(self, vault_client, capfd):
@@ -135,5 +130,4 @@ class TestModuleVaultPkiGenerateCertificate():
         with pytest.raises(SystemExit) as e:
             vault_pki_generate_certificate.main()
 
-        if e.value.code == 0:
-            raise e.value
+        assert e.value.code != 0
