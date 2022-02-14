@@ -23,6 +23,10 @@ flags:
     paths:
       - plugins/modules/vault_token_create.py
 
+target_module_vault_pki_generate_certificate:
+    paths:
+      - plugins/modules/vault_pki_generate_certificate
+
   target_lookup_vault_login:
     paths:
       - plugins/lookup/vault_login.py
