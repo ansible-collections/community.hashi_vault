@@ -24,11 +24,11 @@ DOCUMENTATION = """
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   notes:
     - Token creation is a write operation (creating a token persisted to storage), so this module always reports C(changed=True).
-    - "For the purposes of Ansible playbooks however,
-      it may be more useful to set C(changed_when=false) if you're doing idempotency checks against the target system."
-    - "In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
-      However this may not be useful if the token is required for follow on tasks.
-      It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
+    - For the purposes of Ansible playbooks however,
+      it may be more useful to set I(changed_when=false) if you are doing idempotency checks against the target system.
+    - In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
+      However, this may not be useful if the token is required for follow on tasks.
+      It may be better to use this module with I(check_mode=no) in order to have a valid token that can be used.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.connection.plugins
@@ -44,7 +44,7 @@ DOCUMENTATION = """
 
 EXAMPLES = """
 - name: Login via userpass and create a child token
-  set_fact:
+  ansible.builtin.set_fact:
     token_data: "{{ lookup('community.hashi_vault.vault_token_create', url='https://vault', auth_method='userpass', username=user, password=passwd) }}"
 
 - name: Retrieve an approle role ID using the child token (token via filter)

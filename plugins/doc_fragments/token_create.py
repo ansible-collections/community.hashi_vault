@@ -16,7 +16,7 @@ options:
       - When C(true), uses the C(/create-orphan) API endpoint, which requires C(sudo) (but not C(root)) to create an orphan.
       - Implies I(no_parent=true).
       - B(NOTE:) as of this writing, the underlying endpoint in the C(hvac) library to support this is deprecated and scheduled for removal in C(v1.0.0).
-      - If I(orphan=true) and we cannot access the intended enpoint, the call will be attempted with the C(/create) endpoint, which requires root.
+      - If I(orphan=true) and we cannot access the intended endpoint, the call will be attempted with the C(/create) endpoint, which requires root.
       - If a replacement is provided in C(hvac), we will add support for it.
     type: bool
     default: false
@@ -68,8 +68,8 @@ options:
   explicit_max_ttl:
     description:
       - If set, the token will have an explicit max TTL set upon it.
-      - "This maximum token TTL cannot be changed later,
-        and unlike with normal tokens, updates to the system/mount max TTL value will have no effect at renewal time."
+      - This maximum token TTL cannot be changed later,
+        and unlike with normal tokens, updates to the system/mount max TTL value will have no effect at renewal time.
       - The token will never be able to be renewed or used past the value set at issue time.
     type: str
   display_name:
