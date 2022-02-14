@@ -1,7 +1,7 @@
 ---
 ignore:
-  - "**/tests/unit/compat/*"
-  - "**/tests/unit/**/conftest.py"
+  - tests/unit/compat/*
+  - tests/unit/**/conftest.py
 
 fixes:
   - "ansible_collections/community/hashi_vault/::"
