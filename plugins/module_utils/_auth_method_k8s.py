@@ -13,10 +13,8 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
-    HashiVaultAuthMethodBase,
-    HashiVaultValueError,
-)
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase, HashiVaultValueError
+import os
 
 class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: k8s'''
@@ -29,8 +27,8 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
 
     def validate(self):
         self.validate_by_required_fields('role_id')
- 
-        if self._options.get_option_default('kubernetes_token') is None and self._options.get_option_default('kubernetes_token_path') is not None:
+
+        if self._options.get_option('kubernetes_token') is None and self._options.get_option('kubernetes_token_path') is not None:
             token_filename = self._options.get_option('kubernetes_token_path')
             if os.path.exists(token_filename):
                 if not os.path.isfile(token_filename):
@@ -38,14 +36,15 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
                 with open(token_filename) as token_file:
                     self._options.set_option('kubernetes_token', token_file.read().strip())
 
-        if self._options.get_option_default('kubernetes_token') is None:
-            raise HashiVaultValueError("No Kubernetes Token specified or discovered.")
-        
-        params['role'] = params.pop('role_id')
-        
+        if self._options.get_option('kubernetes_token') is None:
+            raise HashiVaultValueError(self._options.get_option('kubernetes_token')+self._options.get_option_default('kubernetes_token_path')+"No Kubernetes Token specified or discovered.")
+
     def authenticate(self, client, use_token=True):
-        params = self._options.get_filled_options(*self.OPTIONS)
-        
+        origin_params = self._options.get_filled_options(*self.OPTIONS)
+        params = {"role": origin_params.get('role_id'),
+                  "jwt": origin_params.get('kubernetes_token'),
+                  "mount_point": origin_params.get('mount_point')}
+
         try:
             response = client.auth_kubernetes(**params)
         except (NotImplementedError, AttributeError):
