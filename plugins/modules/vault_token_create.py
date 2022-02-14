@@ -82,6 +82,10 @@ login:
   description: The result of the token creation operation.
   returned: success
   type: dict
+  sample:
+    auth:
+      client_token: s.rlwajI2bblHAWU7uPqZhLru3
+    data: null
   contains:
     auth:
       description: The C(auth) member of the token response.
