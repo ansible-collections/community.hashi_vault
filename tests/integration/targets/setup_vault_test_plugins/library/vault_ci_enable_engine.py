@@ -40,6 +40,7 @@ def main():
         if not str(e).startswith('path is already in use'):
             raise
 
+        p['path'] = p['path'] or p['backend_type']
         engines = client.sys.list_mounted_secrets_engines()['data']
         this_engine = engines[p['path'].strip('/') + '/']
         if this_engine['type'] != p['backend_type']:

@@ -1,6 +1,7 @@
 ---
 ignore:
   - "**/tests/unit/compat/*"
+  - "**/tests/unit/**/conftest.py"
 
 fixes:
   - "ansible_collections/community/hashi_vault/::"
@@ -17,6 +18,10 @@ flags:
   target_module_vault_read:
     paths:
       - plugins/modules/vault_read.py
+
+  target_module_vault_pki_generate_certificate:
+    paths:
+      - plugins/modules/vault_pki_generate_certificate
 
   target_lookup_vault_login:
     paths:

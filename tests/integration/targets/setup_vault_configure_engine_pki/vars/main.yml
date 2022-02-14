@@ -1,0 +1,4 @@
+---
+vault_configure_engine_pki_canary:
+  path: cubbyhole/configure_engine_pki
+  value: complete  # value does not matter

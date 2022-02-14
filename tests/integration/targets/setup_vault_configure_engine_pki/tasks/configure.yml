@@ -1,0 +1,44 @@
+---
+- name: Create PKI secrets engine
+  vault_ci_enable_engine:
+    backend_type: pki
+
+- name: Generate self-signed root CA
+  vault_ci_write:
+    path: /pki/root/generate/internal
+    data:
+      common_name: ca.example.org
+
+- name: Configure URL values for issue certificate endpoints
+  vault_ci_write:
+    path: /pki/config/urls
+    data:
+      issuing_certificates: http://myvault:8200/v1/pki/ca
+      crl_distribution_points: http://myvault:8200/v1/pki/crl
+
+- name: Creating test role
+  vault_ci_write:
+    path: /pki/roles/test.example.org
+    data:
+      allowed_domains: test.example.org
+      allow_subdomains: true
+      max_ttl: 24h
+
+- name: Create a test policy
+  vault_ci_policy_put:
+    name: test-pki-policy
+    policy: |-
+      path "pki/issue/*" {
+        capabilities = ["read", "update"]
+      }
+
+- name: Create a test non-root token
+  vault_ci_token_create:
+    policies: test-pki-policy
+  register: user_token_cmd
+
+- name: 'Write Canary'
+  vault_ci_write:
+    path: '{{ vault_configure_engine_pki_canary.path }}'
+    data:
+      value: '{{ vault_configure_engine_pki_canary.value }}'

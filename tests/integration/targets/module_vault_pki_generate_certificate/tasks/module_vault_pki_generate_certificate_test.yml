@@ -1,0 +1,40 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_pki_generate_certificate:
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+  block:
+    - name: Generate a dummy certificate
+      register: cert_data
+      community.hashi_vault.vault_pki_generate_certificate:
+        role_name: test.example.org
+        common_name: dummy.test.example.org
+        alt_names:
+          - dummy2.test.example.org
+          - dummy3.test.example.org
+
+    - assert:
+        that:
+          - cert_data is changed
+          - "'data' in cert_data"
+          - "'data' in cert_data['data']"
+          - "'certificate' in cert_data['data']['data']"
+        fail_msg: Return value did not contain expected fields.
+
+    - name: Generate certificate (check mode)
+      register: result
+      community.hashi_vault.vault_pki_generate_certificate:
+        role_name: test.example.org
+        common_name: dummy.test.example.org
+      check_mode: true
+
+    - assert:
+        that:
+          - result is changed
+          - "'data' in result"
+          - result.data == {}
+        fail_msg: "Unexpected result from check mode: {{ result }}"
