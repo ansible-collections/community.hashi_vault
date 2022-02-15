@@ -39,7 +39,7 @@ DOCUMENTATION = """
     _terms:
       description: This is unused and any terms supplied will be ignored.
       type: str
-      required: True
+      required: false
 """
 
 EXAMPLES = """
