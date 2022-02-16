@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This release contains new plugins and modules for creating tokens and for generating certificates with Vault's PKI secrets engine.
