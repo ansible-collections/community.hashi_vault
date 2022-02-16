@@ -46,7 +46,7 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
                   "mount_point": origin_params.get('mount_point')}
 
         try:
-            response = client.auth.kubernetes(**params)
+            response = client.auth.kubernetes.login(**params)
         except (NotImplementedError, AttributeError):
             self.warn("Kubernetes authentication requires HVAC version 1.0.0 or higher. Deprecated method 'auth_kubernetes' will be used.")
             response = client.auth_kubernetes(**params)
