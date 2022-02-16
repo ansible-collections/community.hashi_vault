@@ -76,10 +76,12 @@ class ModuleDocFragment(object):
       kubernetes_token:
         description: The Kubernetes Token (JWT) to use for Kubernetes authentication to Vault.
         type: str
+        version_added: 2.4.0
       kubernetes_token_path:
         description: If no kubernetes_token is specified, will try to read the token from this path.
         default: '/var/run/secrets/kubernetes.io/serviceaccount/token'
         type: str
+        version_added: 2.4.0
       aws_profile:
         description: The AWS profile
         type: str
