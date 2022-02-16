@@ -43,7 +43,8 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
         origin_params = self._options.get_filled_options(*self.OPTIONS)
         params = {"role": origin_params.get('role_id'),
                   "jwt": origin_params.get('kubernetes_token'),
-                  "mount_point": origin_params.get('mount_point')}
+                  "mount_point": origin_params.get('mount_point'),
+                  "use_token": use_token}
 
         try:
             response = client.auth.kubernetes.login(**params)
