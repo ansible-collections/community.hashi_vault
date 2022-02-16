@@ -16,6 +16,7 @@ __metaclass__ = type
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase, HashiVaultValueError
 import os
 
+
 class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: k8s'''
 
@@ -37,17 +38,20 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
                     self._options.set_option('kubernetes_token', token_file.read().strip())
 
         if self._options.get_option('kubernetes_token') is None:
-            raise HashiVaultValueError(self._options.get_option('kubernetes_token')+self._options.get_option_default('kubernetes_token_path')+"No Kubernetes Token specified or discovered.")
+            raise HashiVaultValueError(self._options.get_option_default('kubernetes_token_path') +
+                                       " No Kubernetes Token specified or discovered.")
 
     def authenticate(self, client, use_token=True):
         origin_params = self._options.get_filled_options(*self.OPTIONS)
         params = {"role": origin_params.get('role_id'),
                   "jwt": origin_params.get('kubernetes_token'),
-                  "mount_point": origin_params.get('mount_point')}
+                  "mount_point": origin_params.get('mount_point'),
+                  "use_token": use_token}
 
         try:
-            response = client.auth_kubernetes(**params)
+            response = client.auth.kubernetes.login(**params)
         except (NotImplementedError, AttributeError):
-            raise NotImplementedError("Kubernetes authentication requires HVAC version 0.8.0 or higher.")
+            self.warn("Kubernetes authentication requires HVAC version 1.0.0 or higher. Deprecated method 'auth_kubernetes' will be used.")
+            response = client.auth_kubernetes(**params)
 
         return response

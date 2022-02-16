@@ -28,8 +28,8 @@ class ModuleDocFragment(object):
           - azure
           - jwt
           - cert
-          - none
           - kubernetes
+          - none
         default: token
         type: str
       mount_point:
