@@ -258,19 +258,14 @@ class ModuleDocFragment(object):
       kubernetes_token:
         env:
           - name: ANSIBLE_HASHI_VAULT_KUBERNETES_TOKEN
-            version_added: 2.3.0
         vars:
           - name: ansible_hashi_vault_kubernetes_token
-            version_added: 2.3.0
       kubernetes_token_path:
         env:
           - name: ANSIBLE_HASHI_VAULT_KUBERNETES_TOKEN_PATH
-            version_added: 2.3.0
         ini:
           - section: hashi_vault_collection
             key: kubernetes_token_path
-            version_added: 2.3.0
         vars:
           - name: ansible_hashi_vault_kubernetes_token_path
-            version_added: 2.3.0
     '''
