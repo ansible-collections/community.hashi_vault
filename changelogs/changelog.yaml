@@ -361,3 +361,23 @@ releases:
         name: vault_login
         namespace: null
     release_date: '2022-01-05'
+  2.3.0:
+    changes:
+      release_summary: This release contains new plugins and modules for creating
+        tokens and for generating certificates with Vault's PKI secrets engine.
+    fragments:
+    - 2.3.0.yml
+    modules:
+    - description: Generates a new set of credentials (private key and certificate)
+        using HashiCorp Vault PKI
+      name: vault_pki_generate_certificate
+      namespace: ''
+    - description: Create a HashiCorp Vault token
+      name: vault_token_create
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Create a HashiCorp Vault token
+        name: vault_token_create
+        namespace: null
+    release_date: '2022-02-15'

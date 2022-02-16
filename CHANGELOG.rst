@@ -5,6 +5,28 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v2.3.0
+======
+
+Release Summary
+---------------
+
+This release contains new plugins and modules for creating tokens and for generating certificates with Vault's PKI secrets engine.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- vault_token_create - Create a HashiCorp Vault token
+
+New Modules
+-----------
+
+- vault_pki_generate_certificate - Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI
+- vault_token_create - Create a HashiCorp Vault token
+
 v2.2.0
 ======
 
