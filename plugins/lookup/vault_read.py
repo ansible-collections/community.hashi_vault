@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-  lookup: vault_read
+  name: vault_read
   version_added: 1.4.0
   author:
     - Brian Scholer (@briantist)

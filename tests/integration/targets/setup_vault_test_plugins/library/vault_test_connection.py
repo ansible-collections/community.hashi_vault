@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-  lookup: vault_test_connection
+  module: vault_test_connection
   author:
     - Brian Scholer (@briantist)
   short_description: A module for testing connection to Vault

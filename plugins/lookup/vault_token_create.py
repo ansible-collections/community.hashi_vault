@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-  lookup: vault_login
+  name: vault_token_create
   version_added: 2.3.0
   author:
     - Brian Scholer (@briantist)
