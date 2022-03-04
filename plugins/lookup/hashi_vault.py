@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-  lookup: hashi_vault
+  name: hashi_vault
   author:
     - Julie Davila (@juliedavila) <julie(at)davila.io>
     - Brian Scholer (@briantist)
