@@ -26,8 +26,8 @@ class ModuleDocFragment(object):
           - aws_iam_login
           - jwt
           - cert
-          - none
           - kubernetes
+          - none
         default: token
         type: str
       mount_point:
