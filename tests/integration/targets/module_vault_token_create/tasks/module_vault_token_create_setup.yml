@@ -1,0 +1,18 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
+  block:
+    - name: Create a token that can create child tokens
+      vault_ci_token_create:
+        policies:
+          - test-policy
+          - token-creator
+      register: child_token_cmd
+
+    - name: Create a token that can create orphan tokens
+      vault_ci_token_create:
+        policies:
+          - test-policy
+          - orphan-creator
+      register: orphan_token_cmd

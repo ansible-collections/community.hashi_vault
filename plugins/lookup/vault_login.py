@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-  lookup: vault_login
+  name: vault_login
   version_added: 2.2.0
   author:
     - Brian Scholer (@briantist)
@@ -39,7 +39,7 @@ DOCUMENTATION = """
     _terms:
       description: This is unused and any terms supplied will be ignored.
       type: str
-      required: True
+      required: false
 """
 
 EXAMPLES = """

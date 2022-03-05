@@ -1,0 +1,137 @@
+---
+- name: Var block
+  vars:
+    ansible_hashi_vault_auth_method: token
+    kwargs:
+      url: '{{ vault_test_server_http }}'
+      token: '{{ user_token }}'
+      ttl: 5m
+  block:
+    - name: Test with a child token creator
+      vars:
+        user_token: '{{ child_token_cmd.result.auth.client_token }}'
+      block:
+        - name: Create a child token
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', **kwargs) }}"
+          assert:
+            that:
+              - "'auth' in result"
+              - "'client_token' in result.auth"
+              - result.auth.client_token != user_token
+              - "'policies' in result.auth"
+              - "'test-policy' in result.auth.policies"
+              - "'default' in result.auth.policies"
+              - result.auth.orphan == False
+
+        - name: (xfail) Create an orphan token with orphan=true
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', orphan=True, **kwargs) }}"
+          debug:
+            msg: "{{ result }} should have failed."
+          register: orphan_result
+          ignore_errors: true
+
+        - assert:
+            that:
+              - orphan_result is failed
+              - orphan_result.msg is search('root or sudo privileges required to create orphan token')
+
+        - name: (xfail) Create an orphan token with no_parent=true
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', no_parent=True, **kwargs) }}"
+          debug:
+            msg: "{{ result }} should have failed."
+          register: no_parent_result
+          ignore_errors: true
+
+        - assert:
+            that:
+              - no_parent_result is failed
+              - no_parent_result.msg is search('root or sudo privileges required to create orphan token')
+
+    - name: Test with a orphan token creator
+      vars:
+        user_token: '{{ orphan_token_cmd.result.auth.client_token }}'
+      block:
+        - name: Create a child token
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', **kwargs) }}"
+          assert:
+            that:
+              - "'auth' in result"
+              - "'client_token' in result.auth"
+              - result.auth.client_token != user_token
+              - "'policies' in result.auth"
+              - "'test-policy' in result.auth.policies"
+              - "'default' in result.auth.policies"
+              - result.auth.orphan == False
+
+        - name: Create an orphan token with orphan=true
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', orphan=True, **kwargs) }}"
+          assert:
+            that:
+              - "'auth' in result"
+              - "'client_token' in result.auth"
+              - result.auth.client_token != user_token
+              - "'policies' in result.auth"
+              - "'test-policy' in result.auth.policies"
+              - "'default' in result.auth.policies"
+              - result.auth.orphan == True
+
+        - name: (xfail) Create an orphan token with no_parent=true
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', no_parent=True, **kwargs) }}"
+          debug:
+            msg: "{{ result }} should have failed."
+          register: no_parent_result
+          ignore_errors: true
+
+        - assert:
+            that:
+              - no_parent_result is failed
+              - no_parent_result.msg is search('root or sudo privileges required to create orphan token')
+
+    - name: Test with a root token
+      vars:
+        user_token: '{{ vault_dev_root_token_id }}'
+      block:
+        - name: Create a child token
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', policies=['test-policy'], **kwargs) }}"
+          assert:
+            that:
+              - "'auth' in result"
+              - "'client_token' in result.auth"
+              - result.auth.client_token != user_token
+              - "'policies' in result.auth"
+              - "'test-policy' in result.auth.policies"
+              - "'default' in result.auth.policies"
+              - result.auth.orphan == False
+
+        - name: Create an orphan token with orphan=true
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', orphan=True, policies=['test-policy'], **kwargs) }}"
+          assert:
+            that:
+              - "'auth' in result"
+              - "'client_token' in result.auth"
+              - result.auth.client_token != user_token
+              - "'policies' in result.auth"
+              - "'test-policy' in result.auth.policies"
+              - "'default' in result.auth.policies"
+              - result.auth.orphan == True
+
+        - name: Create an orphan token with no_parent=true
+          vars:
+            result: "{{ lookup('community.hashi_vault.vault_token_create', no_parent=True, policies=['test-policy'], **kwargs) }}"
+          assert:
+            that:
+              - "'auth' in result"
+              - "'client_token' in result.auth"
+              - result.auth.client_token != user_token
+              - "'policies' in result.auth"
+              - "'test-policy' in result.auth.policies"
+              - "'default' in result.auth.policies"
+              - result.auth.orphan == True

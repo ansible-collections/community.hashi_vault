@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-  lookup: vault_test_auth
+  module: vault_test_auth
   author:
     - Brian Scholer (@briantist)
   short_description: A module for testing centralized auth methods
