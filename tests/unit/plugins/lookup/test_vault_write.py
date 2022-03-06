@@ -5,7 +5,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
 import pytest
 
 from ansible.plugins.loader import lookup_loader
@@ -14,6 +13,7 @@ from ansible.errors import AnsibleError
 from ...compat import mock
 
 from .....plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 from .....plugins.lookup import vault_write
 
@@ -55,6 +55,20 @@ class TestVaultWriteLookup(object):
         with mock.patch.object(vault_write, 'HVAC_IMPORT_ERROR', new=ImportError()):
             with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
                 vault_write_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    def test_vault_write_authentication_error(self, vault_write_lookup, minimal_vars, authenticator, exc):
+        authenticator.authenticate.side_effect = exc
+
+        with pytest.raises(AnsibleError, match=r'dummy msg'):
+            vault_write_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    def test_vault_write_auth_validation_error(self, vault_write_lookup, minimal_vars, authenticator, exc):
+        authenticator.validate.side_effect = exc
+
+        with pytest.raises(AnsibleError, match=r'dummy msg'):
+            vault_write_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
     @pytest.mark.parametrize('data', ({}, {'a': 1, 'b': 'two'}))

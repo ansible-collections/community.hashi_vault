@@ -51,11 +51,16 @@ def vault_client():
 
 
 @pytest.fixture
-def patch_authenticator():
+def authenticator():
     authenticator = HashiVaultAuthenticator
-    authenticator.validate = lambda self: True
-    authenticator.authenticate = lambda self, client: 'dummy'
+    authenticator.validate = mock.Mock(wraps=lambda: True)
+    authenticator.authenticate = mock.Mock(wraps=lambda client: 'dummy')
 
+    return authenticator
+
+
+@pytest.fixture
+def patch_authenticator(authenticator):
     with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultAuthenticator', new=authenticator):
         yield
 

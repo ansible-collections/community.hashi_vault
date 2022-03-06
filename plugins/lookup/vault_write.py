@@ -127,17 +127,17 @@ class LookupModule(HashiVaultLookupBase):
             self.authenticator.validate()
             self.authenticator.authenticate(client)
         except (NotImplementedError, HashiVaultValueError) as e:
-            raise AnsibleError(e)
+            raise_from(AnsibleError(e), e)
 
         for term in terms:
             try:
                 response = client.write(path=term, **data)
-            except hvac.exceptions.Forbidden:
-                raise AnsibleError("Forbidden: Permission Denied to path '%s'." % term)
-            except hvac.exceptions.InvalidPath:
-                raise AnsibleError("The path '%s' doesn't seem to exist." % term)
+            except hvac.exceptions.Forbidden as e:
+                raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
+            except hvac.exceptions.InvalidPath as e:
+                raise_from(AnsibleError("The path '%s' doesn't seem to exist." % term), e)
             except hvac.exceptions.InternalServerError as e:
-                raise AnsibleError("Internal Server Error: %s" % str(e))
+                raise_from(AnsibleError("Internal Server Error: %s" % str(e)), e)
 
             # https://github.com/hvac/hvac/issues/797
             # HVAC returns a raw response object when the body is not JSON.
