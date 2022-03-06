@@ -15,8 +15,6 @@ from ansible.module_utils.common._collections_compat import MutableMapping
 
 from ...compat import mock
 
-from .....plugins.module_utils._authenticator import HashiVaultAuthenticator
-
 
 def pytest_configure(config):
     config.addinivalue_line(
@@ -51,26 +49,3 @@ def patch_ansible_module(request, module_warn):
             # TODO: in 2.10+ we can patch basic.warn instead of basic.AnsibleModule.warn
             with mock.patch('ansible.module_utils.basic.AnsibleModule.warn', module_warn):
                 yield
-
-
-@pytest.fixture
-def vault_client():
-    return mock.MagicMock()
-
-
-@pytest.fixture
-def patch_authenticator():
-    authenticator = HashiVaultAuthenticator
-    authenticator.validate = lambda self: True
-    authenticator.authenticate = lambda self, client: 'dummy'
-
-    with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultAuthenticator', new=authenticator):
-        yield
-
-
-@pytest.fixture
-def patch_get_vault_client(vault_client):
-    with mock.patch(
-        'ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common.HashiVaultHelper.get_vault_client', return_value=vault_client
-    ):
-        yield
