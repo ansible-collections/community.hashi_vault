@@ -29,12 +29,20 @@ def module_warn():
 
 @pytest.fixture
 def patch_ansible_module(request, module_warn):
+    _yield = None
     if 'no_ansible_module_patch' in request.keywords:
         yield
     else:
         if isinstance(request.param, string_types):
             args = request.param
+            _yield = args
         elif isinstance(request.param, MutableMapping):
+            if '_yield' in request.param:
+                y = request.param.pop('_yield')
+                _yield = dict((k, v) for k, v in request.param.items() if k in y)
+            else:
+                _yield = request.param
+
             if 'ANSIBLE_MODULE_ARGS' not in request.param:
                 request.param = {'ANSIBLE_MODULE_ARGS': request.param}
             if '_ansible_remote_tmp' not in request.param['ANSIBLE_MODULE_ARGS']:
@@ -48,4 +56,4 @@ def patch_ansible_module(request, module_warn):
         with mock.patch('ansible.module_utils.basic._ANSIBLE_ARGS', to_bytes(args)):
             # TODO: in 2.10+ we can patch basic.warn instead of basic.AnsibleModule.warn
             with mock.patch('ansible.module_utils.basic.AnsibleModule.warn', module_warn):
-                yield
+                yield _yield
