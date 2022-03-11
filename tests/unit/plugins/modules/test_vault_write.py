@@ -48,11 +48,6 @@ def _combined_options(**kwargs):
 
 
 @pytest.fixture
-def sample_options():
-    return _sample_options()
-
-
-@pytest.fixture
 def approle_secret_id_write_response(fixture_loader):
     return fixture_loader('approle_secret_id_write_response.json')
 
