@@ -25,6 +25,8 @@ DOCUMENTATION = """
     - community.hashi_vault.connection.plugins
     - community.hashi_vault.auth
     - community.hashi_vault.auth.plugins
+    - community.hashi_vault.wrapping
+    - community.hashi_vault.wrapping.plugins
   options:
     _terms:
       description: Vault path(s) to be written to.
@@ -122,6 +124,7 @@ class LookupModule(HashiVaultLookupBase):
         client = self.helper.get_vault_client(**client_args)
 
         data = self._options_adapter.get_option('data')
+        wrap_ttl = self._options_adapter.get_option_default('wrap_ttl')
 
         try:
             self.authenticator.validate()
@@ -131,7 +134,7 @@ class LookupModule(HashiVaultLookupBase):
 
         for term in terms:
             try:
-                response = client.write(path=term, **data)
+                response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
             except hvac.exceptions.Forbidden as e:
                 raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
             except hvac.exceptions.InvalidPath as e:

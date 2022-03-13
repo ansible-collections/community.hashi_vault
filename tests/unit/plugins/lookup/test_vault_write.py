@@ -71,20 +71,21 @@ class TestVaultWriteLookup(object):
             vault_write_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
-    @pytest.mark.parametrize('data', ({}, {'a': 1, 'b': 'two'}))
-    def test_vault_write_return_data(self, vault_write_lookup, minimal_vars, approle_secret_id_write_response, vault_client, paths, data):
+    @pytest.mark.parametrize('data', [{}, {'a': 1, 'b': 'two'}])
+    @pytest.mark.parametrize('wrap_ttl', [None, '5m'])
+    def test_vault_write_return_data(self, vault_write_lookup, minimal_vars, approle_secret_id_write_response, vault_client, paths, data, wrap_ttl):
         client = vault_client
 
-        expected_calls = [mock.call(path=p, **data) for p in paths]
+        expected_calls = [mock.call(path=p, wrap_ttl=wrap_ttl, **data) for p in paths]
 
-        def _fake_write(path, **data):
+        def _fake_write(path, wrap_ttl, **data):
             r = approle_secret_id_write_response.copy()
             r.update({'path': path})
             return r
 
         client.write = mock.Mock(wraps=_fake_write)
 
-        response = vault_write_lookup.run(terms=paths, variables=minimal_vars, data=data)
+        response = vault_write_lookup.run(terms=paths, variables=minimal_vars, wrap_ttl=wrap_ttl, data=data)
 
         client.write.assert_has_calls(expected_calls)
 
