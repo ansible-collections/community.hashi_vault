@@ -42,18 +42,21 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret from Vault via the remote host with userpass auth
-  community.hashi_vault.vault_read:
+- name: Write a value to the cubbyhole via the remote host with userpass auth
+  community.hashi_vault.vault_write:
     url: https://vault:8201
-    path: secret/data/hello
+    path: cubbyhole/mysecret
+    data:
+      key1: val1
+      key2: val2
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
-  register: secret
+  register: result
 
-- name: Display the secret data
+- name: Display the result of the write (this can be empty)
   ansible.builtin.debug:
-    msg: "{{ secret.data.data.data }}"
+    msg: "{{ result.data }}"
 
 - name: Retrieve an approle role ID from Vault via the remote host
   community.hashi_vault.vault_read:
@@ -61,9 +64,17 @@ EXAMPLES = """
     path: auth/approle/role/role-name/role-id
   register: approle_id
 
-- name: Display the role ID
+- name: Generate a secret-id for the given approle
+  community.hashi_vault.vault_write:
+    url: https://vault:8201
+    path: auth/approle/role/role-name/secret-id
+  register: secret_id
+
+- name: Display the role ID and secret ID
   ansible.builtin.debug:
-    msg: "{{ approle_id.data.data.role_id }}"
+    msg:
+      - "role-id: {{ approle_id.data.data.role_id }}"
+      - "secret-id: {{ secret_id.data.data.secret_id }}"
 """
 
 RETURN = """

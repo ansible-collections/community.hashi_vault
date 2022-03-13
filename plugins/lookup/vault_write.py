@@ -40,44 +40,55 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret
+- name: Write a value to the cubbyhole
+  vars:
+    data:
+      key1: val1
+      key2: val2
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'secret/data/hello', url='https://vault:8201') }}"
+    msg: "{{ lookup('community.hashi_vault.vault_write', 'cubbyhole/mysecret', data=data, url='https://vault:8201') }}"
 
 - name: Retrieve an approle role ID
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
+  ansible.builtin.set_fact:
+    role_id: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
 
-- name: Perform multiple reads with a single Vault login
+- name: Generate a secret-id for the given approle
+  ansible.builtin.set_fact:
+    secret_id: "{{ lookup('community.hashi_vault.vault_write', 'auth/approle/role/role-name/secret-id', url='https://vault:8201') }}"
+
+- name: Perform multiple writes with a single Vault login (use approle from above)
   vars:
     paths:
       - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - cubbyhole/secret9
+      - cubbyhole/secret7
+    role_id: '{{ role_id.data.role_id }}'
+    secret_id: '{{ secret_id.data.secret_id }}'
+    data:
+      key1: val1
+      key2: val2
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+    msg: "{{ lookup('community.hashi_vault.vault_write', *paths, data=data, auth_method='approle', role_id=role_id, secret_id=secret_id) }}"
 
-- name: Perform multiple reads with a single Vault login in a loop
+- name: Perform multiple writes with a single Vault login in a loop (use approle from above)
   vars:
     paths:
       - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - cubbyhole/secret9
+      - cubbyhole/secret7
+    ansible_hashi_vault_auth_method: approle
+    ansible_hashi_vault_username: '{{ role_id.data.role_id }}'
+    ansible_hashi_vault_password: '{{ secret_id.data.secret_id }}'
+    data:
+      key1: val1
+      key2: val2
   ansible.builtin.debug:
     msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+  loop: "{{ query('community.hashi_vault.vault_write', *paths, data=data) }}"
 
-- name: Perform multiple reads with a single Vault login in a loop (via with_)
-  vars:
-    ansible_hashi_vault_auth_method: userpass
-    ansible_hashi_vault_username: '{{ user }}'
-    ansible_hashi_vault_password: '{{ pwd }}'
+- name: Generate a wrapped secret-id for an approle
   ansible.builtin.debug:
-    msg: '{{ item }}'
-  with_community.hashi_vault.vault_read:
-    - secret/data/hello
-    - auth/approle/role/role-one/role-id
-    - auth/approle/role/role-two/role-id
+    msg: "{{ lookup('community.hashi_vault.vault_write', 'auth/approle/role/role-name/secret-id', wrap_ttl='5m', url='https://vault:8201') }}"
 """
 
 RETURN = """
