@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
   module: vault_write
-  version_added: 1.4.0
+  version_added: 2.4.0
   author:
     - Brian Scholer (@briantist)
   short_description: Perform a write operation against HashiCorp Vault
