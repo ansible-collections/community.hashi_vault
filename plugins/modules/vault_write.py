@@ -28,6 +28,7 @@ DOCUMENTATION = """
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.auth
+    - community.hashi_vault.wrapping
   options:
     path:
       description: Vault path to be written to.
@@ -92,7 +93,8 @@ else:
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
         path=dict(type='str', required=True),
-        data=dict(type='dict', required=False, default={})
+        data=dict(type='dict', required=False, default={}),
+        wrap_ttl=dict(type='str'),
     )
 
     module = HashiVaultModule(
@@ -108,6 +110,7 @@ def run_module():
 
     path = module.params.get('path')
     data = module.params.get('data')
+    wrap_ttl = module.params.get('wrap_ttl')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -120,7 +123,7 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        response = client.write(path=path, **data)
+        response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
     except hvac.exceptions.Forbidden:
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath:

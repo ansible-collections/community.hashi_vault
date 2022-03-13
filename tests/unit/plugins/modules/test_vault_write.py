@@ -65,8 +65,8 @@ class TestModuleVaultWrite():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
+        assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == 'dummy msg', "result: %r" % result
-        assert e.value.code != 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
@@ -79,11 +79,13 @@ class TestModuleVaultWrite():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
+        assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == 'dummy msg'
-        assert e.value.code != 0
 
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options(), _combined_options(data={'thing': 'one', 'thang': 'two'})], indirect=True)
-    def test_vault_write_return_data(self, patch_ansible_module, approle_secret_id_write_response, vault_client, capfd):
+    @pytest.mark.parametrize('opt_data', [{}, {'thing': 'one', 'thang': 'two'}])
+    @pytest.mark.parametrize('opt_wrap_ttl', [None, '5m'])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data', 'wrap_ttl']], indirect=True)
+    def test_vault_write_return_data(self, patch_ansible_module, approle_secret_id_write_response, vault_client, opt_wrap_ttl, opt_data, capfd):
         client = vault_client
         client.write.return_value = approle_secret_id_write_response
 
@@ -93,12 +95,13 @@ class TestModuleVaultWrite():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
-        client.write.assert_called_once_with(path=patch_ansible_module['path'], **patch_ansible_module.get('data', {}))
+        assert e.value.code == 0, "result: %r" % (result,)
+
+        client.write.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=opt_wrap_ttl, **opt_data)
 
         assert result['data'] == approle_secret_id_write_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['data'], approle_secret_id_write_response)
         )
-        assert e.value.code == 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_write_empty_response(self, vault_client, requests_unparseable_response, capfd):
@@ -113,6 +116,8 @@ class TestModuleVaultWrite():
 
         out, err = capfd.readouterr()
         result = json.loads(out)
+
+        assert e.value.code == 0, "result: %r" % (result,)
 
         assert result['data'] == {}
 
@@ -131,9 +136,10 @@ class TestModuleVaultWrite():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
-        module_warn.assert_called_once_with('Vault returned status code 200 and an unparsable body.')
-
+        assert e.value.code == 0, "result: %r" % (result,)
         assert result['data'] == '﷽'
+
+        module_warn.assert_called_once_with('Vault returned status code 200 and an unparsable body.')
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_write_no_hvac(self, approle_secret_id_write_response, vault_client, capfd):
@@ -147,8 +153,8 @@ class TestModuleVaultWrite():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
+        assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == missing_required_lib('hvac')
-        assert e.value.code != 0
 
     @pytest.mark.parametrize(
         'exc',
@@ -170,5 +176,5 @@ class TestModuleVaultWrite():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
+        assert e.value.code != 0, "result: %r" % (result,)
         assert re.search(exc[1], result['msg']) is not None
-        assert e.value.code != 0
