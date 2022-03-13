@@ -143,7 +143,7 @@ def run_module():
     else:
         output = response
 
-    module.exit_json(data=output)
+    module.exit_json(changed=True, data=output)
 
 
 def main():
