@@ -10,6 +10,29 @@
       <<: *defaults
       auth_method: token
   block:
+    - name: Write data to the cubbyhole (check mode)
+      register: result
+      check_mode: true
+      community.hashi_vault.vault_write:
+        path: cubbyhole/secret1
+        data:
+          a: 1
+          b: two
+
+    - assert:
+        that:
+          - result is changed
+          - result.data == {}
+
+    - name: Check that written data does not exist
+      register: result
+      vault_ci_read:
+        path: cubbyhole/secret1
+
+    - assert:
+        that:
+          - result.result == None
+
     - name: Write data to the cubbyhole
       register: result
       community.hashi_vault.vault_write:
@@ -20,8 +43,8 @@
 
     - assert:
         that:
-          - result.data == {}
           - result is changed
+          - result.data == {}
 
     - name: Check that written data exists
       register: result

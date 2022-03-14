@@ -134,7 +134,10 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
+        if module.check_mode:
+          response = {}
+        else:
+          response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
     except hvac.exceptions.Forbidden:
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath:
