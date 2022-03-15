@@ -18,7 +18,10 @@ DOCUMENTATION = """
   description:
     - Performs a generic write operation against a given path in HashiCorp Vault, returning any output.
   notes:
+    - C(vault_write) is a generic module to do operations that do not yet have a dedicated module. Where a specific module exists, that should be used instead.
     - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
+    - This module always reports C(changed) status because it cannot guarantee idempotence.
+    - Use C(changed_when) to control that in cases where the operation is known to not change state.
   seealso:
     - ref: community.hashi_vault.vault_write lookup <ansible_collections.community.hashi_vault.vault_write_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_write) lookup plugin.
@@ -135,9 +138,9 @@ def run_module():
 
     try:
         if module.check_mode:
-          response = {}
+            response = {}
         else:
-          response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
+            response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
     except hvac.exceptions.Forbidden:
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath:

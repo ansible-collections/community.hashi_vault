@@ -20,6 +20,13 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
     - module: community.hashi_vault.vault_read
+    - ref: community.hashi_vault Lookup Guide <ansible_collections.community.hashi_vault.docsite.lookup_guide>
+  notes:
+    - C(vault_write) is a generic plugin to do operations that do not yet have a dedicated plugin. Where a specific plugin exists, that should be used instead.
+    - In the vast majority of cases, it will be better to do writes as a task, with the M(community.hashi_vault.vault_write) module.
+    - The lookup can be used in cases where you need a value directly in templating, but there is risk of executing the write many times uintentionally.
+    - The lookup is best used for endpoints that directly manipulate the input data and return a value, while not changing state in Vault.
+    - See the R(Lookup Guide,ansible_collections.community.hashi_vault.docsite.lookup_guide) for more information.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.connection.plugins
@@ -40,55 +47,64 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Write a value to the cubbyhole
+# These examples show some uses that might work well as a lookup.
+# For most uses, the vault_write module should be used.
+
+- name: Retrieve and display random data
   vars:
     data:
-      key1: val1
-      key2: val2
+      format: hex
+    num_bytes: 64
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_write', 'cubbyhole/mysecret', data=data, url='https://vault:8201') }}"
+    msg: "{{ lookup('community.hashi_vault.vault_write', 'sys/tools/random/' ~ num_bytes, data=data) }}"
 
-- name: Retrieve an approle role ID
-  ansible.builtin.set_fact:
-    role_id: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
-
-- name: Generate a secret-id for the given approle
-  ansible.builtin.set_fact:
-    secret_id: "{{ lookup('community.hashi_vault.vault_write', 'auth/approle/role/role-name/secret-id', url='https://vault:8201') }}"
-
-- name: Perform multiple writes with a single Vault login (use approle from above)
+- name: Hash some data and display the hash
   vars:
-    paths:
-      - secret/data/hello
-      - cubbyhole/secret9
-      - cubbyhole/secret7
-    role_id: '{{ role_id.data.role_id }}'
-    secret_id: '{{ secret_id.data.secret_id }}'
+    input: |
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      Pellentesque posuere dui a ipsum dapibus, et placerat nibh bibendum.
     data:
-      key1: val1
-      key2: val2
+      input: '{{ input | b64encode }}'
+    hash_algo: sha2-256
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_write', *paths, data=data, auth_method='approle', role_id=role_id, secret_id=secret_id) }}"
+    msg: "The hash is {{ lookup('community.hashi_vault.vault_write', 'sys/tools/hash/' ~ hash_algo, data=data) }}"
 
-- name: Perform multiple writes with a single Vault login in a loop (use approle from above)
+
+# In this next example, the Ansible controller's token does not have permission to read the secrets we need.
+# It does have permission to generate new secret IDs for an approle which has permission to read the secrets,
+# however the approle is configured to:
+# 1) allow a maximum of 1 use per secret ID
+# 2) restrict the IPs allowed to use login using the approle to those of the remote hosts
+#
+# Normally, the fact that a new secret ID would be generated on every loop iteration would not be desirable,
+# but here it's quite convenient.
+
+- name: Retrieve secrets from the remote host with one-time-use approle creds
   vars:
-    paths:
-      - secret/data/hello
-      - cubbyhole/secret9
-      - cubbyhole/secret7
-    ansible_hashi_vault_auth_method: approle
-    ansible_hashi_vault_username: '{{ role_id.data.role_id }}'
-    ansible_hashi_vault_password: '{{ secret_id.data.secret_id }}'
-    data:
-      key1: val1
-      key2: val2
-  ansible.builtin.debug:
-    msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_write', *paths, data=data) }}"
+    role_id: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id') }}"
+    secret_id: "{{ lookup('community.hashi_vault.vault_write', 'auth/approle/role/role-name/secret-id') }}"
+  community.hashi_vault.vault_read:
+    auth_method: approle
+    role_id: '{{ role_id }}'
+    secret_id: '{{ secret_id }}'
+    path: '{{ item }}'
+  register: secret_data
+  loop:
+    - secret/data/secret1
+    - secret/data/app/deploy-key
+    - secret/data/access-codes/self-destruct
 
-- name: Generate a wrapped secret-id for an approle
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_write', 'auth/approle/role/role-name/secret-id', wrap_ttl='5m', url='https://vault:8201') }}"
+
+# This time we have a secret values on the controller, and we need to run a command the remote host,
+# that is expecting to a use single-use token as input, so we need to use wrapping to send the data.
+
+- name: Run a command that needs wrapped secrets
+  vars:
+    secrets:
+      secret1: '{{ my_secret_1 }}'
+      secret2: '{{ second_secret }}'
+    wrapped: "{{ lookup('community.hashi_vault.vault_write', 'sys/wrapping/wrap', data=secrets) }}"
+  ansible.builtin.command: 'vault unwrap {{ wrapped }}'
 """
 
 RETURN = """
