@@ -21,6 +21,7 @@ DOCUMENTATION = """
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
     - module: community.hashi_vault.vault_read
     - ref: community.hashi_vault Lookup Guide <ansible_collections.community.hashi_vault.docsite.lookup_guide>
+      description: Guidance on using lookups in C(community.hashi_vault).
   notes:
     - C(vault_write) is a generic plugin to do operations that do not yet have a dedicated plugin. Where a specific plugin exists, that should be used instead.
     - In the vast majority of cases, it will be better to do writes as a task, with the M(community.hashi_vault.vault_write) module.
