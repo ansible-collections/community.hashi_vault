@@ -25,7 +25,7 @@ DOCUMENTATION = """
   seealso:
     - ref: community.hashi_vault.vault_write lookup <ansible_collections.community.hashi_vault.vault_write_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_write) lookup plugin.
-    - module: vault_read
+    - module: community.hashi_vault.vault_read
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
   extends_documentation_fragment:
