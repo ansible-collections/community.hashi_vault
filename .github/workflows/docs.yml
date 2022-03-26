@@ -17,6 +17,7 @@ jobs:
     name: Build Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-pr.yml@main
     with:
+      ansible-ref: devel
       init-dest-dir: docs/preview
       render-file-line: '> * `$<status>` [$<path_tail>](https://community-hashi-vault-pr${{ github.event.number }}.surge.sh/$<path_tail>)'
 
