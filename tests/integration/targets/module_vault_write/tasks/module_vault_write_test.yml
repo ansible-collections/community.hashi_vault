@@ -1,0 +1,104 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    vault_ci_read: &defaults
+      url: '{{ vault_test_server_http }}'
+      token: '{{ user_token }}'
+    community.hashi_vault.vault_write:
+      <<: *defaults
+      auth_method: token
+  block:
+    - name: Write data to the cubbyhole (check mode)
+      register: result
+      check_mode: true
+      community.hashi_vault.vault_write:
+        path: cubbyhole/secret1
+        data:
+          a: 1
+          b: two
+
+    - assert:
+        that:
+          - result is changed
+          - result.data == {}
+
+    - name: Check that written data does not exist
+      register: result
+      vault_ci_read:
+        path: cubbyhole/secret1
+
+    - assert:
+        that:
+          - result.result == None
+
+    - name: Write data to the cubbyhole
+      register: result
+      community.hashi_vault.vault_write:
+        path: cubbyhole/secret1
+        data:
+          a: 1
+          b: two
+
+    - assert:
+        that:
+          - result is changed
+          - result.data == {}
+
+    - name: Check that written data exists
+      register: result
+      vault_ci_read:
+        path: cubbyhole/secret1
+
+    - assert:
+        that:
+          - "'result' in result"
+          - "'data' in result.result"
+          - "result.result.data == {'a': 1, 'b': 'two'}"
+
+    - name: Write data to an endpoint that returns data and test wrapping
+      register: result
+      community.hashi_vault.vault_write:
+        path: sys/wrapping/wrap
+        wrap_ttl: 5m
+        data:
+          program: kif1
+
+    - assert:
+        that:
+          - result is changed
+          - "'data' in result"
+          - "'wrap_info' in result.data"
+          - result.data.wrap_info.ttl == 300
+
+    ### failure tests
+
+    - name: Failure expected when erroneous credentials are used
+      register: test_wrong_cred
+      community.hashi_vault.vault_write:
+        path: "cubbyhole/secret2"
+        token: wrong_token
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_wrong_cred is failed
+          - test_wrong_cred.msg is search('Invalid Vault Token')
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    - name: Failure expected when unauthorized path is written to
+      register: test_unauthorized
+      community.hashi_vault.vault_write:
+        path: "sys/audit/file"
+        data:
+          type: file
+          options:
+            file_path: /dev/null
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_unauthorized is failed
+          - test_unauthorized.msg is search('Permission Denied')
+        fail_msg: "Expected failure but got success or wrong failure message."

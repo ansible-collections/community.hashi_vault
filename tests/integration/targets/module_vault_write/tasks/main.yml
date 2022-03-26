@@ -1,0 +1,3 @@
+---
+- import_tasks: module_vault_write_setup.yml
+- import_tasks: module_vault_write_test.yml
