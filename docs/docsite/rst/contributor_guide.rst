@@ -19,6 +19,8 @@ This guide aims to help anyone who wishes to contribute to the ``community.hashi
 Quick start
 ===========
 
+DELETEME
+
 #. Log into your GitHub account.
 #. Fork the `ansible-collections/community.hashi_vault repository <https://github.com/ansible-collections/community.hashi_vault>`_ by clicking the **Fork** button in the upper right corner. This will create a fork in your own account.
 #. Clone the repository locally, following :ref:`the example instructions here <hacking_collections>` (but replace ``general`` with ``hashi_vault``). **Pay special attention to the local path structure** of the cloned repository as described in those instructions (for example ``ansible_collections/community/hashi_vault``).
