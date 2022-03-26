@@ -18,6 +18,8 @@ jobs:
     with:
       ansible-ref: devel
       init-dest-dir: docs/preview
+      init-lenient: false
+      init-fail-on-error: true
 
   publish-docs:
     # for now we won't run this on forks

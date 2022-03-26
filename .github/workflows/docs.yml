@@ -11,6 +11,22 @@ env:
   SURGE_MAIN_SITE: community-hashi-vault-main.surge.sh
 
 jobs:
+  # this job builds with the most strict options to ensure full compliance
+  validate-docs:
+    permissions:
+      contents: read
+    name: Build Ansible Docs
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
+    with:
+      init-dest-dir: docs/preview
+      init-lenient: false
+      init-fail-on-error: true
+      artifact-name: _unused
+
+  # this job builds for the PR comparison and publish, so use the most lenient options
+  # to give the best possibility of producing a publishable build; the strict buil will
+  # still result in a failure for the PR as a whole, but for review a partial docsite is
+  # better than none.
   build-docs:
     permissions:
       contents: read
@@ -19,6 +35,8 @@ jobs:
     with:
       ansible-ref: devel
       init-dest-dir: docs/preview
+      init-lenient: true
+      init-fail-on-error: false
       render-file-line: '> * `$<status>` [$<path_tail>](https://community-hashi-vault-pr${{ github.event.number }}.surge.sh/$<path_tail>)'
 
   publish-docs:
