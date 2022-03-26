@@ -16,6 +16,7 @@ jobs:
     name: Build Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
     with:
+      ansible-ref: devel
       init-dest-dir: docs/preview
 
   publish-docs:
