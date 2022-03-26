@@ -35,6 +35,8 @@ DOCUMENTATION = """
     - community.hashi_vault.auth
     - community.hashi_vault.auth.plugins
     - community.hashi_vault.token_create
+    - community.hashi_vault.wrapping
+    - community.hashi_vault.wrapping.plugins
   options:
     _terms:
       description: This is unused and any terms supplied will be ignored.

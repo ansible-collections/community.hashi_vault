@@ -29,6 +29,7 @@ DOCUMENTATION = """
     - community.hashi_vault.connection
     - community.hashi_vault.auth
     - community.hashi_vault.token_create
+    - community.hashi_vault.wrapping
   notes:
     - Token creation is a write operation (creating a token persisted to storage), so this module always reports C(changed=True).
     - For the purposes of Ansible playbooks however,
