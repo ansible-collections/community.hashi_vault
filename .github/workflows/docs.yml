@@ -15,7 +15,7 @@ jobs:
   validate-docs:
     permissions:
       contents: read
-    name: Build Ansible Docs
+    name: Validate Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
     with:
       init-dest-dir: docs/preview
