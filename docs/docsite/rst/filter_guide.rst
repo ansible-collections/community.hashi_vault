@@ -12,6 +12,8 @@ Filter guide
 
 .. versionadded:: 2.2.0
 
+oh Oh OH Oh OHHHHHH Oh oh Oh ohhhh, oh Oh OH, caught in a :ref:`bad reference <ansible_collections.community.hashi_vault.vault_bad_reference>`
+
 The ``vault_login_token`` filter extracts the token value from the structure returned by a Vault token creation operation, such as those returned by the ``community.hashi_vault.vault_login`` :ref:`module <ansible_collections.community.hashi_vault.vault_login_module>` or :ref:`lookup plugin <ansible_collections.community.hashi_vault.vault_login_lookup>`, or the ``community.hashi_vault.vault_token_create`` :ref:`module <ansible_collections.community.hashi_vault.vault_token_create_module>` or :ref:`lookup plugin <ansible_collections.community.hashi_vault.vault_token_create_lookup>`.
 
 The filter takes an optional parameter ``optional_field`` with defaults to ``login``. If this field exists in the input dictionary, then the value of that field is taken the be the login response, rather than the input dictionary itself.
