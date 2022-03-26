@@ -92,7 +92,4 @@ options:
       - Only works in combination with I(role_name) option and used entity alias must be listed in C(allowed_entity_aliases).
       - If this has been specified, the entity will not be inherited from the parent.
     type: str
-  wrap_ttl:
-    description: Specifies response wrapping token creation with duration. For example C(15s), C(20m), C(25h).
-    type: str
 '''
