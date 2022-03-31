@@ -381,3 +381,18 @@ releases:
         name: vault_token_create
         namespace: null
     release_date: '2022-02-15'
+  2.4.0:
+    changes:
+      release_summary: Our first content for writing to Vault is now live.
+    fragments:
+    - 2.4.0.yml
+    modules:
+    - description: Perform a write operation against HashiCorp Vault
+      name: vault_write
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Perform a write operation against HashiCorp Vault
+        name: vault_write
+        namespace: null
+    release_date: '2022-03-31'

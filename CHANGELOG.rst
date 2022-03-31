@@ -5,6 +5,27 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v2.4.0
+======
+
+Release Summary
+---------------
+
+Our first content for writing to Vault is now live.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- vault_write - Perform a write operation against HashiCorp Vault
+
+New Modules
+-----------
+
+- vault_write - Perform a write operation against HashiCorp Vault
+
 v2.3.0
 ======
 
