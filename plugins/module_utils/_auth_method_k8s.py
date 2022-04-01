@@ -38,7 +38,7 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
                     self._options.set_option('kubernetes_token', token_file.read().strip())
 
         if self._options.get_option('kubernetes_token') is None:
-            raise HashiVaultValueError(self._options.get_option_default('kubernetes_token_path') + 
+            raise HashiVaultValueError(self._options.get_option_default('kubernetes_token_path') +
                                        " No Kubernetes Token specified or discovered.")
 
     def authenticate(self, client, use_token=True):
