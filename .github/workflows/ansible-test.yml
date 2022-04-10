@@ -182,7 +182,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
@@ -306,6 +306,7 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
+          - stable-2.12
           - stable-2.13
         python:
           - 3.9
@@ -320,6 +321,15 @@ jobs:
           # - https://github.com/actions/virtual-environments/pull/4010
         test_container:
           - default
+        exclude:
+          # To add to the fragility of testing docker stuff on MacOS,
+          # stable-2.13 test containers crash; unsure of exact cause
+          # but likely due to old versions of the runtimes.
+          # We'll just stick to 2.12 for now, better than nothing.
+          - runner: macos-10.15
+            ansible: stable-2.13
+          - runner: ubuntu-latest
+            ansible: stable-2.12
 
     steps:
       - name: Initialize env vars
