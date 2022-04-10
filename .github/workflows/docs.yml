@@ -12,31 +12,58 @@ env:
 
 jobs:
   # this job builds with the most strict options to ensure full compliance
+  # does not use the collection's committed sphinx-init output
+  # we can't currently use the "push" shared workflow, because we have no way
+  # to override its ref.
   validate-docs:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     name: Validate Ansible Docs
-    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
-    with:
-      init-dest-dir: docs/preview
-      init-lenient: false
-      init-fail-on-error: true
-      artifact-name: _unused
+    env:
+      ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
+    if: github.event.action != 'closed'
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      - name: Install Ansible
+        run: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ github.event.number }}/merge
+          path: ansible_collections/community/hashi_vault
+
+      - name: Initialize the build environment
+        id: init
+        uses: ansible-community/github-docs-build/actions/ansible-docs-build-init@main
+        with:
+          collections: community.hashi_vault
+          lenient: false
+          fail-on-error: true
+
+      - name: Build
+        id: build
+        uses: ansible-community/github-docs-build/actions/ansible-docs-build-html@main
+        with:
+          artifact-upload: false
 
   # this job builds for the PR comparison and publish, so use the most lenient options
-  # to give the best possibility of producing a publishable build; the strict buil will
+  # to give the best possibility of producing a publishable build; the strict build will
   # still result in a failure for the PR as a whole, but for review a partial docsite is
   # better than none.
+  # This uses the committed sphinx-init output which already has the lenient options.
   build-docs:
     permissions:
       contents: read
     name: Build Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-pr.yml@main
     with:
-      ansible-ref: devel
       init-dest-dir: docs/preview
-      init-lenient: true
-      init-fail-on-error: false
       render-file-line: '> * `$<status>` [$<path_tail>](https://community-hashi-vault-pr${{ github.event.number }}.surge.sh/$<path_tail>)'
 
   publish-docs:

@@ -10,23 +10,33 @@ on:
     - cron: '0 13 * * *'
 
 jobs:
+  validate-docs:
+    permissions:
+      contents: read
+    name: Validate Ansible Docs
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
+    with:
+      init-lenient: false
+      init-fail-on-error: true
+      artifact-name: _unused
+
   build-docs:
     permissions:
       contents: read
     name: Build Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
     with:
-      ansible-ref: devel
       init-dest-dir: docs/preview
-      init-lenient: false
-      init-fail-on-error: true
+      # Although we want this to be the most strict, we can't currently achieve this
+      # with the committed init-dest-dir, hence the validate-docs job, which will
+      # prevent publish from running in the case of failures.
 
   publish-docs:
     # for now we won't run this on forks
     if: github.repository == 'ansible-collections/community.hashi_vault'
     permissions:
       contents: read
-    needs: build-docs
+    needs: [validate-docs, build-docs]
     name: Publish Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-surge.yml@main
     with:
