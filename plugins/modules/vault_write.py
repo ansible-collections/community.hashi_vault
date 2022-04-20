@@ -61,6 +61,14 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ result.data }}"
 
+- name: Write secret to Vault using key value V2 engine
+  community.hashi_vault.vault_write:
+    path: secret/data/mysecret
+    data:
+      data:
+        key1: val1
+        key2: val2
+
 - name: Retrieve an approle role ID from Vault via the remote host
   community.hashi_vault.vault_read:
     url: https://vault:8201
