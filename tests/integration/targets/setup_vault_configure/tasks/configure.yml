@@ -13,12 +13,12 @@
     options:
       version: 2
 
-- name: 'Create a test policy'
+- name: Create a test policy
   vault_ci_policy_put:
     name: test-policy
     policy: "{{ vault_test_policy }}"
 
-- name: 'Create an alternate policy'
+- name: Create an alternate policy
   vault_ci_policy_put:
     name: alt-policy
     policy: "{{ vault_alt_policy }}"
@@ -32,6 +32,11 @@
   vault_ci_policy_put:
     name: orphan-creator
     policy: '{{ vault_orphan_creator_policy }}'
+
+- name: Create a policy allowing access to invalid kv2 paths
+  vault_ci_policy_put:
+    name: invalid-kv2
+    policy: '{{ vault_invalid_kv2_path_policy }}'
 
 - name: 'Create KV v1 secrets'
   loop: [1, 2, 3]

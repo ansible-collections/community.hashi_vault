@@ -25,6 +25,10 @@ vault_base_policy: |
   path "{{ vault_kv1_api_path }}/secret3" {
     capabilities = ["deny"]
   }
+  path "{{ vault_kv1_api_path }}/non_existent_secret" {
+    capabilities = ["read"]
+  }
+
   path "{{ vault_kv2_api_path }}/secret1" {
     capabilities = ["read"]
   }
@@ -64,6 +68,11 @@ vault_orphan_creator_policy: |
   }
   path "auth/token/create-orphan" {
     capabilities = ["create", "update", "sudo"]
+  }
+
+vault_invalid_kv2_path_policy: |
+  path "{{ vault_kv2_mount_point }}/{{ vault_kv2_path }}/*" {
+    capabilities = ["read"]
   }
 
 # the purpose of these policies is to catch when the plugin accepts mount_point but does not pass
