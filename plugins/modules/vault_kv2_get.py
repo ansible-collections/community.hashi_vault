@@ -21,8 +21,9 @@ seealso:
   - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
     description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
   - module: community.hashi_vault.read
-  - name: KV Secrets Engine
-    link: https://www.vaultproject.io/docs/secrets/kv
+  - name: KV2 Secrets Engine
+    description: Documentation for the Vault KV secrets engine, version 2.
+    link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
 extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
@@ -83,7 +84,7 @@ raw:
         custom_metadata": null
         deletion_time": ""
         destroyed": false
-        version": 1
+        version": 2
     lease_duration: 0
     lease_id: ""
     renewable: false
@@ -103,7 +104,7 @@ data:
       custom_metadata": null
       deletion_time": ""
       destroyed": false
-      version": 1
+      version": 2
 secret:
   description: The C(data) field within the C(data) field. Equivalent to C(raw.data.data).
   returned: success
@@ -120,7 +121,7 @@ metadata:
     custom_metadata": null
     deletion_time": ""
     destroyed": false
-    version": 1
+    version": 2
 '''
 
 import traceback
@@ -178,12 +179,9 @@ def run_module():
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid Path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
+            msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
             exception=traceback.format_exc()
         )
-
-    if raw is None:
-        module.fail_json(msg="The path '%s' doesn't seem to exist." % path)
 
     data = raw['data']
     metadata = data['metadata']
