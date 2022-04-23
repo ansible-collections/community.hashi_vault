@@ -138,6 +138,6 @@ class TestVaultKv1GetLookup(object):
         assert match is not None, "result: %r\ndid not match: %s" % (e.value, exc[2])
 
         try:
-            assert path == match.group(1)
+            assert path == match.group(1), "expected: %s\ngot: %s" % (match.group(1), path)
         except IndexError:
             pass
