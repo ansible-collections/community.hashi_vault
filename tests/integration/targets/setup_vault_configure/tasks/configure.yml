@@ -74,6 +74,29 @@
       value2: foo2
       value3: foo3
 
+- name: Remove existing two-versioned secret
+  vault_ci_kv2_destroy_all:
+    mount_point: '{{ vault_kv2_mount_point }}'
+    path: '{{ vault_kv2_versioned_path }}/twover'
+
+- name: Set up a two-versioned secret (v1)
+  vault_ci_kv_put:
+    version: 2
+    mount_point: '{{ vault_kv2_mount_point }}'
+    path: '{{ vault_kv2_versioned_path }}/twover'
+    secret:
+      a: one
+      v: 1
+
+- name: Set up a two-versioned secret (v2)
+  vault_ci_kv_put:
+    version: 2
+    mount_point: '{{ vault_kv2_mount_point }}'
+    path: '{{ vault_kv2_versioned_path }}/twover'
+    secret:
+      a: two
+      v: 2
+
 - name: 'Write Canary'
   vault_ci_write:
     path: '{{ vault_configure_canary.path }}'

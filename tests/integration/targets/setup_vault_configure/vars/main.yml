@@ -11,9 +11,11 @@ vault_kv2_mount_point: kv2
 
 vault_kv2_path: testproject
 vault_kv2_multi_path: testmulti
+vault_kv2_versioned_path: versioned
 
 vault_kv2_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_path }}'
 vault_kv2_multi_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_multi_path }}'
+vault_kv2_versioned_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_versioned_path }}'
 
 vault_base_policy: |
   path "{{ vault_kv1_api_path }}/secret1" {
@@ -45,6 +47,9 @@ vault_base_policy: |
     capabilities = ["read", "update"]
   }
   path "{{ vault_kv2_api_path }}/non_existent_secret" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_kv2_versioned_api_path }}/*" {
     capabilities = ["read"]
   }
 
