@@ -93,6 +93,7 @@ class TestModuleVaultKv1Get():
         expected['raw'] = kv1_get_response.copy()
         expected['metadata'] = kv1_get_response.copy()
         expected['data'] = expected['metadata'].pop('data')
+        expected['secret'] = expected['data']
 
         with pytest.raises(SystemExit) as e:
             vault_kv1_get.main()
@@ -127,7 +128,7 @@ class TestModuleVaultKv1Get():
     @pytest.mark.parametrize(
         'exc',
         [
-            (hvac.exceptions.Forbidden, "", r'^Forbidden: Permission Denied to path'),
+            (hvac.exceptions.Forbidden, "", r"^Forbidden: Permission Denied to path \['([^']+)'\]"),
             (
                 hvac.exceptions.InvalidPath,
                 "Invalid path for a versioned K/V secrets engine",
@@ -135,8 +136,9 @@ class TestModuleVaultKv1Get():
             (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['[^']+'\]"),
         ]
     )
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_kv1_get_vault_exception(self, vault_client, exc, capfd):
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'path']], indirect=True)
+    @pytest.mark.parametrize('opt_path', ['path/1', 'second/path'])
+    def test_vault_kv1_get_vault_exception(self, vault_client, exc, opt_path, capfd):
 
         client = vault_client
         client.secrets.kv.v1.read_secret.side_effect = exc[0](exc[1])
@@ -148,4 +150,10 @@ class TestModuleVaultKv1Get():
         result = json.loads(out)
 
         assert e.value.code != 0, "result: %r" % (result,)
-        assert re.search(exc[2], result['msg']) is not None
+        match = re.search(exc[2], result['msg'])
+        assert match is not None, "result: %r\ndid not match: %s" % (result, exc[2])
+
+        try:
+            assert opt_path == match.group(1)
+        except IndexError:
+            pass
