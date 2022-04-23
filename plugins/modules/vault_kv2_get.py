@@ -176,7 +176,7 @@ def run_module():
     try:
         raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=backend_mount_point)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
             msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
