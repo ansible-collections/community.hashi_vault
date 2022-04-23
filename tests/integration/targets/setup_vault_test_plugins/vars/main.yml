@@ -10,6 +10,7 @@ vault_plugins_module_defaults:
   vault_ci_enable_auth: '{{ vault_plugins_module_defaults_common }}'
   vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
   vault_ci_kv_put: '{{ vault_plugins_module_defaults_common }}'
+  vault_ci_kv2_destroy_all: '{{ vault_plugins_module_defaults_common }}'
   vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
   vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
   vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
