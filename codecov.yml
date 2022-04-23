@@ -11,6 +11,14 @@ flags:
     paths:
       - plugins/filter/vault_login_token.py
 
+  target_module_vault_kv1_get:
+    paths:
+      - plugins/modules/vault_kv1_get.py
+
+  target_module_vault_kv2_get:
+    paths:
+      - plugins/modules/vault_kv2_get.py
+
   target_module_vault_login:
     paths:
       - plugins/modules/vault_login.py
