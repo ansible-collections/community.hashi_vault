@@ -47,7 +47,7 @@ def kv1_get_response(fixture_loader):
     return fixture_loader('kv1_get_response.json')
 
 
-class TestVaultWriteLookup(object):
+class TestVaultKv1GetLookup(object):
 
     def test_vault_kv1_get_is_lookup_base(self, vault_kv1_get_lookup):
         assert issubclass(type(vault_kv1_get_lookup), HashiVaultLookupBase)
@@ -124,19 +124,20 @@ class TestVaultWriteLookup(object):
             (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['[^']+'\]"),
         ]
     )
-    @pytest.mark.parametrize('backend_mount_point', ['kv', 'other'])
     @pytest.mark.parametrize('path', ['path/1', 'second/path'])
-    def test_vault_kv1_get_exceptions(self, vault_kv1_get_lookup, minimal_vars, vault_client, path, backend_mount_point, exc):
+    def test_vault_kv1_get_exceptions(self, vault_kv1_get_lookup, minimal_vars, vault_client, path, exc):
         client = vault_client
 
         client.secrets.kv.v1.read_secret.side_effect = exc[0](exc[1])
 
-        match = re.compile(exc[2])
+        with pytest.raises(AnsibleError) as e:
+            vault_kv1_get_lookup.run(terms=[path], variables=minimal_vars)
 
-        with pytest.raises(AnsibleError, match=match):
-            vault_kv1_get_lookup.run(terms=[path], variables=minimal_vars, backend_mount_point=backend_mount_point)
+        match = re.search(exc[2], str(e.value))
+
+        assert match is not None, "result: %r\ndid not match: %s" % (e.value, exc[2])
 
         try:
-            assert path == match.group(1)
+            assert path == match.groups()[1]
         except IndexError:
             pass
