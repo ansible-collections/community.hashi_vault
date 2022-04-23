@@ -160,10 +160,7 @@ class TestModuleVaultKv2Get():
         match = re.search(exc[2], result['msg'])
         assert match is not None, "result: %r\ndid not match: %s" % (result, exc[2])
 
-        try:
-            assert opt_path == match.group(1)
-        except IndexError:
-            pass
+        assert opt_path == match.group(1)
 
         try:
             assert (opt_version is None) == (match.group(2) == 'latest')
