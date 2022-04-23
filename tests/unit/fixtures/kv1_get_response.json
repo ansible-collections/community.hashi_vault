@@ -1,0 +1,13 @@
+{
+    "auth": null,
+    "data": {
+        "Key1": "val1",
+        "Key2": "val2"
+    },
+    "lease_duration": 2764800,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "e26a7521-e512-82f1-3998-7cc494f14e86",
+    "warnings": null,
+    "wrap_info": null
+}
