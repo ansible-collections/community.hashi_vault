@@ -139,7 +139,8 @@ class TestModuleVaultKv2Get():
             (
                 hvac.exceptions.InvalidPath,
                 "",
-                r"^Invalid or missing path \['([^']+)'\] with secret version '(\d+|latest)'. Check the path or secret version"),
+                r"^Invalid or missing path \['([^']+)'\] with secret version '(\d+|latest)'. Check the path or secret version"
+            ),
         ]
     )
     @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'path', 'version']], indirect=True)

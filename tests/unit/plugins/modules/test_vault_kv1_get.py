@@ -132,7 +132,8 @@ class TestModuleVaultKv1Get():
             (
                 hvac.exceptions.InvalidPath,
                 "Invalid path for a versioned K/V secrets engine",
-                r"^Invalid path for a versioned K/V secrets engine \['[^']+'\]. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get"),
+                r"^Invalid path for a versioned K/V secrets engine \['[^']+'\]. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get"
+            ),
             (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['[^']+'\]"),
         ]
     )
