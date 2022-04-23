@@ -21,8 +21,9 @@ seealso:
   - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
     description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
   - module: community.hashi_vault.read
-  - name: KV Secrets Engine
-    link: https://www.vaultproject.io/docs/secrets/kv
+  - name: KV1 Secrets Engine
+    description: Documentation for the Vault KV secrets engine, version 1.
+    link: https://www.vaultproject.io/docs/secrets/kv/kv-v1
 extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
@@ -162,12 +163,9 @@ def run_module():
         if 'Invalid path for a versioned K/V secrets engine' in to_native(e):
             msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
         else:
-            msg="Invalid Path ['%s']."
+            msg = "Invalid or missing path ['%s']."
 
         module.fail_json(msg=msg % (path,), exception=traceback.format_exc())
-
-    if raw is None:
-        module.fail_json(msg="The path '%s' doesn't seem to exist." % path)
 
     metadata = raw.copy()
     data = metadata.pop('data')
