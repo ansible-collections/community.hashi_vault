@@ -46,46 +46,62 @@ options:
     type: int
 '''
 
-EXAMPLES = """
-- name: Read a kv2 secret
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'secret/data/hello', url='https://vault:8201') }}"
+EXAMPLES = r'''
+- name: Read a kv2 secret with the default mount point
+  ansible.builtin.set_fact:
+    response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'hello', url='https://vault:8201') }}"
+  # equivalent API path is secret/data/hello
 
-- name: Retrieve an approle role ID
+- name: Display the results
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (contains secret data & metadata in kv2)"
+      - "Metadata: {{ response.metadata }}"
+      - "Full response: {{ response.raw }}"
+      - "Value of key 'password' in the secret: {{ response.secret.password }}"
 
-- name: Perform multiple reads with a single Vault login
+- name: Read version 5 of a kv2 secret with a different mount point
+  ansible.builtin.set_fact:
+    response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'hello', version=5, backend_mount_point='custom/kv2/mount', url='https://vault:8201') }}"
+  # equivalent API path is custom/kv2/mount/data/hello
+
+- name: Assert that the version returned is as expected
+  ansible.builtin.assert:
+    that:
+      - response.metadata.version == 5
+
+- name: Perform multiple kv2 reads with a single Vault login, showing the secrets
   vars:
     paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - hello
+      - my-secret/one
+      - my-secret/two
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+    msg: "{{ lookup('community.hashi_vault.vault_kv2_get', *paths, auth_method='userpass', username=user, password=pwd)['secret'] }}"
 
-- name: Perform multiple reads with a single Vault login in a loop
+- name: Perform multiple kv2 reads with a single Vault login in a loop
   vars:
     paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - hello
+      - my-secret/one
+      - my-secret/two
   ansible.builtin.debug:
     msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+  loop: "{{ query('community.hashi_vault.vault_kv2_get', *paths, auth_method='userpass', username=user, password=pwd) }}"
 
-- name: Perform multiple reads with a single Vault login in a loop (via with_)
+- name: Perform multiple kv2 reads with a single Vault login in a loop (via with_), display values only
   vars:
     ansible_hashi_vault_auth_method: userpass
     ansible_hashi_vault_username: '{{ user }}'
     ansible_hashi_vault_password: '{{ pwd }}'
   ansible.builtin.debug:
-    msg: '{{ item }}'
-  with_community.hashi_vault.vault_read:
-    - secret/data/hello
-    - auth/approle/role/role-one/role-id
-    - auth/approle/role/role-two/role-id
-"""
+    msg: '{{ item.values() | list }}'
+  with_community.hashi_vault.vault_kv2_get:
+    - hello
+    - my-secret/one
+    - my-secret/two
+'''
 
 RETURN = r'''
 _raw:

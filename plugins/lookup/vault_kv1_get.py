@@ -20,6 +20,8 @@ seealso:
   - ref: community.hashi_vault.vault_kv2_get lookup <ansible_collections.community.hashi_vault.vault_kv2_get_lookup>
     description: The official documentation for the C(community.hashi_vault.vault_kv2_get) lookup plugin.
   - module: community.hashi_vault.vault_kv2_get
+  - ref: community.hashi_vault Lookup Guide <ansible_collections.community.hashi_vault.docsite.lookup_guide>
+    description: Guidance on using lookups in C(community.hashi_vault).
   - name: KV1 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 1.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v1
@@ -41,46 +43,66 @@ options:
     default: kv
 '''
 
-EXAMPLES = """
-- name: Read a kv2 secret
-  ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'secret/data/hello', url='https://vault:8201') }}"
+EXAMPLES = r'''
+- name: Read a kv1 secret with the default mount point
+  ansible.builtin.set_fact:
+    response: "{{ lookup('community.hashi_vault.vault_kv1_get', 'hello', url='https://vault:8201') }}"
+  # equivalent API path is kv/hello
 
-- name: Retrieve an approle role ID
+- name: Display the results
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (same as secret in kv1)"
+      - "Metadata: {{ response.metadata }} (response info in kv1)"
+      - "Full response: {{ response.raw }}"
+      - "Value of key 'password' in the secret: {{ response.secret.password }}"
 
-- name: Perform multiple reads with a single Vault login
+- name: Read a kv1 secret with a different mount point
+  ansible.builtin.set_fact:
+    response: "{{ lookup('community.hashi_vault.vault_kv1_get', 'hello', backend_mount_point='custom/kv1/mount', url='https://vault:8201') }}"
+  # equivalent API path is custom/kv1/mount/hello
+
+- name: Display the results
+  ansible.builtin.debug:
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (same as secret in kv1)"
+      - "Metadata: {{ response.metadata }} (response info in kv1)"
+      - "Full response: {{ response.raw }}"
+      - "Value of key 'password' in the secret: {{ response.secret.password }}"
+
+- name: Perform multiple kv1 reads with a single Vault login, showing the secrets
   vars:
     paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - hello
+      - my-secret/one
+      - my-secret/two
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+    msg: "{{ lookup('community.hashi_vault.vault_kv1_get', *paths, auth_method='userpass', username=user, password=pwd)['secret'] }}"
 
-- name: Perform multiple reads with a single Vault login in a loop
+- name: Perform multiple kv1 reads with a single Vault login in a loop
   vars:
     paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - hello
+      - my-secret/one
+      - my-secret/two
   ansible.builtin.debug:
     msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+  loop: "{{ query('community.hashi_vault.vault_kv1_get', *paths, auth_method='userpass', username=user, password=pwd) }}"
 
-- name: Perform multiple reads with a single Vault login in a loop (via with_)
+- name: Perform multiple kv1 reads with a single Vault login in a loop (via with_), display values only
   vars:
     ansible_hashi_vault_auth_method: userpass
     ansible_hashi_vault_username: '{{ user }}'
     ansible_hashi_vault_password: '{{ pwd }}'
   ansible.builtin.debug:
-    msg: '{{ item }}'
-  with_community.hashi_vault.vault_read:
-    - secret/data/hello
-    - auth/approle/role/role-one/role-id
-    - auth/approle/role/role-two/role-id
-"""
+    msg: '{{ item.values() | list }}'
+  with_community.hashi_vault.vault_kv1_get:
+    - hello
+    - my-secret/one
+    - my-secret/two
+'''
 
 RETURN = r'''
 _raw:

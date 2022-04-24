@@ -43,30 +43,40 @@ options:
     type: int
 '''
 
-EXAMPLES = """
-- name: Read a kv2 secret from Vault via the remote host with userpass auth
-  community.hashi_vault.vault_read:
+EXAMPLES = r'''
+- name: Read the latest version of a kv2 secret from Vault via the remote host with userpass auth
+  community.hashi_vault.vault_kv2_get:
     url: https://vault:8201
-    path: secret/data/hello
+    path: hello
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
-  register: secret
+  register: response
+  # equivalent API path is secret/data/hello
 
-- name: Display the secret data
+- name: Display the results
   ansible.builtin.debug:
-    msg: "{{ secret.data.data.data }}"
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (contains secret data & metadata in kv2)"
+      - "Metadata: {{ response.metadata }}"
+      - "Full response: {{ response.raw }}"
+      - "Value of key 'password' in the secret: {{ response.secret.password }}"
 
-- name: Retrieve an approle role ID from Vault via the remote host
-  community.hashi_vault.vault_read:
+- name: Read version 5 of a secret from kv2 with a different mount via the remote host
+  community.hashi_vault.vault_kv2_get:
     url: https://vault:8201
-    path: auth/approle/role/role-name/role-id
-  register: approle_id
+    backend_mount_path: custom/kv2/mount
+    path: hello
+    version: 5
+  register: response
+  # equivalent API path is custom/kv2/mount/data/hello
 
-- name: Display the role ID
-  ansible.builtin.debug:
-    msg: "{{ approle_id.data.data.role_id }}"
-"""
+- name: Assert that the version returned is as expected
+  ansible.builtin.assert:
+    that:
+      - response.metadata.version == 5
+'''
 
 RETURN = r'''
 raw:

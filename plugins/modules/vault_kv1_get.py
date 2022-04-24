@@ -39,30 +39,42 @@ options:
     required: True
 '''
 
-EXAMPLES = """
-- name: Read a kv2 secret from Vault via the remote host with userpass auth
-  community.hashi_vault.vault_read:
+EXAMPLES = r'''
+- name: Read a kv1 secret from Vault via the remote host with userpass auth
+  community.hashi_vault.vault_kv1_get:
     url: https://vault:8201
-    path: secret/data/hello
+    path: hello
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
-  register: secret
+  register: response
+  # equivalent API path is kv/hello
 
-- name: Display the secret data
+- name: Display the results
   ansible.builtin.debug:
-    msg: "{{ secret.data.data.data }}"
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (same as secret in kv1)"
+      - "Metadata: {{ response.metadata }} (response info in kv1)"
+      - "Full response: {{ response.raw }}"
+      - "Value of key 'password' in the secret: {{ response.secret.password }}"
 
-- name: Retrieve an approle role ID from Vault via the remote host
-  community.hashi_vault.vault_read:
+- name: Read a secret from kv1 with a different mount via the remote host
+  community.hashi_vault.vault_kv1_get:
     url: https://vault:8201
-    path: auth/approle/role/role-name/role-id
-  register: approle_id
+    backend_mount_path: custom/kv1/mount
+    path: hello
+  register: response
+  # equivalent API path is custom/kv1/mount/hello
 
-- name: Display the role ID
+- name: Display the results
   ansible.builtin.debug:
-    msg: "{{ approle_id.data.data.role_id }}"
-"""
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (same as secret in kv1)"
+      - "Metadata: {{ response.metadata }} (response info in kv1)"
+      - "Full response: {{ response.raw }}"
+'''
 
 RETURN = r'''
 raw:
