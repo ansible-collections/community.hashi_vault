@@ -41,6 +41,15 @@
               - kv2_result['metadata'] == kv2_result['data']['metadata']
             fail_msg: 'Return value did not contain expected fields.'
 
+        - name: Check kv2 get (check mode)
+          register: kv2_result
+          community.hashi_vault.vault_kv2_get:
+            path: "{{ vault_kv2_path }}/secret2"
+          check_mode: true
+
+        - assert:
+            that: *assert_basics
+
         - name: Check kv2 versioned (latest)
           register: kv2_result
           community.hashi_vault.vault_kv2_get:

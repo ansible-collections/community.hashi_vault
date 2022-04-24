@@ -30,7 +30,7 @@
             path: "{{ vault_kv1_path }}/secret2"
 
         - assert:
-            that:
+            that: &assert_basics
               - "'raw' in kv1_secret2"
               - "'data' in kv1_secret2"
               - "'metadata' in kv1_secret2"
@@ -39,6 +39,16 @@
               - kv1_secret2['data'] == kv1_secret2['raw']['data']
               - kv1_secret2['secret'] == kv1_secret2['data']
               - kv1_secret2['metadata'] | combine({'data':kv1_secret2['data']}) == kv1_secret2['raw']
+            fail_msg: 'Return value did not contain expected fields.'
+
+        - name: Check kv1 get (check mode)
+          register: kv1_secret2
+          community.hashi_vault.vault_kv1_get:
+            path: "{{ vault_kv1_path }}/secret2"
+          check_mode: true
+
+        - assert:
+            that: *assert_basics
             fail_msg: 'Return value did not contain expected fields.'
 
         ### failure tests
