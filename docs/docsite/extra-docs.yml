@@ -4,6 +4,7 @@ sections:
     toctree:
       - filter_guide
       - user_guide
+      - migration_hashi_vault_lookup
       - about_hashi_vault_lookup
       - lookup_guide
       - contributor_guide
