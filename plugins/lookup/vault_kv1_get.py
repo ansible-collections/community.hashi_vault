@@ -16,9 +16,13 @@ requirements:
 description:
   - Gets a secret from HashiCorp Vault's KV version 1 secret store.
 seealso:
-  - module: community.hashi_vault.vault_read
-  - ref: community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.hashi_vault_lookup>
-    description: The official documentation for the C(community.hashi_vault.hashi_vault) lookup plugin.
+  - module: community.hashi_vault.vault_kv1_get
+  - ref: community.hashi_vault.vault_kv2_get lookup <ansible_collections.community.hashi_vault.vault_kv2_get_lookup>
+    description: The official documentation for the C(community.hashi_vault.vault_kv2_get) lookup plugin.
+  - module: community.hashi_vault.vault_kv2_get
+  - name: KV1 Secrets Engine
+    description: Documentation for the Vault KV secrets engine, version 1.
+    link: https://www.vaultproject.io/docs/secrets/kv/kv-v1
 extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.connection.plugins
