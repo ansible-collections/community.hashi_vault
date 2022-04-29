@@ -5,6 +5,7 @@
       url: '{{ vault_test_server_http }}'
       auth_method: token
       token: '{{ user_token }}'
+      timeout: 5
       ttl: 5m
   block:
     - name: Test with a child token creator

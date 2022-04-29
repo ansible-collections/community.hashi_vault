@@ -7,6 +7,7 @@
       url: '{{ vault_test_server_http }}'
       auth_method: token
       token: '{{ user_token }}'
+      timeout: 5
   block:
     - name: Test defualt path value
       register: default_path

@@ -9,6 +9,7 @@
     community.hashi_vault.vault_write:
       <<: *defaults
       auth_method: token
+      timeout: 5
   block:
     - name: Write data to the cubbyhole (check mode)
       register: result
