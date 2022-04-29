@@ -8,8 +8,23 @@ __metaclass__ = type
 import pytest
 
 from ansible.plugins.loader import lookup_loader
+from ansible.errors import AnsibleError
 
-from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from ...compat import mock
+
+from .....plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
+
+from .....plugins.lookup import vault_read
+
+
+hvac = pytest.importorskip('hvac')
+
+
+pytestmark = pytest.mark.usefixtures(
+    'patch_authenticator',
+    'patch_get_vault_client',
+)
 
 
 @pytest.fixture
@@ -21,3 +36,22 @@ class TestVaultReadLookup(object):
 
     def test_vault_read_is_lookup_base(self, vault_read_lookup):
         assert issubclass(type(vault_read_lookup), HashiVaultLookupBase)
+
+    def test_vault_read_no_hvac(self, vault_read_lookup, minimal_vars):
+        with mock.patch.object(vault_read, 'HVAC_IMPORT_ERROR', new=ImportError()):
+            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
+                vault_read_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    def test_vault_read_authentication_error(self, vault_read_lookup, minimal_vars, authenticator, exc):
+        authenticator.authenticate.side_effect = exc
+
+        with pytest.raises(AnsibleError, match=r'dummy msg'):
+            vault_read_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    def test_vault_read_auth_validation_error(self, vault_read_lookup, minimal_vars, authenticator, exc):
+        authenticator.validate.side_effect = exc
+
+        with pytest.raises(AnsibleError, match=r'dummy msg'):
+            vault_read_lookup.run(terms='fake', variables=minimal_vars)
