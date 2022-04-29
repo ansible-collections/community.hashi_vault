@@ -119,7 +119,6 @@ class TestModuleVaultLogin():
             authenticator.authenticate.assert_called_once_with(vault_client)
             assert result['login'] == token_lookup_full_response, "expected: %r\ngot: %r" % (token_lookup_full_response, result['login'])
 
-
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_login_no_hvac(self, capfd):
         with mock.patch.multiple(vault_login, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
