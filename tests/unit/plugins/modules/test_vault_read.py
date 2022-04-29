@@ -97,7 +97,7 @@ class TestModuleVaultRead():
 
         client.read.assert_called_once_with(patch_ansible_module['path'])
 
-        assert result['data'] == kv1_get_response, "module result did not match expected result:\nexpected: %r\ngot: %r" (kv1_get_response, result)
+        assert result['data'] == kv1_get_response, "module result did not match expected result:\nexpected: %r\ngot: %r" % (kv1_get_response, result)
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_read_no_data(self, patch_ansible_module, vault_client, capfd):
