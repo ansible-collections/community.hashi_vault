@@ -15,8 +15,7 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
-# this "unused" import is needed for the mock.patch calls
-import ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create
+from .....plugins.lookup import vault_token_create
 
 
 pytest.importorskip('hvac')
@@ -72,6 +71,11 @@ class TestVaultTokenCreateLookup(object):
 
     def test_vault_token_create_is_lookup_base(self, vault_token_create_lookup):
         assert issubclass(type(vault_token_create_lookup), HashiVaultLookupBase)
+
+    def test_vault_token_create_no_hvac(self, vault_token_create_lookup, minimal_vars):
+        with mock.patch.object(vault_token_create, 'HVAC_IMPORT_ERROR', new=ImportError()):
+            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
+                vault_token_create_lookup.run(terms='fake', variables=minimal_vars)
 
     def test_vault_token_create_extra_terms(self, vault_token_create_lookup, authenticator, minimal_vars):
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create.display.warning') as warning:
