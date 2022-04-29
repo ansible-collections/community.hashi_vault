@@ -32,6 +32,11 @@ def vault_read_lookup():
     return lookup_loader.get('community.hashi_vault.vault_read')
 
 
+@pytest.fixture
+def kv1_get_response(fixture_loader):
+    return fixture_loader('kv1_get_response.json')
+
+
 class TestVaultReadLookup(object):
 
     def test_vault_read_is_lookup_base(self, vault_read_lookup):
@@ -55,3 +60,27 @@ class TestVaultReadLookup(object):
 
         with pytest.raises(AnsibleError, match=r'dummy msg'):
             vault_read_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
+    def test_vault_read_return_data(self, vault_read_lookup, minimal_vars, kv1_get_response, vault_client, paths):
+        client = vault_client
+
+        expected_calls = [mock.call(p) for p in paths]
+
+        def _fake_kv1_get(path):
+            r = kv1_get_response.copy()
+            r.update({'_path': path})
+            return r
+
+        client.read = mock.Mock(wraps=_fake_kv1_get)
+
+        response = vault_read_lookup.run(terms=paths, variables=minimal_vars)
+
+        client.read.assert_has_calls(expected_calls)
+
+        assert len(response) == len(paths), "%i paths processed but got %i responses" % (len(paths), len(response))
+
+        for p in paths:
+            r = response.pop(0)
+            ins_p = r.pop('_path')
+            assert p == ins_p, "expected '_path=%s' field was not found in response, got %r" % (p, ins_p)
