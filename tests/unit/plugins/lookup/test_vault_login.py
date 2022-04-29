@@ -18,23 +18,18 @@ from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault
 import ansible_collections.community.hashi_vault.plugins.lookup.vault_login
 
 
+pytest.importorskip('hvac')
+
+
+pytestmark = pytest.mark.usefixtures(
+    'patch_authenticator',
+    'patch_get_vault_client',
+)
+
+
 @pytest.fixture
 def vault_login_lookup():
     return lookup_loader.get('community.hashi_vault.vault_login')
-
-
-@pytest.fixture
-def mock_authenticator():
-    return mock.MagicMock(validate=lambda: True, authenticate=lambda client: 'dummy')
-
-
-@pytest.fixture
-def minimal_vars():
-    return {
-        'ansible_hashi_vault_auth_method': 'token',
-        'ansible_hashi_vault_url': 'http://dummy',
-        'ansible_hashi_vault_token': 'dummy',
-    }
 
 
 class TestVaultLoginLookup(object):
@@ -46,8 +41,8 @@ class TestVaultLoginLookup(object):
         with pytest.raises(AnsibleError, match=r"The 'none' auth method is not valid for this lookup"):
             vault_login_lookup.run(terms=[], variables={'ansible_hashi_vault_auth_method': 'none'})
 
-    def test_vault_login_extra_terms(self, vault_login_lookup, mock_authenticator, minimal_vars):
+    def test_vault_login_extra_terms(self, vault_login_lookup, authenticator, minimal_vars):
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_login.display.warning') as warning:
-            with mock.patch.object(vault_login_lookup, 'authenticator', new=mock_authenticator):
+            with mock.patch.object(vault_login_lookup, 'authenticator', new=authenticator):
                 vault_login_lookup.run(terms=['', ''], variables=minimal_vars)
                 warning.assert_called_once_with("Supplied term strings will be ignored. This lookup does not use term strings.")
