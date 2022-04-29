@@ -118,10 +118,7 @@ class TestModuleVaultKv2Get():
             )
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_kv2_get_no_hvac(self, kv2_get_response, vault_client, capfd):
-        client = vault_client
-        client.secrets.kv.v2.read_secret_version.return_value = kv2_get_response
-
+    def test_vault_kv2_get_no_hvac(self, capfd):
         with mock.patch.multiple(vault_kv2_get, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
             with pytest.raises(SystemExit) as e:
                 vault_kv2_get.main()

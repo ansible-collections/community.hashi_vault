@@ -119,10 +119,7 @@ class TestModuleVaultRead():
         assert match is not None, "Unexpected msg: %s" % result['msg']
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_read_no_hvac(self, kv1_get_response, vault_client, capfd):
-        client = vault_client
-        client.read.return_value = kv1_get_response
-
+    def test_vault_read_no_hvac(self, capfd):
         with mock.patch.multiple(vault_read, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
             with pytest.raises(SystemExit) as e:
                 vault_read.main()

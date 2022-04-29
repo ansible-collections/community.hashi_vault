@@ -142,10 +142,7 @@ class TestModuleVaultWrite():
         module_warn.assert_called_once_with('Vault returned status code 200 and an unparsable body.')
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_write_no_hvac(self, approle_secret_id_write_response, vault_client, capfd):
-        client = vault_client
-        client.write.return_value = approle_secret_id_write_response
-
+    def test_vault_write_no_hvac(self, capfd):
         with mock.patch.multiple(vault_write, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
             with pytest.raises(SystemExit) as e:
                 vault_write.main()
