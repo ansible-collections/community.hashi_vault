@@ -52,7 +52,7 @@ def kv1_get_response(fixture_loader):
     return fixture_loader('kv1_get_response.json')
 
 
-class TestModuleVaultKv1Get():
+class TestModuleVaultRead():
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
