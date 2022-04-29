@@ -83,23 +83,28 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
+from ansible.module_utils.six import raise_from
+
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
-HAS_HVAC = False
 try:
     import hvac
-    HAS_HVAC = True
-except ImportError:
-    HAS_HVAC = False
+except ImportError as imp_exc:
+    HVAC_IMPORT_ERROR = imp_exc
+else:
+    HVAC_IMPORT_ERROR = None
 
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if not HAS_HVAC:
-            raise AnsibleError("Please pip install hvac to use the vault_read lookup.")
+        if HVAC_IMPORT_ERROR:
+            raise_from(
+                AnsibleError("This plugin requires the 'hvac' Python library"),
+                HVAC_IMPORT_ERROR
+            )
 
         ret = []
 
