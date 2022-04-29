@@ -80,8 +80,24 @@ class TestModuleVaultLogin():
         assert result['msg'] == 'dummy msg'
 
     @pytest.mark.parametrize('opt__ansible_check_mode', [False, True])
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), '_ansible_check_mode']], indirect=True)
-    def test_vault_login_return_data(self, patch_ansible_module, token_lookup_full_response, authenticator, vault_client, opt__ansible_check_mode, capfd):
+    @pytest.mark.parametrize(
+        ['opt_auth_method', 'opt_token', 'opt_role_id'],
+        [
+            ('token', 'beep-boop-bloop', None),
+            ('approle', None, 'not-used'),
+        ]
+    )
+    @pytest.mark.parametrize('patch_ansible_module', [[
+        _combined_options(),
+        '_ansible_check_mode',
+        'auth_method',
+        'token',
+        'role_id',
+    ]], indirect=True)
+    def test_vault_login_return_data(
+        self, patch_ansible_module, token_lookup_full_response, authenticator, vault_client,
+        opt__ansible_check_mode, opt_auth_method, opt_token, opt_role_id, capfd
+    ):
         authenticator.authenticate.return_value = token_lookup_full_response
 
         with pytest.raises(SystemExit) as e:
@@ -93,6 +109,8 @@ class TestModuleVaultLogin():
         assert e.value.code == 0, "result: %r" % (result,)
 
         authenticator.validate.assert_called_once()
+
+        assert result['changed'] == (opt_auth_method != 'token')
 
         if opt__ansible_check_mode:
             authenticator.authenticate.assert_not_called()
