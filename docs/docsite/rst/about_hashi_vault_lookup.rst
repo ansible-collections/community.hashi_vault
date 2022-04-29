@@ -63,7 +63,12 @@ In addition, it is now possible to perform a login directly and return the token
 
 Generic read (not ``kv`` specific) is still important functionality, so we have the ``community.hashi_vault.vault_read`` :ref:`module <ansible_collections.community.hashi_vault.vault_read_module>` and :ref:`lookup plugin <ansible_collections.community.hashi_vault.vault_read_lookup>` to provide that without trying to infer whether the response is from a specific backend.
 
-Since reading from ``kv`` store is by far the most common use case, we will also be introducing content for that specifically, which will accept familiar paths and provide parameters for ``kv``-specific functionality like versioning. That content is coming soon.
+Since reading from the ``kv`` store is by far the most common use case, we have dedicated content for that:
+
+* ``community.hashi_vault.vault_kv1_get`` :ref:`module <ansible_collections.community.hashi_vault.vault_kv1_get_module>`
+* ``community.hashi_vault.vault_kv2_get`` :ref:`module <ansible_collections.community.hashi_vault.vault_kv2_get_module>`
+* ``community.hashi_vault.vault_kv1_get`` :ref:`lookup <ansible_collections.community.hashi_vault.vault_kv1_get_lookup>`
+* ``community.hashi_vault.vault_kv2_get`` :ref:`lookup <ansible_collections.community.hashi_vault.vault_kv2_get_lookup>`
 
 The dictionary dereferencing via ``:keyname`` syntax *will not be supported* in other content. That will be achieved in Jinja via:
 

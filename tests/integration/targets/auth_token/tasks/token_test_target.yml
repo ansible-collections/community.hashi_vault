@@ -1,7 +1,7 @@
 - name: Test token with no default policy (missing lookup-self)
   vars:
     user_token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
-    secret: "{{ vault_kv2_path ~ '/secret1' }}"
+    secret: "{{ vault_kv2_api_path ~ '/secret1' }}"
     expected_secret_value: foo1
   module_defaults:
     vault_test_auth:

@@ -3,36 +3,53 @@ vault_configure_canary:
   path: cubbyhole/configure_basic
   value: complete  # value does not matter
 
-vault_kv1_path: 'kv1/testproject'
-vault_kv2_path: 'kv2/data/testproject'
-vault_kv2_multi_path: 'kv2/data/testmulti'
+vault_kv1_mount_point: kv1
+vault_kv1_path: testproject
+vault_kv1_api_path: '{{ vault_kv1_mount_point }}/{{ vault_kv1_path }}'
+
+vault_kv2_mount_point: kv2
+
+vault_kv2_path: testproject
+vault_kv2_multi_path: testmulti
+vault_kv2_versioned_path: versioned
+
+vault_kv2_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_path }}'
+vault_kv2_multi_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_multi_path }}'
+vault_kv2_versioned_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_versioned_path }}'
 
 vault_base_policy: |
-  path "{{ vault_kv1_path }}/secret1" {
+  path "{{ vault_kv1_api_path }}/secret1" {
     capabilities = ["read"]
   }
-  path "{{ vault_kv1_path }}/secret2" {
+  path "{{ vault_kv1_api_path }}/secret2" {
     capabilities = ["read", "update"]
   }
-  path "{{ vault_kv1_path }}/secret3" {
+  path "{{ vault_kv1_api_path }}/secret3" {
     capabilities = ["deny"]
   }
-  path "{{ vault_kv2_path }}/secret1" {
+  path "{{ vault_kv1_api_path }}/non_existent_secret" {
     capabilities = ["read"]
   }
-  path "{{ vault_kv2_path }}/secret2" {
+
+  path "{{ vault_kv2_api_path }}/secret1" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_kv2_api_path }}/secret2" {
     capabilities = ["read", "update"]
   }
-  path "{{ vault_kv2_path }}/secret3" {
+  path "{{ vault_kv2_api_path }}/secret3" {
     capabilities = ["deny"]
   }
-  path "{{ vault_kv2_multi_path }}/secrets" {
+  path "{{ vault_kv2_multi_api_path }}/secrets" {
     capabilities = ["read"]
   }
-  path "{{ vault_kv2_path }}/secret4" {
+  path "{{ vault_kv2_api_path }}/secret4" {
     capabilities = ["read", "update"]
   }
-  path "{{ vault_kv2_path }}/non_existent_secret" {
+  path "{{ vault_kv2_api_path }}/non_existent_secret" {
+    capabilities = ["read"]
+  }
+  path "{{ vault_kv2_versioned_api_path }}/*" {
     capabilities = ["read"]
   }
 
@@ -58,18 +75,23 @@ vault_orphan_creator_policy: |
     capabilities = ["create", "update", "sudo"]
   }
 
+vault_invalid_kv2_path_policy: |
+  path "{{ vault_kv2_mount_point }}/{{ vault_kv2_path }}/*" {
+    capabilities = ["read"]
+  }
+
 # the purpose of these policies is to catch when the plugin accepts mount_point but does not pass
 # it into hvac. we set the test policy to deny access to this secret and the alt policy to read it
 # the test-policy is assigned to the default mount of the auth method, while the alt policy is
 # assigned to the alternate (non-default) mount
 vault_test_policy: |
   {{ vault_base_policy }}
-  path "{{ vault_kv2_path }}/secret5" {
+  path "{{ vault_kv2_api_path }}/secret5" {
     capabilities = ["deny"]
   }
 
 vault_alt_policy: |
   {{ vault_base_policy }}
-  path "{{ vault_kv2_path }}/secret5" {
+  path "{{ vault_kv2_api_path }}/secret5" {
     capabilities = ["read"]
   }

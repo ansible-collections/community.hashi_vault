@@ -9,7 +9,7 @@
   block:
     - name: 'Check kv2 secret read'
       vars:
-        kv2_secret2: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_path ~ '/secret2', **kwargs) }}"
+        kv2_secret2: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_api_path ~ '/secret2', **kwargs) }}"
       assert:
         that:
           - "'data' in kv2_secret2"
@@ -20,8 +20,8 @@
     - name: "Check multiple path read as array"
       vars:
         paths:
-          - '{{ vault_kv2_path }}/secret2'
-          - '{{ vault_kv2_path }}/secret1'
+          - '{{ vault_kv2_api_path }}/secret2'
+          - '{{ vault_kv2_api_path }}/secret1'
         kv2_secrets: "{{ lookup('community.hashi_vault.vault_read', *paths, **kwargs) }}"
       assert:
         that:
@@ -38,7 +38,7 @@
 
     - name: 'Failure expected when erroneous credentials are used'
       vars:
-        secret_wrong_cred: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_path ~ '/secret2', token='wrong_token', url=kwargs.url) }}"
+        secret_wrong_cred: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_api_path ~ '/secret2', token='wrong_token', url=kwargs.url) }}"
       debug:
         msg: 'Failure is expected ({{ secret_wrong_cred }})'
       register: test_wrong_cred
@@ -52,7 +52,7 @@
 
     - name: 'Failure expected when unauthorized secret is read'
       vars:
-        secret_unauthorized: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_path ~ '/secret3', **kwargs) }}"
+        secret_unauthorized: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_api_path ~ '/secret3', **kwargs) }}"
       debug:
         msg: 'Failure is expected ({{ secret_unauthorized }})'
       register: test_unauthorized
@@ -66,7 +66,7 @@
 
     - name: 'Failure expected when inexistent secret is read'
       vars:
-        secret_inexistent: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_path ~ '/non_existent_secret', **kwargs) }}"
+        secret_inexistent: "{{ lookup('community.hashi_vault.vault_read', vault_kv2_api_path ~ '/non_existent_secret', **kwargs) }}"
       debug:
         msg: 'Failure is expected ({{ secret_inexistent }})'
       register: test_inexistent
@@ -94,5 +94,5 @@
           - "'value' in item['data']['data']"
         fail_msg: 'Return value was not correct type or items do not match.'
       with_community.hashi_vault.vault_read:
-        - '{{ vault_kv2_path }}/secret2'
-        - '{{ vault_kv2_path }}/secret1'
+        - '{{ vault_kv2_api_path }}/secret2'
+        - '{{ vault_kv2_api_path }}/secret1'

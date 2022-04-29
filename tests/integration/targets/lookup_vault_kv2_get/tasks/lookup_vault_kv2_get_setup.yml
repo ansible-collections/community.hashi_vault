@@ -1,0 +1,9 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
+  block:
+    - name: 'Create a test non-root token'
+      vault_ci_token_create:
+        policies: [test-policy]
+      register: user_token_cmd
