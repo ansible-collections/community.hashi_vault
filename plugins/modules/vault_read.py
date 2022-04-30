@@ -67,16 +67,18 @@ data:
 import traceback
 
 from ansible.module_utils._text import to_native
+from ansible.module_utils.basic import missing_required_lib
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
-HAS_HVAC = False
 try:
     import hvac
-    HAS_HVAC = True
 except ImportError:
     HAS_HVAC = False
+    HVAC_IMPORT_ERROR = traceback.format_exc()
+else:
+    HAS_HVAC = True
 
 
 def run_module():
@@ -88,6 +90,12 @@ def run_module():
         argument_spec=argspec,
         supports_check_mode=True
     )
+
+    if not HAS_HVAC:
+        module.fail_json(
+            msg=missing_required_lib('hvac'),
+            exception=HVAC_IMPORT_ERROR
+        )
 
     path = module.params.get('path')
 

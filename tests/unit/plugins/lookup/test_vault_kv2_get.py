@@ -34,15 +34,6 @@ def vault_kv2_get_lookup():
 
 
 @pytest.fixture
-def minimal_vars():
-    return {
-        'ansible_hashi_vault_auth_method': 'token',
-        'ansible_hashi_vault_url': 'http://dummy',
-        'ansible_hashi_vault_token': 'dummy',
-    }
-
-
-@pytest.fixture
 def kv2_get_response(fixture_loader):
     return fixture_loader('kv2_get_response.json')
 

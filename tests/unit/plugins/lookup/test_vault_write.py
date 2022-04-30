@@ -33,15 +33,6 @@ def vault_write_lookup():
 
 
 @pytest.fixture
-def minimal_vars():
-    return {
-        'ansible_hashi_vault_auth_method': 'token',
-        'ansible_hashi_vault_url': 'http://dummy',
-        'ansible_hashi_vault_token': 'dummy',
-    }
-
-
-@pytest.fixture
 def approle_secret_id_write_response(fixture_loader):
     return fixture_loader('approle_secret_id_write_response.json')
 

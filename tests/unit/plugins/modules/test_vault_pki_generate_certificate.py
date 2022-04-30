@@ -106,10 +106,7 @@ class TestModuleVaultPkiGenerateCertificate():
         assert e.value.code == 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_pki_generate_certificate_no_hvac(self, pki_generate_certificate_response, vault_client, capfd):
-        client = vault_client
-        client.secrets.pki.generate_certificate.return_value = pki_generate_certificate_response
-
+    def test_vault_pki_generate_certificate_no_hvac(self, capfd):
         with mock.patch.multiple(vault_pki_generate_certificate, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
             with pytest.raises(SystemExit) as e:
                 vault_pki_generate_certificate.main()
