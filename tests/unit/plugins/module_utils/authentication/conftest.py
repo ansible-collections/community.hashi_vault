@@ -6,6 +6,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
+import contextlib
 
 try:
     import hvac
@@ -55,3 +56,23 @@ def client():
 @pytest.fixture
 def warner():
     return mock.MagicMock()
+
+
+@pytest.fixture
+def mock_import_error():
+    @contextlib.contextmanager
+    def _mock_import_error(*names):
+        import builtins
+
+        real_import = builtins.__import__
+
+        def _fake_importer(name, *args, **kwargs):
+            if name in names:
+                raise ImportError
+
+            return real_import(name, *args, **kwargs)
+
+        with mock.patch.object(builtins, '__import__', side_effect=_fake_importer):
+            yield
+
+    return _mock_import_error
