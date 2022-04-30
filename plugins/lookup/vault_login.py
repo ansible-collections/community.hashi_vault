@@ -103,6 +103,7 @@ except ImportError as imp_exc:
 else:
     HVAC_IMPORT_ERROR = None
 
+
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
         if HVAC_IMPORT_ERROR:

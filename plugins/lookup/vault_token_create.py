@@ -113,6 +113,7 @@ except ImportError as imp_exc:
 else:
     HVAC_IMPORT_ERROR = None
 
+
 class LookupModule(HashiVaultLookupBase):
     PASS_THRU_OPTION_NAMES = [
         'no_parent',
