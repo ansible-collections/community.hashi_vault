@@ -1,0 +1,79 @@
+---
+DOCUMENTATION:
+  name: vault_login_token
+  short_description: Extracts the Vault token from a login or token creation
+  version_added: 2.2.0
+  description:
+    - Extracts the token value from the structure returned by a Vault token creation operation.
+  seealso:
+    - module: community.hashi_vault.vault_login
+    - module: community.hashi_vault.vault_token_create
+    - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
+    - ref: community.hashi_vault.vault_token_create lookup <ansible_collections.community.hashi_vault.vault_token_create_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_token_create) lookup plugin.
+    - ref: Filter Guide <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+      description: The C(community.hashi_vault) Filter Guide
+  notes:
+    - >-
+      This filter is the equivalent of reading into the dictionary directly,
+      but it has the advantages of providing semantic meaning
+      and automatically working against the differing output of modules and the lookups.
+  options:
+    _input:
+      description:
+        - A dictionary matching the structure returned by a login or token creation.
+      type: dict
+      required: true
+    optional_field:
+      description:
+        - >-
+          If this field exists in the input dictionary, then the value of that field is taken the be the login response,
+          rather than the input dictionary itself.
+        - >-
+          The purpose of this is primarily to deal with the difference between the output of lookup plugins
+          (which return the login response directly) and modules,
+          which return the login response in a C(login) field in its return.
+        - >-
+          This can be changed in case you've put the raw login response in some other structure,
+          as in C(my_var['login1']), where you would set I(optional_field=login1) when calling the filter on C(my_var),
+          but you could also dereference that directly instead, calling the filter on C(my_var['login1']).
+      type: string
+      default: login
+  author:
+    - Brian Scholer (@briantist)
+
+EXAMPLES: |
+  - name: Set defaults
+    vars:
+      ansible_hashi_vault_url: https://vault:9801/
+      ansible_hashi_vault_auth_method: userpass
+      ansible_hashi_vault_username: user
+      ansible_hashi_vault_password: "{{ lookup('env', 'MY_SECRET_PASSWORD') }}"
+    module_defaults:
+      community.hashi_vault.vault_login:
+        url: '{{ ansible_hashi_vault_url }}'
+        auth_method: '{{ ansible_hashi_vault_auth_method }}'
+        username: '{{ ansible_hashi_vault_username }}'
+        password: '{{ ansible_hashi_vault_password }}'
+    block:
+      - name: Perform a login with a lookup and display the token
+        vars:
+          login_response: "{{ lookup('community.hashi_vault.vault_login') }}"
+        debug:
+          msg: "The token is {{ login_response | community.hashi_vault.vault_login_token }}"
+
+      - name: Perform a login with a module
+        community.hashi_vault.vault_login:
+        register: login_response
+
+      - name: Display the token
+        debug:
+          msg: "The token is {{ login_response | community.hashi_vault.vault_login_token }}"
+
+RETURN:
+  _value:
+    description: The token value.
+    returned: always
+    sample: s.nnrpog4i5gjizr6b8g1inwj3
+    type: string
