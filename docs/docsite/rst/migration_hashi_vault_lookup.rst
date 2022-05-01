@@ -152,13 +152,13 @@ Return format
 
     The ``return_format`` option will not be supported in other plugins. It is recommended to replace it with Jinja2 if you are using it currently.
 
-The ``hashi_vault`` lookup takes a ``return_format`` option that defaults to ``dict``. The lookup always looks for a ``data`` field (see the :ref:`KV response details <kv_response>` for more information), and that is what is returned by default.
+The ``hashi_vault`` lookup takes a ``return_format`` option that defaults to ``dict``. The lookup always looks for a ``data`` field (see the :ref:`KV response details <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.kv_response>` for more information), and that is what is returned by default.
 
 The ``raw`` value for ``return_format`` gives the raw API response from the request. This can be used to get the metadata from a KV2 request for example, which is usually stripped off, or it can be used to get a correct response from a non-KV path that happens to look like one (with one or more ``data`` structures), and gets interpreted as one as a result.
 
 For reading non-KV paths, use a plugin that is dedicated to that resource, or use the generic ``vault_read`` plugins, which also return raw responses.
 
-For getting access to KV2 metadata, see the section on :ref:`KV replacements <kv_replacements>`.
+For getting access to KV2 metadata, see the section on :ref:`KV replacements <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.kv_replacements>`.
 
 The ``return_format`` option can also be set to ``values`` to return a list of the dictionary's values.
 
@@ -213,7 +213,7 @@ The most common use for the ``hashi_vault`` lookup is reading secrets from the K
 
 The return value of both of those is the dictionary of the key/value pairs in the secret, with no additional information from the API response, nor the metadata (in the case of KV2).
 
-.. _kv_response:
+.. _ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.kv_response:
 
 KV1 and KV2 response structure
 ------------------------------
@@ -284,7 +284,7 @@ KV2 secret vesions
 Since KV2 is a versioned secret store, multiple versions of the same secret usually exist. There was no dedicated way to get anything but the latest secret (default) with the ``hashi_vault`` lookup, but docs suggested that ``?version=2`` could be added to the path to get secret version 2. This did work but it directly modified the API path, so it was not considered a stable option. The dedicated KV2 content in the collection supports this as a first class option.
 
 
-.. _kv_replacements:
+.. _ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.kv_replacements:
 
 KV get replacements
 -------------------
