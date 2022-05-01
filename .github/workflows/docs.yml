@@ -94,7 +94,7 @@ jobs:
             Thank you for contribution!✨
 
             This PR has been merged and the docs are now incorporated into `main`:
-            ${{ env.GHP_BASE_URL }}/banch/main
+            ${{ env.GHP_BASE_URL }}/branch/main
           body: |
             ## Docs Build 📝
 
@@ -104,7 +104,7 @@ jobs:
             ${{ env.GHP_BASE_URL }}/pr/${{ github.event.number }}
 
             You can compare to the docs for the `main` branch here:
-            ${{ env.GHP_BASE_URL }}/banch/main
+            ${{ env.GHP_BASE_URL }}/branch/main
 
             The docsite for **this PR** is also available for download as an artifact from this run:
             ${{ needs.build-docs.outputs.artifact-url }}
