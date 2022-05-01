@@ -341,7 +341,7 @@ And some usage:
     - name: Reading secret version 7 (new)
       ansible.builtin.debug:
         msg:
-          - "KV2 (v7): {{ lookup('community.hashi_vault.vault_kv2_get', 'data/path/to/secret', engine_mount_point='kv2_mount', version=7).secret }}"
+          - "KV2 (v7): {{ lookup('community.hashi_vault.vault_kv2_get', 'path/to/secret', engine_mount_point='kv2_mount', version=7).secret }}"
 
     - name: Reading KV2 metadata (old)
       ansible.builtin.debug:
@@ -351,7 +351,7 @@ And some usage:
     - name: Reading KV2 metadata (new)
       ansible.builtin.debug:
         msg:
-          - "KV2 (metadata): {{ lookup('community.hashi_vault.vault_kv2_get', 'data/path/to/secret', engine_mount_point='kv2_mount').metadata }}"
+          - "KV2 (metadata): {{ lookup('community.hashi_vault.vault_kv2_get', 'path/to/secret', engine_mount_point='kv2_mount').metadata }}"
 
 
 General reads (non-KV)
