@@ -27,14 +27,14 @@ seealso:
 extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
-  - community.hashi_vault.backend_mount
+  - community.hashi_vault.engine_mount
 options:
-  backend_mount_point:
+  engine_mount_point:
     default: kv
   path:
     description:
       - Vault KV path to be read.
-      - This is relative to the I(backend_mount_point), so the mount path should not be included.
+      - This is relative to the I(engine_mount_point), so the mount path should not be included.
     type: str
     required: True
 '''
@@ -62,7 +62,7 @@ EXAMPLES = r'''
 - name: Read a secret from kv1 with a different mount via the remote host
   community.hashi_vault.vault_kv1_get:
     url: https://vault:8201
-    backend_mount_path: custom/kv1/mount
+    engine_mount_point: custom/kv1/mount
     path: hello
   register: response
   # equivalent API path is custom/kv1/mount/hello
@@ -139,7 +139,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        backend_mount_point=dict(type='str', default='kv'),
+        engine_mount_point=dict(type='str', default='kv'),
         path=dict(type='str', required=True),
     )
 
@@ -154,7 +154,7 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    backend_mount_point = module.params.get('backend_mount_point')
+    engine_mount_point = module.params.get('engine_mount_point')
     path = module.params.get('path')
 
     module.connection_options.process_connection_options()
@@ -168,7 +168,7 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.kv.v1.read_secret(path=path, mount_point=backend_mount_point)
+        raw = client.secrets.kv.v1.read_secret(path=path, mount_point=engine_mount_point)
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:

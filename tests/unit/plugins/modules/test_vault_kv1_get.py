@@ -36,7 +36,7 @@ def _connection_options():
 
 def _sample_options():
     return {
-        'backend_mount_point': 'kv',
+        'engine_mount_point': 'kv',
         'path': 'endpoint',
     }
 
@@ -83,9 +83,9 @@ class TestModuleVaultKv1Get():
         assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == 'dummy msg'
 
-    @pytest.mark.parametrize('opt_backend_mount_point', ['kv', 'other'])
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'backend_mount_point']], indirect=True)
-    def test_vault_kv1_get_return_data(self, patch_ansible_module, kv1_get_response, vault_client, opt_backend_mount_point, capfd):
+    @pytest.mark.parametrize('opt_engine_mount_point', ['kv', 'other'])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point']], indirect=True)
+    def test_vault_kv1_get_return_data(self, patch_ansible_module, kv1_get_response, vault_client, opt_engine_mount_point, capfd):
         client = vault_client
         client.secrets.kv.v1.read_secret.return_value = kv1_get_response.copy()
 
@@ -103,7 +103,7 @@ class TestModuleVaultKv1Get():
 
         assert e.value.code == 0, "result: %r" % (result,)
 
-        client.secrets.kv.v1.read_secret.assert_called_once_with(path=patch_ansible_module['path'], mount_point=patch_ansible_module['backend_mount_point'])
+        client.secrets.kv.v1.read_secret.assert_called_once_with(path=patch_ansible_module['path'], mount_point=patch_ansible_module['engine_mount_point'])
 
         for k, v in expected.items():
             assert result[k] == v, (

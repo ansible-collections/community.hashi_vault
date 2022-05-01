@@ -30,16 +30,16 @@ extends_documentation_fragment:
   - community.hashi_vault.connection.plugins
   - community.hashi_vault.auth
   - community.hashi_vault.auth.plugins
-  - community.hashi_vault.backend_mount
-  - community.hashi_vault.backend_mount.plugins
+  - community.hashi_vault.engine_mount
+  - community.hashi_vault.engine_mount.plugins
 options:
   _terms:
     description:
       - Vault KV path(s) to be read.
-      - These are relative to the I(backend_mount_point), so the mount path should not be included.
+      - These are relative to the I(engine_mount_point), so the mount path should not be included.
     type: str
     required: True
-  backend_mount_point:
+  engine_mount_point:
     default: kv
   version:
     description: Specifies the version to return. If not set the latest version is returned.
@@ -63,7 +63,7 @@ EXAMPLES = r'''
 
 - name: Read version 5 of a kv2 secret with a different mount point
   ansible.builtin.set_fact:
-    response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'hello', version=5, backend_mount_point='custom/kv2/mount', url='https://vault:8201') }}"
+    response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'hello', version=5, engine_mount_point='custom/kv2/mount', url='https://vault:8201') }}"
   # equivalent API path is custom/kv2/mount/data/hello
 
 - name: Assert that the version returned is as expected
@@ -201,7 +201,7 @@ class LookupModule(HashiVaultLookupBase):
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
 
-        backend_mount_point = self._options_adapter.get_option('backend_mount_point')
+        engine_mount_point = self._options_adapter.get_option('engine_mount_point')
         version = self._options_adapter.get_option_default('version')
 
         try:
@@ -212,7 +212,7 @@ class LookupModule(HashiVaultLookupBase):
 
         for term in terms:
             try:
-                raw = client.secrets.kv.v2.read_secret_version(path=term, version=version, mount_point=backend_mount_point)
+                raw = client.secrets.kv.v2.read_secret_version(path=term, version=version, mount_point=engine_mount_point)
             except hvac.exceptions.Forbidden as e:
                 raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
             except hvac.exceptions.InvalidPath as e:

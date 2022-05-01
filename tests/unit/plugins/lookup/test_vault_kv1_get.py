@@ -63,11 +63,11 @@ class TestVaultKv1GetLookup(object):
             vault_kv1_get_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
-    @pytest.mark.parametrize('backend_mount_point', ['kv', 'other'])
-    def test_vault_kv1_get_return_data(self, vault_kv1_get_lookup, minimal_vars, kv1_get_response, vault_client, paths, backend_mount_point):
+    @pytest.mark.parametrize('engine_mount_point', ['kv', 'other'])
+    def test_vault_kv1_get_return_data(self, vault_kv1_get_lookup, minimal_vars, kv1_get_response, vault_client, paths, engine_mount_point):
         client = vault_client
 
-        expected_calls = [mock.call(path=p, mount_point=backend_mount_point) for p in paths]
+        expected_calls = [mock.call(path=p, mount_point=engine_mount_point) for p in paths]
 
         expected = {}
         expected['raw'] = kv1_get_response.copy()
@@ -84,7 +84,7 @@ class TestVaultKv1GetLookup(object):
 
         client.secrets.kv.v1.read_secret = mock.Mock(wraps=_fake_kv1_get)
 
-        response = vault_kv1_get_lookup.run(terms=paths, variables=minimal_vars, backend_mount_point=backend_mount_point)
+        response = vault_kv1_get_lookup.run(terms=paths, variables=minimal_vars, engine_mount_point=engine_mount_point)
 
         client.secrets.kv.v1.read_secret.assert_has_calls(expected_calls)
 
@@ -95,7 +95,7 @@ class TestVaultKv1GetLookup(object):
             ins_p = r['secret'].pop('_path')
             ins_m = r['secret'].pop('_mount')
             assert p == ins_p, "expected '_path=%s' field was not found in response, got %r" % (p, ins_p)
-            assert backend_mount_point == ins_m, "expected '_mount=%s' field was not found in response, got %r" % (backend_mount_point, ins_m)
+            assert engine_mount_point == ins_m, "expected '_mount=%s' field was not found in response, got %r" % (engine_mount_point, ins_m)
             assert r['raw'] == expected['raw'], (
                 "remaining response did not match expected\nresponse: %r\nexpected: %r" % (r, expected['raw'])
             )

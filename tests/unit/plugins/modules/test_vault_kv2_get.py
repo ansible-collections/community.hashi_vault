@@ -36,7 +36,7 @@ def _connection_options():
 
 def _sample_options():
     return {
-        'backend_mount_point': 'secret',
+        'engine_mount_point': 'secret',
         'path': 'endpoint',
     }
 
@@ -83,10 +83,10 @@ class TestModuleVaultKv2Get():
         assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == 'dummy msg'
 
-    @pytest.mark.parametrize('opt_backend_mount_point', ['secret', 'other'])
+    @pytest.mark.parametrize('opt_engine_mount_point', ['secret', 'other'])
     @pytest.mark.parametrize('opt_version', [None, 2, 10])
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'backend_mount_point', 'version']], indirect=True)
-    def test_vault_kv2_get_return_data(self, patch_ansible_module, kv2_get_response, vault_client, opt_backend_mount_point, opt_version, capfd):
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point', 'version']], indirect=True)
+    def test_vault_kv2_get_return_data(self, patch_ansible_module, kv2_get_response, vault_client, opt_engine_mount_point, opt_version, capfd):
         client = vault_client
         rv = kv2_get_response.copy()
         rv['data']['metadata']['version'] = opt_version
@@ -108,7 +108,7 @@ class TestModuleVaultKv2Get():
 
         client.secrets.kv.v2.read_secret_version.assert_called_once_with(
             path=patch_ansible_module['path'],
-            mount_point=patch_ansible_module['backend_mount_point'],
+            mount_point=patch_ansible_module['engine_mount_point'],
             version=opt_version
         )
 

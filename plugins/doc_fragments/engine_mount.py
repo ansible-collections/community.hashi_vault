@@ -11,14 +11,14 @@ class ModuleDocFragment(object):
 
     DOCUMENTATION = r'''
 options:
-  backend_mount_point:
+  engine_mount_point:
     description: The path where the secret backend is mounted.
     type: str
 '''
 
     PLUGINS = r'''
 options:
-  backend_mount_point:
+  engine_mount_point:
     vars:
-      - name: ansible_hashi_vault_backend_mount_point
+      - name: ansible_hashi_vault_engine_mount_point
 '''

@@ -63,9 +63,9 @@ class TestVaultKv2GetLookup(object):
             vault_kv2_get_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
-    @pytest.mark.parametrize('backend_mount_point', ['secret', 'other'])
+    @pytest.mark.parametrize('engine_mount_point', ['secret', 'other'])
     @pytest.mark.parametrize('version', [None, 2, 10])
-    def test_vault_kv2_get_return_data(self, vault_kv2_get_lookup, minimal_vars, kv2_get_response, vault_client, paths, backend_mount_point, version):
+    def test_vault_kv2_get_return_data(self, vault_kv2_get_lookup, minimal_vars, kv2_get_response, vault_client, paths, engine_mount_point, version):
         client = vault_client
         rv = kv2_get_response.copy()
         rv['data']['metadata']['version'] = version
@@ -76,7 +76,7 @@ class TestVaultKv2GetLookup(object):
         expected['data'] = expected['raw']['data']
         expected['secret'] = expected['data']['data']
 
-        expected_calls = [mock.call(path=p, version=version, mount_point=backend_mount_point) for p in paths]
+        expected_calls = [mock.call(path=p, version=version, mount_point=engine_mount_point) for p in paths]
 
         def _fake_kv2_get(path, version, mount_point):
             r = rv.copy()
@@ -87,7 +87,7 @@ class TestVaultKv2GetLookup(object):
 
         client.secrets.kv.v2.read_secret_version = mock.Mock(wraps=_fake_kv2_get)
 
-        response = vault_kv2_get_lookup.run(terms=paths, variables=minimal_vars, version=version, backend_mount_point=backend_mount_point)
+        response = vault_kv2_get_lookup.run(terms=paths, variables=minimal_vars, version=version, engine_mount_point=engine_mount_point)
 
         client.secrets.kv.v2.read_secret_version.assert_has_calls(expected_calls)
 
@@ -98,7 +98,7 @@ class TestVaultKv2GetLookup(object):
             ins_p = r['secret'].pop('_path')
             ins_m = r['secret'].pop('_mount')
             assert p == ins_p, "expected '_path=%s' field was not found in response, got %r" % (p, ins_p)
-            assert backend_mount_point == ins_m, "expected '_mount=%s' field was not found in response, got %r" % (backend_mount_point, ins_m)
+            assert engine_mount_point == ins_m, "expected '_mount=%s' field was not found in response, got %r" % (engine_mount_point, ins_m)
             assert r['raw'] == expected['raw'], (
                 "remaining response did not match expected\nresponse: %r\nexpected: %r" % (r, expected['raw'])
             )

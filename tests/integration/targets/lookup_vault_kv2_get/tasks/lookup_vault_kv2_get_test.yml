@@ -6,7 +6,7 @@
       url: '{{ vault_test_server_http }}'
       auth_method: token
       token: '{{ user_token }}'
-      backend_mount_point: '{{ vault_kv2_mount_point }}'
+      engine_mount_point: '{{ vault_kv2_mount_point }}'
   block:
     - name: Check kv2 secret read
       vars:
@@ -156,7 +156,7 @@
         ansible_hashi_vault_url: '{{ kwargs.url }}'
         ansible_hashi_vault_token: '{{ kwargs.token }}'
         ansible_hashi_vault_auth_method: '{{ kwargs.auth_method }}'
-        ansible_hashi_vault_backend_mount_point: '{{ kwargs.backend_mount_point }}'
+        ansible_hashi_vault_engine_mount_point: '{{ kwargs.engine_mount_point }}'
 
     - name: Check multiple path read via with_
       assert:

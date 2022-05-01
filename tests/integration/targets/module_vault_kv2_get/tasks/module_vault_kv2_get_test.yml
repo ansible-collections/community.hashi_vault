@@ -23,7 +23,7 @@
     - module_defaults:
         community.hashi_vault.vault_kv2_get:
           <<: *defaults
-          backend_mount_point: '{{ vault_kv2_mount_point }}'
+          engine_mount_point: '{{ vault_kv2_mount_point }}'
       block:
         - name: Check kv2 get
           register: kv2_result
