@@ -26,6 +26,8 @@ edit_on_github:
 #   3. A link to the collection's repository (if `repository` is specified).
 
 extra_links:
+  - description: Submit a 虫 report
+    url: https://github.com/ansible-collections/community.hashi_vault/issues/new?assignees=&labels=&template=bug_report.md
   - description: Discussion, Q&A, troubleshooting
     url: https://github.com/ansible-collections/community.hashi_vault/discussions
 
