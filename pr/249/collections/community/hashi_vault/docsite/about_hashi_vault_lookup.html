@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About the hashi_vault lookup &mdash; Ansible collections  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/ansible.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/antsibull-minimal.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/rtd-ethical-ads.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/images/Ansible-Mark-RGB_Black.svg"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Lookup guide" href="lookup_guide.html" />
+    <link rel="prev" title="Migrating from the hashi_vault lookup" href="migration_hashi_vault_lookup.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+    <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+    <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+    <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../../../_static/images/Ansible-Mark-RGB_White.svg"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ansible collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Collections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">Collection Index</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Collections in the Community Namespace</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">Community.Hashi_Vault</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#communication">Communication</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html#guides">Guides</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#plugin-index">Plugin Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_lookup.html">Index of all Lookup Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_module.html">Index of all Modules</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ansible collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Collection Index</a> &raquo;</li>
+          <li><a href="../../index.html">Collections in the Community Namespace</a> &raquo;</li>
+          <li><a href="../index.html">Community.Hashi_Vault</a> &raquo;</li>
+      <li>About the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <section id="about-the-hashi-vault-lookup">
+<span id="ansible-collections-community-hashi-vault-docsite-about-hashi-vault-lookup"></span><h1>About the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup<a class="headerlink" href="#about-the-hashi-vault-lookup" title="Permalink to this headline"></a></h1>
+<p>This page explains the past, present, and future of the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> <a class="reference internal" href="../hashi_vault_lookup.html#ansible-collections-community-hashi-vault-hashi-vault-lookup"><span class="std std-ref">lookup plugin</span></a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup is the oldest Vault-related content in Ansible. It was included in pre-collections Ansible (&lt;2.10). As a result, it’s the most used plugin for Vault, and the one most people are familiar with.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#the-long-story" id="id2">The long story</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hashi-vault-lookup-considerations" id="id3"><code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup considerations</a></p></li>
+<li><p><a class="reference internal" href="#how-we-are-addressing-the-considerations" id="id4">How we are addressing the considerations</a></p></li>
+<li><p><a class="reference internal" href="#the-future-of-the-hashi-vault-lookup" id="id5">The future of the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="synopsis">
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline"></a></h2>
+<p>The short summary is:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup does several jobs and uses some patterns that we would like to change, but are well-entrenched.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code> collection is developing and releasing new plugins and modules that are more tightly-scoped and will offer individual coverage for many use cases that the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup has been used for.</p></li>
+<li><p>At this time, there are no plans to deprecate the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup, but it is also unlikely that it will receive new features specific to that lookup (improvements in shared code like new auth methods are included automatically).</p></li>
+<li><p>As more plugins are released in the collection, we will be adding specific migration guidance to this page with examples.</p></li>
+</ul>
+</section>
+<section id="the-long-story">
+<h2><a class="toc-backref" href="#id2">The long story</a><a class="headerlink" href="#the-long-story" title="Permalink to this headline"></a></h2>
+<section id="hashi-vault-lookup-considerations">
+<h3><a class="toc-backref" href="#id3"><code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup considerations</a><a class="headerlink" href="#hashi-vault-lookup-considerations" title="Permalink to this headline"></a></h3>
+<p>Due to the history of the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup plugin, it does many jobs. It is versatile, but sometimes unintuitive.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup plugin performs three main tasks:</p>
+<ul class="simple">
+<li><p>authentication, taking parameters for various login types, performing a login, and acquiring a token with which it can make additional calls to Vault.</p></li>
+<li><p>a generic read operation, which allows it to read any kind of Vault path, without having to be written with that type of path in mind.</p></li>
+<li><p>transforming responses that look like <code class="docutils literal notranslate"><span class="pre">kv2</span></code> responses into simpler responses that resemble those from <code class="docutils literal notranslate"><span class="pre">kv1</span></code>.</p></li>
+</ul>
+<p>Reading secrets is the most common use case, with the <code class="docutils literal notranslate"><span class="pre">kv</span></code> (key/value) store built into Vault as by far the most common secret store. Most implementations use v2 of the <code class="docutils literal notranslate"><span class="pre">kv</span></code> store. To make reading v2 <code class="docutils literal notranslate"><span class="pre">kv</span></code> secrets easy, the lookup plugin assumes that you’re probably trying to read a <code class="docutils literal notranslate"><span class="pre">kv</span></code> secret, and tries to infer if the response is from <code class="docutils literal notranslate"><span class="pre">kv2</span></code>, because the responses from version 2 include metadata and have the secret value additionally wrapped in another structure. The lookup plugin seeks to make <code class="docutils literal notranslate"><span class="pre">kv2</span></code> responses look more like responses from version 1.</p>
+<p>Since the <code class="docutils literal notranslate"><span class="pre">kv</span></code> store has one or more key/value pairs in each secret, the lookup also supports a non-standard suffix in its path that can be used to access a value belonging to one specific key, via the <code class="docutils literal notranslate"><span class="pre">:keyname</span></code> syntax. While this is useful to provide a compact way to access a single secret value (admittedly a very common use case), it complicates the implementation and leads to bad habits.</p>
+<p>For example, it became common to see people use many lookup invocations with the same path, each with a different <code class="docutils literal notranslate"><span class="pre">:keyname</span></code>, to access multiple values within a single secret, but this is quite wasteful, as it does a separate login and secret lookup, all to return the same value, and the key dereferencing is done client side. Further, dereferencing can be done directly in Jinja where it’s more clear what’s going on, using the <code class="docutils literal notranslate"><span class="pre">.key</span></code> or <code class="docutils literal notranslate"><span class="pre">['key']</span></code> syntax.</p>
+<p>One last idiosyncrasy of the plugin is its support for supplying all of its parameters in the term string. This looks compact, but it greatly complicates the processing of plugin options. At the time that this lookup was created, many other lookups allowed options to be supplied in the term string, but it has since been considered an anti-pattern, and has been deprecated/removed from core plugins.</p>
+<p>Another downside of this is that it prevents us from effectively re-using the authentication token in cases when multiple term strings are supplied, directly or via <code class="docutils literal notranslate"><span class="pre">with_community.hashi_vault.hashi_vault</span></code>, and as a result this type of usage results in a new login for each term. In newer lookups, we can take advantage of a single login to perform multiple operations.</p>
+<p>All of these considerations make sense in context, but it somewhat muddles the purpose of the lookup:</p>
+<ul class="simple">
+<li><p>If a response from a completely different endpoint ended up looking like a <code class="docutils literal notranslate"><span class="pre">kv2</span></code> response, it would return an unexpected result.</p></li>
+<li><p>If you try to give the path of a <code class="docutils literal notranslate"><span class="pre">kv2</span></code> secret directly, it will not work unless you insert a <code class="docutils literal notranslate"><span class="pre">/data/</span></code> component into the path, in order to match the <em>API path</em> rather than the path people are usually familiar with.</p></li>
+<li><p>If you want the metadata returned along with a <code class="docutils literal notranslate"><span class="pre">kv2</span></code> response, you cannot get it.</p></li>
+<li><p>Other features of <code class="docutils literal notranslate"><span class="pre">kv2</span></code> like secret versioning cannot directly be used, unless you modify the URL, which is error prone and unintuitive.</p></li>
+<li><p>Getting access to the token created by the internal login, in order to re-use it, is not possible.</p></li>
+</ul>
+</section>
+<section id="how-we-are-addressing-the-considerations">
+<h3><a class="toc-backref" href="#id4">How we are addressing the considerations</a><a class="headerlink" href="#how-we-are-addressing-the-considerations" title="Permalink to this headline"></a></h3>
+<p>The built-in authentication support will be kept, and in fact it has been moved to shared utilities within the collection, so that all plguins and modules can share the functionality, and work consistently. That makes it easier to test new and existing auth methods, easier to add new ones (which automaticallly become part of all existing content), and easier to add new content, because authentication does not need to be reimplemented.</p>
+<p>In addition, it is now possible to perform a login directly and return the token, for general re-use, via the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_login</span></code> <a class="reference internal" href="../vault_login_module.html#ansible-collections-community-hashi-vault-vault-login-module"><span class="std std-ref">module</span></a> and <a class="reference internal" href="../vault_login_lookup.html#ansible-collections-community-hashi-vault-vault-login-lookup"><span class="std std-ref">lookup plugin</span></a>.</p>
+<p>Generic read (not <code class="docutils literal notranslate"><span class="pre">kv</span></code> specific) is still important functionality, so we have the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_read</span></code> <a class="reference internal" href="../vault_read_module.html#ansible-collections-community-hashi-vault-vault-read-module"><span class="std std-ref">module</span></a> and <a class="reference internal" href="../vault_read_lookup.html#ansible-collections-community-hashi-vault-vault-read-lookup"><span class="std std-ref">lookup plugin</span></a> to provide that without trying to infer whether the response is from a specific backend.</p>
+<p>Since reading from the <code class="docutils literal notranslate"><span class="pre">kv</span></code> store is by far the most common use case, we have dedicated content for that:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv1_get</span></code> <a class="reference internal" href="../vault_kv1_get_module.html#ansible-collections-community-hashi-vault-vault-kv1-get-module"><span class="std std-ref">module</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv2_get</span></code> <a class="reference internal" href="../vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">module</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv1_get</span></code> <a class="reference internal" href="../vault_kv1_get_lookup.html#ansible-collections-community-hashi-vault-vault-kv1-get-lookup"><span class="std std-ref">lookup</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv2_get</span></code> <a class="reference internal" href="../vault_kv2_get_lookup.html#ansible-collections-community-hashi-vault-vault-kv2-get-lookup"><span class="std std-ref">lookup</span></a></p></li>
+</ul>
+<p>The dictionary dereferencing via <code class="docutils literal notranslate"><span class="pre">:keyname</span></code> syntax <em>will not be supported</em> in other content. That will be achieved in Jinja via:</p>
+<ul class="simple">
+<li><p>dot syntax <code class="docutils literal notranslate"><span class="pre">.keyname</span></code></p></li>
+<li><p>lookup syntax <code class="docutils literal notranslate"><span class="pre">['keyname']</span></code></p></li>
+<li><p>specialized filters in some circumstances, such as the <code class="docutils literal notranslate"><span class="pre">vault_login_token</span></code> <a class="reference internal" href="filter_guide.html#ansible-collections-community-hashi-vault-docsite-filter-guide-vault-login-token"><span class="std std-ref">filter</span></a>.</p></li>
+</ul>
+<p>Parameters via term string <em>will not be supported</em> in other lookups. Its use is discouraged by core developers, and steps have already been taken in core to remove the functionality where it still exists, however it will remain in the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> plugin for backwards compatibility and because it is likely to still be in use in a lot of places.</p>
+</section>
+<section id="the-future-of-the-hashi-vault-lookup">
+<h3><a class="toc-backref" href="#id5">The future of the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup</a><a class="headerlink" href="#the-future-of-the-hashi-vault-lookup" title="Permalink to this headline"></a></h3>
+<p>There are no plans currently to deprecate or remove the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> plugin. It is likely that it will stay indefinitely, for backwards compatibility and because so much functionality has been moved to shared code that very little maintenance is required to keep it. This decision may be revisited if circumstances change.</p>
+<p>That being said, we will encourage the use of newer content that has functionality with a tighter scope and is expected to receive updates and enchancements as appropriate.</p>
+<p>New features and functionality are unlikely to be added or accepted in the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup, except for the ones that come for “free”, like new auth methods (these require no code changes to the plugin itself).</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="migration_hashi_vault_lookup.html" class="btn btn-neutral float-left" title="Migrating from the hashi_vault lookup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lookup_guide.html" class="btn btn-neutral float-right" title="Lookup guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
