@@ -91,10 +91,10 @@ raw:
         Key2: value2
       metadata:
         created_time: "2022-04-21T15:56:58.8525402Z"
-        custom_metadata": null
-        deletion_time": ""
-        destroyed": false
-        version": 2
+        custom_metadata: null
+        deletion_time: ""
+        destroyed: false
+        version: 2
     lease_duration: 0
     lease_id: ""
     renewable: false
@@ -111,10 +111,10 @@ data:
       Key2: value2
     metadata:
       created_time: "2022-04-21T15:56:58.8525402Z"
-      custom_metadata": null
-      deletion_time": ""
-      destroyed": false
-      version": 2
+      custom_metadata: null
+      deletion_time: ""
+      destroyed: false
+      version: 2
 secret:
   description: The C(data) field within the C(data) field. Equivalent to C(raw.data.data).
   returned: success
@@ -128,10 +128,10 @@ metadata:
   type: dict
   sample:
     created_time: "2022-04-21T15:56:58.8525402Z"
-    custom_metadata": null
-    deletion_time": ""
-    destroyed": false
-    version": 2
+    custom_metadata: null
+    deletion_time: ""
+    destroyed: false
+    version: 2
 '''
 
 import traceback
