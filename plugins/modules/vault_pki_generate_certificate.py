@@ -27,6 +27,7 @@ DOCUMENTATION = """
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.auth
+    - community.hashi_vault.engine_mount
   options:
     alt_names:
       description:
@@ -80,7 +81,6 @@ DOCUMENTATION = """
       description:
         - Specify the mount point used by the PKI engine.
         - Defaults to the default used by C(hvac).
-      type: str
     private_key_format:
       description:
         - Specifies the format for marshaling the private key.
