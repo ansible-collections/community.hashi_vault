@@ -160,7 +160,7 @@
 <p>This way of passing options is discouraged, and <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> was updated (before this collection existed) to support passing options as individual keyword arguments. The term string method was kept for backward compatibility.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>None of the other lookups in this collection will support the old style term string syntax, so it’s highly recommended to change that.</p>
+<p>None of the other lookups in this collection will support the old style term string syntax, so changing to direct options is highly recommended.</p>
 </div>
 <p>If your existing lookups use options in the term string, you may want to first change to direct use of options before trying to change the plugin, <strong>especially if you intend to continue using lookups instead of modules</strong>.</p>
 <p>Examples of the term string style:</p>
@@ -202,17 +202,17 @@
 <p><code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> also supported a dictionary dereferencing syntax with colon <code class="docutils literal notranslate"><span class="pre">:</span></code>, so it was common to see this:</p>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;KV1</span><span class="nv"> </span><span class="s">(key1):</span><span class="nv"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;kv1_mount/path/to/secret:key_1&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="s">-</span><span class="nv"> </span><span class="s">&quot;</span><span class="nt">KV2 (key1)</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;kv2_mount/data/path/to/secret:key_1&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;KV1</span><span class="nv"> </span><span class="s">(key1):</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;kv1_mount/path/to/secret:key_1&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;KV2</span><span class="nv"> </span><span class="s">(key1):</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;kv2_mount/data/path/to/secret:key_1&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>With the above syntax, only the <em>value</em> of <code class="docutils literal notranslate"><span class="pre">key_1</span></code> is returned. Note that <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">three</span></code> could not have been retrieved this way, because the space was the delimiter for the term string options.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The colon <code class="docutils literal notranslate"><span class="pre">:</span></code> syntax is not supported in any other lookups in the collection, and use is discouraged.</p>
+<p>The colon <code class="docutils literal notranslate"><span class="pre">:</span></code> syntax is not supported in any other lookups in the collection, and its use is discouraged.</p>
 </div>
-<p>The colon <code class="docutils literal notranslate"><span class="pre">:</span></code> syntax could always have been replaced by directly dereferencing in the Jinja2 template. <strong>Colon ``:`` use does not correspond to any server-side filtering or other optimization</strong>, so other than compact syntax there is there no advantage to using it.</p>
-<p>Direct dereferencing can be done with the Jinja2 dot <code class="docutils literal notranslate"><span class="pre">.</span></code> syntax (which has restrictions on the key names) or via square brackets <code class="docutils literal notranslate"><span class="pre">[]</span></code>, like so (KV version does not matter):</p>
+<p><strong>Colon</strong> <code class="docutils literal notranslate"><span class="pre">:</span></code> <strong>use does not correspond to any server-side filtering or other optimization</strong>, so other than compact syntax there is there no advantage to using it.</p>
+<p>The colon <code class="docutils literal notranslate"><span class="pre">:</span></code> syntax could always have been replaced by directly dereferencing in the Jinja2 template. Direct dereferencing can be done with the Jinja2 dot <code class="docutils literal notranslate"><span class="pre">.</span></code> syntax (which has restrictions on the key names) or via square brackets <code class="docutils literal notranslate"><span class="pre">[]</span></code>, like so (KV version does not matter):</p>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">k1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">key_1</span><span class="w"></span>
 <span class="w">    </span><span class="nt">k2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">key-2</span><span class="w"></span>
@@ -257,8 +257,8 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">return_format</span></code> option will not be supported in other plugins. It is recommended to replace it with Jinja2 if you are using it currently.</p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup takes a <code class="docutils literal notranslate"><span class="pre">return_format</span></code> option that defaults to <code class="docutils literal notranslate"><span class="pre">dict</span></code>. The lookup always looks for a <code class="docutils literal notranslate"><span class="pre">data</span></code> field (see the <a class="reference internal" href="#ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup-kv-response"><span class="std std-ref">KV response details</span></a> for more information), and that is what is returned by default.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">raw</span></code> value for <code class="docutils literal notranslate"><span class="pre">return_format</span></code> gives the raw API response from the request. This can be used to get the metadata from a KV2 request for example, which is usually stripped off, or it can be used to get a correct response from a non-KV path that happens to look like one (with one or more <code class="docutils literal notranslate"><span class="pre">data</span></code> structures), and gets interpreted as one as a result.</p>
-<p>For reading non-KV paths, use a plugin that is dedicated to that resource, or use the generic <code class="docutils literal notranslate"><span class="pre">vault_read</span></code> plugins, which also return raw responses.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">raw</span></code> value for <code class="docutils literal notranslate"><span class="pre">return_format</span></code> gives the raw API response from the request. This can be used to get the metadata from a KV2 request for example, which is usually stripped off, or it can be used to read from a non-KV path whose response happens to look like a KV response (with one or more <code class="docutils literal notranslate"><span class="pre">data</span></code> structures), and gets interpreted as one as a result.</p>
+<p>For reading non-KV paths <a class="reference internal" href="#ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup-non-kv-replacements"><span class="std std-ref">other options are available</span></a>.</p>
 <p>For getting access to KV2 metadata, see the section on <a class="reference internal" href="#ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup-kv-replacements"><span class="std std-ref">KV replacements</span></a>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">return_format</span></code> option can also be set to <code class="docutils literal notranslate"><span class="pre">values</span></code> to return a list of the dictionary’s values.</p>
 <p>This can be replaced with Jinja2. We will use our example secret again:</p>
@@ -371,9 +371,9 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">vault_kv2_get</span></code> <a class="reference internal" href="../vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">module</span></a></p></li>
 </ul>
 </div></blockquote>
-<p>These dedicated plugins first of all clearly separate KV1 and KV2 operations. This ensures their behavior is clear and predictable.</p>
+<p>These dedicated plugins clearly separate KV1 and KV2 operations. This ensures their behavior is clear and predictable.</p>
 <p>As it relates to API paths, these plugins take the approach of most Vault client libraries, and recommended by HashiCorp, which is to accept the mount point as an option (<code class="docutils literal notranslate"><span class="pre">engine_mount_point</span></code>), separate from the path to be read. This ensures a proper path will be constructed internally, and does not require the caller to insert <code class="docutils literal notranslate"><span class="pre">/data/</span></code> on KV2.</p>
-<p>For return values, the KV plugins no longer return a direct secret. Instead, the return values of both versions, and both the module and lookup forms, have been unified to give easy access to the secret, the full API response, and other parts of the response discretely.</p>
+<p>For return values, the KV plugins no longer return a direct secret. Instead, the return values from KV1 and KV2, and both the module and lookup forms, have been unified to give easy access to the secret, the full API response, and other parts of the response discretely.</p>
 <p>The return values are covered directly in the documentation for each plugin in the return and examples sections.</p>
 </section>
 <section id="examples">
@@ -422,7 +422,7 @@
 </section>
 </section>
 <section id="general-reads-non-kv">
-<h2><a class="toc-backref" href="#id12">General reads (non-KV)</a><a class="headerlink" href="#general-reads-non-kv" title="Permalink to this headline"></a></h2>
+<span id="ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup-non-kv-replacements"></span><h2><a class="toc-backref" href="#id12">General reads (non-KV)</a><a class="headerlink" href="#general-reads-non-kv" title="Permalink to this headline"></a></h2>
 <p>Since the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup does a generic read internally, it can be used to read other paths that are not KV-specifc, for example reading from a cubbyhole or retrieving an AppRole’s role ID.</p>
 <p>More specific-purpose content is expected in the future, for example plugins for retrieving a role ID, but for anything not covered right now, we have the <code class="docutils literal notranslate"><span class="pre">vault_read</span></code> lookup and module:</p>
 <blockquote>
