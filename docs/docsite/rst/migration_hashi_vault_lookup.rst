@@ -35,7 +35,7 @@ This way of passing options is discouraged, and ``hashi_vault`` was updated (bef
 
 .. note::
 
-    None of the other lookups in this collection will support the old style term string syntax, so it's highly recommended to change that.
+    None of the other lookups in this collection will support the old style term string syntax, so changing to direct options is highly recommended.
 
 If your existing lookups use options in the term string, you may want to first change to direct use of options before trying to change the plugin, **especially if you intend to continue using lookups instead of modules**.
 
@@ -89,18 +89,18 @@ For these examples we will assume our result dictionary has this structure:
 
     - ansible.builtin.debug:
         msg:
-          - "KV1 (key1): "{{ lookup('community.hashi_vault.hashi_vault', 'kv1_mount/path/to/secret:key_1') }}"
-          - "KV2 (key1): "{{ lookup('community.hashi_vault.hashi_vault', 'kv2_mount/data/path/to/secret:key_1') }}"
+          - "KV1 (key1): {{ lookup('community.hashi_vault.hashi_vault', 'kv1_mount/path/to/secret:key_1') }}"
+          - "KV2 (key1): {{ lookup('community.hashi_vault.hashi_vault', 'kv2_mount/data/path/to/secret:key_1') }}"
 
 With the above syntax, only the *value* of ``key_1`` is returned. Note that ``key three`` could not have been retrieved this way, because the space was the delimiter for the term string options.
 
 .. note::
 
-    The colon ``:`` syntax is not supported in any other lookups in the collection, and use is discouraged.
+    The colon ``:`` syntax is not supported in any other lookups in the collection, and its use is discouraged.
 
-The colon ``:`` syntax could always have been replaced by directly dereferencing in the Jinja2 template. **Colon ``:`` use does not correspond to any server-side filtering or other optimization**, so other than compact syntax there is there no advantage to using it.
+**Colon** ``:`` **use does not correspond to any server-side filtering or other optimization**, so other than compact syntax there is there no advantage to using it.
 
-Direct dereferencing can be done with the Jinja2 dot ``.`` syntax (which has restrictions on the key names) or via square brackets ``[]``, like so (KV version does not matter):
+The colon ``:`` syntax could always have been replaced by directly dereferencing in the Jinja2 template. Direct dereferencing can be done with the Jinja2 dot ``.`` syntax (which has restrictions on the key names) or via square brackets ``[]``, like so (KV version does not matter):
 
 .. code-block:: yaml+jinja
 
@@ -154,9 +154,9 @@ Return format
 
 The ``hashi_vault`` lookup takes a ``return_format`` option that defaults to ``dict``. The lookup always looks for a ``data`` field (see the :ref:`KV response details <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.kv_response>` for more information), and that is what is returned by default.
 
-The ``raw`` value for ``return_format`` gives the raw API response from the request. This can be used to get the metadata from a KV2 request for example, which is usually stripped off, or it can be used to get a correct response from a non-KV path that happens to look like one (with one or more ``data`` structures), and gets interpreted as one as a result.
+The ``raw`` value for ``return_format`` gives the raw API response from the request. This can be used to get the metadata from a KV2 request for example, which is usually stripped off, or it can be used to read from a non-KV path whose response happens to look like a KV response (with one or more ``data`` structures), and gets interpreted as one as a result.
 
-For reading non-KV paths, use a plugin that is dedicated to that resource, or use the generic ``vault_read`` plugins, which also return raw responses.
+For reading non-KV paths :ref:`other options are available <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.non_kv_replacements>`.
 
 For getting access to KV2 metadata, see the section on :ref:`KV replacements <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.kv_replacements>`.
 
@@ -296,11 +296,11 @@ As of collection version 2.5.0, the ``vault_kv1_get`` and ``vault_kv2_get`` look
   * ``vault_kv1_get`` :ref:`module <ansible_collections.community.hashi_vault.vault_kv1_get_module>`
   * ``vault_kv2_get`` :ref:`module <ansible_collections.community.hashi_vault.vault_kv2_get_module>`
 
-These dedicated plugins first of all clearly separate KV1 and KV2 operations. This ensures their behavior is clear and predictable.
+These dedicated plugins clearly separate KV1 and KV2 operations. This ensures their behavior is clear and predictable.
 
 As it relates to API paths, these plugins take the approach of most Vault client libraries, and recommended by HashiCorp, which is to accept the mount point as an option (``engine_mount_point``), separate from the path to be read. This ensures a proper path will be constructed internally, and does not require the caller to insert ``/data/`` on KV2.
 
-For return values, the KV plugins no longer return a direct secret. Instead, the return values of both versions, and both the module and lookup forms, have been unified to give easy access to the secret, the full API response, and other parts of the response discretely.
+For return values, the KV plugins no longer return a direct secret. Instead, the return values from KV1 and KV2, and both the module and lookup forms, have been unified to give easy access to the secret, the full API response, and other parts of the response discretely.
 
 The return values are covered directly in the documentation for each plugin in the return and examples sections.
 
@@ -353,6 +353,8 @@ And some usage:
         msg:
           - "KV2 (metadata): {{ lookup('community.hashi_vault.vault_kv2_get', 'path/to/secret', engine_mount_point='kv2_mount').metadata }}"
 
+
+.. _ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup.non_kv_replacements:
 
 General reads (non-KV)
 ======================
