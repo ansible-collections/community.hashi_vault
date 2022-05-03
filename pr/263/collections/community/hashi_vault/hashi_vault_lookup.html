@@ -140,13 +140,14 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <li><p><a class="reference internal" href="#notes" id="id4">Notes</a></p></li>
 <li><p><a class="reference internal" href="#see-also" id="id5">See Also</a></p></li>
 <li><p><a class="reference internal" href="#examples" id="id6">Examples</a></p></li>
-<li><p><a class="reference internal" href="#return-values" id="id7">Return Values</a></p></li>
+<li><p><a class="reference internal" href="#return-value" id="id7">Return Value</a></p></li>
 </ul>
 </div>
 <section id="synopsis">
 <h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Retrieve secrets from HashiCorp’s Vault.</p></li>
+<li><p>Consider <a class="reference internal" href="docsite/migration_hashi_vault_lookup.html#ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup"><span class="std std-ref">migrating to other plugins in the collection</span></a>.</p></li>
 </ul>
 </section>
 <section id="requirements">
@@ -451,7 +452,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-proxies"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-parameter-proxies"><strong>proxies</strong></p>
-<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">raw</span></p>
+<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
 <p><span class="ansible-option-versionadded">added in 1.1.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>URL(s) to the proxies used to access the Vault service.</p>
@@ -498,7 +499,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-retries"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-parameter-retries"><strong>retries</strong></p>
-<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">raw</span></p>
+<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
 <p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Allows for retrying on errors, based on the <a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry">Retry class in the urllib3 library</a>.</p>
@@ -867,9 +868,23 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
+<dt><a class="reference internal" href="docsite/migration_hashi_vault_lookup.html#ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup"><span class="std std-ref">community.hashi_vault.hashi_vault Migration Guide</span></a></dt><dd><p>Migrating from the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup.</p>
+</dd>
+<dt><a class="reference internal" href="docsite/about_hashi_vault_lookup.html#ansible-collections-community-hashi-vault-docsite-about-hashi-vault-lookup"><span class="std std-ref">About the community.hashi_vault.hashi_vault lookup</span></a></dt><dd><p>The past, present, and future of the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup.</p>
+</dd>
 <dt><a class="reference internal" href="vault_read_lookup.html#ansible-collections-community-hashi-vault-vault-read-lookup"><span class="std std-ref">community.hashi_vault.vault_read lookup</span></a></dt><dd><p>The official documentation for the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_read</span></code> lookup plugin.</p>
 </dd>
 <dt><a class="reference internal" href="vault_read_module.html#ansible-collections-community-hashi-vault-vault-read-module"><span class="std std-ref">community.hashi_vault.vault_read</span></a></dt><dd><p>The official documentation on the <strong>community.hashi_vault.vault_read</strong> module.</p>
+</dd>
+<dt><a class="reference internal" href="vault_kv2_get_lookup.html#ansible-collections-community-hashi-vault-vault-kv2-get-lookup"><span class="std std-ref">community.hashi_vault.vault_kv2_get lookup</span></a></dt><dd><p>The official documentation for the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv2_get</span></code> lookup plugin.</p>
+</dd>
+<dt><a class="reference internal" href="vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">community.hashi_vault.vault_kv2_get</span></a></dt><dd><p>The official documentation on the <strong>community.hashi_vault.vault_kv2_get</strong> module.</p>
+</dd>
+<dt><a class="reference internal" href="vault_kv1_get_lookup.html#ansible-collections-community-hashi-vault-vault-kv1-get-lookup"><span class="std std-ref">community.hashi_vault.vault_kv1_get lookup</span></a></dt><dd><p>The official documentation for the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv1_get</span></code> lookup plugin.</p>
+</dd>
+<dt><a class="reference internal" href="vault_kv1_get_module.html#ansible-collections-community-hashi-vault-vault-kv1-get-module"><span class="std std-ref">community.hashi_vault.vault_kv1_get</span></a></dt><dd><p>The official documentation on the <strong>community.hashi_vault.vault_kv1_get</strong> module.</p>
+</dd>
+<dt><a class="reference internal" href="docsite/lookup_guide.html#ansible-collections-community-hashi-vault-docsite-lookup-guide"><span class="std std-ref">community.hashi_vault Lookup Guide</span></a></dt><dd><p>Guidance on using lookups in <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code>.</p>
 </dd>
 </dl>
 </div>
@@ -1041,9 +1056,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </pre></div>
 </div>
 </section>
-<section id="return-values">
-<h2><a class="toc-backref" href="#id7">Return Values</a><a class="headerlink" href="#return-values" title="Permalink to this headline"></a></h2>
-<p>Common return values are documented <a class="reference external" href="https://docs.ansible.com/ansible/devel/reference_appendices/common_return_values.html#common-return-values" title="(in Ansible vdevel)"><span class="xref std std-ref">here</span></a>, the following are the fields unique to this lookup:</p>
+<section id="return-value">
+<h2><a class="toc-backref" href="#id7">Return Value</a><a class="headerlink" href="#return-value" title="Permalink to this headline"></a></h2>
 <table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Key</p></th>
@@ -1052,7 +1066,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </thead>
 <tbody>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="return-_raw"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-return-raw"><strong>_raw</strong></p>
+<div class="ansibleOptionAnchor" id="return-_raw"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-return-raw"><strong>Return value</strong></p>
 <a class="ansibleOptionLink" href="#return-_raw" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>secrets(s) requested</p>

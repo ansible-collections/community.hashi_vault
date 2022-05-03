@@ -233,14 +233,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-backend_mount_point"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-backend-mount-point"><strong>backend_mount_point</strong></p>
-<a class="ansibleOptionLink" href="#parameter-backend_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-</div></td>
-<td><div class="ansible-option-cell"><p>The path where the secret backend is mounted.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“kv”</span></p>
-</div></td>
-</tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-ca_cert"></div>
 <div class="ansibleOptionAnchor" id="parameter-cacert"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-cacert"><span id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-ca-cert"></span><strong>ca_cert</strong></p>
 <a class="ansibleOptionLink" href="#parameter-ca_cert" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-aliases">aliases: cacert</span></p>
@@ -250,7 +242,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>If not specified by any other means, the <code class="docutils literal notranslate"><span class="pre">VAULT_CACERT</span></code> environment variable will be used.</p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-cert_auth_private_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-cert-auth-private-key"><strong>cert_auth_private_key</strong></p>
 <a class="ansibleOptionLink" href="#parameter-cert_auth_private_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 <p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
@@ -258,12 +250,20 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, path to the private key file to authenticate with, in PEM format.</p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-cert_auth_public_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-cert-auth-public-key"><strong>cert_auth_public_key</strong></p>
 <a class="ansibleOptionLink" href="#parameter-cert_auth_public_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 <p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, path to the certificate file to authenticate with, in PEM format.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-engine_mount_point"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-engine-mount-point"><strong>engine_mount_point</strong></p>
+<a class="ansibleOptionLink" href="#parameter-engine_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The path where the secret backend is mounted.</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“kv”</span></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -303,12 +303,12 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Vault KV path to be read.</p>
-<p>This is relative to the <em>backend_mount_point</em>, so the mount path should not be included.</p>
+<p>This is relative to the <em>engine_mount_point</em>, so the mount path should not be included.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-proxies"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-proxies"><strong>proxies</strong></p>
-<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">raw</span></p>
+<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
 <p><span class="ansible-option-versionadded">added in 1.1.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>URL(s) to the proxies used to access the Vault service.</p>
@@ -329,7 +329,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-retries"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv1-get-module-parameter-retries"><strong>retries</strong></p>
-<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">raw</span></p>
+<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
 <p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Allows for retrying on errors, based on the <a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry">Retry class in the urllib3 library</a>.</p>
@@ -488,7 +488,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read a secret from kv1 with a different mount via the remote host</span><span class="w"></span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
-<span class="w">    </span><span class="nt">backend_mount_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom/kv1/mount</span><span class="w"></span>
+<span class="w">    </span><span class="nt">engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom/kv1/mount</span><span class="w"></span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span><span class="w"></span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">response</span><span class="w"></span>
 <span class="w">  </span><span class="c1"># equivalent API path is custom/kv1/mount/hello</span><span class="w"></span>
