@@ -27,14 +27,14 @@ seealso:
 extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
-  - community.hashi_vault.backend_mount
+  - community.hashi_vault.engine_mount
 options:
-  backend_mount_point:
+  engine_mount_point:
     default: secret
   path:
     description:
       - Vault KV path to be read.
-      - This is relative to the I(backend_mount_point), so the mount path should not be included.
+      - This is relative to the I(engine_mount_point), so the mount path should not be included.
       - For kv2, do not include C(/data/) or C(/metadata/).
     type: str
     required: True
@@ -66,7 +66,7 @@ EXAMPLES = r'''
 - name: Read version 5 of a secret from kv2 with a different mount via the remote host
   community.hashi_vault.vault_kv2_get:
     url: https://vault:8201
-    backend_mount_path: custom/kv2/mount
+    engine_mount_point: custom/kv2/mount
     path: hello
     version: 5
   register: response
@@ -91,10 +91,10 @@ raw:
         Key2: value2
       metadata:
         created_time: "2022-04-21T15:56:58.8525402Z"
-        custom_metadata": null
-        deletion_time": ""
-        destroyed": false
-        version": 2
+        custom_metadata: null
+        deletion_time: ""
+        destroyed: false
+        version: 2
     lease_duration: 0
     lease_id: ""
     renewable: false
@@ -111,10 +111,10 @@ data:
       Key2: value2
     metadata:
       created_time: "2022-04-21T15:56:58.8525402Z"
-      custom_metadata": null
-      deletion_time": ""
-      destroyed": false
-      version": 2
+      custom_metadata: null
+      deletion_time: ""
+      destroyed: false
+      version: 2
 secret:
   description: The C(data) field within the C(data) field. Equivalent to C(raw.data.data).
   returned: success
@@ -128,10 +128,10 @@ metadata:
   type: dict
   sample:
     created_time: "2022-04-21T15:56:58.8525402Z"
-    custom_metadata": null
-    deletion_time": ""
-    destroyed": false
-    version": 2
+    custom_metadata: null
+    deletion_time: ""
+    destroyed: false
+    version: 2
 '''
 
 import traceback
@@ -153,7 +153,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        backend_mount_point=dict(type='str', default='secret'),
+        engine_mount_point=dict(type='str', default='secret'),
         path=dict(type='str', required=True),
         version=dict(type='int'),
     )
@@ -169,7 +169,7 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    backend_mount_point = module.params.get('backend_mount_point')
+    engine_mount_point = module.params.get('engine_mount_point')
     path = module.params.get('path')
     version = module.params.get('version')
 
@@ -184,7 +184,7 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=backend_mount_point)
+        raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=engine_mount_point)
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:

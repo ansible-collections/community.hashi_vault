@@ -23,7 +23,7 @@
     - module_defaults:
         community.hashi_vault.vault_kv1_get:
           <<: *defaults
-          backend_mount_point: '{{ vault_kv1_mount_point }}'
+          engine_mount_point: '{{ vault_kv1_mount_point }}'
       block:
         - name: Check kv1 get
           register: kv1_secret2
@@ -94,7 +94,7 @@
         - name: Specific failure message expected when trying to read kv2
           register: test_kv_mismatch
           community.hashi_vault.vault_kv1_get:
-            backend_mount_point: '{{ vault_kv2_mount_point }}'
+            engine_mount_point: '{{ vault_kv2_mount_point }}'
             path: "{{ vault_kv2_path }}/secret2"
           ignore_errors: true
 
