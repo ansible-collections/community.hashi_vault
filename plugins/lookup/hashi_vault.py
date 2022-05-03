@@ -17,10 +17,23 @@ DOCUMENTATION = """
     - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
   description:
     - Retrieve secrets from HashiCorp's Vault.
+    - Consider R(migrating from hashi_vault to other plugins in the collection,ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup).
   seealso:
+    - ref: ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup
+      description: Migrating from the C(hashi_vault) lookup.
+    - ref: ansible_collections.community.hashi_vault.docsite.about_hashi_vault_lookup
+      descrption: The past, present, and future of the C(hashi_vault) lookup.
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
     - module: community.hashi_vault.vault_read
+    - ref: community.hashi_vault.vault_kv2_get lookup <ansible_collections.community.hashi_vault.vault_kv2_get_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_kv2_get) lookup plugin.
+    - module: community.hashi_vault.vault_kv2_get
+    - ref: community.hashi_vault.vault_kv1_get lookup <ansible_collections.community.hashi_vault.vault_kv1_get_lookup>
+      description: The official documentation for the C(community.hashi_vault.vault_kv1_get) lookup plugin.
+    - module: community.hashi_vault.vault_kv1_get
+    - ref: community.hashi_vault Lookup Guide <ansible_collections.community.hashi_vault.docsite.lookup_guide>
+      description: Guidance on using lookups in C(community.hashi_vault).
   notes:
     - Due to a current limitation in the HVAC library there won't necessarily be an error if a bad endpoint is specified.
     - As of community.hashi_vault 0.1.0, only the latest version of a secret is returned when specifying a KV v2 path.
