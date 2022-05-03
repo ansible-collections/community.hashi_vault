@@ -8,6 +8,8 @@ This page explains the past, present, and future of the ``hashi_vault`` :ref:`lo
 
 The ``hashi_vault`` lookup is the oldest Vault-related content in Ansible. It was included in pre-collections Ansible (<2.10). As a result, it's the most used plugin for Vault, and the one most people are familiar with.
 
+At this time, we recommend using newer content in the collection, and we believe all use cases for ``hashi_vault`` have been covered by newer plugins. To understand the history, continue reading this document. For help with migration, :ref:`the hashi_vault migration guide <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup>` has you covered.
+
 .. contents::
   :local:
   :depth: 2
