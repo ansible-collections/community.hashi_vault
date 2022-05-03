@@ -19,9 +19,9 @@ DOCUMENTATION = """
     - Retrieve secrets from HashiCorp's Vault.
     - Consider R(migrating from hashi_vault to other plugins in the collection,ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup).
   seealso:
-    - ref: ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup
+    - ref: community.hashi_vault.hashi_vault Migration Guide <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup>
       description: Migrating from the C(hashi_vault) lookup.
-    - ref: ansible_collections.community.hashi_vault.docsite.about_hashi_vault_lookup
+    - ref: About the community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.docsite.about_hashi_vault_lookup>
       descrption: The past, present, and future of the C(hashi_vault) lookup.
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
