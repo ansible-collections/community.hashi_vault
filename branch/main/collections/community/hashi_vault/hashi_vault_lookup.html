@@ -140,7 +140,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <li><p><a class="reference internal" href="#notes" id="id4">Notes</a></p></li>
 <li><p><a class="reference internal" href="#see-also" id="id5">See Also</a></p></li>
 <li><p><a class="reference internal" href="#examples" id="id6">Examples</a></p></li>
-<li><p><a class="reference internal" href="#return-values" id="id7">Return Values</a></p></li>
+<li><p><a class="reference internal" href="#return-value" id="id7">Return Value</a></p></li>
 </ul>
 </div>
 <section id="synopsis">
@@ -452,7 +452,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-proxies"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-parameter-proxies"><strong>proxies</strong></p>
-<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">raw</span></p>
+<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
 <p><span class="ansible-option-versionadded">added in 1.1.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>URL(s) to the proxies used to access the Vault service.</p>
@@ -499,7 +499,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-retries"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-parameter-retries"><strong>retries</strong></p>
-<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">raw</span></p>
+<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
 <p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Allows for retrying on errors, based on the <a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry">Retry class in the urllib3 library</a>.</p>
@@ -1056,9 +1056,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </pre></div>
 </div>
 </section>
-<section id="return-values">
-<h2><a class="toc-backref" href="#id7">Return Values</a><a class="headerlink" href="#return-values" title="Permalink to this headline"></a></h2>
-<p>Common return values are documented <a class="reference external" href="https://docs.ansible.com/ansible/devel/reference_appendices/common_return_values.html#common-return-values" title="(in Ansible vdevel)"><span class="xref std std-ref">here</span></a>, the following are the fields unique to this lookup:</p>
+<section id="return-value">
+<h2><a class="toc-backref" href="#id7">Return Value</a><a class="headerlink" href="#return-value" title="Permalink to this headline"></a></h2>
 <table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Key</p></th>
@@ -1067,7 +1066,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </thead>
 <tbody>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="return-_raw"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-return-raw"><strong>_raw</strong></p>
+<div class="ansibleOptionAnchor" id="return-_raw"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-return-raw"><strong>Return value</strong></p>
 <a class="ansibleOptionLink" href="#return-_raw" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>secrets(s) requested</p>
