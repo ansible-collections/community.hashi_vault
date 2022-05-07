@@ -20,6 +20,8 @@ notes:
   - These environment variables B(are not supported) with this plugin.
   - If you wish to use them, use the R(ansible.builtin.env lookup,ansible_collections.ansible.builtin.env_lookup) to
     load them directly when calling a module or setting C(module_defaults).
+  - Similarly, any options that rely on additional processing to fill in their values will not have that done.
+  - For example, tokens will not be loaded from the token sink file, auth methods will not have their C(validate()) methods called.
   - See the R(Lookup Guide,ansible_collections.community.hashi_vault.docsite.lookup_guide) for more information.
 options:
   _terms:
