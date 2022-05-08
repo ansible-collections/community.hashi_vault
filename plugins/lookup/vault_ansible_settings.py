@@ -24,7 +24,7 @@ notes:
   - If you wish to use them, use the R(ansible.builtin.env lookup,ansible_collections.ansible.builtin.env_lookup) to
     load them directly when calling a module or setting C(module_defaults).
   - Similarly, any options that rely on additional processing to fill in their values will not have that done.
-  - For example, tokens will not be loaded from the token sink file, auth methods will not have their C(validate()) methods called.
+  - For example, tokens will not be loaded from the token sink file, auth methods will not have their C(validate) methods called.
   - See the examples for workarounds, but consider using Ansible-specific ways of setting these values instead.
 options:
   _terms:
@@ -58,15 +58,15 @@ options:
 '''
 
 EXAMPLES = r'''
-# In these examples, we assume an ansible.cfg like this:
-[hashi_vault_collection]
-url = https://config-based-vault.example.com
-retries = 5
+### In these examples, we assume an ansible.cfg like this:
+# [hashi_vault_collection]
+# url = https://config-based-vault.example.com
+# retries = 5
 ### end ansible.cfg
 
-# We assume some environment variables set as well
-ANSIBLE_HASHI_VAULT_URL: https://env-based-vault.example.com
-ANSIBLE_HASHI_VAULT_TOKEN: s.123456789
+### We assume some environment variables set as well
+# ANSIBLE_HASHI_VAULT_URL: https://env-based-vault.example.com
+# ANSIBLE_HASHI_VAULT_TOKEN: s.123456789
 ### end environment variables
 
 # playbook - ansible-core 2.12 and higher
@@ -250,6 +250,7 @@ ANSIBLE_HASHI_VAULT_TOKEN: s.123456789
     - name: Get a secret from the remote host with settings from the controller
       community.hashi_vault.vault_kv2_get:
         path: app/some/secret
+#####
 '''
 
 RETURN = r'''
@@ -258,6 +259,11 @@ _raw:
     - A dictionary of the options and their values.
     - Only a single dictionary will be returned, even with multiple terms.
   type: dict
+  sample:
+    retries: 5
+    timeout: 20
+    token: s.jRHAoqElnJDx6J5ExYelCDYR
+    url: https://vault.example.com
 '''
 
 from fnmatch import fnmatchcase
