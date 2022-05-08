@@ -9,12 +9,15 @@ name: vault_ansible_settings
 version_added: 2.5.0
 author:
   - Brian Scholer (@briantist)
-short_description: Returns
+short_description: Returns plugin settings (options)
 description:
-  - Performs a generic write operation against a given path in HashiCorp Vault, returning any output.
+  - Returns a dictionary of options and their values for a given plugin.
+  - This is most useful for using plugin settings in modules and C(module_defaults),
+    especially when common settings are set in C(ansible.cfg), in Ansible vars, or via environment variables on the controller.
+  - Options can be filtered by name, and can include or exclude defaults, unset options, and private options.
 seealso:
-  - ref: community.hashi_vault Lookup Guide <ansible_collections.community.hashi_vault.docsite.lookup_guide>
-    description: Guidance on using lookups in C(community.hashi_vault).
+  - ref: Module defaults <module_defaults>
+    description: Using the C(module_defaults) keyword.
 notes:
   - This collection supports some "low precedence" environment variables that get loaded after all other sources, such as C(VAULT_ADDR).
   - These environment variables B(are not supported) with this plugin.
@@ -22,7 +25,7 @@ notes:
     load them directly when calling a module or setting C(module_defaults).
   - Similarly, any options that rely on additional processing to fill in their values will not have that done.
   - For example, tokens will not be loaded from the token sink file, auth methods will not have their C(validate()) methods called.
-  - See the R(Lookup Guide,ansible_collections.community.hashi_vault.docsite.lookup_guide) for more information.
+  - See the examples for workarounds, but consider using Ansible-specific ways of setting these values instead.
 options:
   _terms:
     description:
@@ -213,6 +216,40 @@ ANSIBLE_HASHI_VAULT_TOKEN: s.123456789
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.vault_ansible_settings', include_none=True, include_private=True, include_default=True) }}"
 #####
+
+# dealing with low-precedence env vars and token sink loading
+## here, VAULT_ADDR is usually used with plugins, but that will not work with vault_ansible_settings.
+## additionally, the CLI `vault login` is used before running Ansible, so the token sink is usually used, which also will not work.
+- hosts: all
+  vars:
+    plugin_settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', 'url', 'token*', include_default=True) }}"
+    overrides:
+      url: "{{ plugin_settings.url | default(lookup('ansible.builtin.env', 'VAULT_ADDR')) }}"
+      token: >-
+        {{
+          plugin_settings.token
+          | default(
+            lookup(
+              'ansible.builtin.file',
+              (
+                plugin_settings.token_path | default(lookup('ansible.builtin.env', 'HOME')),
+                plugin_settings.token_file
+              ) | path_join
+            )
+          )
+        }}
+      auth_method: token
+    settings: >-
+      {{
+        plugin_settings
+        | combine(overrides)
+      }}
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+  tasks:
+    - name: Get a secret from the remote host with settings from the controller
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
 '''
 
 RETURN = r'''
