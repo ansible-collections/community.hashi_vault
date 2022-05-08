@@ -125,6 +125,7 @@ _raw:
 
 from fnmatch import fnmatchcase
 
+from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible import constants as C
 from ansible.plugins.loader import lookup_loader
@@ -155,10 +156,15 @@ class LookupModule(LookupBase):
             # ansible-core 2.10 or later
             p = lookup_loader.find_plugin_with_context(plugin)
             loadname = p.plugin_resolved_name
+            resolved = p.resolved
         except AttributeError:
             # ansible 2.9
             p = lookup_loader.find_plugin_with_name(plugin)
             loadname = p[0]
+            resolved = loadname is not None
+
+        if not resolved:
+            raise AnsibleError("'%s' plugin not found." % plugin)
 
         # Loading ensures that the options are initialized in ConfigManager
         lookup_loader.get(plugin, class_only=True)
