@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>community.hashi_vault.vault_pki_generate_certificate module – Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI &mdash; Ansible collections  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/ansible.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/antsibull-minimal.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/rtd-ethical-ads.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/images/Ansible-Mark-RGB_Black.svg"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="community.hashi_vault.vault_read module – Perform a read operation against HashiCorp Vault" href="vault_read_module.html" />
+    <link rel="prev" title="community.hashi_vault.vault_login module – Perform a login operation against HashiCorp Vault" href="vault_login_module.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+    <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+    <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+    <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../../_static/images/Ansible-Mark-RGB_White.svg"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Ansible collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Collections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Collection Index</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Collections in the Community Namespace</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Community.Hashi_Vault</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#communication">Communication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#guides">Guides</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html#plugin-index">Plugin Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_lookup.html">Index of all Lookup Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_module.html">Index of all Modules</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ansible collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Collection Index</a> &raquo;</li>
+          <li><a href="../index.html">Collections in the Community Namespace</a> &raquo;</li>
+          <li><a href="index.html">Community.Hashi_Vault</a> &raquo;</li>
+      <li>community.hashi_vault.vault_pki_generate_certificate module – Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/ansible-collections/community.hashi_vault/edit/main/plugins/modules/vault_pki_generate_certificate.py?description=%23%23%23%23%23%20SUMMARY%0A%3C!—%20Your%20description%20here%20–%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <span class="target" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module"></span><section id="community-hashi-vault-vault-pki-generate-certificate-module-generates-a-new-set-of-credentials-private-key-and-certificate-using-hashicorp-vault-pki">
+<h1>community.hashi_vault.vault_pki_generate_certificate module – Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI<a class="headerlink" href="#community-hashi-vault-vault-pki-generate-certificate-module-generates-a-new-set-of-credentials-private-key-and-certificate-using-hashicorp-vault-pki" title="Permalink to this headline"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 2.4.0).</p>
+<p>You might already have this collection installed if you are using the <code class="docutils literal notranslate"><span class="pre">ansible</span></code> package.
+It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
+To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
+<p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">community.hashi_vault</span></code>.</p>
+<p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">community.hashi_vault.vault_pki_generate_certificate</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.3.0: </span>of community.hashi_vault</p>
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#requirements" id="id2">Requirements</a></p></li>
+<li><p><a class="reference internal" href="#parameters" id="id3">Parameters</a></p></li>
+<li><p><a class="reference internal" href="#see-also" id="id4">See Also</a></p></li>
+<li><p><a class="reference internal" href="#examples" id="id5">Examples</a></p></li>
+<li><p><a class="reference internal" href="#return-values" id="id6">Return Values</a></p></li>
+</ul>
+</div>
+<section id="synopsis">
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Generates a new set of credentials (private key and certificate) based on a Vault PKI role.</p></li>
+</ul>
+</section>
+<section id="requirements">
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<p>The below requirements are needed on the host that executes this module.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> (<a class="reference external" href="https://hvac.readthedocs.io/en/stable/changelog.html#may-25th-2019">Python library</a>) version <code class="docutils literal notranslate"><span class="pre">0.9.1</span></code> or higher</p></li>
+<li><p>For detailed requirements, see <a class="reference internal" href="docsite/user_guide.html#ansible-collections-community-hashi-vault-docsite-user-guide-requirements"><span class="std std-ref">the collection requirements page</span></a>.</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h2>
+<table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-alt_names"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-alt-names"><strong>alt_names</strong></p>
+<a class="ansibleOptionLink" href="#parameter-alt_names" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies requested Subject Alternative Names.</p>
+<p>These can be host names or email addresses; they will be parsed into their respective fields.</p>
+<p>If any requested names do not match role policy, the entire request will be denied.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-auth_method"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-auth-method"><strong>auth_method</strong></p>
+<a class="ansibleOptionLink" href="#parameter-auth_method" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Authentication method to be used.</p>
+<p><code class="docutils literal notranslate"><span class="pre">none</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.2.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cert</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.4.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code>. The old name will be removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">userpass</span></p></li>
+<li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
+<li><p><span class="ansible-option-choices-entry">approle</span></p></li>
+<li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
+<li><p><span class="ansible-option-choices-entry">aws_iam_login</span></p></li>
+<li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
+<li><p><span class="ansible-option-choices-entry">cert</span></p></li>
+<li><p><span class="ansible-option-choices-entry">none</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-aws_access_key"></div>
+<div class="ansibleOptionAnchor" id="parameter-aws_access_key_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-access-key-id"><span id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-access-key"></span><strong>aws_access_key</strong></p>
+<a class="ansibleOptionLink" href="#parameter-aws_access_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-aliases">aliases: aws_access_key_id</span></p>
+<p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The AWS access key to use.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-aws_iam_server_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-iam-server-id"><strong>aws_iam_server_id</strong></p>
+<a class="ansibleOptionLink" href="#parameter-aws_iam_server_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<p><span class="ansible-option-versionadded">added in 0.2.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>If specified, sets the value to use for the <code class="docutils literal notranslate"><span class="pre">X-Vault-AWS-IAM-Server-ID</span></code> header as part of <code class="docutils literal notranslate"><span class="pre">GetCallerIdentity</span></code> request.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-aws_profile"></div>
+<div class="ansibleOptionAnchor" id="parameter-boto_profile"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-boto-profile"><span id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-profile"></span><strong>aws_profile</strong></p>
+<a class="ansibleOptionLink" href="#parameter-aws_profile" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-aliases">aliases: boto_profile</span></p>
+<p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The AWS profile</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-aws_secret_key"></div>
+<div class="ansibleOptionAnchor" id="parameter-aws_secret_access_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-secret-key"><span id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-secret-access-key"></span><strong>aws_secret_key</strong></p>
+<a class="ansibleOptionLink" href="#parameter-aws_secret_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-aliases">aliases: aws_secret_access_key</span></p>
+<p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The AWS secret key that corresponds to the access key.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-aws_security_token"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-aws-security-token"><strong>aws_security_token</strong></p>
+<a class="ansibleOptionLink" href="#parameter-aws_security_token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The AWS security token if using temporary access and secret keys.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-ca_cert"></div>
+<div class="ansibleOptionAnchor" id="parameter-cacert"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-cacert"><span id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-ca-cert"></span><strong>ca_cert</strong></p>
+<a class="ansibleOptionLink" href="#parameter-ca_cert" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-aliases">aliases: cacert</span></p>
+<p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Path to certificate to use for authentication.</p>
+<p>If not specified by any other means, the <code class="docutils literal notranslate"><span class="pre">VAULT_CACERT</span></code> environment variable will be used.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-cert_auth_private_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-cert-auth-private-key"><strong>cert_auth_private_key</strong></p>
+<a class="ansibleOptionLink" href="#parameter-cert_auth_private_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
+<p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, path to the private key file to authenticate with, in PEM format.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-cert_auth_public_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-cert-auth-public-key"><strong>cert_auth_public_key</strong></p>
+<a class="ansibleOptionLink" href="#parameter-cert_auth_public_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
+<p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, path to the certificate file to authenticate with, in PEM format.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-common_name"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-common-name"><strong>common_name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-common_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies the requested CN for the certificate.</p>
+<p>If the CN is allowed by role policy, it will be issued.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-engine_mount_point"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-engine-mount-point"><strong>engine_mount_point</strong></p>
+<a class="ansibleOptionLink" href="#parameter-engine_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specify the mount point used by the PKI engine.</p>
+<p>Defaults to the default used by <code class="docutils literal notranslate"><span class="pre">hvac</span></code>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-exclude_cn_from_sans"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-exclude-cn-from-sans"><strong>exclude_cn_from_sans</strong></p>
+<a class="ansibleOptionLink" href="#parameter-exclude_cn_from_sans" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>If true, the given <em>common_name</em> will not be included in DNS or Email Subject Alternate Names (as appropriate).</p>
+<p>Useful if the CN is not a hostname or email address, but is instead some human-readable identifier.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-default-bold">no</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">yes</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-format"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-format"><strong>format</strong></p>
+<a class="ansibleOptionLink" href="#parameter-format" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies the format for returned data.</p>
+<p>Can be <code class="docutils literal notranslate"><span class="pre">pem</span></code>, <code class="docutils literal notranslate"><span class="pre">der</span></code>, or <code class="docutils literal notranslate"><span class="pre">pem_bundle</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">der</span></code>, the output is base64 encoded.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">pem_bundle</span></code>, the <code class="docutils literal notranslate"><span class="pre">certificate</span></code> field will contain the private key and certificate, concatenated. If the issuing CA is not a Vault-derived self-signed root, this will be included as well.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-default-bold">pem</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">der</span></p></li>
+<li><p><span class="ansible-option-choices-entry">pem_bundle</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-ip_sans"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-ip-sans"><strong>ip_sans</strong></p>
+<a class="ansibleOptionLink" href="#parameter-ip_sans" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies requested IP Subject Alternative Names.</p>
+<p>Only valid if the role allows IP SANs (which is the default).</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-jwt"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-jwt"><strong>jwt</strong></p>
+<a class="ansibleOptionLink" href="#parameter-jwt" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The JSON Web Token (JWT) to use for JWT authentication to Vault.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-mount_point"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-mount-point"><strong>mount_point</strong></p>
+<a class="ansibleOptionLink" href="#parameter-mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Vault mount point.</p>
+<p>If not specified, the default mount point for a given auth method is used.</p>
+<p>Does not apply to token authentication.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-namespace"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-namespace"><strong>namespace</strong></p>
+<a class="ansibleOptionLink" href="#parameter-namespace" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Vault namespace where secrets reside. This option requires HVAC 0.7.0+ and Vault 0.11+.</p>
+<p>Optionally, this may be achieved by prefixing the authentication mount point and/or secret path with the namespace (e.g <code class="docutils literal notranslate"><span class="pre">mynamespace/secret/mysecret</span></code>).</p>
+<p>If environment variable <code class="docutils literal notranslate"><span class="pre">VAULT_NAMESPACE</span></code> is set, its value will be used last among all ways to specify <em>namespace</em>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-other_sans"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-other-sans"><strong>other_sans</strong></p>
+<a class="ansibleOptionLink" href="#parameter-other_sans" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies custom OID/UTF8-string SANs.</p>
+<p>These must match values specified on the role in <code class="docutils literal notranslate"><span class="pre">allowed_other_sans</span></code>.</p>
+<p>The format is the same as OpenSSL: <code class="docutils literal notranslate"><span class="pre">&lt;oid&gt;;&lt;type&gt;:&lt;value&gt;</span></code> where the only current valid type is <code class="docutils literal notranslate"><span class="pre">UTF8</span></code>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-password"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-password"><strong>password</strong></p>
+<a class="ansibleOptionLink" href="#parameter-password" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Authentication password.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-private_key_format"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-private-key-format"><strong>private_key_format</strong></p>
+<a class="ansibleOptionLink" href="#parameter-private_key_format" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies the format for marshaling the private key.</p>
+<p>Defaults to <code class="docutils literal notranslate"><span class="pre">der</span></code> which will return either base64-encoded DER or PEM-encoded DER, depending on the value of <em>format</em>.</p>
+<p>The other option is <code class="docutils literal notranslate"><span class="pre">pkcs8</span></code> which will return the key marshalled as PEM-encoded PKCS8.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-default-bold">der</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">pkcs8</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-proxies"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-proxies"><strong>proxies</strong></p>
+<a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
+<p><span class="ansible-option-versionadded">added in 1.1.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>URL(s) to the proxies used to access the Vault service.</p>
+<p>It can be a string or a dict.</p>
+<p>If it’s a dict, provide the scheme (eg. <code class="docutils literal notranslate"><span class="pre">http</span></code> or <code class="docutils literal notranslate"><span class="pre">https</span></code>) as the key, and the URL as the value.</p>
+<p>If it’s a string, provide a single URL that will be used as the proxy for both <code class="docutils literal notranslate"><span class="pre">http</span></code> and <code class="docutils literal notranslate"><span class="pre">https</span></code> schemes.</p>
+<p>A string that can be interpreted as a dictionary will be converted to one (see examples).</p>
+<p>You can specify a different proxy for HTTP and HTTPS resources.</p>
+<p>If not specified, <a class="reference external" href="https://requests.readthedocs.io/en/master/user/advanced/#proxies">environment variables from the Requests library</a> are used.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-region"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-region"><strong>region</strong></p>
+<a class="ansibleOptionLink" href="#parameter-region" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The AWS region for which to create the connection.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-retries"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-retries"><strong>retries</strong></p>
+<a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
+<p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Allows for retrying on errors, based on the <a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry">Retry class in the urllib3 library</a>.</p>
+<p>This collection defines recommended defaults for retrying connections to Vault.</p>
+<p>This option can be specified as a positive number (integer) or dictionary.</p>
+<p>If this option is not specified or the number is <code class="docutils literal notranslate"><span class="pre">0</span></code>, then retries are disabled.</p>
+<p>A number sets the total number of retries, and uses collection defaults for the other settings.</p>
+<p>A dictionary value is used directly to initialize the <code class="docutils literal notranslate"><span class="pre">Retry</span></code> class, so it can be used to fully customize retries.</p>
+<p>For detailed information on retries, see the collection User Guide.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-retry_action"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-retry-action"><strong>retry_action</strong></p>
+<a class="ansibleOptionLink" href="#parameter-retry_action" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Controls whether and how to show messages on <em>retries</em>.</p>
+<p>This has no effect if a request is not retried.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-choices-entry">ignore</span></p></li>
+<li><p><span class="ansible-option-default-bold">warn</span> <span class="ansible-option-default">← (default)</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-role_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-role-id"><strong>role_id</strong></p>
+<a class="ansibleOptionLink" href="#parameter-role_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Vault Role ID or name. Used in <code class="docutils literal notranslate"><span class="pre">approle</span></code>, <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code>, and <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth methods.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, if no <em>role_id</em> is supplied, the default behavior is to try all certificate roles and return any one that matches.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-role_name"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-role-name"><strong>role_name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-role_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies the name of the role to create the certificate against.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-secret_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-secret-id"><strong>secret_id</strong></p>
+<a class="ansibleOptionLink" href="#parameter-secret_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Secret ID to be used for Vault AppRole authentication.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-timeout"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-timeout"><strong>timeout</strong></p>
+<a class="ansibleOptionLink" href="#parameter-timeout" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+<p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Sets the connection timeout in seconds.</p>
+<p>If not set, then the <code class="docutils literal notranslate"><span class="pre">hvac</span></code> library’s default is used.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-token"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-token"><strong>token</strong></p>
+<a class="ansibleOptionLink" href="#parameter-token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Vault token. Token may be specified explicitly, through the listed [env] vars, and also through the <code class="docutils literal notranslate"><span class="pre">VAULT_TOKEN</span></code> env var.</p>
+<p>If no token is supplied, explicitly or through env, then the plugin will check for a token file, as determined by <em>token_path</em> and <em>token_file</em>.</p>
+<p>The order of token loading (first found wins) is <code class="docutils literal notranslate"><span class="pre">token</span> <span class="pre">param</span> <span class="pre">-&gt;</span> <span class="pre">ansible</span> <span class="pre">var</span> <span class="pre">-&gt;</span> <span class="pre">ANSIBLE_HASHI_VAULT_TOKEN</span> <span class="pre">-&gt;</span> <span class="pre">VAULT_TOKEN</span> <span class="pre">-&gt;</span> <span class="pre">token</span> <span class="pre">file</span></code>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-token_file"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-token-file"><strong>token_file</strong></p>
+<a class="ansibleOptionLink" href="#parameter-token_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>If no token is specified, will try to read the token from this file in <em>token_path</em>.</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“.vault-token”</span></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-token_path"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-token-path"><strong>token_path</strong></p>
+<a class="ansibleOptionLink" href="#parameter-token_path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>If no token is specified, will try to read the <em>token_file</em> from this path.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-token_validate"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-token-validate"><strong>token_validate</strong></p>
+<a class="ansibleOptionLink" href="#parameter-token_validate" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+<p><span class="ansible-option-versionadded">added in 0.2.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>For token auth, will perform a <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> operation to determine the token’s validity before using it.</p>
+<p>Disable if your token does not have the <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> capability.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-choices-entry">no</span></p></li>
+<li><p><span class="ansible-option-default-bold">yes</span> <span class="ansible-option-default">← (default)</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-ttl"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-ttl"><strong>ttl</strong></p>
+<a class="ansibleOptionLink" href="#parameter-ttl" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies requested Time To Live.</p>
+<p>Cannot be greater than the role’s <code class="docutils literal notranslate"><span class="pre">max_ttl</span></code> value.</p>
+<p>If not provided, the role’s <code class="docutils literal notranslate"><span class="pre">ttl</span></code> value will be used.</p>
+<p>Note that the role values default to system values if not explicitly set.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-uri_sans"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-uri-sans"><strong>uri_sans</strong></p>
+<a class="ansibleOptionLink" href="#parameter-uri_sans" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies the requested URI Subject Alternative Names.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-url"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-url"><strong>url</strong></p>
+<a class="ansibleOptionLink" href="#parameter-url" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>URL to the Vault service.</p>
+<p>If not specified by any other means, the value of the <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> environment variable will be used.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> is also not defined then an error will be raised.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-username"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-username"><strong>username</strong></p>
+<a class="ansibleOptionLink" href="#parameter-username" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Authentication user name.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-validate_certs"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-parameter-validate-certs"><strong>validate_certs</strong></p>
+<a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Controls verification and validation of SSL certificates, mostly you only want to turn off with self signed ones.</p>
+<p>Will be populated with the inverse of <code class="docutils literal notranslate"><span class="pre">VAULT_SKIP_VERIFY</span></code> if that is set and <em>validate_certs</em> is not explicitly provided.</p>
+<p>Will default to <code class="docutils literal notranslate"><span class="pre">true</span></code> if neither <em>validate_certs</em> or <code class="docutils literal notranslate"><span class="pre">VAULT_SKIP_VERIFY</span></code> are set.</p>
+<p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
+<ul class="simple">
+<li><p><span class="ansible-option-choices-entry">no</span></p></li>
+<li><p><span class="ansible-option-choices-entry">yes</span></p></li>
+</ul>
+</div></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="see-also">
+<h2><a class="toc-backref" href="#id4">See Also</a><a class="headerlink" href="#see-also" title="Permalink to this headline"></a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://www.vaultproject.io/api/secret/pki#generate-certificate">HashiCorp Vault PKI Secrets Engine API</a></dt><dd><p>API documentation for the HashiCorp Vault PKI secrets engine.</p>
+</dd>
+<dt><a class="reference external" href="https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#generate-certificate">HVAC library reference</a></dt><dd><p>HVAC library reference about the PKI engine.</p>
+</dd>
+</dl>
+</div>
+</section>
+<section id="examples">
+<h2><a class="toc-backref" href="#id5">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Login and use the resulting token</span><span class="w"></span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_login</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://localhost:8200</span><span class="w"></span>
+<span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;john.doe&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">user_passwd</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">login_data</span><span class="w"></span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate a certificate with an existing token</span><span class="w"></span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_pki_generate_certificate</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">role_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test.example.org</span><span class="w"></span>
+<span class="w">    </span><span class="nt">common_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test.example.org</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8760h</span><span class="w"></span>
+<span class="w">    </span><span class="nt">alt_names</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test2.example.org</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test3.example.org</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
+<span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span><span class="w"></span>
+<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">login_data.login.auth.client_token</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert_data</span><span class="w"></span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display generated certificate</span><span class="w"></span>
+<span class="w">  </span><span class="nt">debug</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">cert_data.data.data.certificate</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="return-values">
+<h2><a class="toc-backref" href="#id6">Return Values</a><a class="headerlink" href="#return-values" title="Permalink to this headline"></a></h2>
+<p>Common return values are documented <a class="reference external" href="https://docs.ansible.com/ansible/devel/reference_appendices/common_return_values.html#common-return-values" title="(in Ansible vdevel)"><span class="xref std std-ref">here</span></a>, the following are the fields unique to this module:</p>
+<table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data"><strong>data</strong></p>
+<a class="ansibleOptionLink" href="#return-data" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">complex</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Information about newly generated certificate</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data"><strong>data</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">complex</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Payload</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data/ca_chain"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data-ca-chain"><strong>ca_chain</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data/ca_chain" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Linked list of CA certificates.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> [”—–BEGIN CERTIFICATE—–…—–END CERTIFICATE—–“]</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data/certificate"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data-certificate"><strong>certificate</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data/certificate" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Generated certificate.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> “—–BEGIN CERTIFICATE—–…—–END CERTIFICATE—–”</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data/issuing_ca"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data-issuing-ca"><strong>issuing_ca</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data/issuing_ca" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>CA certificate.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> “—–BEGIN CERTIFICATE—–…—–END CERTIFICATE—–”</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data/private_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data-private-key"><strong>private_key</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data/private_key" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Private key used to generate certificate.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> “—–BEGIN RSA PRIVATE KEY—–…—–END RSA PRIVATE KEY—–”</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data/private_key_type"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data-private-key-type"><strong>private_key_type</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data/private_key_type" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Private key algorithm.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> “rsa”</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/data/serial_number"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-data-serial-number"><strong>serial_number</strong></p>
+<a class="ansibleOptionLink" href="#return-data/data/serial_number" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Certificate’s serial number.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> “39:dd:2e:90:b7:23:1f:8d:d3:7d:31:c5:1b:da:84:d0:5b:65:31:58”</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/lease_duration"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-lease-duration"><strong>lease_duration</strong></p>
+<a class="ansibleOptionLink" href="#return-data/lease_duration" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Vault lease duration.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> 21600</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/lease_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-lease-id"><strong>lease_id</strong></p>
+<a class="ansibleOptionLink" href="#return-data/lease_id" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Vault lease attached to certificate.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> “pki/issue/test/7ad6cfa5-f04f-c62a-d477-f33210475d05”</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/renewable"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-renewable"><strong>renewable</strong></p>
+<a class="ansibleOptionLink" href="#return-data/renewable" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>True if certificate is renewable.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> false</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-data/warning"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-pki-generate-certificate-module-return-data-warning"><strong>warning</strong></p>
+<a class="ansibleOptionLink" href="#return-data/warning" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Warnings returned by Vault during generation.</p>
+<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+<section id="authors">
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Florent David (&#64;Ripolin)</p></li>
+</ul>
+</section>
+<section id="collection-links">
+<h3>Collection links<a class="headerlink" href="#collection-links" title="Permalink to this headline"></a></h3>
+<p class="ansible-links">
+  <a href="https://github.com/ansible-collections/community.hashi_vault/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+  <a href="https://github.com/ansible-collections/community.hashi_vault" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+  <a href="https://github.com/ansible-collections/community.hashi_vault/discussions" aria-role="button" target="_blank" rel="noopener external">Discussion, Q&amp;A, troubleshooting</a>
+  <a href="./#communication-for-community-hashi_vault" aria-role="button" target="_blank">Communication</a>
+</p></section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vault_login_module.html" class="btn btn-neutral float-left" title="community.hashi_vault.vault_login module – Perform a login operation against HashiCorp Vault" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="vault_read_module.html" class="btn btn-neutral float-right" title="community.hashi_vault.vault_read module – Perform a read operation against HashiCorp Vault" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
