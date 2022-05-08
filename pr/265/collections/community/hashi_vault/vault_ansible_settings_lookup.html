@@ -243,7 +243,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <li><p>These environment variables <strong>are not supported</strong> with this plugin.</p></li>
 <li><p>If you wish to use them, use the <a class="reference external" href="https://docs.ansible.com/ansible/devel/collections/ansible/builtin/env_lookup.html#ansible-collections-ansible-builtin-env-lookup" title="(in Ansible vdevel)"><span class="xref std std-ref">ansible.builtin.env lookup</span></a> to load them directly when calling a module or setting <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code>.</p></li>
 <li><p>Similarly, any options that rely on additional processing to fill in their values will not have that done.</p></li>
-<li><p>For example, tokens will not be loaded from the token sink file, auth methods will not have their <code class="docutils literal notranslate"><span class="pre">validate(</span></code>) methods called.</p></li>
+<li><p>For example, tokens will not be loaded from the token sink file, auth methods will not have their <code class="docutils literal notranslate"><span class="pre">validate</span></code> methods called.</p></li>
 <li><p>See the examples for workarounds, but consider using Ansible-specific ways of setting these values instead.</p></li>
 </ul>
 </div>
@@ -260,15 +260,15 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </section>
 <section id="examples">
 <h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># In these examples, we assume an ansible.cfg like this:</span><span class="w"></span>
-<span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">url = https://config-based-vault.example.com</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">retries = 5</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">### end ansible.cfg</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1">### In these examples, we assume an ansible.cfg like this:</span><span class="w"></span>
+<span class="c1"># [hashi_vault_collection]</span><span class="w"></span>
+<span class="c1"># url = https://config-based-vault.example.com</span><span class="w"></span>
+<span class="c1"># retries = 5</span><span class="w"></span>
+<span class="c1">### end ansible.cfg</span><span class="w"></span>
 
-<span class="l l-Scalar l-Scalar-Plain"># We assume some environment variables set as well</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">ANSIBLE_HASHI_VAULT_URL</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://env-based-vault.example.com</span><span class="w"></span>
-<span class="nt">ANSIBLE_HASHI_VAULT_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s.123456789</span><span class="w"></span>
+<span class="c1">### We assume some environment variables set as well</span><span class="w"></span>
+<span class="c1"># ANSIBLE_HASHI_VAULT_URL: https://env-based-vault.example.com</span><span class="w"></span>
+<span class="c1"># ANSIBLE_HASHI_VAULT_TOKEN: s.123456789</span><span class="w"></span>
 <span class="c1">### end environment variables</span><span class="w"></span>
 
 <span class="c1"># playbook - ansible-core 2.12 and higher</span><span class="w"></span>
@@ -452,6 +452,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span><span class="w"></span>
 <span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
+<span class="c1">#####</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -471,6 +472,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>A dictionary of the options and their values.</p>
 <p>Only a single dictionary will be returned, even with multiple terms.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> {“retries”: 5, “timeout”: 20, “token”: “s.jRHAoqElnJDx6J5ExYelCDYR”, “url”: “<a class="reference external" href="https://vault.example.com">https://vault.example.com</a>”}</p>
 </div></td>
 </tr>
 </tbody>
