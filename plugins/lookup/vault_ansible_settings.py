@@ -54,66 +54,166 @@ options:
     default: false
 '''
 
-EXAMPLES = """
-# These examples show some uses that might work well as a lookup.
-# For most uses, the vault_write module should be used.
+EXAMPLES = r'''
+# In these examples, we assume an ansible.cfg like this:
+[hashi_vault_collection]
+url = https://config-based-vault.example.com
+retries = 5
+### end ansible.cfg
 
-- name: Retrieve and display random data
+# We assume some environment variables set as well
+ANSIBLE_HASHI_VAULT_URL: https://env-based-vault.example.com
+ANSIBLE_HASHI_VAULT_TOKEN: s.123456789
+### end environment variables
+
+# playbook - ansible-core 2.12 and higher
+## set defaults for the collection group
+- hosts: all
   vars:
-    data:
-      format: hex
-    num_bytes: 64
+    ansible_hashi_vault_auth_method: token
+  module_defaults:
+    group/community.hashi_vault.vault: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+  tasks:
+    - name: Get a secret from the remote host with settings from the controller
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
+######
+
+# playbook - ansible any version
+## set defaults for a specific module
+- hosts: all
+  vars:
+    ansible_hashi_vault_auth_method: token
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+  tasks:
+    - name: Get a secret from the remote host with settings from the controller
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
+######
+
+# playbook - ansible any version
+## set defaults for several modules
+## do not use controller's auth
+- hosts: all
+  vars:
+    ansible_hashi_vault_auth_method: aws_iam
+    settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', '*', '!*token*') }}"
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: '{{ settings }}'
+    community.hashi_vault.vault_kv1_get: '{{ settings }}'
+  tasks:
+    - name: Get a secret from the remote host with some settings from the controller, auth from remote
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
+
+    - name: Same with kv1
+      community.hashi_vault.vault_kv1_get:
+        path: app/some/secret
+######
+
+# playbook - ansible any version
+## set defaults for several modules
+## do not use controller's auth
+## override returned settings
+- hosts: all
+  vars:
+    ansible_hashi_vault_auth_method: userpass
+    plugin_settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', '*', '!*token*') }}"
+    overrides:
+      auth_method: aws_iam
+      retries: '{{ (plugin_settings.retries | int) + 2 }}'
+    settings: >-
+      {{
+        plugin_settings
+        | combine(overrides)
+      }}
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: '{{ settings }}'
+    community.hashi_vault.vault_kv1_get: '{{ settings }}'
+  tasks:
+    - name: Get a secret from the remote host with some settings from the controller, auth from remote
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
+
+    - name: Same with kv1
+      community.hashi_vault.vault_kv1_get:
+        path: app/some/secret
+######
+
+# using a block is similar
+- name: Settings
+  vars:
+    ansible_hashi_vault_auth_method: aws_iam
+    settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', '*', '!*token*') }}"
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: '{{ settings }}'
+    community.hashi_vault.vault_kv1_get: '{{ settings }}'
+  block:
+    - name: Get a secret from the remote host with some settings from the controller, auth from remote
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
+
+    - name: Same with kv1
+      community.hashi_vault.vault_kv1_get:
+        path: app/some/secret
+#####
+
+# use settings from a different plugin
+## when you need settings that are not in the default plugin (vault_login)
+- name: Settings
+  vars:
+    ansible_hashi_vault_engine_mount_point: dept-secrets
+    settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', plugin='community.hashi_vault.vault_kv2_get') }}"
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: '{{ settings }}'
+  block:
+    - name: Get a secret from the remote host with some settings from the controller, auth from remote
+      community.hashi_vault.vault_kv2_get:
+        path: app/some/secret
+#####
+
+# use settings from a different plugin (on an indivdual call)
+## short names assume community.hashi_vault
+- name: Settings
+  vars:
+    ansible_hashi_vault_engine_mount_point: dept-secrets
+    settings: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+  module_defaults:
+    community.hashi_vault.vault_kv2_get: '{{ settings }}'
+  block:
+    - name: Get a secret from the remote host with some settings from the controller, auth from remote
+      community.hashi_vault.vault_kv2_get:
+        engine_mount_point: "{{ lookup('community.hashi_vault.vault_ansible_settings', plugin='vault_kv2_get') }}"
+        path: app/some/secret
+#####
+
+# normally, options with default values are not returned, but can be
+- name: Settings
+  vars:
+    settings: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+  module_defaults:
+    # we usually want to use the remote host's IAM auth
+    community.hashi_vault.vault_kv2_get: >-
+      {{
+        settings
+        | combine({'auth_method': aws_iam})
+      }}
+  block:
+    - name: Use the plugin auth method instead, even if it is the default method
+      community.hashi_vault.vault_kv2_get:
+        auth_method: "{{ lookup('community.hashi_vault.vault_ansible_settings', 'auth_method', include_default=True) }}"
+        path: app/some/secret
+#####
+
+# normally, options with None/null values are not returned,
+# nor are private options (names begin with underscore _),
+# but they can be returned too if desired
+- name: Show all plugin settings
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_write', 'sys/tools/random/' ~ num_bytes, data=data) }}"
-
-- name: Hash some data and display the hash
-  vars:
-    input: |
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Pellentesque posuere dui a ipsum dapibus, et placerat nibh bibendum.
-    data:
-      input: '{{ input | b64encode }}'
-    hash_algo: sha2-256
-  ansible.builtin.debug:
-    msg: "The hash is {{ lookup('community.hashi_vault.vault_write', 'sys/tools/hash/' ~ hash_algo, data=data) }}"
-
-
-# In this next example, the Ansible controller's token does not have permission to read the secrets we need.
-# It does have permission to generate new secret IDs for an approle which has permission to read the secrets,
-# however the approle is configured to:
-# 1) allow a maximum of 1 use per secret ID
-# 2) restrict the IPs allowed to use login using the approle to those of the remote hosts
-#
-# Normally, the fact that a new secret ID would be generated on every loop iteration would not be desirable,
-# but here it's quite convenient.
-
-- name: Retrieve secrets from the remote host with one-time-use approle creds
-  vars:
-    role_id: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id') }}"
-    secret_id: "{{ lookup('community.hashi_vault.vault_write', 'auth/approle/role/role-name/secret-id') }}"
-  community.hashi_vault.vault_read:
-    auth_method: approle
-    role_id: '{{ role_id }}'
-    secret_id: '{{ secret_id }}'
-    path: '{{ item }}'
-  register: secret_data
-  loop:
-    - secret/data/secret1
-    - secret/data/app/deploy-key
-    - secret/data/access-codes/self-destruct
-
-
-# This time we have a secret values on the controller, and we need to run a command the remote host,
-# that is expecting to a use single-use token as input, so we need to use wrapping to send the data.
-
-- name: Run a command that needs wrapped secrets
-  vars:
-    secrets:
-      secret1: '{{ my_secret_1 }}'
-      secret2: '{{ second_secret }}'
-    wrapped: "{{ lookup('community.hashi_vault.vault_write', 'sys/wrapping/wrap', data=secrets) }}"
-  ansible.builtin.command: 'vault unwrap {{ wrapped }}'
-"""
+    msg: "{{ lookup('community.hashi_vault.vault_ansible_settings', include_none=True, include_private=True, include_default=True) }}"
+#####
+'''
 
 RETURN = r'''
 _raw:
