@@ -1,0 +1,102 @@
+---
+- name: assert defaults
+  vars:
+    settings: null
+  module_defaults:
+    assert:
+      quiet: true
+      fail_msg: 'settings: {{ settings }}'
+  block:
+    - name: Call with no options
+      vars:
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+      assert:
+        that:
+          - settings | type_debug == 'dict'
+          - settings | length == 1
+          - "'timeout' in settings"
+          - settings.timeout == 5
+          # ^ needs to match settings in tests/integration/integration.cfg
+
+    - name: Call a non-default plugin (fqcn)
+      vars:
+        ansible_hashi_vault_engine_mount_point: canary
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', plugin='community.hashi_vault.vault_kv2_get') }}"
+      assert:
+        that:
+          - settings | type_debug == 'dict'
+          - "'engine_mount_point' in settings"
+          - settings.engine_mount_point == 'canary'
+
+    - name: Call a non-default plugin (short)
+      vars:
+        ansible_hashi_vault_engine_mount_point: canary
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', plugin='vault_kv2_get') }}"
+      assert:
+        that:
+          - settings | type_debug == 'dict'
+          - "'engine_mount_point' in settings"
+          - settings.engine_mount_point == 'canary'
+
+    - name: Include default
+      vars:
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', include_default=True) }}"
+      assert:
+        that:
+          - settings | type_debug == 'dict'
+          - "'auth_method' in settings"
+          - settings.auth_method == 'token'
+
+    - name: Include private & none & default
+      vars:
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', include_default=True, include_private=True, include_none=True) }}"
+      assert:
+        that:
+          - settings | type_debug == 'dict'
+          - "'_terms' in settings"
+          - settings._terms == None
+          - settings | dict2items | selectattr('value', 'none') | list | length > 1
+
+    - name: Filters
+      vars:
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', '*', '!r*', 'retr[yi]*', '!*s', include_default=True, include_none=True) }}"
+      assert:
+        that:
+          - settings | type_debug == 'dict'
+          - "'retry_action' in settings"
+          - "'retries' not in settings"
+          - settings.retry_action == 'warn'
+          - settings | dict2items | selectattr('key', 'search', '^r.*') | list | length == 1
+          - settings | length > 1
+
+    - name: No such plugin
+      register: err
+      set_fact:
+        settings: "{{ lookup('community.hashi_vault.vault_ansible_settings', plugin='not.real.plugin') }}"
+      ignore_errors: true
+
+    - assert:
+        that:
+          - err is failed
+          - >
+            "'not.real.plugin' plugin not found" in err.msg
+
+    - name: Set templated variables for testing
+      set_fact:
+        ansible_hashi_vault_url: '{{ vault_test_server_http }}'
+        ansible_hashi_vault_token: '{{ user_token_cmd.result.auth.client_token }}'
+
+    - name: Perform a login without config (failure expected)
+      register: err
+      community.hashi_vault.vault_login:
+        url: http://nothing
+      failed_when: err is not failed or 'No Vault Token specified or discovered' not in err.msg
+
+    - name: Set defaults
+      vars:
+        ansible_hashi_vault_auth_method: token
+      module_defaults:
+        community.hashi_vault.vault_login: "{{ lookup('community.hashi_vault.vault_ansible_settings') }}"
+      block:
+        - name: Perform a login with defaulted config
+          community.hashi_vault.vault_login:
