@@ -48,18 +48,18 @@ class TestVaultKv2GetLookup(object):
             with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
                 vault_kv2_get_lookup.run(terms='fake', variables=minimal_vars)
 
-    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_kv2_get_authentication_error(self, vault_kv2_get_lookup, minimal_vars, authenticator, exc):
         authenticator.authenticate.side_effect = exc
 
-        with pytest.raises(AnsibleError, match=r'dummy msg'):
+        with pytest.raises(AnsibleError, match=r'throwaway msg'):
             vault_kv2_get_lookup.run(terms='fake', variables=minimal_vars)
 
-    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_kv2_get_auth_validation_error(self, vault_kv2_get_lookup, minimal_vars, authenticator, exc):
         authenticator.validate.side_effect = exc
 
-        with pytest.raises(AnsibleError, match=r'dummy msg'):
+        with pytest.raises(AnsibleError, match=r'throwaway msg'):
             vault_kv2_get_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])

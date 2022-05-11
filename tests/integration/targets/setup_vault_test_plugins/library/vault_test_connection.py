@@ -51,8 +51,8 @@ def run_module():
 
     def _generate_retry_callback(retry_action):
         '''returns a Retry callback function for plugins'''
-        dummy = HashiVaultModule(argument_spec=argspec)
-        original = dummy._generate_retry_callback(retry_action)
+        throwaway = HashiVaultModule(argument_spec=argspec)
+        original = throwaway._generate_retry_callback(retry_action)
 
         def _on_retry(retry_obj):
             if retry_obj.total > 0:

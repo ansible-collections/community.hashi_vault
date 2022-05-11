@@ -9,14 +9,14 @@
       token: '{{ user_token }}'
       timeout: 5
   block:
-    - name: Generate a dummy certificate
+    - name: Generate a throwaway certificate
       register: cert_data
       community.hashi_vault.vault_pki_generate_certificate:
         role_name: test.example.org
-        common_name: dummy.test.example.org
+        common_name: throwaway.test.example.org
         alt_names:
-          - dummy2.test.example.org
-          - dummy3.test.example.org
+          - throwaway2.test.example.org
+          - throwaway3.test.example.org
 
     - assert:
         that:
@@ -30,7 +30,7 @@
       register: result
       community.hashi_vault.vault_pki_generate_certificate:
         role_name: test.example.org
-        common_name: dummy.test.example.org
+        common_name: throwaway.test.example.org
       check_mode: true
 
     - assert:
