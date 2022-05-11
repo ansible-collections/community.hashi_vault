@@ -76,6 +76,14 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                 with open(token_filename) as token_file:
                     self._options.set_option('token', token_file.read().strip())
 
+        if self._options.get_option_default('token_validate') is None:
+            self._options.set_option('token_validate', True)
+            self.deprecate(
+                "The default value for 'token_validate' will change from True to False.",
+                version='4.0.0',
+                collection_name='community.hashi_vault'
+            )
+
         if self._options.get_option_default('token') is None:
             raise HashiVaultValueError("No Vault Token specified or discovered.")
 
