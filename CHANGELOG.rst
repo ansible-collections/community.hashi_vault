@@ -5,6 +5,48 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v2.5.0
+======
+
+Release Summary
+---------------
+
+This release finally contains dedicated KV plugins and modules, and an exciting new lookup to help use plugin values in module calls.
+With that, we also have a guide in the collection docsite for migrating away from the ``hashi_vault`` lookup toward dedicated content.
+We are also announcing that the ``token_validate`` option will change its default value in version 4.0.0.
+This is the last planned release before 3.0.0. See the porting guide for breaking changes and removed features in the next version.
+
+Minor Changes
+-------------
+
+- vault_login module & lookup - no friendly error message was given when ``hvac`` was missing (https://github.com/ansible-collections/community.hashi_vault/issues/257).
+- vault_pki_certificate - add ``vault_pki_certificate`` to the ``community.hashi_vault.vault`` action group (https://github.com/ansible-collections/community.hashi_vault/issues/251).
+- vault_read module & lookup - no friendly error message was given when ``hvac`` was missing (https://github.com/ansible-collections/community.hashi_vault/issues/257).
+- vault_token_create - add ``vault_token_create`` to the ``community.hashi_vault.vault`` action group (https://github.com/ansible-collections/community.hashi_vault/issues/251).
+- vault_token_create module & lookup - no friendly error message was given when ``hvac`` was missing (https://github.com/ansible-collections/community.hashi_vault/issues/257).
+- vault_write - add ``vault_write`` to the ``community.hashi_vault.vault`` action group (https://github.com/ansible-collections/community.hashi_vault/issues/251).
+
+Deprecated Features
+-------------------
+
+- token_validate options - the shared auth option ``token_validate`` will change its default from ``True`` to ``False`` in community.hashi_vault version 4.0.0. The ``vault_login`` lookup and module will keep the default value of ``True`` (https://github.com/ansible-collections/community.hashi_vault/issues/248).
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- vault_ansible_settings - Returns plugin settings (options)
+- vault_kv1_get - Get a secret from HashiCorp Vault's KV version 1 secret store
+- vault_kv2_get - Get a secret from HashiCorp Vault's KV version 2 secret store
+
+New Modules
+-----------
+
+- vault_kv1_get - Get a secret from HashiCorp Vault's KV version 1 secret store
+- vault_kv2_get - Get a secret from HashiCorp Vault's KV version 2 secret store
+
 v2.4.0
 ======
 
