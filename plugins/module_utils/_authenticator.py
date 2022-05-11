@@ -82,9 +82,10 @@ class HashiVaultAuthenticator():
         # TODO: remove in 3.0.0
         if method == 'aws_iam_login':
             method = 'aws_iam'
-            self.warn(
-                "[DEPRECATION WARNING]: auth method 'aws_iam_login' is renamed to 'aws_iam'. "
-                "The 'aws_iam_login' name will be removed in community.hashi_vault 3.0.0."
+            self.deprecate(
+                message="auth method 'aws_iam_login' is renamed to 'aws_iam'.",
+                version='3.0.0',
+                collection_name='community.hashi_vault'
             )
 
         try:
