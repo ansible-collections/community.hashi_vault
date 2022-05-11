@@ -15,8 +15,8 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 
 @pytest.fixture
-def auth_none(adapter, warner):
-    return HashiVaultAuthMethodNone(adapter, warner)
+def auth_none(adapter, warner, deprecator):
+    return HashiVaultAuthMethodNone(adapter, warner, deprecator)
 
 
 class TestAuthNone(object):

@@ -40,8 +40,8 @@ def role_id():
 
 
 @pytest.fixture
-def auth_approle(adapter, warner):
-    return HashiVaultAuthMethodApprole(adapter, warner)
+def auth_approle(adapter, warner, deprecator):
+    return HashiVaultAuthMethodApprole(adapter, warner, deprecator)
 
 
 @pytest.fixture

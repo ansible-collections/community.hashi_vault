@@ -50,8 +50,8 @@ def aws_session_token():
 
 
 @pytest.fixture
-def auth_aws_iam(adapter, warner):
-    return HashiVaultAuthMethodAwsIam(adapter, warner)
+def auth_aws_iam(adapter, warner, deprecator):
+    return HashiVaultAuthMethodAwsIam(adapter, warner, deprecator)
 
 
 @pytest.fixture

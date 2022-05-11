@@ -5,7 +5,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
 import pytest
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
@@ -18,8 +17,8 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 
 @pytest.fixture
-def auth_base(adapter, warner):
-    return HashiVaultAuthMethodBase(adapter, warner)
+def auth_base(adapter, warner, deprecator):
+    return HashiVaultAuthMethodBase(adapter, warner, deprecator)
 
 
 class TestHashiVaultAuthMethodBase(object):
@@ -64,3 +63,13 @@ class TestHashiVaultAuthMethodBase(object):
         auth_base.warn(msg)
 
         warner.assert_called_once_with(msg)
+
+    @pytest.mark.parametrize('version', [None, '0.99.7'])
+    @pytest.mark.parametrize('date', [None, '2022'])
+    @pytest.mark.parametrize('collection_name', [None, 'ns.col'])
+    def test_deprecate_callback(self, auth_base, deprecator, version, date, collection_name):
+        msg = 'warning msg'
+
+        auth_base.deprecate(msg, version, date, collection_name)
+
+        deprecator.assert_called_once_with(msg, version=version, date=date, collection_name=collection_name)

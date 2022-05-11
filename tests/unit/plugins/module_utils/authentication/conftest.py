@@ -26,8 +26,8 @@ class HashiVaultAuthMethodFake(HashiVaultAuthMethodBase):
     NAME = 'fake'
     OPTIONS = []
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodFake, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodFake, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     validate = mock.MagicMock()
     authenticate = mock.MagicMock()
@@ -44,8 +44,8 @@ def adapter(option_dict):
 
 
 @pytest.fixture
-def fake_auth_class(adapter):
-    return HashiVaultAuthMethodFake(adapter, mock.MagicMock())
+def fake_auth_class(adapter, warner, deprecator):
+    return HashiVaultAuthMethodFake(adapter, warner, deprecator)
 
 
 @pytest.fixture
@@ -55,6 +55,11 @@ def client():
 
 @pytest.fixture
 def warner():
+    return mock.MagicMock()
+
+
+@pytest.fixture
+def deprecator():
     return mock.MagicMock()
 
 

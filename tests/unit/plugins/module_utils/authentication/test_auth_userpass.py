@@ -40,8 +40,8 @@ def userpass_username():
 
 
 @pytest.fixture
-def auth_userpass(adapter, warner):
-    return HashiVaultAuthMethodUserpass(adapter, warner)
+def auth_userpass(adapter, warner, deprecator):
+    return HashiVaultAuthMethodUserpass(adapter, warner, deprecator)
 
 
 @pytest.fixture

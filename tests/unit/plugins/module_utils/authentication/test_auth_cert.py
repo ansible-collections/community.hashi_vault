@@ -20,8 +20,8 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 
 @pytest.fixture
-def auth_cert(adapter, warner):
-    return HashiVaultAuthMethodCert(adapter, warner)
+def auth_cert(adapter, warner, deprecator):
+    return HashiVaultAuthMethodCert(adapter, warner, deprecator)
 
 
 @pytest.fixture
