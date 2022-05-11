@@ -52,8 +52,8 @@ class ModuleDocFragment(object):
         description:
           - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
           - Disable if your token does not have the C(lookup-self) capability.
-          - The default value is C(True).
-          - The default value will change to C(False) in version 4.0.0.
+          - The default value is C(true).
+          - The default value will change to C(false) in version 4.0.0.
         type: bool
         version_added: 0.2.0
       username:
