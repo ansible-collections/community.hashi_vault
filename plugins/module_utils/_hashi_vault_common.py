@@ -224,9 +224,10 @@ class HashiVaultOptionGroupBase:
 class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
     '''Base class for individual auth method implementations'''
 
-    def __init__(self, option_adapter, warning_callback):
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
         super(HashiVaultAuthMethodBase, self).__init__(option_adapter)
         self._warner = warning_callback
+        self._deprecator = deprecate_callback
 
     def validate(self):
         '''Validates the given auth method as much as possible without calling Vault.'''
@@ -244,3 +245,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
 
     def warn(self, message):
         self._warner(message)
+
+    def deprecate(self, message, version=None, date=None, collection_name=None):
+        self._deprecator(message, version=version, date=date, collection_name=collection_name)

@@ -22,8 +22,8 @@ class HashiVaultAuthMethodJwt(HashiVaultAuthMethodBase):
     NAME = 'jwt'
     OPTIONS = ['jwt', 'role_id', 'mount_point']
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodJwt, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodJwt, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         self.validate_by_required_fields('role_id', 'jwt')

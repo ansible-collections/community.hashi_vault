@@ -32,8 +32,8 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
         'token_path': dict(env=['HOME']),
     }
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def _simulate_login_response(self, token, lookup_response=None):
         '''returns a similar structure to a login method's return, optionally incorporating a lookup-self response'''
@@ -75,6 +75,14 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                     raise HashiVaultValueError("The Vault token file '%s' was found but is not a file." % token_filename)
                 with open(token_filename) as token_file:
                     self._options.set_option('token', token_file.read().strip())
+
+        if self._options.get_option_default('token_validate') is None:
+            self._options.set_option('token_validate', True)
+            self.deprecate(
+                "The default value for 'token_validate' will change from True to False.",
+                version='4.0.0',
+                collection_name='community.hashi_vault'
+            )
 
         if self._options.get_option_default('token') is None:
             raise HashiVaultValueError("No Vault Token specified or discovered.")

@@ -33,8 +33,8 @@ class HashiVaultAuthMethodAwsIam(HashiVaultAuthMethodBase):
         'role_id',
     ]
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodAwsIam, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodAwsIam, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         params = {
