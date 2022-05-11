@@ -666,16 +666,18 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>For token auth, will perform a <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> operation to determine the token’s validity before using it.</p>
 <p>Disable if your token does not have the <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> capability.</p>
+<p>The default value is <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<p>The default value will change to <code class="docutils literal notranslate"><span class="pre">false</span></code> in version 4.0.0.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><span class="ansible-option-choices-entry">no</span></p></li>
-<li><p><span class="ansible-option-default-bold">yes</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">yes</span></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">token_validate = yes</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">token_validate = None</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
