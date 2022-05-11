@@ -22,8 +22,8 @@ class HashiVaultAuthMethodUserpass(HashiVaultAuthMethodBase):
     NAME = 'userpass'
     OPTIONS = ['username', 'password', 'mount_point']
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodUserpass, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodUserpass, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         self.validate_by_required_fields('username', 'password')

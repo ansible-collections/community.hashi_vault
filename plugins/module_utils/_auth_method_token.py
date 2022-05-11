@@ -32,8 +32,8 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
         'token_path': dict(env=['HOME']),
     }
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodToken, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def _simulate_login_response(self, token, lookup_response=None):
         '''returns a similar structure to a login method's return, optionally incorporating a lookup-self response'''

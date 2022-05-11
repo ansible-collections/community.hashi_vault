@@ -22,8 +22,8 @@ class HashiVaultAuthMethodLdap(HashiVaultAuthMethodBase):
     NAME = 'ldap'
     OPTIONS = ['username', 'password', 'mount_point']
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodLdap, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodLdap, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         self.validate_by_required_fields('username', 'password')

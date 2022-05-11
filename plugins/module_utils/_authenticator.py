@@ -57,22 +57,23 @@ class HashiVaultAuthenticator():
         cert_auth_public_key=dict(type='path'),
     )
 
-    def __init__(self, option_adapter, warning_callback):
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
         self._options = option_adapter
         self._selector = {
             # please keep this list in alphabetical order of auth method name
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
-            'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
-            'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback),
-            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
-            'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback),
-            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback),
-            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
-            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
-            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
+            'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback, deprecate_callback),
+            'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback, deprecate_callback),
+            'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback, deprecate_callback),
+            'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback, deprecate_callback),
+            'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback, deprecate_callback),
+            'none': HashiVaultAuthMethodNone(option_adapter, warning_callback, deprecate_callback),
+            'token': HashiVaultAuthMethodToken(option_adapter, warning_callback, deprecate_callback),
+            'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback, deprecate_callback),
         }
 
         self.warn = warning_callback
+        self.deprecate = deprecate_callback
 
     def _get_method_object(self, method=None):
         if method is None:
