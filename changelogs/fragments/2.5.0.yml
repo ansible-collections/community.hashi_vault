@@ -1,6 +1,6 @@
 ---
 release_summary: |-
-  This release finally contains dedicated KV plugins and modules.
+  This release finally contains dedicated KV plugins and modules, and an exciting new lookup to help use plugin values in module calls.
   With that, we also have a guide in the collection docsite for migrating away from the ``hashi_vault`` lookup toward dedicated content.
   We are also announcing that the ``token_validate`` option will change its default value in version 4.0.0.
   This is the last planned release before 3.0.0. See the porting guide for breaking changes and removed features in the next version.
