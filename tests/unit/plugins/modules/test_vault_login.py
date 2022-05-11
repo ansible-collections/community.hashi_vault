@@ -28,7 +28,7 @@ pytestmark = pytest.mark.usefixtures(
 def _connection_options():
     return {
         'auth_method': 'token',
-        'url': 'http://dummy',
+        'url': 'http://myvault',
         'token': 'beep-boop',
     }
 
@@ -52,7 +52,7 @@ def token_lookup_full_response(fixture_loader):
 class TestModuleVaultLogin():
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_login_authentication_error(self, authenticator, exc, capfd):
         authenticator.authenticate.side_effect = exc
 
@@ -63,10 +63,10 @@ class TestModuleVaultLogin():
         result = json.loads(out)
 
         assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == 'dummy msg', "result: %r" % result
+        assert result['msg'] == 'throwaway msg', "result: %r" % result
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    @pytest.mark.parametrize('exc', [HashiVaultValueError('dummy msg'), NotImplementedError('dummy msg')])
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_login_auth_validation_error(self, authenticator, exc, capfd):
         authenticator.validate.side_effect = exc
 
@@ -77,7 +77,7 @@ class TestModuleVaultLogin():
         result = json.loads(out)
 
         assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == 'dummy msg'
+        assert result['msg'] == 'throwaway msg'
 
     @pytest.mark.parametrize('opt__ansible_check_mode', [False, True])
     @pytest.mark.parametrize(
