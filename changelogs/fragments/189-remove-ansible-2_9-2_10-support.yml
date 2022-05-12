@@ -1,0 +1,3 @@
+---
+removed_features:
+  - community.hashi_vault collection - support for Ansible 2.9 and ansible-base 2.10 has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/189).
