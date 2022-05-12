@@ -14,10 +14,9 @@ We also separately publish [**latest commit** collection documentation](https://
 If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **latest commit**.
 ## Tested with Ansible
 
-* 2.9
-* 2.10
 * 2.11
 * 2.12
+* 2.13
 * devel (latest development commit)
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
