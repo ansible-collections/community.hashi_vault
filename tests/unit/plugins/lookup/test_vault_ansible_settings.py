@@ -53,6 +53,7 @@ def vault_ansible_settings_lookup(loader):
 @pytest.fixture(params=[False, True])
 def loader(request):
     from ansible.plugins.loader import lookup_loader as orig_loader
+
     def _legacy_sim(plugin):
         r = orig_loader.find_plugin_with_context(plugin)
         return (r.plugin_resolved_name, None)
