@@ -41,6 +41,7 @@ jobs:
           - stable-2.10
           - stable-2.11
           - stable-2.12
+          - stable-2.13
           - devel
     steps:
 
@@ -54,7 +55,7 @@ jobs:
             TEST_INVOCATION="sanity --docker ${{ matrix.test_container }} -v --color ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ env.COLLECTION_PATH }}
 
@@ -62,7 +63,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
@@ -94,7 +95,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -118,6 +119,7 @@ jobs:
           - stable-2.10
           - stable-2.11
           - stable-2.12
+          - stable-2.13
           - devel
 
     steps:
@@ -129,7 +131,7 @@ jobs:
             TEST_INVOCATION="units --color --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ env.COLLECTION_PATH }}
 
@@ -137,7 +139,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
@@ -166,7 +168,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -180,7 +182,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
@@ -193,6 +195,7 @@ jobs:
           - stable-2.10
           - stable-2.11
           - stable-2.12
+          - stable-2.13
           - devel
         python:
           - '3.6'
@@ -221,7 +224,7 @@ jobs:
             TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }} --docker-network hashi_vault_default"
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ env.COLLECTION_PATH }}
 
@@ -229,7 +232,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.8
 
@@ -252,10 +255,10 @@ jobs:
           working-directory: ${{ env.COLLECTION_PATH }}
           ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
-      - name: Set Vault Version (first)
+      - name: Set Vault Version (older)
         uses: briantist/ezenv@v1
         with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[0] }}
+          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
 
       - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
@@ -265,10 +268,10 @@ jobs:
         run: ansible-test ${{ env.TEST_INVOCATION }}
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Set Vault Version (second)
+      - name: Set Vault Version (newer)
         uses: briantist/ezenv@v1
         with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
+          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[0] }}
 
       - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
@@ -286,7 +289,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -304,6 +307,7 @@ jobs:
       matrix:
         ansible:
           - stable-2.12
+          - stable-2.13
         python:
           - 3.9
         runner:
@@ -317,6 +321,15 @@ jobs:
           # - https://github.com/actions/virtual-environments/pull/4010
         test_container:
           - default
+        exclude:
+          # To add to the fragility of testing docker stuff on MacOS,
+          # stable-2.13 test containers crash; unsure of exact cause
+          # but likely due to old versions of the runtimes.
+          # We'll just stick to 2.12 for now, better than nothing.
+          - runner: macos-10.15
+            ansible: stable-2.13
+          - runner: ubuntu-latest
+            ansible: stable-2.12
 
     steps:
       - name: Initialize env vars
@@ -329,7 +342,7 @@ jobs:
             DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ env.COLLECTION_PATH }}
 
@@ -337,7 +350,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python }}
 
@@ -385,6 +398,21 @@ jobs:
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
+      #TODO add capability in the Ansible side once vault_list and vault_delete exist
+      - name: Run a third time, but delete Vault's cubbyhole contents first
+        if: startsWith(matrix.runner, 'ubuntu')
+        working-directory: ${{ env.COLLECTION_PATH }}
+        env:
+          VAULT_TOKEN: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+          VAULT_ADDR: http://vault:8200
+        run: |
+          echo 'vault list cubbyhole \
+          | tail -n +3 \
+          | xargs -I{} -n 1 vault delete cubbyhole/{}' \
+          | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i vault sh
+
+          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
+
         # ansible-test support producing code coverage data
       - name: Generate coverage report
         if: ${{ github.event_name != 'schedule' }}
@@ -393,7 +421,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage=${{ github.job }}=${{ matrix.runner }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -413,10 +441,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: ./cov
 

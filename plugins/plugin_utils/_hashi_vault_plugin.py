@@ -34,7 +34,7 @@ class HashiVaultPlugin(AnsiblePlugin):
         self.helper = HashiVaultHelper()
         self._options_adapter = HashiVaultOptionAdapter.from_ansible_plugin(self)
         self.connection_options = HashiVaultConnectionOptions(self._options_adapter, self._generate_retry_callback)
-        self.authenticator = HashiVaultAuthenticator(self._options_adapter, display.warning)
+        self.authenticator = HashiVaultAuthenticator(self._options_adapter, display.warning, display.deprecated)
 
     def _generate_retry_callback(self, retry_action):
         '''returns a Retry callback function for plugins'''

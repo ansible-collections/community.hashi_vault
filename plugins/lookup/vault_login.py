@@ -40,7 +40,13 @@ DOCUMENTATION = """
       description: This is unused and any terms supplied will be ignored.
       type: str
       required: false
+    token_validate:
+      description:
+        - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
+        - Disable if your token does not have the C(lookup-self) capability.
+      default: true
 """
+# TODO: remove token_validate description in 4.0.0 when it will match the doc frag description.
 
 EXAMPLES = """
 - name: Set a fact with a lookup result
@@ -89,14 +95,28 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
+from ansible.module_utils.six import raise_from
+
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
+try:
+    import hvac
+except ImportError as imp_exc:
+    HVAC_IMPORT_ERROR = imp_exc
+else:
+    HVAC_IMPORT_ERROR = None
+
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
+        if HVAC_IMPORT_ERROR:
+            raise_from(
+                AnsibleError("This plugin requires the 'hvac' Python library"),
+                HVAC_IMPORT_ERROR
+            )
 
         self.set_options(direct=kwargs, var_options=variables)
         # TODO: remove process_deprecations() if backported fix is available (see method definition)

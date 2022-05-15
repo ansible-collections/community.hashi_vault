@@ -40,8 +40,8 @@ def ldap_password():
 
 
 @pytest.fixture
-def auth_ldap(adapter, warner):
-    return HashiVaultAuthMethodLdap(adapter, warner)
+def auth_ldap(adapter, warner, deprecator):
+    return HashiVaultAuthMethodLdap(adapter, warner, deprecator)
 
 
 @pytest.fixture

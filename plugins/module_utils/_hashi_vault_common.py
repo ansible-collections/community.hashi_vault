@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Brian Scholer (@briantist)
 # Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
 
-'''Python versions supported: all controller-side versions, all remote-side versions except 2.6'''
+'''Python versions supported: >=3.6'''
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
@@ -224,9 +224,10 @@ class HashiVaultOptionGroupBase:
 class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
     '''Base class for individual auth method implementations'''
 
-    def __init__(self, option_adapter, warning_callback):
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
         super(HashiVaultAuthMethodBase, self).__init__(option_adapter)
         self._warner = warning_callback
+        self._deprecator = deprecate_callback
 
     def validate(self):
         '''Validates the given auth method as much as possible without calling Vault.'''
@@ -244,3 +245,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
 
     def warn(self, message):
         self._warner(message)
+
+    def deprecate(self, message, version=None, date=None, collection_name=None):
+        self._deprecator(message, version=version, date=date, collection_name=collection_name)

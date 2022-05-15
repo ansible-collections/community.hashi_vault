@@ -1,0 +1,94 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    kwargs:
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      data: '{{ test_data }}'
+    test_data:
+      a: 1
+      b: two
+  block:
+    - name: Write data to the cubbyhole
+      vars:
+        result: "{{ lookup('community.hashi_vault.vault_write', 'cubbyhole/secret1', **kwargs) }}"
+      assert:
+        that:
+          - result == {}
+
+    - name: Write data to multiple paths
+      vars:
+        paths:
+          - cubbyhole/secret2
+          - cubbyhole/secret3
+      set_fact:
+        result: "{{ lookup('community.hashi_vault.vault_write', *paths, **kwargs) }}"
+
+    - assert:
+        that:
+          - result | type_debug == 'list'
+          - result | count == 2
+          - result[0] == {}
+          - result[1] == {}
+
+    - name: Check data written
+      vars:
+        paths:
+          - cubbyhole/secret1
+          - cubbyhole/secret2
+          - cubbyhole/secret3
+      set_fact:
+        result: "{{ lookup('community.hashi_vault.vault_read', *paths, **kwargs) }}"
+
+    - assert:
+        that:
+          - item | type_debug == 'dict'
+          - "'data' in item"
+          - item.data == test_data
+        fail_msg: 'Return value was not correct type or items do not match.'
+      loop: '{{ result }}'
+
+    - name: Write data to an endpoint that returns data and test wrapping
+      set_fact:
+        result: "{{ lookup('community.hashi_vault.vault_write', 'sys/wrapping/wrap', wrap_ttl='5m', **kwargs) }}"
+
+    - assert:
+        that:
+          - "'wrap_info' in result"
+          - result.wrap_info.ttl == 300
+
+    ### failure tests
+
+    - name: Failure expected when erroneous credentials are used
+      vars:
+        write_wrong_cred: "{{ lookup('community.hashi_vault.vault_write', 'cubbyhole/secretX', token='wrong_token', url=kwargs.url) }}"
+      debug:
+        msg: 'Failure is expected ({{ write_wrong_cred }})'
+      register: test_wrong_cred
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_wrong_cred is failed
+          - test_wrong_cred.msg is search('Invalid Vault Token')
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    - name: Failure expected when unauthorized path is written to
+      vars:
+        test_data:
+          type: file
+          options:
+            file_path: /dev/null
+        write_unauthorized: "{{ lookup('community.hashi_vault.vault_write', 'sys/audit/file', **kwargs) }}"
+      debug:
+        msg: 'Failure is expected ({{ write_unauthorized }})'
+      register: test_unauthorized
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_unauthorized is failed
+          - test_unauthorized.msg is search('Permission Denied')
+        fail_msg: "Expected failure but got success or wrong failure message."

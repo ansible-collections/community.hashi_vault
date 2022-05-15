@@ -1,0 +1,104 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_kv1_get: &defaults
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      timeout: 5
+  block:
+    - name: Test defualt path value
+      register: default_path
+      community.hashi_vault.vault_kv1_get:
+        path: '{{ vault_kv1_path }}/secret2'
+      ignore_errors: true
+
+    - assert:
+        that:
+          - default_path is failed
+          - default_path.msg is search('Permission Denied to path')
+
+    - module_defaults:
+        community.hashi_vault.vault_kv1_get:
+          <<: *defaults
+          engine_mount_point: '{{ vault_kv1_mount_point }}'
+      block:
+        - name: Check kv1 get
+          register: kv1_secret2
+          community.hashi_vault.vault_kv1_get:
+            path: "{{ vault_kv1_path }}/secret2"
+
+        - assert:
+            that: &assert_basics
+              - "'raw' in kv1_secret2"
+              - "'data' in kv1_secret2"
+              - "'metadata' in kv1_secret2"
+              - "'secret' in kv1_secret2"
+              - "'data' in kv1_secret2['raw']"
+              - kv1_secret2['data'] == kv1_secret2['raw']['data']
+              - kv1_secret2['secret'] == kv1_secret2['data']
+              - kv1_secret2['metadata'] | combine({'data':kv1_secret2['data']}) == kv1_secret2['raw']
+            fail_msg: 'Return value did not contain expected fields.'
+
+        - name: Check kv1 get (check mode)
+          register: kv1_secret2
+          community.hashi_vault.vault_kv1_get:
+            path: "{{ vault_kv1_path }}/secret2"
+          check_mode: true
+
+        - assert:
+            that: *assert_basics
+            fail_msg: 'Return value did not contain expected fields.'
+
+        ### failure tests
+
+        - name: Failure expected when erroneous credentials are used
+          register: test_wrong_cred
+          community.hashi_vault.vault_kv1_get:
+            path: "{{ vault_kv1_path }}/secret2"
+            token: wrong_token
+          ignore_errors: true
+
+        - assert:
+            that:
+              - test_wrong_cred is failed
+              - test_wrong_cred.msg is search('Invalid Vault Token')
+            fail_msg: "Expected failure but got success or wrong failure message."
+
+        - name: Failure expected when unauthorized secret is read
+          register: test_unauthorized
+          community.hashi_vault.vault_kv1_get:
+            path: "{{ vault_kv1_path }}/secret3"
+          ignore_errors: true
+
+        - assert:
+            that:
+              - test_unauthorized is failed
+              - test_unauthorized.msg is search('Permission Denied')
+            fail_msg: "Expected failure but got success or wrong failure message."
+
+        - name: Failure expected when inexistent secret is read
+          register: test_inexistent
+          community.hashi_vault.vault_kv1_get:
+            path: "{{ vault_kv1_path }}/non_existent_secret"
+          ignore_errors: true
+
+        - assert:
+            that:
+              - test_inexistent is failed
+              - test_inexistent.msg is search("missing path")
+            fail_msg: "Expected failure but got success or wrong failure message."
+
+        - name: Specific failure message expected when trying to read kv2
+          register: test_kv_mismatch
+          community.hashi_vault.vault_kv1_get:
+            engine_mount_point: '{{ vault_kv2_mount_point }}'
+            path: "{{ vault_kv2_path }}/secret2"
+          ignore_errors: true
+
+        - assert:
+            that:
+              - test_kv_mismatch is failed
+              - test_kv_mismatch.msg is search('If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get')

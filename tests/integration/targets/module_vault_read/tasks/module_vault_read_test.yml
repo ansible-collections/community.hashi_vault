@@ -7,11 +7,12 @@
       url: '{{ vault_test_server_http }}'
       auth_method: token
       token: '{{ user_token }}'
+      timeout: 5
   block:
     - name: 'Check kv2 secret read'
       register: kv2_secret2
       community.hashi_vault.vault_read:
-        path: "{{ vault_kv2_path }}/secret2"
+        path: "{{ vault_kv2_api_path }}/secret2"
 
     - assert:
         that:
@@ -26,7 +27,7 @@
     - name: 'Failure expected when erroneous credentials are used'
       register: test_wrong_cred
       community.hashi_vault.vault_read:
-        path: "{{ vault_kv2_path }}/secret2"
+        path: "{{ vault_kv2_api_path }}/secret2"
         token: wrong_token
       ignore_errors: true
 
@@ -39,7 +40,7 @@
     - name: 'Failure expected when unauthorized secret is read'
       register: test_unauthorized
       community.hashi_vault.vault_read:
-        path: "{{ vault_kv2_path }}/secret3"
+        path: "{{ vault_kv2_api_path }}/secret3"
       ignore_errors: true
 
     - assert:
@@ -51,7 +52,7 @@
     - name: 'Failure expected when inexistent secret is read'
       register: test_inexistent
       community.hashi_vault.vault_read:
-        path: "{{ vault_kv2_path }}/non_existent_secret"
+        path: "{{ vault_kv2_api_path }}/non_existent_secret"
       ignore_errors: true
 
     - assert:

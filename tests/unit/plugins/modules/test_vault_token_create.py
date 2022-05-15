@@ -22,8 +22,8 @@ pytestmark = pytest.mark.usefixtures(
 def _connection_options():
     return {
         'auth_method': 'token',
-        'url': 'http://dummy',
-        'token': 'dummy',
+        'url': 'http://myvault',
+        'token': 'throwaway',
     }
 
 

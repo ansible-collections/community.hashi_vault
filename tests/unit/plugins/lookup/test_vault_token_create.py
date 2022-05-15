@@ -15,27 +15,21 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
-# this "unused" import is needed for the mock.patch calls
-import ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create
+from .....plugins.lookup import vault_token_create
+
+
+pytest.importorskip('hvac')
+
+
+pytestmark = pytest.mark.usefixtures(
+    'patch_authenticator',
+    'patch_get_vault_client',
+)
 
 
 @pytest.fixture
 def vault_token_create_lookup():
     return lookup_loader.get('community.hashi_vault.vault_token_create')
-
-
-@pytest.fixture
-def mock_authenticator():
-    return mock.MagicMock(validate=lambda: True, authenticate=lambda client: 'dummy')
-
-
-@pytest.fixture
-def minimal_vars():
-    return {
-        'ansible_hashi_vault_auth_method': 'token',
-        'ansible_hashi_vault_url': 'http://dummy',
-        'ansible_hashi_vault_token': 'dummy',
-    }
 
 
 @pytest.fixture
@@ -78,9 +72,14 @@ class TestVaultTokenCreateLookup(object):
     def test_vault_token_create_is_lookup_base(self, vault_token_create_lookup):
         assert issubclass(type(vault_token_create_lookup), HashiVaultLookupBase)
 
-    def test_vault_token_create_extra_terms(self, vault_token_create_lookup, mock_authenticator, minimal_vars):
+    def test_vault_token_create_no_hvac(self, vault_token_create_lookup, minimal_vars):
+        with mock.patch.object(vault_token_create, 'HVAC_IMPORT_ERROR', new=ImportError()):
+            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
+                vault_token_create_lookup.run(terms='fake', variables=minimal_vars)
+
+    def test_vault_token_create_extra_terms(self, vault_token_create_lookup, authenticator, minimal_vars):
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create.display.warning') as warning:
-            with mock.patch.object(vault_token_create_lookup, 'authenticator', new=mock_authenticator):
+            with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
                 with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client'):
                     vault_token_create_lookup.run(terms=['', ''], variables=minimal_vars)
                     warning.assert_called_once_with("Supplied term strings will be ignored. This lookup does not use term strings.")
@@ -119,12 +118,12 @@ class TestVaultTokenCreateLookup(object):
             )
         )
 
-    def test_vault_token_create_passthru_options(self, vault_token_create_lookup, mock_authenticator, minimal_vars, pass_thru_options, token_create_response):
+    def test_vault_token_create_passthru_options(self, vault_token_create_lookup, authenticator, minimal_vars, pass_thru_options, token_create_response):
 
         client = mock.MagicMock()
         client.auth.token.create.return_value = token_create_response
 
-        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=mock_authenticator):
+        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
             with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
                 result = vault_token_create_lookup.run(terms=[], variables=minimal_vars, **pass_thru_options)
 
@@ -142,13 +141,13 @@ class TestVaultTokenCreateLookup(object):
                     assert pass_thru_options.items() <= client.auth.token.create.call_args.kwargs.items()
 
     def test_vault_token_create_legacy_options(
-        self, vault_token_create_lookup, mock_authenticator, minimal_vars, pass_thru_options, legacy_option_translation, token_create_response
+        self, vault_token_create_lookup, authenticator, minimal_vars, pass_thru_options, legacy_option_translation, token_create_response
     ):
 
         client = mock.MagicMock()
         client.create_token.return_value = token_create_response
 
-        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=mock_authenticator):
+        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
             with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
                 result = vault_token_create_lookup.run(terms=[], variables=minimal_vars, orphan=True, **pass_thru_options)
 
@@ -180,13 +179,13 @@ class TestVaultTokenCreateLookup(object):
                         )
                     )
 
-    def test_vault_token_create_legacy_fallback(self, vault_token_create_lookup, mock_authenticator, minimal_vars, pass_thru_options, token_create_response):
+    def test_vault_token_create_legacy_fallback(self, vault_token_create_lookup, authenticator, minimal_vars, pass_thru_options, token_create_response):
         client = mock.MagicMock()
         client.create_token.side_effect = AttributeError
         client.auth.token.create.return_value = token_create_response
 
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create.display.warning') as warning:
-            with mock.patch.object(vault_token_create_lookup, 'authenticator', new=mock_authenticator):
+            with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
                 with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
                     result = vault_token_create_lookup.run(terms=[], variables=minimal_vars, orphan=True, **pass_thru_options)
 

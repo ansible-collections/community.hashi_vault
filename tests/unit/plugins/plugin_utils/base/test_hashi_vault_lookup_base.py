@@ -31,6 +31,7 @@ class TestHashiVaultLookupBase(object):
 
     def test_is_ansible_lookup_base(self, hashi_vault_lookup_module):
         assert issubclass(type(hashi_vault_lookup_module), LookupBase)
+        hashi_vault_lookup_module.run([])  # run this for "coverage"
 
     @pytest.mark.parametrize(
         'term,unqualified',

@@ -1,4 +1,4 @@
-antsibull
+antsibull-docs
 ansible-pygments
 sphinx
 sphinx-ansible-theme

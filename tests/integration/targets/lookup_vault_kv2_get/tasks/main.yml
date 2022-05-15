@@ -1,0 +1,3 @@
+---
+- import_tasks: lookup_vault_kv2_get_setup.yml
+- import_tasks: lookup_vault_kv2_get_test.yml

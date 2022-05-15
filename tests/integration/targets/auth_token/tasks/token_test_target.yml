@@ -1,7 +1,7 @@
 - name: Test token with no default policy (missing lookup-self)
   vars:
     user_token: '{{ user_token_no_default_policy_cmd.result.auth.client_token }}'
-    secret: "{{ vault_kv2_path ~ '/secret1' }}"
+    secret: "{{ vault_kv2_api_path ~ '/secret1' }}"
     expected_secret_value: foo1
   module_defaults:
     vault_test_auth:
@@ -11,6 +11,9 @@
     - name: Authenticate with a 'no default policy' token (failure expected)
       register: response
       vault_test_auth:
+        # token_validate: true
+        # This will fail when the default changes in 4.0.0. Uncomment above.
+        # https://github.com/ansible-collections/community.hashi_vault/issues/248
         want_exception: true
 
     - assert:
@@ -22,6 +25,8 @@
       register: response
       vault_test_auth:
         token_validate: false
+        # After 4.0.0, let's let this one use the default value and unset the above.
+        # https://github.com/ansible-collections/community.hashi_vault/issues/248
 
     - assert:
         that: response.login.auth.client_token == user_token

@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Brian Scholer (@briantist)
 # Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
 
-'''Python versions supported: all controller-side versions, all remote-side versions except 2.6'''
+'''Python versions supported: >=3.6'''
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
@@ -43,7 +43,8 @@ class HashiVaultAuthenticator():
         token=dict(type='str', no_log=True, default=None),
         token_path=dict(type='str', default=None, no_log=False),
         token_file=dict(type='str', default='.vault-token'),
-        token_validate=dict(type='bool', default=True),
+        # TODO: token_validate default becomes False in 4.0.0
+        token_validate=dict(type='bool'),
         username=dict(type='str'),
         password=dict(type='str', no_log=True),
         role_id=dict(type='str'),
@@ -61,11 +62,12 @@ class HashiVaultAuthenticator():
         cert_auth_public_key=dict(type='path'),
     )
 
-    def __init__(self, option_adapter, warning_callback):
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
         self._options = option_adapter
         self._selector = {
             # please keep this list in alphabetical order of auth method name
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
+
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback),
             'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback),
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback),
@@ -75,9 +77,11 @@ class HashiVaultAuthenticator():
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback),
             'userpass': HashiVaultAuthMethodUserpass(option_adapter, warning_callback),
+
         }
 
         self.warn = warning_callback
+        self.deprecate = deprecate_callback
 
     def _get_method_object(self, method=None):
         if method is None:
@@ -86,9 +90,10 @@ class HashiVaultAuthenticator():
         # TODO: remove in 3.0.0
         if method == 'aws_iam_login':
             method = 'aws_iam'
-            self.warn(
-                "[DEPRECATION WARNING]: auth method 'aws_iam_login' is renamed to 'aws_iam'. "
-                "The 'aws_iam_login' name will be removed in community.hashi_vault 3.0.0."
+            self.deprecate(
+                message="auth method 'aws_iam_login' is renamed to 'aws_iam'.",
+                version='3.0.0',
+                collection_name='community.hashi_vault'
             )
 
         try:

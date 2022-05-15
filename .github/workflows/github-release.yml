@@ -6,17 +6,19 @@ on:
         description: 'Version number to release'
         required: true
 
-jobs:
+env:
+  GHP_BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
 
+jobs:
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.8
 
@@ -49,6 +51,8 @@ jobs:
           ---
 
           View the [complete changelog](https://github.com/ansible-collections/community.hashi_vault/blob/main/CHANGELOG.rst#v%s) to see all changes.
+
+          View the [full documentation for release ${{ github.event.inputs.version }}](${{ env.GHP_BASE_URL }}/tag/${{ github.event.inputs.version }}).
           ''' % (reldate, summary, ver_anchor)
 
           with open(os.environ['GITHUB_ENV'], 'a') as e:
@@ -56,6 +60,8 @@ jobs:
 
       - name: Create Release
         id: create_release
+        # TODO: this action is no longer maintained, replace
+        # likely candidate: https://github.com/softprops/action-gh-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

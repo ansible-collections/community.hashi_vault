@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Brian Scholer (@briantist)
 # Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
 
-'''Python versions supported: all controller-side versions, all remote-side versions except 2.6'''
+'''Python versions supported: >=3.6'''
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
@@ -22,8 +22,8 @@ class HashiVaultAuthMethodLdap(HashiVaultAuthMethodBase):
     NAME = 'ldap'
     OPTIONS = ['username', 'password', 'mount_point']
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodLdap, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodLdap, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         self.validate_by_required_fields('username', 'password')

@@ -1,15 +1,27 @@
 name: Collection Docs
 concurrency:
-  group: docs-${{ github.sha }}
+  group: docs-push-${{ github.sha }}
   cancel-in-progress: true
 on:
   push:
     branches:
       - main
+    tags:
+      - '*'
   schedule:
     - cron: '0 13 * * *'
 
 jobs:
+  validate-docs:
+    permissions:
+      contents: read
+    name: Validate Ansible Docs
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
+    with:
+      init-lenient: false
+      init-fail-on-error: true
+      artifact-upload: false
+
   build-docs:
     permissions:
       contents: read
@@ -17,13 +29,16 @@ jobs:
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
     with:
       init-dest-dir: docs/preview
+      # Although we want this to be the most strict, we can't currently achieve this
+      # with the committed init-dest-dir, hence the validate-docs job, which will
+      # prevent publish from running in the case of failures.
 
-  publish-docs:
+  publish-docs-surge:
     # for now we won't run this on forks
     if: github.repository == 'ansible-collections/community.hashi_vault'
     permissions:
       contents: read
-    needs: build-docs
+    needs: [build-docs]
     name: Publish Ansible Docs
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-surge.yml@main
     with:
@@ -31,3 +46,16 @@ jobs:
       surge-site-name: community-hashi-vault-main.surge.sh
     secrets:
       SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+
+  publish-docs-gh-pages:
+    # for now we won't run this on forks
+    if: github.repository == 'ansible-collections/community.hashi_vault'
+    permissions:
+      contents: write
+    needs: [build-docs]
+    name: Publish Ansible Docs
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@main
+    with:
+      artifact-name: ${{ needs.build-docs.outputs.artifact-name }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

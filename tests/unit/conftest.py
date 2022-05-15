@@ -10,6 +10,10 @@ import os
 import json
 import pytest
 
+from .compat import mock
+
+from ...plugins.module_utils._authenticator import HashiVaultAuthenticator
+
 
 @pytest.fixture(autouse=True)
 def skip_python():
@@ -39,3 +43,39 @@ def fixture_loader():
         return d
 
     return _loader
+
+
+@pytest.fixture
+def vault_client():
+    return mock.MagicMock()
+
+
+@pytest.fixture
+def authenticator():
+    authenticator = HashiVaultAuthenticator
+    authenticator.validate = mock.Mock(wraps=lambda: True)
+    authenticator.authenticate = mock.Mock(wraps=lambda client: 'throwaway')
+
+    return authenticator
+
+
+@pytest.fixture
+def patch_authenticator(authenticator):
+    with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultAuthenticator', new=authenticator):
+        yield
+
+
+@pytest.fixture
+def patch_get_vault_client(vault_client):
+    with mock.patch(
+        'ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common.HashiVaultHelper.get_vault_client', return_value=vault_client
+    ):
+        yield
+
+
+@pytest.fixture
+def requests_unparseable_response():
+    r = mock.MagicMock()
+    r.json.side_effect = json.JSONDecodeError
+
+    return r

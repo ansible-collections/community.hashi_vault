@@ -6,7 +6,6 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-import contextlib
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
@@ -18,23 +17,6 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
 )
-
-
-# TODO: this might be useful elsewhere, let's find a good place to share it with other tests
-@contextlib.contextmanager
-def mock_import_error(*names):
-    import builtins
-
-    real_import = builtins.__import__
-
-    def _fake_importer(name, *args, **kwargs):
-        if name in names:
-            raise ImportError
-
-        return real_import(name, *args, **kwargs)
-
-    with mock.patch.object(builtins, '__import__', side_effect=_fake_importer):
-        yield
 
 
 @pytest.fixture
@@ -68,8 +50,8 @@ def aws_session_token():
 
 
 @pytest.fixture
-def auth_aws_iam(adapter, warner):
-    return HashiVaultAuthMethodAwsIam(adapter, warner)
+def auth_aws_iam(adapter, warner, deprecator):
+    return HashiVaultAuthMethodAwsIam(adapter, warner, deprecator)
 
 
 @pytest.fixture
@@ -163,7 +145,7 @@ class TestAuthAwsIam(object):
 
         assert response['auth']['client_token'] == aws_iam_login_response['auth']['client_token']
 
-    def test_auth_aws_iam_validate_no_creds_no_boto(self, auth_aws_iam):
+    def test_auth_aws_iam_validate_no_creds_no_boto(self, auth_aws_iam, mock_import_error):
         with mock_import_error('botocore', 'boto3'):
             with pytest.raises(HashiVaultValueError, match=r'boto3 is required for loading a profile or IAM role credentials'):
                 auth_aws_iam.validate()

@@ -40,8 +40,8 @@ def role_id():
 
 
 @pytest.fixture
-def auth_jwt(adapter, warner):
-    return HashiVaultAuthMethodJwt(adapter, warner)
+def auth_jwt(adapter, warner, deprecator):
+    return HashiVaultAuthMethodJwt(adapter, warner, deprecator)
 
 
 @pytest.fixture

@@ -2,6 +2,7 @@
 ignore:
   - tests/unit/compat/*
   - tests/unit/**/conftest.py
+  - tests/unit/conftest.py
 
 fixes:
   - "ansible_collections/community/hashi_vault/::"
@@ -10,6 +11,14 @@ flags:
   target_filter_vault_login_token:
     paths:
       - plugins/filter/vault_login_token.py
+
+  target_module_vault_kv1_get:
+    paths:
+      - plugins/modules/vault_kv1_get.py
+
+  target_module_vault_kv2_get:
+    paths:
+      - plugins/modules/vault_kv2_get.py
 
   target_module_vault_login:
     paths:
@@ -26,6 +35,14 @@ flags:
   target_module_vault_pki_generate_certificate:
     paths:
       - plugins/modules/vault_pki_generate_certificate
+
+  target_lookup_vault_kv1_get:
+    paths:
+      - plugins/lookup/vault_kv1_get.py
+
+  target_lookup_vault_kv2_get:
+    paths:
+      - plugins/lookup/vault_kv2_get.py
 
   target_lookup_vault_login:
     paths:

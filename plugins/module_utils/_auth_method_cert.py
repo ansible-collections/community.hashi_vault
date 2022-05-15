@@ -14,8 +14,8 @@ class HashiVaultAuthMethodCert(HashiVaultAuthMethodBase):
     NAME = "cert"
     OPTIONS = ["cert_auth_public_key", "cert_auth_private_key", "mount_point", "role_id"]
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodCert, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodCert, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         self.validate_by_required_fields("cert_auth_public_key", "cert_auth_private_key")

@@ -13,13 +13,8 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._authenticat
 
 
 @pytest.fixture
-def mock_warner():
-    return mock.MagicMock()
-
-
-@pytest.fixture
-def authenticator(fake_auth_class, adapter, mock_warner):
-    a = HashiVaultAuthenticator(adapter, mock_warner)
+def authenticator(fake_auth_class, adapter, warner, deprecator):
+    a = HashiVaultAuthenticator(adapter, warner, deprecator)
     a._selector.update({fake_auth_class.NAME: fake_auth_class})
 
     return a
@@ -75,11 +70,12 @@ class TestHashiVaultAuthenticator(object):
 
     # TODO: remove in 3.0.0 when aws_iam_login name is removed
     # https://github.com/ansible-collections/community.hashi_vault/pull/193
-    def test_get_method_object_deprecated_aws_iam_login(self, authenticator, mock_warner):
+    def test_get_method_object_deprecated_aws_iam_login(self, authenticator, deprecator):
         obj = authenticator._get_method_object('aws_iam_login')
 
         assert obj == authenticator._selector['aws_iam']
-        mock_warner.assert_called_once_with(
-            "[DEPRECATION WARNING]: auth method 'aws_iam_login' is renamed to 'aws_iam'. "
-            "The 'aws_iam_login' name will be removed in community.hashi_vault 3.0.0."
+        deprecator.assert_called_once_with(
+            message="auth method 'aws_iam_login' is renamed to 'aws_iam'.",
+            version='3.0.0',
+            collection_name='community.hashi_vault'
         )

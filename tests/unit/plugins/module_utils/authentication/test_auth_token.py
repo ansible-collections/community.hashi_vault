@@ -45,8 +45,8 @@ def token():
 
 
 @pytest.fixture
-def auth_token(adapter, warner):
-    return HashiVaultAuthMethodToken(adapter, warner)
+def auth_token(adapter, warner, deprecator):
+    return HashiVaultAuthMethodToken(adapter, warner, deprecator)
 
 
 @pytest.fixture(params=['lookup-self_with_meta.json', 'lookup-self_without_meta.json'])

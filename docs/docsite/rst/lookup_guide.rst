@@ -53,7 +53,7 @@ Consider the following example:
 
     - vars:
         token: "{{ lookup('community.hashi_vault.vault_login', auth_method='userpass', username='user', password='pass') | community.hashi_vault.vault_login_token }}"
-        secret: "{{ lookup('community.hashI_vault.vault_read', 'secrets/data/my-secret', token=token) }}"
+        secret: "{{ lookup('community.hashi_vault.vault_read', 'secrets/data/my-secret', token=token) }}"
         value_a: "{{ secret.data.data.a }}"
         value_b: "{{ secret.data.data.b }}"
       ansible.builtin.debug:
@@ -92,8 +92,8 @@ This example will do a single login and secret lookup, even though it is more ve
 
 Another thing to consider in both of the examples is that tasks run *per host*, so you may be multiplying the requests yet again.
 
-In the lookup example, those requests all happen on the controller, and in the module example, they happen on the remote host unless the play is targeted locally.
+In the lookup example, those requests all happen on the controller, and in the module example, they happen on the remote host unless the play or task is targeted locally.
 
 In both cases, you may *want* to make those requests per host, because some of the variables involved in the lookups may rely on per-host values, like differing authentication, different secret paths, even different Vault servers altogether, or in the case of certain access restrictions, you may need the remote host to make the connection rather than the controller.
 
-But if all of your secret access is intended to be from the controller, and the requests do not depend on host-level variables, you can potentially cut your requests by a lot, by using ``run_once``, or making Vault calls in a separate play that only targets ``localhost`` and using ``set_fact``, or via other methods.
+But if all of your secret access is intended to be from the controller, and the requests do not depend on host-level variables, you can potentially cut your requests by a lot, by using ``run_once``, or making Vault calls in a separate play that only targets ``localhost`` and using ``ansible.builtin.set_fact``, or via other methods.

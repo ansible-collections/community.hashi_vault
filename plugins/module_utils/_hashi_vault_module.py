@@ -33,7 +33,7 @@ class HashiVaultModule(AnsibleModule):
         self.helper = HashiVaultHelper()
         self.adapter = HashiVaultOptionAdapter.from_dict(self.params)
         self.connection_options = HashiVaultConnectionOptions(option_adapter=self.adapter, retry_callback_generator=callback)
-        self.authenticator = HashiVaultAuthenticator(option_adapter=self.adapter, warning_callback=self.warn)
+        self.authenticator = HashiVaultAuthenticator(option_adapter=self.adapter, warning_callback=self.warn, deprecate_callback=self.deprecate)
 
     @classmethod
     def generate_argspec(cls, **kwargs):

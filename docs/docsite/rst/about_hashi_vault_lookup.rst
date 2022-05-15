@@ -8,6 +8,8 @@ This page explains the past, present, and future of the ``hashi_vault`` :ref:`lo
 
 The ``hashi_vault`` lookup is the oldest Vault-related content in Ansible. It was included in pre-collections Ansible (<2.10). As a result, it's the most used plugin for Vault, and the one most people are familiar with.
 
+At this time, we recommend using newer content in the collection, and we believe all use cases for ``hashi_vault`` have been covered by newer plugins. To understand the history, continue reading this document. For help with migration, :ref:`the hashi_vault migration guide <ansible_collections.community.hashi_vault.docsite.migration_hashi_vault_lookup>` has you covered.
+
 .. contents::
   :local:
   :depth: 2
@@ -63,7 +65,12 @@ In addition, it is now possible to perform a login directly and return the token
 
 Generic read (not ``kv`` specific) is still important functionality, so we have the ``community.hashi_vault.vault_read`` :ref:`module <ansible_collections.community.hashi_vault.vault_read_module>` and :ref:`lookup plugin <ansible_collections.community.hashi_vault.vault_read_lookup>` to provide that without trying to infer whether the response is from a specific backend.
 
-Since reading from ``kv`` store is by far the most common use case, we will also be introducing content for that specifically, which will accept familiar paths and provide parameters for ``kv``-specific functionality like versioning. That content is coming soon.
+Since reading from the ``kv`` store is by far the most common use case, we have dedicated content for that:
+
+* ``community.hashi_vault.vault_kv1_get`` :ref:`module <ansible_collections.community.hashi_vault.vault_kv1_get_module>`
+* ``community.hashi_vault.vault_kv2_get`` :ref:`module <ansible_collections.community.hashi_vault.vault_kv2_get_module>`
+* ``community.hashi_vault.vault_kv1_get`` :ref:`lookup <ansible_collections.community.hashi_vault.vault_kv1_get_lookup>`
+* ``community.hashi_vault.vault_kv2_get`` :ref:`lookup <ansible_collections.community.hashi_vault.vault_kv2_get_lookup>`
 
 The dictionary dereferencing via ``:keyname`` syntax *will not be supported* in other content. That will be achieved in Jinja via:
 
