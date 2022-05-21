@@ -5,6 +5,27 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v3.0.0
+======
+
+Release Summary
+---------------
+
+Version 3.0.0 of ``community.hashi_vault`` drops support for Ansible 2.9 and ansible-base 2.10.
+Several deprecated features have been removed. See the changelog for the full list.
+
+Deprecated Features
+-------------------
+
+- token_validate options - the shared auth option ``token_validate`` will change its default from ``true`` to ``false`` in community.hashi_vault version 4.0.0. The ``vault_login`` lookup and module will keep the default value of ``true`` (https://github.com/ansible-collections/community.hashi_vault/issues/248).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- aws_iam auth - the deprecated alias ``aws_iam_login`` for the ``aws_iam`` value of the ``auth_method`` option has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/194).
+- community.hashi_vault collection - support for Ansible 2.9 and ansible-base 2.10 has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/189).
+- hashi_vault lookup - the deprecated ``[lookup_hashi_vault]`` INI config section has been removed in favor of the collection-wide ``[hashi_vault_collection]`` section (https://github.com/ansible-collections/community.hashi_vault/issues/179).
+
 v2.5.0
 ======
 
