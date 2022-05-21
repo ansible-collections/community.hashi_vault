@@ -67,15 +67,3 @@ class TestHashiVaultAuthenticator(object):
         obj = authenticator._get_method_object()
 
         assert isinstance(obj, type(fake_auth_class))
-
-    # TODO: remove in 3.0.0 when aws_iam_login name is removed
-    # https://github.com/ansible-collections/community.hashi_vault/pull/193
-    def test_get_method_object_deprecated_aws_iam_login(self, authenticator, deprecator):
-        obj = authenticator._get_method_object('aws_iam_login')
-
-        assert obj == authenticator._selector['aws_iam']
-        deprecator.assert_called_once_with(
-            message="auth method 'aws_iam_login' is renamed to 'aws_iam'.",
-            version='3.0.0',
-            collection_name='community.hashi_vault'
-        )

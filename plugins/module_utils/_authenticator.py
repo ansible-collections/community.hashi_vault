@@ -32,7 +32,6 @@ class HashiVaultAuthenticator():
             'ldap',
             'approle',
             'aws_iam',
-            'aws_iam_login',
             'jwt',
             'cert',
             'none',
@@ -79,15 +78,6 @@ class HashiVaultAuthenticator():
     def _get_method_object(self, method=None):
         if method is None:
             method = self._options.get_option('auth_method')
-
-        # TODO: remove in 3.0.0
-        if method == 'aws_iam_login':
-            method = 'aws_iam'
-            self.deprecate(
-                message="auth method 'aws_iam_login' is renamed to 'aws_iam'.",
-                version='3.0.0',
-                collection_name='community.hashi_vault'
-            )
 
         try:
             o_method = self._selector[method]
