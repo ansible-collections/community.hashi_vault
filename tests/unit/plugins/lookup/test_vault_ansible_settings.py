@@ -6,8 +6,8 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
+import re
 
-from ansible.plugins.loader import lookup_loader
 from ansible.plugins.lookup import LookupBase
 from ansible.errors import AnsibleError
 
@@ -46,8 +46,26 @@ def patch_config_manager(sample_options):
 
 
 @pytest.fixture
-def vault_ansible_settings_lookup():
-    return lookup_loader.get('community.hashi_vault.vault_ansible_settings')
+def vault_ansible_settings_lookup(loader):
+    return loader.get('community.hashi_vault.vault_ansible_settings')
+
+
+@pytest.fixture(params=[False, True])
+def loader(request):
+    from ansible.plugins.loader import lookup_loader as orig_loader
+
+    def _legacy_sim(plugin):
+        r = orig_loader.find_plugin_with_context(plugin)
+        return (r.plugin_resolved_name, None)
+
+    loader = mock.Mock(wraps=orig_loader)
+
+    if request.param:
+        loader.find_plugin_with_context.side_effect = AttributeError
+        loader.find_plugin_with_name = mock.Mock(wraps=_legacy_sim)
+
+    with mock.patch('ansible.plugins.loader.lookup_loader', loader):
+        yield loader
 
 
 class TestVaultAnsibleSettingsLookup(object):
@@ -73,7 +91,7 @@ class TestVaultAnsibleSettingsLookup(object):
     def test_vault_ansible_settings_stuff(
         self, vault_ansible_settings_lookup,
         opt_plugin, opt_inc_none, opt_inc_default, opt_inc_private, variables, terms, expected,
-        patch_config_manager, sample_options
+        patch_config_manager, sample_options, loader
     ):
         kwargs = dict(
             plugin=opt_plugin,
@@ -91,6 +109,12 @@ class TestVaultAnsibleSettingsLookup(object):
         assert isinstance(deresult, dict)
 
         patch_config_manager.get_configuration_definitions.assert_called_once()
+
+        fqplugin = re.sub(r'^(?:community\.hashi_vault\.)?(.*?)$', r'community.hashi_vault.\1', opt_plugin)
+        if hasattr(loader, 'find_plugin_with_name'):
+            loader.find_plugin_with_name.assert_called_once_with(fqplugin)
+        else:
+            loader.find_plugin_with_context.assert_called_once_with(fqplugin)
 
         # the calls to get_config_value_and_origin vary, get the whole list of calls
         cvocalls = patch_config_manager.get_config_value_and_origin.call_args_list
