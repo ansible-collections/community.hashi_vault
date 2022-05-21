@@ -1,0 +1,4 @@
+---
+release_summary: |-
+  Version 3.0.0 of ``community.hashi_vault`` drops support for Ansible 2.9 and ansible-base 2.10.
+  Several deprecated features have been removed. See the changelog for the full list.
