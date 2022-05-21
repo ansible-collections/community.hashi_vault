@@ -451,3 +451,30 @@ releases:
         name: vault_kv2_get
         namespace: null
     release_date: '2022-05-11'
+  3.0.0:
+    changes:
+      deprecated_features:
+      - token_validate options - the shared auth option ``token_validate`` will change
+        its default from ``true`` to ``false`` in community.hashi_vault version 4.0.0.
+        The ``vault_login`` lookup and module will keep the default value of ``true``
+        (https://github.com/ansible-collections/community.hashi_vault/issues/248).
+      release_summary: 'Version 3.0.0 of ``community.hashi_vault`` drops support for
+        Ansible 2.9 and ansible-base 2.10.
+
+        Several deprecated features have been removed. See the changelog for the full
+        list.'
+      removed_features:
+      - aws_iam auth - the deprecated alias ``aws_iam_login`` for the ``aws_iam``
+        value of the ``auth_method`` option has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/194).
+      - community.hashi_vault collection - support for Ansible 2.9 and ansible-base
+        2.10 has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/189).
+      - hashi_vault lookup - the deprecated ``[lookup_hashi_vault]`` INI config section
+        has been removed in favor of the collection-wide ``[hashi_vault_collection]``
+        section (https://github.com/ansible-collections/community.hashi_vault/issues/179).
+    fragments:
+    - 179-remove-lookup_hashi_vault-ini.yml
+    - 189-remove-ansible-2_9-2_10-support.yml
+    - 194-remove-aws_iam_login.yml
+    - 248-token_validate-change-default.yml
+    - 3.0.0.yml
+    release_date: '2022-05-21'
