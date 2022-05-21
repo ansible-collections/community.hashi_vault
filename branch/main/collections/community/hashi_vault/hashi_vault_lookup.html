@@ -189,14 +189,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">auth_method = token</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">auth_method = token</span><span class="w"></span>
 </pre></div>
@@ -235,14 +228,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>If specified, sets the value to use for the <code class="docutils literal notranslate"><span class="pre">X-Vault-AWS-IAM-Server-ID</span></code> header as part of <code class="docutils literal notranslate"><span class="pre">GetCallerIdentity</span></code> request.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">aws_iam_server_id = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">aws_iam_server_id = None</span><span class="w"></span>
 </pre></div>
@@ -305,15 +291,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>If not specified by any other means, the <code class="docutils literal notranslate"><span class="pre">VAULT_CACERT</span></code> environment variable will be used.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">ca_cert = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p><span class="ansible-option-versionadded">added in 1.2.0 of community.hashi_vault</span></p>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">ca_cert = None</span><span class="w"></span>
 </pre></div>
@@ -410,15 +388,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>If environment variable <code class="docutils literal notranslate"><span class="pre">VAULT_NAMESPACE</span></code> is set, its value will be used last among all ways to specify <em>namespace</em>.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">namespace = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p><span class="ansible-option-versionadded">added in 0.2.0 of community.hashi_vault</span></p>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">namespace = None</span><span class="w"></span>
 </pre></div>
@@ -464,14 +434,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>If not specified, <a class="reference external" href="https://requests.readthedocs.io/en/master/user/advanced/#proxies">environment variables from the Requests library</a> are used.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">proxies = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">proxies = None</span><span class="w"></span>
 </pre></div>
@@ -511,14 +474,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>For detailed information on retries, see the collection User Guide.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">retries = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">retries = None</span><span class="w"></span>
 </pre></div>
@@ -544,14 +500,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">retry_action = warn</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">retry_action = warn</span><span class="w"></span>
 </pre></div>
@@ -589,14 +538,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, if no <em>role_id</em> is supplied, the default behavior is to try all certificate roles and return any one that matches.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">role_id = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">role_id = None</span><span class="w"></span>
 </pre></div>
@@ -644,14 +586,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>If not set, then the <code class="docutils literal notranslate"><span class="pre">hvac</span></code> library’s default is used.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">timeout = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">timeout = None</span><span class="w"></span>
 </pre></div>
@@ -689,14 +624,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“.vault-token”</span></p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">token_file = .vault-token</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">token_file = .vault-token</span><span class="w"></span>
 </pre></div>
@@ -719,14 +647,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>If no token is specified, will try to read the <em>token_file</em> from this path.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">token_path = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">token_path = None</span><span class="w"></span>
 </pre></div>
@@ -758,14 +679,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">token_validate = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">token_validate = None</span><span class="w"></span>
 </pre></div>
@@ -788,14 +702,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>If <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> is also not defined then an error will be raised.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">url = None</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">url = None</span><span class="w"></span>
 </pre></div>
