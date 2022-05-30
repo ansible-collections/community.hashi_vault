@@ -17,6 +17,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
@@ -122,7 +123,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="ansible-collections-community-hashi-vault-hashi-vault-lookup"></span><section id="community-hashi-vault-hashi-vault-lookup-retrieve-secrets-from-hashicorp-s-vault">
-<h1>community.hashi_vault.hashi_vault lookup – Retrieve secrets from HashiCorp’s Vault<a class="headerlink" href="#community-hashi-vault-hashi-vault-lookup-retrieve-secrets-from-hashicorp-s-vault" title="Permalink to this headline"></a></h1>
+<h1>community.hashi_vault.hashi_vault lookup – Retrieve secrets from HashiCorp’s Vault<a class="headerlink" href="#community-hashi-vault-hashi-vault-lookup-retrieve-secrets-from-hashicorp-s-vault" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This lookup plugin is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 3.1.0).</p>
@@ -144,14 +145,14 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 </div>
 <section id="synopsis">
-<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>Retrieve secrets from HashiCorp’s Vault.</p></li>
 <li><p>Consider <a class="reference internal" href="docsite/migration_hashi_vault_lookup.html#ansible-collections-community-hashi-vault-docsite-migration-hashi-vault-lookup"><span class="std std-ref">migrating to other plugins in the collection</span></a>.</p></li>
 </ul>
 </section>
 <section id="requirements">
-<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <p>The below requirements are needed on the local controller node that executes this lookup.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> (<a class="reference external" href="https://hvac.readthedocs.io/en/stable/overview.html">Python library</a>)</p></li>
@@ -159,7 +160,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 </section>
 <section id="parameters">
-<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h2>
 <table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
@@ -760,7 +761,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </table>
 </section>
 <section id="notes">
-<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
@@ -772,7 +773,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="see-also">
-<h2><a class="toc-backref" href="#id5">See Also</a><a class="headerlink" href="#see-also" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id5">See Also</a><a class="headerlink" href="#see-also" title="Permalink to this heading"></a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -798,7 +799,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="examples">
-<h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;secret=secret/hello:value token=c975b780-d1be-8016-866b-01d0f9b688a5 url=http://myvault:8200&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
 
@@ -965,7 +966,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="return-value">
-<h2><a class="toc-backref" href="#id7">Return Value</a><a class="headerlink" href="#return-value" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id7">Return Value</a><a class="headerlink" href="#return-value" title="Permalink to this heading"></a></h2>
 <table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Key</p></th>
@@ -984,7 +985,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tbody>
 </table>
 <section id="authors">
-<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline"></a></h3>
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Julie Davila (&#64;juliedavila) &lt;julie(at)davila.io&gt;</p></li>
 <li><p>Brian Scholer (&#64;briantist)</p></li>
@@ -995,7 +996,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="collection-links">
-<h3>Collection links<a class="headerlink" href="#collection-links" title="Permalink to this headline"></a></h3>
+<h3>Collection links<a class="headerlink" href="#collection-links" title="Permalink to this heading"></a></h3>
 <p class="ansible-links">
   <a href="https://github.com/ansible-collections/community.hashi_vault/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
   <a href="https://github.com/ansible-collections/community.hashi_vault" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
