@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - Use the correct GPL license for plugin_utils (https://github.com/ansible-collections/community.hashi_vault/issues/276).
+  - Add missing ``simplified_bsd.txt`` file for BSD licensed content (https://github.com/ansible-collections/community.hashi_vault/issues/275).
