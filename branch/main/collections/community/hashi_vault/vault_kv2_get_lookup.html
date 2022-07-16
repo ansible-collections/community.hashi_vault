@@ -370,7 +370,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-engine_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The path where the secret backend is mounted.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“kv”</span></p>
+<p>The default value is <code class="docutils literal notranslate"><span class="pre">kv</span></code>.</p>
+<p>The default value will change to <code class="docutils literal notranslate"><span class="pre">secret</span></code> in version 4.0.0 to match the module’s default.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul class="simple">
 <li><p>Variable: ansible_hashi_vault_engine_mount_point</p></li>
@@ -799,7 +800,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read a kv2 secret with the default mount point</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ansible.builtin.set_fact</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">response</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_kv2_get&#39;</span><span class="o">,</span> <span class="s1">&#39;hello&#39;</span><span class="o">,</span> <span class="nv">url</span><span class="o">=</span><span class="s1">&#39;https://vault:8201&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="c1"># equivalent API path is secret/data/hello</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># equivalent API path in 3.x.x is kv/data/hello</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># equivalent API path in 4.0.0+ will be secret/data/hello</span><span class="w"></span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the results</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span><span class="w"></span>
@@ -844,6 +846,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ansible_hashi_vault_username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ansible_hashi_vault_password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">pwd</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">special/kv2</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">item.values</span><span class="o">()</span> <span class="o">|</span> <span class="nf">list</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
 <span class="w">  </span><span class="nt">with_community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
