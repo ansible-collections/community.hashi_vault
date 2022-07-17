@@ -5,6 +5,28 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v3.1.0
+======
+
+Release Summary
+---------------
+
+A default value that was set incorrectly will be corrected in ``4.0.0``.
+A deprecation warning will be shown until then if the value is not specified explicitly.
+This version also includes some fixes and improvements to the licensing in the collection, which does not affect any functionality.
+
+Deprecated Features
+-------------------
+
+- vault_kv2_get lookup - the ``engine_mount_point option`` in the ``vault_kv2_get`` lookup only will change its default from ``kv`` to ``secret`` in community.hashi_vault version 4.0.0 (https://github.com/ansible-collections/community.hashi_vault/issues/279).
+
+Bugfixes
+--------
+
+- Add SPDX license headers to individual files (https://github.com/ansible-collections/community.hashi_vault/pull/282).
+- Add missing ``BSD-2-Clause.txt`` file for BSD licensed content (https://github.com/ansible-collections/community.hashi_vault/issues/275).
+- Use the correct GPL license for plugin_utils (https://github.com/ansible-collections/community.hashi_vault/issues/276).
+
 v3.0.0
 ======
 
