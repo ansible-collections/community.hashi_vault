@@ -300,7 +300,7 @@ jobs:
           - 3.9
         runner:
           - ubuntu-latest
-          - macos-10.15
+          - macos-12
           # macos-11 will not support virtualbox, so we can't run docker
           # when macos-10.15 support is dropped we will have to stop testing on it
           # unless a solution for docker/virtualbox is found.
@@ -314,8 +314,8 @@ jobs:
           # stable-2.13 test containers crash; unsure of exact cause
           # but likely due to old versions of the runtimes.
           # We'll just stick to 2.12 for now, better than nothing.
-          - runner: macos-10.15
-            ansible: stable-2.13
+          # - runner: macos-10.15
+          #   ansible: stable-2.13
           - runner: ubuntu-latest
             ansible: stable-2.12
 
