@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - Use the correct GPL license for plugin_utils (https://github.com/ansible-collections/community.hashi_vault/issues/276).
+  - Add missing ``BSD-2-Clause.txt`` file for BSD licensed content (https://github.com/ansible-collections/community.hashi_vault/issues/275).
+  - Add SPDX license headers to individual files (https://github.com/ansible-collections/community.hashi_vault/pull/282).

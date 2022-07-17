@@ -123,3 +123,5 @@ See the [changelog](https://github.com/ansible-collections/community.hashi_vault
 GNU General Public License v3.0 or later.
 
 See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
+
+Parts of the collection are licensed under the [BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause) license.
