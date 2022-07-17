@@ -478,3 +478,26 @@ releases:
     - 248-token_validate-change-default.yml
     - 3.0.0.yml
     release_date: '2022-05-21'
+  3.1.0:
+    changes:
+      bugfixes:
+      - Add SPDX license headers to individual files (https://github.com/ansible-collections/community.hashi_vault/pull/282).
+      - Add missing ``BSD-2-Clause.txt`` file for BSD licensed content (https://github.com/ansible-collections/community.hashi_vault/issues/275).
+      - Use the correct GPL license for plugin_utils (https://github.com/ansible-collections/community.hashi_vault/issues/276).
+      deprecated_features:
+      - vault_kv2_get lookup - the ``engine_mount_point option`` in the ``vault_kv2_get``
+        lookup only will change its default from ``kv`` to ``secret`` in community.hashi_vault
+        version 4.0.0 (https://github.com/ansible-collections/community.hashi_vault/issues/279).
+      release_summary: 'A default value that was set incorrectly will be corrected
+        in ``4.0.0``.
+
+        A deprecation warning will be shown until then if the value is not specified
+        explicitly.
+
+        This version also includes some fixes and improvements to the licensing in
+        the collection, which does not affect any functionality.'
+    fragments:
+    - 279-incorrect-kv2-lookup-default.yml
+    - 3.1.0.yml
+    - licensing.yml
+    release_date: '2022-07-17'

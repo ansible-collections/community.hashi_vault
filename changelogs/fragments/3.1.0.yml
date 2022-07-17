@@ -1,5 +1,0 @@
----
-release_summary: |-
-  A default value that was set incorrectly will be corrected in ``4.0.0``.
-  A deprecation warning will be shown until then if the value is not specified explicitly.
-  This version also includes some fixes and improvements to the licensing in the collection, which does not affect any functionality.
