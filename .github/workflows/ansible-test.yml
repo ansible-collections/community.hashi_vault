@@ -65,7 +65,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
       # Install the head of the given branch (devel, stable-2.13)
       - name: Install ansible-base (${{ matrix.ansible }})
@@ -139,7 +139,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -200,6 +200,12 @@ jobs:
         exclude:
           - ansible: 'stable-2.11'
             python: '3.10'
+          - ansible: 'devel'
+            python: '3.6'
+          - ansible: 'devel'
+            python: '3.7'
+          - ansible: 'devel'
+            python: '3.8'
 
     steps:
       - name: Initialize env vars
@@ -222,7 +228,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Get Vault versions
         id: vault_versions
