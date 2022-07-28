@@ -161,31 +161,34 @@ class LookupModule(HashiVaultLookupBase):
         except (NotImplementedError, HashiVaultValueError) as e:
             raise_from(AnsibleError(e), e)
 
-        for term in terms:
-            try:
-                response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
-            except hvac.exceptions.Forbidden as e:
-                raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
-            except hvac.exceptions.InvalidPath as e:
-                raise_from(AnsibleError("The path '%s' doesn't seem to exist." % term), e)
-            except hvac.exceptions.InternalServerError as e:
-                raise_from(AnsibleError("Internal Server Error: %s" % str(e)), e)
+        try:
+            for term in terms:
+                try:
+                    response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
+                except hvac.exceptions.Forbidden as e:
+                    raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
+                except hvac.exceptions.InvalidPath as e:
+                    raise_from(AnsibleError("The path '%s' doesn't seem to exist." % term), e)
+                except hvac.exceptions.InternalServerError as e:
+                    raise_from(AnsibleError("Internal Server Error: %s" % str(e)), e)
 
-            # https://github.com/hvac/hvac/issues/797
-            # HVAC returns a raw response object when the body is not JSON.
-            # That includes 204 responses, which are successful with no body.
-            # So we will try to detect that and a act accordingly.
-            # A better way may be to implement our own adapter for this
-            # collection, but it's a little premature to do that.
-            if hasattr(response, 'json') and callable(response.json):
-                if response.status_code == 204:
-                    output = {}
+                # https://github.com/hvac/hvac/issues/797
+                # HVAC returns a raw response object when the body is not JSON.
+                # That includes 204 responses, which are successful with no body.
+                # So we will try to detect that and a act accordingly.
+                # A better way may be to implement our own adapter for this
+                # collection, but it's a little premature to do that.
+                if hasattr(response, 'json') and callable(response.json):
+                    if response.status_code == 204:
+                        output = {}
+                    else:
+                        display.warning('Vault returned status code %i and an unparsable body.' % response.status_code)
+                        output = response.content
                 else:
-                    display.warning('Vault returned status code %i and an unparsable body.' % response.status_code)
-                    output = response.content
-            else:
-                output = response
+                    output = response
 
-            ret.append(output)
+                ret.append(output)
+        finally:
+            self.authenticator.logout(client)
 
         return ret

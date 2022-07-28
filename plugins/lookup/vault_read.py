@@ -123,15 +123,18 @@ class LookupModule(HashiVaultLookupBase):
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
-        for term in terms:
-            try:
-                data = client.read(term)
-            except hvac.exceptions.Forbidden:
-                raise AnsibleError("Forbidden: Permission Denied to path '%s'." % term)
+        try:
+            for term in terms:
+                try:
+                    data = client.read(term)
+                except hvac.exceptions.Forbidden:
+                    raise AnsibleError("Forbidden: Permission Denied to path '%s'." % term)
 
-            if data is None:
-                raise AnsibleError("The path '%s' doesn't seem to exist." % term)
+                if data is None:
+                    raise AnsibleError("The path '%s' doesn't seem to exist." % term)
 
-            ret.append(data)
+                ret.append(data)
+        finally:
+            self.authenticator.logout(client)
 
         return ret

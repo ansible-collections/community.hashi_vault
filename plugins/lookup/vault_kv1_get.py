@@ -199,22 +199,25 @@ class LookupModule(HashiVaultLookupBase):
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
-        for term in terms:
-            try:
-                raw = client.secrets.kv.v1.read_secret(path=term, mount_point=engine_mount_point)
-            except hvac.exceptions.Forbidden as e:
-                raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
-            except hvac.exceptions.InvalidPath as e:
-                if 'Invalid path for a versioned K/V secrets engine' in str(e):
-                    msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
-                else:
-                    msg = "Invalid or missing path ['%s']."
+        try:
+            for term in terms:
+                try:
+                    raw = client.secrets.kv.v1.read_secret(path=term, mount_point=engine_mount_point)
+                except hvac.exceptions.Forbidden as e:
+                    raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
+                except hvac.exceptions.InvalidPath as e:
+                    if 'Invalid path for a versioned K/V secrets engine' in str(e):
+                        msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
+                    else:
+                        msg = "Invalid or missing path ['%s']."
 
-                raise_from(AnsibleError(msg % (term,)), e)
+                    raise_from(AnsibleError(msg % (term,)), e)
 
-            metadata = raw.copy()
-            data = metadata.pop('data')
+                metadata = raw.copy()
+                data = metadata.pop('data')
 
-            ret.append(dict(raw=raw, data=data, secret=data, metadata=metadata))
+                ret.append(dict(raw=raw, data=data, secret=data, metadata=metadata))
+        finally:
+            self.authenticator.logout(client)
 
         return ret

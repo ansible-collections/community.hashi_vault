@@ -147,31 +147,34 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        if module.check_mode:
-            response = {}
-        else:
-            response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
-    except hvac.exceptions.Forbidden:
-        module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath:
-        module.fail_json(msg="The path '%s' doesn't seem to exist." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InternalServerError as e:
-        module.fail_json(msg="Internal Server Error: %s" % to_native(e), exception=traceback.format_exc())
+        try:
+            if module.check_mode:
+                response = {}
+            else:
+                response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
+        except hvac.exceptions.Forbidden:
+            module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
+        except hvac.exceptions.InvalidPath:
+            module.fail_json(msg="The path '%s' doesn't seem to exist." % path, exception=traceback.format_exc())
+        except hvac.exceptions.InternalServerError as e:
+            module.fail_json(msg="Internal Server Error: %s" % to_native(e), exception=traceback.format_exc())
 
-    # https://github.com/hvac/hvac/issues/797
-    # HVAC returns a raw response object when the body is not JSON.
-    # That includes 204 responses, which are successful with no body.
-    # So we will try to detect that and a act accordingly.
-    # A better way may be to implement our own adapter for this
-    # collection, but it's a little premature to do that.
-    if hasattr(response, 'json') and callable(response.json):
-        if response.status_code == 204:
-            output = {}
+        # https://github.com/hvac/hvac/issues/797
+        # HVAC returns a raw response object when the body is not JSON.
+        # That includes 204 responses, which are successful with no body.
+        # So we will try to detect that and a act accordingly.
+        # A better way may be to implement our own adapter for this
+        # collection, but it's a little premature to do that.
+        if hasattr(response, 'json') and callable(response.json):
+            if response.status_code == 204:
+                output = {}
+            else:
+                module.warn('Vault returned status code %i and an unparsable body.' % response.status_code)
+                output = response.content
         else:
-            module.warn('Vault returned status code %i and an unparsable body.' % response.status_code)
-            output = response.content
-    else:
-        output = response
+            output = response
+    finally:
+        module.authenticator.logout(client)
 
     module.exit_json(changed=True, data=output)
 

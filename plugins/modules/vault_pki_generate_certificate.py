@@ -263,15 +263,18 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        if module.check_mode:
-            data = {}
-        else:
-            data = client.secrets.pki.generate_certificate(
-                name=role_name, common_name=common_name,
-                extra_params=extra_params, mount_point=engine_mount_point
-            )
-    except hvac.exceptions.VaultError as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        try:
+            if module.check_mode:
+                data = {}
+            else:
+                data = client.secrets.pki.generate_certificate(
+                    name=role_name, common_name=common_name,
+                    extra_params=extra_params, mount_point=engine_mount_point
+                )
+        except hvac.exceptions.VaultError as e:
+            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+    finally:
+        module.authenticator.logout(client)
 
     # generate_certificate is a write operation which always return a new certificate
     module.exit_json(changed=True, data=data)

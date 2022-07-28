@@ -112,12 +112,15 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        data = client.read(path)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
+        try:
+            data = client.read(path)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
 
-    if data is None:
-        module.fail_json(msg="The path '%s' doesn't seem to exist." % path)
+        if data is None:
+            module.fail_json(msg="The path '%s' doesn't seem to exist." % path)
+    finally:
+        module.authenticator.logout(client)
 
     module.exit_json(data=data)
 
