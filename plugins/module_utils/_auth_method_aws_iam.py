@@ -95,3 +95,6 @@ class HashiVaultAuthMethodAwsIam(HashiVaultAuthMethodBase):
             client.auth_aws_iam(use_token=use_token, **params)
 
         return response
+
+    def should_revoke_token(self):
+        return True

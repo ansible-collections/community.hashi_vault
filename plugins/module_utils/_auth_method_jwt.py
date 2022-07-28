@@ -49,3 +49,6 @@ class HashiVaultAuthMethodJwt(HashiVaultAuthMethodBase):
             client.token = response['auth']['client_token']
 
         return response
+
+    def should_revoke_token(self):
+        return True

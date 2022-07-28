@@ -31,3 +31,6 @@ class HashiVaultAuthMethodNone(HashiVaultAuthMethodBase):
 
     def authenticate(self, client, use_token=False):
         return None
+
+    def should_revoke_token(self):
+        return False

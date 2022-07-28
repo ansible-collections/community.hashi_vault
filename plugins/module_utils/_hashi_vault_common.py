@@ -299,3 +299,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
     @staticmethod
     def _stringify(input):
         return _stringify(input)
+
+    def should_revoke_token(self, **kwargs):
+        return False

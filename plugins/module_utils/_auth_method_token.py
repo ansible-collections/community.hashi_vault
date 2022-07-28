@@ -111,3 +111,6 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                         raise HashiVaultValueError("Invalid Vault Token Specified.")
 
         return self._simulate_login_response(token, response)
+
+    def should_revoke_token(self):
+        return False

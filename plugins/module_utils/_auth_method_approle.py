@@ -38,3 +38,6 @@ class HashiVaultAuthMethodApprole(HashiVaultAuthMethodBase):
             response = client.auth_approle(use_token=use_token, **params)
 
         return response
+
+    def should_revoke_token(self):
+        return True
