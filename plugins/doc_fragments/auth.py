@@ -135,6 +135,9 @@ class ModuleDocFragment(object):
         description: For C(cert) auth, path to the private key file to authenticate with, in PEM format.
         type: path
         version_added: 1.4.0
+      revoke_ephemeral_token:
+        description: Foobar
+        type: bool
     '''
 
     PLUGINS = r'''

@@ -32,6 +32,7 @@ class HashiVaultAuthMethodFake(HashiVaultAuthMethodBase):
 
     validate = mock.MagicMock()
     authenticate = mock.MagicMock()
+    should_revoke_token = mock.MagicMock()
 
 
 @pytest.fixture

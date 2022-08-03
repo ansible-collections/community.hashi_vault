@@ -50,3 +50,16 @@
           module_defaults:
             assert:
               quiet: yes
+
+    - name: Run approle ephemeral revocation tests
+      loop: '{{ [True, False] }}'
+      include_tasks:
+        file: approle_test_revocation.yml
+        apply:
+          vars:
+            this_path: '{{ ansible_hashi_vault_auth_method }}'
+            approle_name: '{{ secret_id_role }}'
+            revoke_token: '{{ item }}'
+          module_defaults:
+            assert:
+              quiet: yes

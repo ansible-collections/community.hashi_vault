@@ -176,3 +176,15 @@ class TestModuleVaultWrite():
 
         assert e.value.code != 0, "result: %r" % (result,)
         assert re.search(exc[1], result['msg']) is not None
+
+    @pytest.mark.parametrize('opt_data', [{}, {'thing': 'one', 'thang': 'two'}])
+    @pytest.mark.parametrize('opt_wrap_ttl', [None, '5m'])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data', 'wrap_ttl']], indirect=True)
+    def test_vault_write_logout(self, patch_ansible_module, approle_secret_id_write_response, vault_client, authenticator, opt_data, opt_wrap_ttl):
+        client = vault_client
+        client.write.return_value = approle_secret_id_write_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_write.main()
+
+        authenticator.logout.assert_called_once_with(client)

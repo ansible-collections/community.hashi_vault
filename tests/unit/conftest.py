@@ -56,6 +56,7 @@ def authenticator():
     authenticator = HashiVaultAuthenticator
     authenticator.validate = mock.Mock(wraps=lambda: True)
     authenticator.authenticate = mock.Mock(wraps=lambda client: 'throwaway')
+    authenticator.logout = mock.Mock(warps=lambda: None)
 
     return authenticator
 

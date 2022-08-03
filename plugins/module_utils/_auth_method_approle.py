@@ -40,4 +40,4 @@ class HashiVaultAuthMethodApprole(HashiVaultAuthMethodBase):
         return response
 
     def should_revoke_token(self):
-        return True
+        return self._options.get_option("revoke_ephemeral_token")
