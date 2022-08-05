@@ -67,6 +67,7 @@ Current Defaults (always check the source code to confirm the defaults in your s
     status_forcelist:
       # https://www.vaultproject.io/api#http-status-codes
       # 429 is usually a "too many requests" status, but in Vault it's the default health status response for standby nodes.
+      - 412 # Precondition failed. Returned on Enterprise when a request can't be processed yet due to some missing eventually consistent data. Should be retried, perhaps with a little backoff.
       - 500 # Internal server error. An internal error has occurred, try again later. If the error persists, report a bug.
       - 502 # A request to Vault required Vault making a request to a third party; the third party responded with an error of some kind.
       - 503 # Vault is down for maintenance or is currently sealed. Try again later.
