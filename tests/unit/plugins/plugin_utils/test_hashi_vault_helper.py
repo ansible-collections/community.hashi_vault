@@ -20,16 +20,6 @@ def hashi_vault_helper():
 
 
 @pytest.fixture
-def vault_unicode_token():
-    return u'fake123'
-
-
-@pytest.fixture
-def vault_bytes_token():
-    return b'fake456'
-
-
-@pytest.fixture
 def expected_stringify_candidates():
     return set(
         'token',
