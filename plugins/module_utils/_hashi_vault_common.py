@@ -65,7 +65,8 @@ class HashiVaultHelper():
         # TODO move hvac checking here?
         pass
 
-    def _stringify(self, input):
+    @staticmethod
+    def _stringify(input):
         return _stringify(input)
 
     def get_vault_client(
@@ -295,5 +296,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
     def deprecate(self, message, version=None, date=None, collection_name=None):
         self._deprecator(message, version=version, date=date, collection_name=collection_name)
 
-    def _stringify(self, input):
+    @staticmethod
+    def _stringify(input):
         return _stringify(input)
