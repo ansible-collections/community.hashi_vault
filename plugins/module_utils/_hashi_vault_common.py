@@ -25,44 +25,48 @@ except ImportError:
     HAS_HVAC = False
 
 
+def _stringify(input):
+    '''
+    This method is primarily used to Un-Unsafe values that come from Ansible.
+    We want to remove the Unsafe context so that libraries don't get confused
+    by the values.
+    '''
+
+    # Since this is a module_util, and will be used by both plugins and modules,
+    # we cannot import the AnsibleUnsafe* types, because they are controller-only.
+    # However, they subclass the native types, so we can check for that.
+
+    # bytes is the only consistent type to check against in both py2 and py3
+    if isinstance(input, bytes):
+        # seems redundant, but this will give us a regular bytes object even
+        # when the input is AnsibleUnsafeBytes
+        return bytes(input)
+    else:
+        # instead of checking for py2 vs. py3 to cast to str or unicode,
+        # let's get the type from the literal.
+        return type(u'')(input)
+
+
 class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
 
 class HashiVaultHelper():
 
-    STRINGIFY_CANDIDATES = {
+    STRINGIFY_CANDIDATES = set(
         'token',    # Token will end up in a header, requests requires headers to be str or bytes,
                     # and newer versions of requests stopped converting automatically. Because our
                     # token could have been passed in from a previous lookup call, it could be one
                     # of the AnsibleUnsafe types instead, causing a failure. Tokens should always
                     # be strings, so we will convert them.
-    }
-
-    def _stringify(self, input):
-        '''
-        This method is primarily used to Un-Unsafe values that come from Ansible.
-        We want to remove the Unsafe context so that libraries don't get confused
-        by the values.
-        '''
-
-        # Since this is a module_util, and will be used by both plugins and modules,
-        # we cannot import the AnsibleUnsafe* types, because they are controller-only.
-        # However, they subclass the native types, so we can check for that.
-
-        # bytes is the only consistent type to check against in both py2 and py3
-        if isinstance(input, bytes):
-            # seems redundant, but this will give us a regular bytes object even
-            # when the input is AnsibleUnsafeBytes
-            return bytes(input)
-        else:
-            # instead of checking for py2 vs. py3 to cast to str or unicode,
-            # let's get the type from the literal.
-            return type(u'')(input)
+    )
 
     def __init__(self):
         # TODO move hvac checking here?
         pass
+
+    def _stringify(self, input):
+        return _stringify(input)
 
     def get_vault_client(
         self,
@@ -290,3 +294,6 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
 
     def deprecate(self, message, version=None, date=None, collection_name=None):
         self._deprecator(message, version=version, date=date, collection_name=collection_name)
+
+    def _stringify(self, input):
+        return _stringify(input)

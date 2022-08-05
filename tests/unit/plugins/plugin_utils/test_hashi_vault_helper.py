@@ -31,9 +31,9 @@ def vault_bytes_token():
 
 @pytest.fixture
 def expected_stringify_candidates():
-    return {
+    return set(
         'token',
-    }
+    )
 
 
 class TestHashiVaultHelper(object):
@@ -44,29 +44,6 @@ class TestHashiVaultHelper(object):
         assert hashi_vault_helper.STRINGIFY_CANDIDATES == expected_stringify_candidates, '%r' % (
             hashi_vault_helper.STRINGIFY_CANDIDATES ^ expected_stringify_candidates
         )
-
-    @pytest.mark.parametrize('unsafe', [True, False])
-    def test_stringify_bytes(self, hashi_vault_helper, unsafe, vault_bytes_token):
-        token = vault_bytes_token
-        if unsafe:
-            token = AnsibleUnsafeBytes(token)
-
-        r = hashi_vault_helper._stringify(token)
-
-        assert isinstance(r, bytes)
-        assert not isinstance(r, AnsibleUnsafe)
-
-    @pytest.mark.parametrize('unsafe', [True, False])
-    def test_stringify_unicode(self, hashi_vault_helper, unsafe, vault_unicode_token):
-        token = vault_unicode_token
-        utype = type(token)
-        if unsafe:
-            token = AnsibleUnsafeText(token)
-
-        r = hashi_vault_helper._stringify(token)
-
-        assert isinstance(r, utype)
-        assert not isinstance(r, AnsibleUnsafe)
 
     @pytest.mark.parametrize('input', [b'one', u'two', AnsibleUnsafeBytes(b'three'), AnsibleUnsafeText(u'four')])
     @pytest.mark.parametrize('stringify', [True, False])
