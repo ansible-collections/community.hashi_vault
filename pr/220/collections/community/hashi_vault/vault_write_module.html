@@ -17,6 +17,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
@@ -122,10 +123,10 @@
            <div itemprop="articleBody">
              
   <span class="target" id="ansible-collections-community-hashi-vault-vault-write-module"></span><section id="community-hashi-vault-vault-write-module-perform-a-write-operation-against-hashicorp-vault">
-<h1>community.hashi_vault.vault_write module – Perform a write operation against HashiCorp Vault<a class="headerlink" href="#community-hashi-vault-vault-write-module-perform-a-write-operation-against-hashicorp-vault" title="Permalink to this headline"></a></h1>
+<h1>community.hashi_vault.vault_write module – Perform a write operation against HashiCorp Vault<a class="headerlink" href="#community-hashi-vault-vault-write-module-perform-a-write-operation-against-hashicorp-vault" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 2.5.0).</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 3.1.0).</p>
 <p>You might already have this collection installed if you are using the <code class="docutils literal notranslate"><span class="pre">ansible</span></code> package.
 It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
 To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
@@ -147,13 +148,13 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 </div>
 <section id="synopsis">
-<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>Performs a generic write operation against a given path in HashiCorp Vault, returning any output.</p></li>
 </ul>
 </section>
 <section id="requirements">
-<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <p>The below requirements are needed on the host that executes this module.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> (<a class="reference external" href="https://hvac.readthedocs.io/en/stable/overview.html">Python library</a>)</p></li>
@@ -161,7 +162,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </ul>
 </section>
 <section id="parameters">
-<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h2>
 <table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
@@ -176,7 +177,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>Authentication method to be used.</p>
 <p><code class="docutils literal notranslate"><span class="pre">none</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.2.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cert</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.4.0</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code>. The old name will be removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> and was removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
@@ -184,7 +185,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
 <li><p><span class="ansible-option-choices-entry">approle</span></p></li>
 <li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
-<li><p><span class="ansible-option-choices-entry">aws_iam_login</span></p></li>
 <li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
 <li><p><span class="ansible-option-choices-entry">cert</span></p></li>
 <li><p><span class="ansible-option-choices-entry">kubernetes</span></p></li>
@@ -478,7 +478,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </table>
 </section>
 <section id="notes">
-<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
@@ -490,7 +490,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="see-also">
-<h2><a class="toc-backref" href="#id5">See Also</a><a class="headerlink" href="#see-also" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id5">See Also</a><a class="headerlink" href="#see-also" title="Permalink to this heading"></a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -504,7 +504,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="examples">
-<h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write a value to the cubbyhole via the remote host with userpass auth</span><span class="w"></span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_write</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
@@ -550,7 +550,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div>
 </section>
 <section id="return-values">
-<h2><a class="toc-backref" href="#id7">Return Values</a><a class="headerlink" href="#return-values" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id7">Return Values</a><a class="headerlink" href="#return-values" title="Permalink to this heading"></a></h2>
 <p>Common return values are documented <a class="reference external" href="https://docs.ansible.com/ansible/devel/reference_appendices/common_return_values.html#common-return-values" title="(in Ansible vdevel)"><span class="xref std std-ref">here</span></a>, the following are the fields unique to this module:</p>
 <table class="colwidths-auto ansible-option-table docutils align-default" style="width: 100%">
 <thead>
@@ -570,13 +570,13 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tbody>
 </table>
 <section id="authors">
-<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline"></a></h3>
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Brian Scholer (&#64;briantist)</p></li>
 </ul>
 </section>
 <section id="collection-links">
-<h3>Collection links<a class="headerlink" href="#collection-links" title="Permalink to this headline"></a></h3>
+<h3>Collection links<a class="headerlink" href="#collection-links" title="Permalink to this heading"></a></h3>
 <p class="ansible-links">
   <a href="https://github.com/ansible-collections/community.hashi_vault/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
   <a href="https://github.com/ansible-collections/community.hashi_vault" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
