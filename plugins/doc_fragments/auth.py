@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: (c) 2021, Brian Scholer (@briantist)
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -16,14 +17,13 @@ class ModuleDocFragment(object):
           - Authentication method to be used.
           - C(none) auth method was added in collection version C(1.2.0).
           - C(cert) auth method was added in collection version C(1.4.0).
-          - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0). The old name will be removed in C(3.0.0).
+          - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0) and was removed in C(3.0.0).
         choices:
           - token
           - userpass
           - ldap
           - approle
           - aws_iam
-          - aws_iam_login
           - jwt
           - cert
           - kubernetes

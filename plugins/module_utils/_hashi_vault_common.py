@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2021 Brian Scholer (@briantist)
-# Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
+# Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
+# SPDX-License-Identifier: BSD-2-Clause
 
 '''Python versions supported: >=3.6'''
 
@@ -24,17 +25,55 @@ except ImportError:
     HAS_HVAC = False
 
 
+def _stringify(input):
+    '''
+    This method is primarily used to Un-Unsafe values that come from Ansible.
+    We want to remove the Unsafe context so that libraries don't get confused
+    by the values.
+    '''
+
+    # Since this is a module_util, and will be used by both plugins and modules,
+    # we cannot import the AnsibleUnsafe* types, because they are controller-only.
+    # However, they subclass the native types, so we can check for that.
+
+    # bytes is the only consistent type to check against in both py2 and py3
+    if isinstance(input, bytes):
+        # seems redundant, but this will give us a regular bytes object even
+        # when the input is AnsibleUnsafeBytes
+        return bytes(input)
+    else:
+        # instead of checking for py2 vs. py3 to cast to str or unicode,
+        # let's get the type from the literal.
+        return type(u'')(input)
+
+
 class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
 
 class HashiVaultHelper():
 
+    STRINGIFY_CANDIDATES = set(
+        'token',    # Token will end up in a header, requests requires headers to be str or bytes,
+                    # and newer versions of requests stopped converting automatically. Because our
+                    # token could have been passed in from a previous lookup call, it could be one
+                    # of the AnsibleUnsafe types instead, causing a failure. Tokens should always
+                    # be strings, so we will convert them.
+    )
+
     def __init__(self):
         # TODO move hvac checking here?
         pass
 
-    def get_vault_client(self, hashi_vault_logout_inferred_token=True, hashi_vault_revoke_on_logout=False, **kwargs):
+    @staticmethod
+    def _stringify(input):
+        return _stringify(input)
+
+    def get_vault_client(
+        self,
+        hashi_vault_logout_inferred_token=True, hashi_vault_revoke_on_logout=False, hashi_vault_stringify_args=True,
+        **kwargs
+    ):
         '''
         creates a Vault client with the given kwargs
 
@@ -44,7 +83,15 @@ class HashiVaultHelper():
 
         :param hashi_vault_revoke_on_logout: if True revokes any current token on logout. Only used if a logout is performed. Not recommended.
         :type hashi_vault_revoke_on_logout: bool
+
+        :param hashi_vault_stringify_args: if True converts a specific set of defined kwargs to a string type.
+        :type hashi_vault_stringify_args: bool
         '''
+
+        if hashi_vault_stringify_args:
+            for key in kwargs.keys():
+                if key in self.STRINGIFY_CANDIDATES:
+                    kwargs[key] = self._stringify(kwargs[key])
 
         client = hvac.Client(**kwargs)
 
@@ -248,3 +295,7 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
 
     def deprecate(self, message, version=None, date=None, collection_name=None):
         self._deprecator(message, version=version, date=date, collection_name=collection_name)
+
+    @staticmethod
+    def _stringify(input):
+        return _stringify(input)

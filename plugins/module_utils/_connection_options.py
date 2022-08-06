@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2021 Brian Scholer (@briantist)
-# Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
+# Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
+# SPDX-License-Identifier: BSD-2-Clause
 
 '''Python versions supported: >=3.6'''
 
@@ -73,9 +74,11 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         'status_forcelist': [
             # https://www.vaultproject.io/api#http-status-codes
             # 429 is usually a "too many requests" status, but in Vault it's the default health status response for standby nodes.
-            500,  # Internal server error. An internal error has occurred, try again later. If the error persists, report a bug.
-            502,  # A request to Vault required Vault making a request to a third party; the third party responded with an error of some kind.
-            503,  # Vault is down for maintenance or is currently sealed. Try again later.
+            412,    # Precondition failed. Returned on Enterprise when a request can't be processed yet due to some missing eventually consistent data.
+                    # Should be retried, perhaps with a little backoff.
+            500,    # Internal server error. An internal error has occurred, try again later. If the error persists, report a bug.
+            502,    # A request to Vault required Vault making a request to a third party; the third party responded with an error of some kind.
+            503,    # Vault is down for maintenance or is currently sealed. Try again later.
         ],
         (
             # this field name changed in 1.26.0, and in the interest of supporting a wider range of urllib3 versions

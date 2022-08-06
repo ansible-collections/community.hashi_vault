@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2021 Brian Scholer (@briantist)
-# Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
+# Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
+# SPDX-License-Identifier: BSD-2-Clause
 
 '''Python versions supported: >=3.6'''
 
@@ -88,7 +89,7 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
             raise HashiVaultValueError("No Vault Token specified or discovered.")
 
     def authenticate(self, client, use_token=True, lookup_self=False):
-        token = self._options.get_option('token')
+        token = self._stringify(self._options.get_option('token'))
         validate = self._options.get_option_default('token_validate')
 
         response = None

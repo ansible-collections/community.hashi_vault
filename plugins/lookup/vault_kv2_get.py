@@ -1,5 +1,6 @@
 # (c) 2022, Brian Scholer (@briantist)
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -40,7 +41,10 @@ options:
     type: str
     required: True
   engine_mount_point:
-    default: kv
+    description:
+      - The path where the secret backend is mounted.
+      - The default value is C(kv).
+      - The default value will change to C(secret) in version 4.0.0 to match the module's default.
   version:
     description: Specifies the version to return. If not set the latest version is returned.
     type: int
@@ -50,7 +54,8 @@ EXAMPLES = r'''
 - name: Read a kv2 secret with the default mount point
   ansible.builtin.set_fact:
     response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'hello', url='https://vault:8201') }}"
-  # equivalent API path is secret/data/hello
+  # equivalent API path in 3.x.x is kv/data/hello
+  # equivalent API path in 4.0.0+ will be secret/data/hello
 
 - name: Display the results
   ansible.builtin.debug:
@@ -95,6 +100,7 @@ EXAMPLES = r'''
     ansible_hashi_vault_auth_method: userpass
     ansible_hashi_vault_username: '{{ user }}'
     ansible_hashi_vault_password: '{{ pwd }}'
+    ansible_hashi_vault_engine_mount_point: special/kv2
   ansible.builtin.debug:
     msg: '{{ item.values() | list }}'
   with_community.hashi_vault.vault_kv2_get:
@@ -201,8 +207,15 @@ class LookupModule(HashiVaultLookupBase):
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
 
-        engine_mount_point = self._options_adapter.get_option('engine_mount_point')
         version = self._options_adapter.get_option_default('version')
+        engine_mount_point = self._options_adapter.get_option_default('engine_mount_point')
+        if engine_mount_point is None:
+            engine_mount_point = 'kv'
+            display.deprecated(
+                "The default value for 'engine_mount_point' will change from 'kv' to 'secret'.",
+                version='4.0.0',
+                collection_name='community.hashi_vault'
+            )
 
         try:
             self.authenticator.validate()

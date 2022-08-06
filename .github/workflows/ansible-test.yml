@@ -37,8 +37,6 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
-          - stable-2.10
           - stable-2.11
           - stable-2.12
           - stable-2.13
@@ -67,9 +65,9 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
-      # Install the head of the given branch (devel, stable-2.10)
+      # Install the head of the given branch (devel, stable-2.13)
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
@@ -115,8 +113,6 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
-          - stable-2.10
           - stable-2.11
           - stable-2.12
           - stable-2.13
@@ -143,7 +139,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -191,8 +187,6 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.9
-          - stable-2.10
           - stable-2.11
           - stable-2.12
           - stable-2.13
@@ -204,14 +198,14 @@ jobs:
           - '3.9'
           - '3.10'
         exclude:
-          - ansible: stable-2.9
-            python: '3.9'
-          - ansible: stable-2.9
-            python: '3.10'
-          - ansible: 'stable-2.10'
-            python: '3.10'
           - ansible: 'stable-2.11'
             python: '3.10'
+          - ansible: 'devel'
+            python: '3.6'
+          - ansible: 'devel'
+            python: '3.7'
+          - ansible: 'devel'
+            python: '3.8'
 
     steps:
       - name: Initialize env vars
@@ -234,7 +228,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Get Vault versions
         id: vault_versions
@@ -312,13 +306,7 @@ jobs:
           - 3.9
         runner:
           - ubuntu-latest
-          - macos-10.15
-          # macos-11 will not support virtualbox, so we can't run docker
-          # when macos-10.15 support is dropped we will have to stop testing on it
-          # unless a solution for docker/virtualbox is found.
-          # See also:
-          # - https://github.com/actions/virtual-environments/issues/4060
-          # - https://github.com/actions/virtual-environments/pull/4010
+          - macos-12
         test_container:
           - default
         exclude:
@@ -326,7 +314,7 @@ jobs:
           # stable-2.13 test containers crash; unsure of exact cause
           # but likely due to old versions of the runtimes.
           # We'll just stick to 2.12 for now, better than nothing.
-          - runner: macos-10.15
+          - runner: macos-12
             ansible: stable-2.13
           - runner: ubuntu-latest
             ansible: stable-2.12
@@ -456,8 +444,6 @@ jobs:
       - name: Move Ansible pre-2.12 units
         run: |
           mkdir ./cov-units-pre2.12
-          mv ./cov/coverage=units=ansible_stable-2.9=data ./cov-units-pre2.12
-          mv ./cov/coverage=units=ansible_stable-2.10=data ./cov-units-pre2.12
           mv ./cov/coverage=units=ansible_stable-2.11=data ./cov-units-pre2.12
 
       - name: Upload Ansible pre-2.12 unit coverage reports to Codecov

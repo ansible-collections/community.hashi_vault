@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2021 Brian Scholer (@briantist)
-# Simplified BSD License (see licenses/simplified_bsd.txt or https://opensource.org/licenses/BSD-2-Clause)
+# Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
+# SPDX-License-Identifier: BSD-2-Clause
 
 '''Python versions supported: >=3.6'''
 
@@ -33,7 +34,6 @@ class HashiVaultAuthenticator():
             'ldap',
             'approle',
             'aws_iam',
-            'aws_iam_login',
             'jwt',
             'cert',
             'kubernetes',
@@ -86,15 +86,6 @@ class HashiVaultAuthenticator():
     def _get_method_object(self, method=None):
         if method is None:
             method = self._options.get_option('auth_method')
-
-        # TODO: remove in 3.0.0
-        if method == 'aws_iam_login':
-            method = 'aws_iam'
-            self.deprecate(
-                message="auth method 'aws_iam_login' is renamed to 'aws_iam'.",
-                version='3.0.0',
-                collection_name='community.hashi_vault'
-            )
 
         try:
             o_method = self._selector[method]

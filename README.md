@@ -9,15 +9,14 @@ Browsing the [**latest** collection documentation](https://docs.ansible.com/ansi
 
 Browsing the [**devel** collection documentation](https://docs.ansible.com/ansible/devel/collections/community/hashi_vault) shows docs for the _latest version released on Galaxy_.
 
-We also separately publish [**latest commit** collection documentation](https://community-hashi-vault-main.surge.sh) which shows docs for the _latest commit in the `main` branch_.
+We also separately publish [**latest commit** collection documentation](https://ansible-collections.github.io/community.hashi_vault/branch/main/) which shows docs for the _latest commit in the `main` branch_.
 
 If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **latest commit**.
 ## Tested with Ansible
 
-* 2.9
-* 2.10
 * 2.11
 * 2.12
+* 2.13
 * devel (latest development commit)
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
@@ -124,3 +123,5 @@ See the [changelog](https://github.com/ansible-collections/community.hashi_vault
 GNU General Public License v3.0 or later.
 
 See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
+
+Parts of the collection are licensed under the [BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause) license.

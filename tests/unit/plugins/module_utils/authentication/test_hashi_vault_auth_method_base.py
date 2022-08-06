@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2021 Brian Scholer (@briantist)
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -13,6 +14,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
     HashiVaultAuthMethodBase,
     HashiVaultOptionGroupBase,
     HashiVaultValueError,
+    _stringify,
 )
 
 
@@ -73,3 +75,12 @@ class TestHashiVaultAuthMethodBase(object):
         auth_base.deprecate(msg, version, date, collection_name)
 
         deprecator.assert_called_once_with(msg, version=version, date=date, collection_name=collection_name)
+
+    def test_has_stringify(self, auth_base):
+        v = 'X'
+        wrapper = mock.Mock(wraps=_stringify)
+        with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common._stringify', wrapper):
+            r = auth_base._stringify(v)
+
+        wrapper.assert_called_once_with(v)
+        assert r == v
