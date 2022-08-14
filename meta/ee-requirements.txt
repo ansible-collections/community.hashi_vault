@@ -5,3 +5,5 @@ urllib3 >= 1.15
 
 boto3       # these are only needed if inferring AWS credentials or
 botocore    # using a boto profile; including for completeness
+
+azure-identity

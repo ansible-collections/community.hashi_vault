@@ -24,6 +24,7 @@ class ModuleDocFragment(object):
           - ldap
           - approle
           - aws_iam
+          - azure
           - jwt
           - cert
           - none
@@ -64,7 +65,7 @@ class ModuleDocFragment(object):
         type: str
       role_id:
         description:
-          - Vault Role ID or name. Used in C(approle), C(aws_iam), and C(cert) auth methods.
+          - Vault Role ID or name. Used in C(approle), C(aws_iam), C(azure) and C(cert) auth methods.
           - For C(cert) auth, if no I(role_id) is supplied, the default behavior is to try all certificate roles and return any one that matches.
         type: str
       secret_id:
@@ -96,6 +97,28 @@ class ModuleDocFragment(object):
         required: False
         type: str
         version_added: '0.2.0'
+      azure_tenant_id:
+        description:
+          - The azure tenant id of the service principal, also known as directory id of the active directory, should be a uuid.
+          - Required when using service principal to authenticate to vault, e.g. required when both C(azure_client_id) and C(azure_client_secret) are specified.
+          - Optional when using managed identity to authenticate to vault.
+        required: False
+        type: str
+      azure_client_id:
+        description:
+          - The azure client id of the service principal or the managed identity, also known as application id, should be a uuid.
+          - If not specified, will use the system assigned managed identity.
+        required: False
+        type: str
+      azure_client_secret:
+        description: The azure client secret of the service principal.
+        required: False
+        type: str
+      azure_resource:
+        description: The resource URL for the application registered in Azure Active Directory, usually should be https://management.azure.com/.
+        required: False
+        type: str
+        default: https://management.azure.com/
       cert_auth_public_key:
         description: For C(cert) auth, path to the certificate file to authenticate with, in PEM format.
         type: path

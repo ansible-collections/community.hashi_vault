@@ -17,6 +17,7 @@ __metaclass__ = type
 # please keep this list in alphabetical order of auth method name
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_approle import HashiVaultAuthMethodApprole
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_aws_iam import HashiVaultAuthMethodAwsIam
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_azure import HashiVaultAuthMethodAzure
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_cert import HashiVaultAuthMethodCert
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_jwt import HashiVaultAuthMethodJwt
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_ldap import HashiVaultAuthMethodLdap
@@ -33,6 +34,7 @@ class HashiVaultAuthenticator():
             'ldap',
             'approle',
             'aws_iam',
+            'azure',
             'jwt',
             'cert',
             'none',
@@ -54,6 +56,10 @@ class HashiVaultAuthenticator():
         aws_security_token=dict(type='str', no_log=False),
         region=dict(type='str'),
         aws_iam_server_id=dict(type='str'),
+        azure_tenant_id=dict(type='str'),
+        azure_client_id=dict(type='str'),
+        azure_client_secret=dict(type='str', no_log=True),
+        azure_resource=dict(type='str', default='https://management.azure.com/'),
         cert_auth_private_key=dict(type='path', no_log=False),
         cert_auth_public_key=dict(type='path'),
     )
@@ -65,6 +71,7 @@ class HashiVaultAuthenticator():
             # so that it's easier to scan and see at a glance that a given auth method is present or absent
             'approle': HashiVaultAuthMethodApprole(option_adapter, warning_callback, deprecate_callback),
             'aws_iam': HashiVaultAuthMethodAwsIam(option_adapter, warning_callback, deprecate_callback),
+            'azure': HashiVaultAuthMethodAzure(option_adapter, warning_callback, deprecate_callback),
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback, deprecate_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback, deprecate_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback, deprecate_callback),
