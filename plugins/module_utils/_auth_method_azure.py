@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021 Brian Scholer (@briantist)
+# Copyright (c) 2022 Junrui Chen (@jchenship)
 # Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
 # SPDX-License-Identifier: BSD-2-Clause
 
@@ -54,7 +54,7 @@ class HashiVaultAuthMethodAzure(HashiVaultAuthMethodBase):
             azure_client_secret = self._options.get_option_default('azure_client_secret')
             # this logic is from this function https://github.com/Azure/azure-cli/blob/azure-cli-2.39.0/src/azure-cli-core/azure/cli/core/auth/util.py#L72
             # the reason we expose resource instead of scope is resource is more aligned with the vault azure auth config here https://www.vaultproject.io/api-docs/auth/azure#resource
-            azure_scope = self._options.get_option_default('azure_resource') + "/.default"
+            azure_scope = self._options.get_option_default('azure_resource', 'https://management.azure.com/') + "/.default"
 
             try:
                 import azure.identity
@@ -75,9 +75,9 @@ class HashiVaultAuthMethodAzure(HashiVaultAuthMethodBase):
 
             params['jwt'] = azure_credentials.get_token(azure_scope).token
 
-        self._auth_azure_params = params
+        self._auth_azure_login_params = params
 
     def authenticate(self, client, use_token=True):
-        params = self._auth_azure_params
+        params = self._auth_azure_login_params
         response = client.auth.azure.login(use_token=use_token, **params)
         return response

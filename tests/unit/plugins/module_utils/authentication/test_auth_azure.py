@@ -107,11 +107,11 @@ class TestAuthAzure(object):
 
         with mock.patch('azure.identity.ClientSecretCredential') as mocked_credential_class:
             credential = mocked_credential_class.return_value
-            credential.get_token.return_value = jwt
+            credential.get_token.return_value.token = jwt
             auth_azure.validate()
 
             assert mocked_credential_class.called_once_with(azure_tenant_id, azure_client_id, azure_client_secret)
-            assert credential.get_token.called_once_with('https://management.azure.com/')
+            assert credential.get_token.called_once_with('https://management.azure.com//.default')
 
         params = auth_azure._auth_azure_login_params
         assert params['jwt'] == jwt
@@ -132,11 +132,11 @@ class TestAuthAzure(object):
 
         with mock.patch('azure.identity.ManagedIdentityCredential') as mocked_credential_class:
             credential = mocked_credential_class.return_value
-            credential.get_token.return_value = jwt
+            credential.get_token.return_value.token = jwt
             auth_azure.validate()
 
             assert mocked_credential_class.called_once_with(azure_client_id)
-            assert credential.get_token.called_once_with('https://management.azure.com/')
+            assert credential.get_token.called_once_with('https://management.azure.com//.default')
 
         params = auth_azure._auth_azure_login_params
         assert params['jwt'] == jwt
@@ -146,11 +146,11 @@ class TestAuthAzure(object):
 
         with mock.patch('azure.identity.ManagedIdentityCredential') as mocked_credential_class:
             credential = mocked_credential_class.return_value
-            credential.get_token.return_value = jwt
+            credential.get_token.return_value.token = jwt
             auth_azure.validate()
 
             assert mocked_credential_class.called_once_with()
-            assert credential.get_token.called_once_with('https://management.azure.com/')
+            assert credential.get_token.called_once_with('https://management.azure.com//.default')
 
         params = auth_azure._auth_azure_login_params
         assert params['jwt'] == jwt
