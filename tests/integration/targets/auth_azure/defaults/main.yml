@@ -1,0 +1,7 @@
+---
+ansible_hashi_vault_url: '{{ vault_mmock_server_http }}'
+ansible_hashi_vault_auth_method: azure
+
+auth_paths:
+  - azure
+  - azure-alt
