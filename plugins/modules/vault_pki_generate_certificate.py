@@ -206,10 +206,12 @@ HAS_HVAC = False
 try:
     import hvac
     from hvac.api.secrets_engines.pki import DEFAULT_MOUNT_POINT
-    HAS_HVAC = True
 except ImportError:
     HVAC_IMPORT_ERROR = traceback.format_exc()
     HAS_HVAC = False
+else:
+    HVAC_IMPORT_ERROR = None
+    HAS_HVAC = True
 
 
 def run_module():
