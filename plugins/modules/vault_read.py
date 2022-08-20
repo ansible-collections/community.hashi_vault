@@ -79,6 +79,7 @@ except ImportError:
     HAS_HVAC = False
     HVAC_IMPORT_ERROR = traceback.format_exc()
 else:
+    HVAC_IMPORT_ERROR = None
     HAS_HVAC = True
 
 
