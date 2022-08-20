@@ -26,6 +26,7 @@ class ModuleDocFragment(object):
           - aws_iam
           - jwt
           - cert
+          - kubernetes
           - none
         default: token
         type: str
@@ -73,6 +74,15 @@ class ModuleDocFragment(object):
       jwt:
         description: The JSON Web Token (JWT) to use for JWT authentication to Vault.
         type: str
+      kubernetes_token:
+        description: The Kubernetes Token (JWT) to use for Kubernetes authentication to Vault.
+        type: str
+        version_added: 2.5.0
+      kubernetes_token_path:
+        description: If no kubernetes_token is specified, will try to read the token from this path.
+        default: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+        type: str
+        version_added: 2.5.0
       aws_profile:
         description: The AWS profile
         type: str
@@ -246,4 +256,17 @@ class ModuleDocFragment(object):
         ini:
           - section: hashi_vault_collection
             key: cert_auth_private_key
+      kubernetes_token:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_KUBERNETES_TOKEN
+        vars:
+          - name: ansible_hashi_vault_kubernetes_token
+      kubernetes_token_path:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_KUBERNETES_TOKEN_PATH
+        ini:
+          - section: hashi_vault_collection
+            key: kubernetes_token_path
+        vars:
+          - name: ansible_hashi_vault_kubernetes_token_path
     '''
