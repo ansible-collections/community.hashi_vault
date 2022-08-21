@@ -261,6 +261,35 @@ class ModuleDocFragment(object):
           - section: hashi_vault_collection
             key: aws_iam_server_id
             version_added: 1.4.0
+      azure_tenant_id:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_TENANT_ID
+        ini:
+          - section: hashi_vault_collection
+            key: azure_tenant_id
+        vars:
+          - name: ansible_hashi_vault_azure_tenant_id
+      azure_client_id:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_ID
+        ini:
+          - section: hashi_vault_collection
+            key: azure_client_id
+        vars:
+          - name: ansible_hashi_vault_azure_client_id
+      azure_client_secret:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_SECRET
+        vars:
+          - name: ansible_hashi_vault_azure_client_secret
+      azure_resource:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_RESOURCE
+        ini:
+          - section: hashi_vault_collection
+            key: azure_resource
+        vars:
+          - name: ansible_hashi_vault_azure_resource
       cert_auth_public_key:
         env:
           - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PUBLIC_KEY
