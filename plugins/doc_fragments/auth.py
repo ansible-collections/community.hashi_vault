@@ -100,25 +100,25 @@ class ModuleDocFragment(object):
       azure_tenant_id:
         description:
           - The azure tenant id of the service principal, also known as directory id of the active directory, should be a uuid.
-          - Required when using service principal to authenticate to vault, e.g. required when both C(azure_client_id) and C(azure_client_secret) are specified.
-          - Optional when using managed identity to authenticate to vault.
+          - Required when using a service principal to authenticate to Vault, e.g. required when both I(azure_client_id) and I(azure_client_secret) are specified.
+          - Optional when using managed identity to authenticate to Vault.
         required: False
         type: str
         version_added: '3.2.0'
       azure_client_id:
         description:
-          - The azure client id of the service principal or the managed identity, also known as application id, should be a uuid.
+          - The client ID (also known as application ID) of the Azure AD service principal or managed identity. Should be a UUID.
           - If not specified, will use the system assigned managed identity.
         required: False
         type: str
         version_added: '3.2.0'
       azure_client_secret:
-        description: The azure client secret of the service principal.
+        description: The client secret of the Azure AD service principal.
         required: False
         type: str
         version_added: '3.2.0'
       azure_resource:
-        description: The resource URL for the application registered in Azure Active Directory, usually should be https://management.azure.com/.
+        description: The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.
         required: False
         type: str
         default: https://management.azure.com/

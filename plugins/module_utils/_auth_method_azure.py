@@ -21,7 +21,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 
 class HashiVaultAuthMethodAzure(HashiVaultAuthMethodBase):
-    '''HashiVault auth emthod for azure'''
+    '''HashiVault auth method for Azure'''
 
     NAME = 'azure'
     OPTIONS = [
