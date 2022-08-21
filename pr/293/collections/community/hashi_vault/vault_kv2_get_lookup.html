@@ -197,6 +197,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">none</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.2.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cert</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.4.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> and was removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
@@ -310,6 +311,17 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>The client ID (also known as application ID) of the Azure AD service principal or managed identity. Should be a UUID.</p>
 <p>If not specified, will use the system assigned managed identity.</p>
+<p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
+<ul>
+<li><p>INI entry:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">azure_client_id = None</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>Environment variable: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_ID</p></li>
+<li><p>Variable: ansible_hashi_vault_azure_client_id</p></li>
+</ul>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -318,6 +330,11 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The client secret of the Azure AD service principal.</p>
+<p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
+<ul class="simple">
+<li><p>Environment variable: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_SECRET</p></li>
+<li><p>Variable: ansible_hashi_vault_azure_client_secret</p></li>
+</ul>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -327,6 +344,17 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“https://management.azure.com/”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
+<ul>
+<li><p>INI entry:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">azure_resource = https://management.azure.com/</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>Environment variable: ANSIBLE_HASHI_VAULT_AZURE_RESOURCE</p></li>
+<li><p>Variable: ansible_hashi_vault_azure_resource</p></li>
+</ul>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -337,6 +365,17 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>The azure tenant id of the service principal, also known as directory id of the active directory, should be a uuid.</p>
 <p>Required when using a service principal to authenticate to Vault, e.g. required when both <em>azure_client_id</em> and <em>azure_client_secret</em> are specified.</p>
 <p>Optional when using managed identity to authenticate to Vault.</p>
+<p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
+<ul>
+<li><p>INI entry:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">azure_tenant_id = None</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>Environment variable: ANSIBLE_HASHI_VAULT_AZURE_TENANT_ID</p></li>
+<li><p>Variable: ansible_hashi_vault_azure_tenant_id</p></li>
+</ul>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -589,6 +628,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>Vault Role ID or name. Used in <code class="docutils literal notranslate"><span class="pre">approle</span></code>, <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code>, <code class="docutils literal notranslate"><span class="pre">azure</span></code> and <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth methods.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, if no <em>role_id</em> is supplied, the default behavior is to try all certificate roles and return any one that matches.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth, <em>role_id</em> is required.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
 <li><p>INI entry:</p>

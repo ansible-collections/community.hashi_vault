@@ -176,6 +176,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">none</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.2.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cert</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.4.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> and was removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
@@ -388,6 +389,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>Vault Role ID or name. Used in <code class="docutils literal notranslate"><span class="pre">approle</span></code>, <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code>, <code class="docutils literal notranslate"><span class="pre">azure</span></code> and <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth methods.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, if no <em>role_id</em> is supplied, the default behavior is to try all certificate roles and return any one that matches.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth, <em>role_id</em> is required.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
