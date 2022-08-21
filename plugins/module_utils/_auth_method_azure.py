@@ -41,36 +41,33 @@ class HashiVaultAuthMethodAzure(HashiVaultAuthMethodBase):
 
     def validate(self):
         params = {
-            'role': self._options.get_option_default('role_id')
+            'role': self._options.get_option_default('role_id'),
+            'jwt': self._options.get_option_default('jwt'),
         }
         if not params['role']:
             raise HashiVaultValueError(
                 'role_id is required for azure authentication.'
             )
 
-        if self._options.get_option_default('jwt'):
-            params['jwt'] = self._options.get_option_default('jwt')
         # if mount_point is not provided, it will use the default value defined
         # in hvac library (e.g. `azure`)
-        if self._options.get_option_default('mount_point'):
-            params['mount_point'] = self._options.get_option_default('mount_point')
+        mount_point = self._options.get_option_default('mount_point')
+        if mount_point:
+            params['mount_point'] = mount_point
 
         # if jwt exists, use provided jwt directly, otherwise trying to get jwt
         # from azure service principal or managed identity
-        if not params.get('jwt'):
+        if not params['jwt']:
             azure_tenant_id = self._options.get_option_default('azure_tenant_id')
             azure_client_id = self._options.get_option_default('azure_client_id')
-            azure_client_secret = self._options.get_option_default(
-                'azure_client_secret'
-            )
+            azure_client_secret = self._options.get_option_default('azure_client_secret')
+
             # the logic of getting azure scope is from this function
             # https://github.com/Azure/azure-cli/blob/azure-cli-2.39.0/src/azure-cli-core/azure/cli/core/auth/util.py#L72
             # the reason we expose resource instead of scope is resource is
             # more aligned with the vault azure auth config here
             # https://www.vaultproject.io/api-docs/auth/azure#resource
-            azure_resource = self._options.get_option_default(
-                'azure_resource', 'https://management.azure.com/'
-            )
+            azure_resource = self._options.get_option('azure_resource')
             azure_scope = azure_resource + "/.default"
 
             try:

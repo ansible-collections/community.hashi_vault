@@ -21,8 +21,17 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 
 @pytest.fixture
-def role_id():
-    return 'vault-role'
+def option_dict():
+    return {
+        'auth_method': 'azure',
+        'role_id': 'vault-role',
+        'mount_point': None,
+        'jwt': None,
+        'azure_tenant_id': None,
+        'azure_client_id': None,
+        'azure_client_secret': None,
+        'azure_resource': 'https://management.azure.com/',
+    }
 
 
 @pytest.fixture
@@ -61,10 +70,13 @@ class TestAuthAzure(object):
         assert issubclass(HashiVaultAuthMethodAzure, HashiVaultAuthMethodBase)
 
     def test_auth_azure_validate_role_id(self, auth_azure, adapter):
+        adapter.set_options(role_id=None)
         with pytest.raises(HashiVaultValueError, match=r'^role_id is required for azure authentication\.$'):
             auth_azure.validate()
 
     @pytest.mark.parametrize('mount_point', [None, 'other'], ids=lambda x: 'mount_point=%s' % x)
+    @pytest.mark.parametrize('role_id', ['role1', 'role2'], ids=lambda x: 'role_id=%s' % x)
+    @pytest.mark.parametrize('jwt', ['jwt1', 'jwt2'], ids=lambda x: 'jwt=%s' % x)
     def test_auth_azure_validate_use_jwt(
         self, auth_azure, adapter, role_id, mount_point, jwt
     ):
@@ -78,8 +90,8 @@ class TestAuthAzure(object):
 
         params = auth_azure._auth_azure_login_params
 
-        assert (role_id is None and 'role' not in params) or params['role'] == role_id
         assert (mount_point is None and 'mount_point' not in params) or params['mount_point'] == mount_point
+        assert params['role'] == role_id
         assert params['jwt'] == jwt
 
     @pytest.mark.parametrize('mount_point', [None, 'other'], ids=lambda x: 'mount_point=%s' % x)
@@ -89,14 +101,12 @@ class TestAuthAzure(object):
         auth_azure,
         client,
         adapter,
-        role_id,
         mount_point,
         jwt,
         use_token,
         azure_login_response,
     ):
         adapter.set_options(
-            role_id=role_id,
             mount_point=mount_point,
             jwt=jwt,
         )
@@ -117,27 +127,29 @@ class TestAuthAzure(object):
         )
 
     def test_auth_azure_validate_use_identity_no_azure_identity_lib(
-        self, auth_azure, mock_import_error, adapter, role_id
+        self, auth_azure, mock_import_error, adapter
     ):
-        adapter.set_options(role_id=role_id)
+        adapter.set_options()
         with mock_import_error('azure.identity'):
             with pytest.raises(
                 HashiVaultValueError, match=r'azure-identity is required'
             ):
                 auth_azure.validate()
 
+    @pytest.mark.parametrize('azure_tenant_id', ['tenant1', 'tenant2'], ids=lambda x: 'azure_tenant_id=%s' % x)
+    @pytest.mark.parametrize('azure_client_id', ['client1', 'client2'], ids=lambda x: 'azure_client_id=%s' % x)
+    @pytest.mark.parametrize('azure_client_secret', ['secret1', 'secret2'], ids=lambda x: 'azure_client_secret=%s' % x)
+    @pytest.mark.parametrize('jwt', ['jwt1', 'jwt2'], ids=lambda x: 'jwt=%s' % x)
     def test_auth_azure_validate_use_service_principal(
         self,
         auth_azure,
         adapter,
         jwt,
-        role_id,
         azure_tenant_id,
         azure_client_id,
         azure_client_secret,
     ):
         adapter.set_options(
-            role_id=role_id,
             azure_tenant_id=azure_tenant_id,
             azure_client_id=azure_client_id,
             azure_client_secret=azure_client_secret,
@@ -161,10 +173,9 @@ class TestAuthAzure(object):
         assert params['jwt'] == jwt
 
     def test_auth_azure_validate_use_service_principal_no_tenant_id(
-        self, auth_azure, adapter, role_id, azure_client_id, azure_client_secret
+        self, auth_azure, adapter, azure_client_id, azure_client_secret
     ):
         adapter.set_options(
-            role_id=role_id,
             azure_client_id=azure_client_id,
             azure_client_secret=azure_client_secret,
         )
@@ -172,11 +183,12 @@ class TestAuthAzure(object):
         with pytest.raises(HashiVaultValueError, match='azure_tenant_id is required'):
             auth_azure.validate()
 
+    @pytest.mark.parametrize('azure_client_id', ['client1', 'client2'], ids=lambda x: 'azure_client_id=%s' % x)
+    @pytest.mark.parametrize('jwt', ['jwt1', 'jwt2'], ids=lambda x: 'jwt=%s' % x)
     def test_auth_azure_validate_use_user_managed_identity(
-        self, auth_azure, adapter, role_id, jwt, azure_client_id
+        self, auth_azure, adapter, jwt, azure_client_id
     ):
         adapter.set_options(
-            role_id=role_id,
             azure_client_id=azure_client_id,
         )
 
@@ -195,10 +207,11 @@ class TestAuthAzure(object):
         params = auth_azure._auth_azure_login_params
         assert params['jwt'] == jwt
 
+    @pytest.mark.parametrize('jwt', ['jwt1', 'jwt2'], ids=lambda x: 'jwt=%s' % x)
     def test_auth_azure_validate_use_system_managed_identity(
-        self, auth_azure, adapter, role_id, jwt
+        self, auth_azure, adapter, jwt
     ):
-        adapter.set_options(role_id=role_id)
+        adapter.set_options()
 
         with mock.patch(
             'azure.identity.ManagedIdentityCredential'
