@@ -7,7 +7,6 @@
       auth_method: '{{ ansible_hashi_vault_auth_method }}'
       mount_point: '{{ omit if is_default_path else this_path }}'
       jwt: azure-jwt
-      role_id: not-important
   block:
     # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
     # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
@@ -15,6 +14,7 @@
     - name: Check auth mount differing result
       register: response
       vault_test_auth:
+        role_id: not-important
 
     - assert:
         fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
@@ -35,3 +35,16 @@
         that:
           - response.inner is failed
           - response.msg is search('expected audience .+ got .+')
+
+    - name: Failure expected when role_id is not given
+      register: response
+      vault_test_auth:
+        want_exception: yes
+
+    - assert:
+        fail_msg: |
+          Missing role_id did not cause an expected failure.
+          {{ response }}
+        that:
+          - response.inner is failed
+          - response.msg is search('^role_id is required for azure authentication\.$')

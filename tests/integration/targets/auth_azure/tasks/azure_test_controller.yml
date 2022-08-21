@@ -30,3 +30,15 @@
         that:
           - response is failed
           - response.msg is search('expected audience .+ got .+')
+
+    - name: Failure expected when role_id is not given
+      set_fact:
+        response: "{{ lookup('vault_test_auth', want_exception=true, **kwargs) }}"
+
+    - assert:
+        fail_msg: |
+          Missing role_id did not cause an expected failure.
+          {{ response }}
+        that:
+          - response is failed
+          - response.msg is search('^role_id is required for azure authentication\.$')

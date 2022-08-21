@@ -40,9 +40,14 @@ class HashiVaultAuthMethodAzure(HashiVaultAuthMethodBase):
         )
 
     def validate(self):
-        params = {}
-        if self._options.get_option_default('role_id'):
-            params['role'] = self._options.get_option_default('role_id')
+        params = {
+            'role': self._options.get_option_default('role_id')
+        }
+        if not params['role']:
+            raise HashiVaultValueError(
+                'role_id is required for azure authentication.'
+            )
+
         if self._options.get_option_default('jwt'):
             params['jwt'] = self._options.get_option_default('jwt')
         # if mount_point is not provided, it will use the default value defined
