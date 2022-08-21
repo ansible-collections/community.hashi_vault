@@ -104,21 +104,25 @@ class ModuleDocFragment(object):
           - Optional when using managed identity to authenticate to vault.
         required: False
         type: str
+        version_added: '3.2.0'
       azure_client_id:
         description:
           - The azure client id of the service principal or the managed identity, also known as application id, should be a uuid.
           - If not specified, will use the system assigned managed identity.
         required: False
         type: str
+        version_added: '3.2.0'
       azure_client_secret:
         description: The azure client secret of the service principal.
         required: False
         type: str
+        version_added: '3.2.0'
       azure_resource:
         description: The resource URL for the application registered in Azure Active Directory, usually should be https://management.azure.com/.
         required: False
         type: str
         default: https://management.azure.com/
+        version_added: '3.2.0'
       cert_auth_public_key:
         description: For C(cert) auth, path to the certificate file to authenticate with, in PEM format.
         type: path
