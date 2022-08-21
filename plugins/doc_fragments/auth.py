@@ -101,7 +101,7 @@ class ModuleDocFragment(object):
         version_added: '0.2.0'
       azure_tenant_id:
         description:
-          - The azure tenant id of the service principal, also known as directory id of the active directory, should be a uuid.
+          - The Azure Active Directory Tenant ID (also known as the Directory ID) of the service principal. Should be a UUID.
           - >-
             Required when using a service principal to authenticate to Vault,
             e.g. required when both I(azure_client_id) and I(azure_client_secret) are specified.
