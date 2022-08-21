@@ -35,11 +35,6 @@ def option_dict():
 
 
 @pytest.fixture
-def azure_tenant_id():
-    return 'tenant-id'
-
-
-@pytest.fixture
 def azure_client_id():
     return 'client-id'
 
