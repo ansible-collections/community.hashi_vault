@@ -18,6 +18,7 @@ class ModuleDocFragment(object):
           - C(none) auth method was added in collection version C(1.2.0).
           - C(cert) auth method was added in collection version C(1.4.0).
           - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0) and was removed in C(3.0.0).
+          - C(azure) auth method was added in collection version C(3.2.0).
         choices:
           - token
           - userpass
@@ -67,6 +68,7 @@ class ModuleDocFragment(object):
         description:
           - Vault Role ID or name. Used in C(approle), C(aws_iam), C(azure) and C(cert) auth methods.
           - For C(cert) auth, if no I(role_id) is supplied, the default behavior is to try all certificate roles and return any one that matches.
+          - For C(azure) auth, I(role_id) is required.
         type: str
       secret_id:
         description: Secret ID to be used for Vault AppRole authentication.
