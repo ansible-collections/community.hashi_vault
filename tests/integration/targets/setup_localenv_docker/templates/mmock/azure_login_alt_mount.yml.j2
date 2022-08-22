@@ -1,0 +1,46 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]'
+# Copyright (c) 2022 Junrui Chen (@jchenship)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+---
+request:
+  method: POST|PUT
+  path: "/v1/auth/azure-alt/login"
+control:
+  priority: 10
+response:
+  statusCode: 200
+  headers:
+    Content-Type:
+      - application/json
+  body: >-
+    {
+        "request_id": "{{fake.UUID}}",
+        "lease_id": "",
+        "lease_duration": 0,
+        "renewable": false,
+        "data": null,
+        "warnings": null,
+        "auth": {
+            "client_token": "s.{{fake.CharactersN(24)}}",
+            "accessor": "{{fake.CharactersN(24)}}",
+            "policies": [
+                "default",
+                "azure-alt-sample-policy"
+            ],
+            "token_policies": [
+                "default",
+                "azure-alt-sample-policy"
+            ],
+            "identity_policies": null,
+            "metadata": {
+                "role": "vault-role",
+                "resource_group_name": "",
+                "subscription_id": ""
+            },
+            "orphan": true,
+            "entity_id": "{{fake.UUID}}",
+            "lease_duration": 1800,
+            "renewable": true
+        }
+    }

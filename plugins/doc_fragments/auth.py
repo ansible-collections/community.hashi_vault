@@ -18,12 +18,14 @@ class ModuleDocFragment(object):
           - C(none) auth method was added in collection version C(1.2.0).
           - C(cert) auth method was added in collection version C(1.4.0).
           - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0) and was removed in C(3.0.0).
+          - C(azure) auth method was added in collection version C(3.2.0).
         choices:
           - token
           - userpass
           - ldap
           - approle
           - aws_iam
+          - azure
           - jwt
           - cert
           - none
@@ -64,8 +66,9 @@ class ModuleDocFragment(object):
         type: str
       role_id:
         description:
-          - Vault Role ID or name. Used in C(approle), C(aws_iam), and C(cert) auth methods.
+          - Vault Role ID or name. Used in C(approle), C(aws_iam), C(azure) and C(cert) auth methods.
           - For C(cert) auth, if no I(role_id) is supplied, the default behavior is to try all certificate roles and return any one that matches.
+          - For C(azure) auth, I(role_id) is required.
         type: str
       secret_id:
         description: Secret ID to be used for Vault AppRole authentication.
@@ -96,6 +99,34 @@ class ModuleDocFragment(object):
         required: False
         type: str
         version_added: '0.2.0'
+      azure_tenant_id:
+        description:
+          - The Azure Active Directory Tenant ID (also known as the Directory ID) of the service principal. Should be a UUID.
+          - >-
+            Required when using a service principal to authenticate to Vault,
+            e.g. required when both I(azure_client_id) and I(azure_client_secret) are specified.
+          - Optional when using managed identity to authenticate to Vault.
+        required: False
+        type: str
+        version_added: '3.2.0'
+      azure_client_id:
+        description:
+          - The client ID (also known as application ID) of the Azure AD service principal or managed identity. Should be a UUID.
+          - If not specified, will use the system assigned managed identity.
+        required: False
+        type: str
+        version_added: '3.2.0'
+      azure_client_secret:
+        description: The client secret of the Azure AD service principal.
+        required: False
+        type: str
+        version_added: '3.2.0'
+      azure_resource:
+        description: The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.
+        required: False
+        type: str
+        default: https://management.azure.com/
+        version_added: '3.2.0'
       cert_auth_public_key:
         description: For C(cert) auth, path to the certificate file to authenticate with, in PEM format.
         type: path
@@ -234,6 +265,35 @@ class ModuleDocFragment(object):
           - section: hashi_vault_collection
             key: aws_iam_server_id
             version_added: 1.4.0
+      azure_tenant_id:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_TENANT_ID
+        ini:
+          - section: hashi_vault_collection
+            key: azure_tenant_id
+        vars:
+          - name: ansible_hashi_vault_azure_tenant_id
+      azure_client_id:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_ID
+        ini:
+          - section: hashi_vault_collection
+            key: azure_client_id
+        vars:
+          - name: ansible_hashi_vault_azure_client_id
+      azure_client_secret:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_SECRET
+        vars:
+          - name: ansible_hashi_vault_azure_client_secret
+      azure_resource:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_AZURE_RESOURCE
+        ini:
+          - section: hashi_vault_collection
+            key: azure_resource
+        vars:
+          - name: ansible_hashi_vault_azure_resource
       cert_auth_public_key:
         env:
           - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PUBLIC_KEY

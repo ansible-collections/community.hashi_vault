@@ -1,0 +1,48 @@
+# Copyright (c) 2022 Junrui Chen (@jchenship)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+---
+- name: "Test block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+    kwargs_mount: "{{ {} if is_default_path else {'mount_point': this_path} }}"
+    kwargs_common:
+      jwt: azure-jwt
+    kwargs: "{{ kwargs_common | combine(kwargs_mount) }}"
+  block:
+    # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
+    # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
+    # is default, and success when the mount is alternate
+    - name: Check auth mount differing result
+      set_fact:
+        response: "{{ lookup('vault_test_auth', role_id='not-important', **kwargs) }}"
+
+    - assert:
+        fail_msg: "A token from mount path '{{ this_path }}' had the wrong policy: {{ response.login.auth.policies }}"
+        that:
+          - ('azure-sample-policy' in response.login.auth.policies) | bool == is_default_path
+          - ('azure-sample-policy' not in response.login.auth.policies) | bool != is_default_path
+          - ('azure-alt-sample-policy' in response.login.auth.policies) | bool != is_default_path
+          - ('azure-alt-sample-policy' not in response.login.auth.policies) | bool == is_default_path
+
+    - name: Failure expected when something goes wrong (simulated)
+      set_fact:
+        response: "{{ lookup('vault_test_auth', role_id='fail-me-role', want_exception=true, **kwargs) }}"
+
+    - assert:
+        fail_msg: "An invalid request somehow did not cause a failure."
+        that:
+          - response is failed
+          - response.msg is search('expected audience .+ got .+')
+
+    - name: Failure expected when role_id is not given
+      set_fact:
+        response: "{{ lookup('vault_test_auth', want_exception=true, **kwargs) }}"
+
+    - assert:
+        fail_msg: |
+          Missing role_id did not cause an expected failure.
+          {{ response }}
+        that:
+          - response is failed
+          - response.msg is search('^role_id is required for azure authentication\.$')

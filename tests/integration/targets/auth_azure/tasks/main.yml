@@ -1,0 +1,26 @@
+# Copyright (c) 2022 Junrui Chen (@jchenship)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+---
+# task vars are not templated when used as vars, so we'll need to set_fact this evaluate the template
+# see: https://github.com/ansible/ansible/issues/73268
+- name: Persist defaults
+  set_fact:
+    '{{ item.key }}': "{{ lookup('vars', item.key) }}"
+  loop: "{{ lookup('file', role_path ~ '/defaults/main.yml') | from_yaml | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+
+# there's no setup for this auth method because its API is mocked
+
+- name: Run azure tests
+  loop: '{{ auth_paths | product(["target", "controller"]) | list }}'
+  include_tasks:
+    file: azure_test_{{ item[1] }}.yml
+    apply:
+      vars:
+        default_path: azure
+        this_path: '{{ item[0] }}'
+      module_defaults:
+        assert:
+          quiet: yes
