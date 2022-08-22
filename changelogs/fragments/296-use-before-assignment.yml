@@ -1,3 +1,0 @@
----
-bugfixes:
-  - modules - fix a "variable used before assignment" that cannot be reached but causes sanity test failures (https://github.com/ansible-collections/community.hashi_vault/issues/296).

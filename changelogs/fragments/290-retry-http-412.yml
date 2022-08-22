@@ -1,3 +1,0 @@
----
-minor_changes:
-  - community.hashi_vault retries - `HTTP status code 412 <https://www.vaultproject.io/api-docs#412>`__ has been added to the default list of codes to be retried, for the new `Server Side Consistent Token feature <https://www.vaultproject.io/docs/faq/ssct#q-is-there-anything-else-i-need-to-consider-to-achieve-consistency-besides-upgrading-to-vault-1-10>`__ in Vault Enterprise (https://github.com/ansible-collections/community.hashi_vault/issues/290).

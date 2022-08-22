@@ -5,6 +5,26 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v3.2.0
+======
+
+Release Summary
+---------------
+
+This release brings support for the ``azure`` auth method, adds ``412`` to the default list of HTTP status codes to be retried, and fixes a bug that causes failures in token auth with ``requests>=2.28.0``.
+
+Minor Changes
+-------------
+
+- community.hashi_vault collection - add support for ``azure`` auth method, for Azure service principal, managed identity, or plain JWT access token (https://github.com/ansible-collections/community.hashi_vault/issues/293).
+- community.hashi_vault retries - `HTTP status code 412 <https://www.vaultproject.io/api-docs#412>`__ has been added to the default list of codes to be retried, for the new `Server Side Consistent Token feature <https://www.vaultproject.io/docs/faq/ssct#q-is-there-anything-else-i-need-to-consider-to-achieve-consistency-besides-upgrading-to-vault-1-10>`__ in Vault Enterprise (https://github.com/ansible-collections/community.hashi_vault/issues/290).
+
+Bugfixes
+--------
+
+- community.hashi_vault plugins - tokens will be cast to a string type before being sent to ``hvac`` to prevent errors in ``requests`` when values are ``AnsibleUnsafe`` (https://github.com/ansible-collections/community.hashi_vault/issues/289).
+- modules - fix a "variable used before assignment" that cannot be reached but causes sanity test failures (https://github.com/ansible-collections/community.hashi_vault/issues/296).
+
 v3.1.0
 ======
 
