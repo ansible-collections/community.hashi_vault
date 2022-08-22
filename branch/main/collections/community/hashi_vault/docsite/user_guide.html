@@ -143,7 +143,7 @@
 <h3><code class="docutils literal notranslate"><span class="pre">hvac</span></code> version specifics<a class="headerlink" href="#hvac-version-specifics" title="Permalink to this heading"></a></h3>
 <p>In general, we recommend using the latest version of <code class="docutils literal notranslate"><span class="pre">hvac</span></code> that is supported for your given Python version because that is what we test against. Where possible we will try to list version-specific restrictions here, but this list may not be exhaustive.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> 0.7.0+ (for namespace support)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> 0.7.0+ (for Azure auth and namespace support)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> 0.9.6+ (to avoid most deprecation warnings)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> 0.10.5+ (for JWT auth)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hvac</span></code> 0.10.6+ (to avoid deprecation warning for AppRole)</p></li>
@@ -154,6 +154,7 @@
 <h3>Other requirements<a class="headerlink" href="#other-requirements" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">boto3</span></code> (only if loading credentials from a boto session, for example using an AWS profile or IAM role credentials)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">azure-identity</span></code> (only if using a service principal or managed identity)</p></li>
 </ul>
 </section>
 </section>

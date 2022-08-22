@@ -177,6 +177,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">none</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.2.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cert</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.4.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> and was removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
@@ -184,6 +185,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
 <li><p><span class="ansible-option-choices-entry">approle</span></p></li>
 <li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
+<li><p><span class="ansible-option-choices-entry">azure</span></p></li>
 <li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
 <li><p><span class="ansible-option-choices-entry">cert</span></p></li>
 <li><p><span class="ansible-option-choices-entry">none</span></p></li>
@@ -230,6 +232,42 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-aws_security_token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The AWS security token if using temporary access and secret keys.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-azure_client_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-parameter-azure-client-id"><strong>azure_client_id</strong></p>
+<a class="ansibleOptionLink" href="#parameter-azure_client_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The client ID (also known as application ID) of the Azure AD service principal or managed identity. Should be a UUID.</p>
+<p>If not specified, will use the system assigned managed identity.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-azure_client_secret"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-parameter-azure-client-secret"><strong>azure_client_secret</strong></p>
+<a class="ansibleOptionLink" href="#parameter-azure_client_secret" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The client secret of the Azure AD service principal.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-azure_resource"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-parameter-azure-resource"><strong>azure_resource</strong></p>
+<a class="ansibleOptionLink" href="#parameter-azure_resource" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“https://management.azure.com/”</span></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-azure_tenant_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-parameter-azure-tenant-id"><strong>azure_tenant_id</strong></p>
+<a class="ansibleOptionLink" href="#parameter-azure_tenant_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The Azure Active Directory Tenant ID (also known as the Directory ID) of the service principal. Should be a UUID.</p>
+<p>Required when using a service principal to authenticate to Vault, e.g. required when both <em>azure_client_id</em> and <em>azure_client_secret</em> are specified.</p>
+<p>Optional when using managed identity to authenticate to Vault.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -464,8 +502,9 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="parameter-role_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-parameter-role-id"><strong>role_id</strong></p>
 <a class="ansibleOptionLink" href="#parameter-role_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Vault Role ID or name. Used in <code class="docutils literal notranslate"><span class="pre">approle</span></code>, <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code>, and <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth methods.</p>
+<td><div class="ansible-option-cell"><p>Vault Role ID or name. Used in <code class="docutils literal notranslate"><span class="pre">approle</span></code>, <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code>, <code class="docutils literal notranslate"><span class="pre">azure</span></code> and <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth methods.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, if no <em>role_id</em> is supplied, the default behavior is to try all certificate roles and return any one that matches.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth, <em>role_id</em> is required.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
