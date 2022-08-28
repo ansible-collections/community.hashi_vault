@@ -94,7 +94,4 @@ class HashiVaultAuthMethodAwsIam(HashiVaultAuthMethodBase):
             self.warn("HVAC should be updated to version 0.9.3 or higher. Deprecated method 'auth_aws_iam' will be used.")
             client.auth_aws_iam(use_token=use_token, **params)
 
-        return response
-
-    def should_revoke_token(self):
-        return True
+        return self.get_context(client, response)

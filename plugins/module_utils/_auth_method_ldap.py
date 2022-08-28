@@ -37,7 +37,4 @@ class HashiVaultAuthMethodLdap(HashiVaultAuthMethodBase):
             self.warn("HVAC should be updated to version 0.7.0 or higher. Deprecated method 'auth_ldap' will be used.")
             response = client.auth_ldap(use_token=use_token, **params)
 
-        return response
-
-    def should_revoke_token(self):
-        return True
+        return self.get_context(client, response)

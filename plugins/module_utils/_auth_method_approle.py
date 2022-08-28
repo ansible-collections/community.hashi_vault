@@ -37,7 +37,4 @@ class HashiVaultAuthMethodApprole(HashiVaultAuthMethodBase):
             self.warn("HVAC should be updated to version 0.10.6 or higher. Deprecated method 'auth_approle' will be used.")
             response = client.auth_approle(use_token=use_token, **params)
 
-        return response
-
-    def should_revoke_token(self):
-        return self._options.get_option("revoke_ephemeral_token")
+        return self.get_context(client, response)

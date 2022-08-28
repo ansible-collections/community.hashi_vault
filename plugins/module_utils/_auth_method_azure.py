@@ -102,4 +102,4 @@ class HashiVaultAuthMethodAzure(HashiVaultAuthMethodBase):
     def authenticate(self, client, use_token=True):
         params = self._auth_azure_login_params
         response = client.auth.azure.login(use_token=use_token, **params)
-        return response
+        return self.get_context(client, response)

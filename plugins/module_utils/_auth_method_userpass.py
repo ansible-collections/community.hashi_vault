@@ -44,7 +44,4 @@ class HashiVaultAuthMethodUserpass(HashiVaultAuthMethodBase):
         if use_token:
             client.token = response['auth']['client_token']
 
-        return response
-
-    def should_revoke_token(self):
-        return True
+        return self.get_context(client, response)
