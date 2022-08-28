@@ -38,6 +38,7 @@ DOCUMENTATION = """
     - In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
       However, this may not be useful if the token is required for follow on tasks.
       It may be better to use this module with I(check_mode=no) in order to have a valid token that can be used.
+    - Ephemeral tokens B(will not be revoked) when I(revoke_ephemeral_token=true) unless I(orphan=true), otherwise the child tokens would also be revoked.
   options: {}
 """
 
@@ -175,20 +176,29 @@ def run_module():
 
     pass_thru_options = module.adapter.get_filled_options(*PASS_THRU_OPTION_NAMES)
 
+    orphan = module.adapter.get_option('orphan')
+    if orphan:
+        pass_thru_options['no_parent'] = True
+
     orphan_options = pass_thru_options.copy()
 
     for key in pass_thru_options.keys():
         if key in ORPHAN_OPTION_TRANSLATION:
             orphan_options[ORPHAN_OPTION_TRANSLATION[key]] = orphan_options.pop(key)
 
+    revoke_token = {}
+    if orphan:
+        revoke_token['revoke_token'] = None
+
     # token creation is a write operation, using storage and resources
     changed = True
     response = None
 
     if module.check_mode:
+        module.authenticator.logout(client, **revoke_token)
         module.exit_json(changed=changed, login={'auth': {'client_token': None}})
 
-    if module.adapter.get_option('orphan'):
+    if orphan:
         try:
             try:
                 # this method was added in hvac 1.0.0
@@ -199,13 +209,16 @@ def run_module():
                 # See: https://github.com/hvac/hvac/issues/758
                 response = client.create_token(orphan=True, **orphan_options)
         except Exception as e:
+            module.authenticator.logout(client, **revoke_token)
             module.fail_json(msg=to_native(e), exception=traceback.format_exc())
     else:
         try:
             response = client.auth.token.create(**pass_thru_options)
         except Exception as e:
+            module.authenticator.logout(client, **revoke_token)
             module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
+    module.authenticator.logout(client, **revoke_token)
     module.exit_json(changed=changed, login=response)
 
 
