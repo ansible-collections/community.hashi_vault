@@ -136,8 +136,15 @@ class ModuleDocFragment(object):
         type: path
         version_added: 1.4.0
       revoke_ephemeral_token:
-        description: Foobar
+        description:
+          - When C(true), tokens created implicitly by auth methods will be revoked when the operation they are used for is completed.
+          - For example, calling M(community.hashi_vault.vault_read) with C(userpass) auth will perform a C(userpass) login to retrieve a token,
+            perform a read with that token, then attempt to revoke the token so it can no longer be used.
+          - Revocation is considered best-effort. Errors on revocaton will not result in execution failure.
+            A warning will be emitted on revocation failure but in some circumstances, like non-revocation failures, the warning may not be displayed.
         type: bool
+        default: false
+        version_added: 3.3.0
     '''
 
     PLUGINS = r'''
@@ -309,4 +316,12 @@ class ModuleDocFragment(object):
         ini:
           - section: hashi_vault_collection
             key: cert_auth_private_key
+      revoke_ephemeral_token:
+        env:
+          - name: ANSIBLE_HASHI_VAULT_REVOKE_EPHEMERAL_TOKEN
+        ini:
+          - section: hashi_vault_collection
+            key: revoke_ephemeral_token
+        vars:
+          - name: ansible_hashi_vault_revoke_ephemeral_token
     '''
