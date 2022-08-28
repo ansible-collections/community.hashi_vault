@@ -281,8 +281,14 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
         raise NotImplementedError('validate must be implemented')
 
     def authenticate(self, client, use_token=True):
-        '''Authenticates against Vault, returns a token.'''
+        '''Authenticates against Vault, returns a HashiVaultAuthContext.'''
         raise NotImplementedError('authenticate must be implemented')
+
+    def logout(self, client, revoke_token=None):
+        if revoke_token is None:
+            revoke_token = self._options.get_option('revoke_ephemeral_token')
+
+        client.logout(revoke_token=revoke_token)
 
     def validate_by_required_fields(self, *field_names):
         missing = [field for field in field_names if self._options.get_option_default(field) is None]
@@ -296,9 +302,28 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
     def deprecate(self, message, version=None, date=None, collection_name=None):
         self._deprecator(message, version=version, date=date, collection_name=collection_name)
 
+    def get_context(self, client, raw_response, revoke_token=None):
+        return HashiVaultAuthContext(self, client, raw_response, revoke_token)
+
     @staticmethod
     def _stringify(input):
         return _stringify(input)
 
-    def should_revoke_token(self, **kwargs):
-        return False
+
+class HashiVaultAuthContext():
+    def __init__(self, auth_method, client, raw_response, **kwargs):
+        self.client = client
+        self.auth = auth_method
+        self.raw = raw_response
+        self._revoke_token = {}
+        if 'revoke_token' in kwargs:
+            self._revoke_token['revoke_token'] = kwargs.pop('revoke_token')
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        try:
+            self.auth.logout(self.client, **self._revoke_token)
+        except Exception as e:
+            self.auth.warn(str(e))

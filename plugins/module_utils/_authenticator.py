@@ -103,9 +103,6 @@ class HashiVaultAuthenticator():
         method = self._get_method_object(kwargs.pop('method', None))
         return method.authenticate(*args, **kwargs)
 
-    def should_revoke_token(self, **kwargs):
+    def logout(self, *args, **kwargs):
         method = self._get_method_object(kwargs.pop('method', None))
-        return method.should_revoke_token(**kwargs)
-
-    def logout(self, client, **kwargs):
-        client.logout(revoke_token=self.should_revoke_token(**kwargs))
+        return method.logout(*args, **kwargs)
