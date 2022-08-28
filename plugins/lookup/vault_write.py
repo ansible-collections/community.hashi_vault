@@ -157,11 +157,11 @@ class LookupModule(HashiVaultLookupBase):
 
         try:
             self.authenticator.validate()
-            self.authenticator.authenticate(client)
+            auth = self.authenticator.authenticate(client)
         except (NotImplementedError, HashiVaultValueError) as e:
             raise_from(AnsibleError(e), e)
 
-        try:
+        with auth:
             for term in terms:
                 try:
                     response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
@@ -188,7 +188,5 @@ class LookupModule(HashiVaultLookupBase):
                     output = response
 
                 ret.append(output)
-        finally:
-            self.authenticator.logout(client)
 
         return ret

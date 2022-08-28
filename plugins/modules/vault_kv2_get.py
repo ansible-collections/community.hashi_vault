@@ -181,11 +181,11 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        module.authenticator.authenticate(client)
+        auth = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
+    with auth:
         try:
             raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=engine_mount_point)
         except hvac.exceptions.Forbidden as e:
@@ -195,8 +195,6 @@ def run_module():
                 msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
                 exception=traceback.format_exc()
             )
-    finally:
-        module.authenticator.logout(client)
 
     data = raw['data']
     metadata = data['metadata']

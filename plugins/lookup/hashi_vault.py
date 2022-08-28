@@ -271,11 +271,12 @@ class LookupModule(HashiVaultLookupBase):
             self.client = self.helper.get_vault_client(**client_args)
 
             try:
-                self.authenticator.authenticate(self.client)
+                auth = self.authenticator.authenticate(self.client)
             except (NotImplementedError, HashiVaultValueError) as e:
                 raise AnsibleError(e)
 
-            ret.extend(self.get())
+            with auth:
+                ret.extend(self.get())
 
         return ret
 

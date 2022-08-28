@@ -142,11 +142,11 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        module.authenticator.authenticate(client)
+        auth = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
+    with auth:
         try:
             if module.check_mode:
                 response = {}
@@ -173,8 +173,6 @@ def run_module():
                 output = response.content
         else:
             output = response
-    finally:
-        module.authenticator.logout(client)
 
     module.exit_json(changed=True, data=output)
 

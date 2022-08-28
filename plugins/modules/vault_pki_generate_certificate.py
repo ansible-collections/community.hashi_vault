@@ -258,11 +258,11 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        module.authenticator.authenticate(client)
+        auth = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
+    with auth:
         try:
             if module.check_mode:
                 data = {}
@@ -273,8 +273,6 @@ def run_module():
                 )
         except hvac.exceptions.VaultError as e:
             module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-    finally:
-        module.authenticator.logout(client)
 
     # generate_certificate is a write operation which always return a new certificate
     module.exit_json(changed=True, data=data)

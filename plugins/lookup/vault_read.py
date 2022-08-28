@@ -119,11 +119,11 @@ class LookupModule(HashiVaultLookupBase):
 
         try:
             self.authenticator.validate()
-            self.authenticator.authenticate(client)
+            auth = self.authenticator.authenticate(client)
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
-        try:
+        with auth:
             for term in terms:
                 try:
                     data = client.read(term)
@@ -134,7 +134,5 @@ class LookupModule(HashiVaultLookupBase):
                     raise AnsibleError("The path '%s' doesn't seem to exist." % term)
 
                 ret.append(data)
-        finally:
-            self.authenticator.logout(client)
 
         return ret
