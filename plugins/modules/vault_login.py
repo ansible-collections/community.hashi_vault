@@ -39,6 +39,7 @@ DOCUMENTATION = """
     - "In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
       However this may not be useful if the token is required for follow on tasks.
       It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
+    - I(revoke_ephemeral_token) has no effect in this module, since the token is the desired result.
   options:
     token_validate:
       description:
@@ -160,7 +161,7 @@ def run_module():
         if module.check_mode:
             response = {'auth': {'client_token': None}}
         else:
-            response = module.authenticator.authenticate(client)
+            response = module.authenticator.authenticate(client).raw
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 

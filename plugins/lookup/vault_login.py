@@ -31,6 +31,7 @@ DOCUMENTATION = """
     - "The C(token) auth method will only return full information if I(token_validate=True).
       If the token does not have the C(lookup-self) capability, this will fail. If I(token_validate=False), only the token value itself
       will be returned in the structure."
+    - I(revoke_ephemeral_token) has no effect in this lookup, since the token is the desired result.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.connection.plugins
@@ -135,7 +136,7 @@ class LookupModule(HashiVaultLookupBase):
 
         try:
             self.authenticator.validate()
-            response = self.authenticator.authenticate(client)
+            response = self.authenticator.authenticate(client).raw
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
