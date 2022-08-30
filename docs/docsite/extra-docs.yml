@@ -1,5 +1,8 @@
 ---
 sections:
+  - title: Changelog
+    toctree:
+      - CHANGELOG
   - title: Guides
     toctree:
       - filter_guide
