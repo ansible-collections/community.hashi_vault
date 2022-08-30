@@ -74,7 +74,7 @@ Once the new collection is published and the Zuul job is finished, add a release
 
 ## Release notes
 
-See the [changelog](https://github.com/ansible-collections/community.hashi_vault/tree/main/CHANGELOG.rst).
+See the [rendered changelog](https://ansible-collections.github.io/community.hashi_vault/branch/main/collections/community/hashi_vault/docsite/CHANGELOG.html) or the [raw generated changelog](https://github.com/ansible-collections/community.hashi_vault/tree/main/CHANGELOG.rst).
 
 ## FAQ
 
