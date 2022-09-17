@@ -166,9 +166,6 @@ class LookupModule(HashiVaultLookupBase):
 
         pass_thru_options = self._options_adapter.get_filled_options(*self.PASS_THRU_OPTION_NAMES)
 
-        if self.get_option('orphan'):
-            pass_thru_options['no_parent'] = True
-
         orphan_options = pass_thru_options.copy()
 
         for key in pass_thru_options.keys():
