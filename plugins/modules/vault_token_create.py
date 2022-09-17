@@ -175,9 +175,6 @@ def run_module():
 
     pass_thru_options = module.adapter.get_filled_options(*PASS_THRU_OPTION_NAMES)
 
-    if module.adapter.get_option('orphan'):
-        pass_thru_options['no_parent'] = True
-
     orphan_options = pass_thru_options.copy()
 
     for key in pass_thru_options.keys():
