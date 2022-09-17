@@ -94,10 +94,10 @@ class TestModuleVaultTokenCreate():
         # designed to catch the case where new legacy translations differ between tests and module
         # and that all listed translations are present in passthru options
 
-        module_set = set(vault_token_create.LEGACY_OPTION_TRANSLATION.items())
+        module_set = set(vault_token_create.ORPHAN_OPTION_TRANSLATION.items())
         test_set = set(legacy_option_translation.items())
 
-        module_key_set = set(vault_token_create.LEGACY_OPTION_TRANSLATION.keys())
+        module_key_set = set(vault_token_create.ORPHAN_OPTION_TRANSLATION.keys())
         pass_thru_key_set = set(pass_thru_options.keys())
 
         assert module_set == test_set, (
@@ -106,7 +106,7 @@ class TestModuleVaultTokenCreate():
                 dict(test_set - module_set),
             )
         )
-        assert vault_token_create.LEGACY_OPTION_TRANSLATION.keys() <= pass_thru_options.keys(), (
+        assert vault_token_create.ORPHAN_OPTION_TRANSLATION.keys() <= pass_thru_options.keys(), (
             "Legacy option translation keys must exist in passthru options: %r" % (
                 list(module_key_set - pass_thru_key_set),
             )
