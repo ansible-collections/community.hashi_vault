@@ -154,7 +154,7 @@ class TestVaultTokenCreateLookup(object):
 
                 client.auth.token.create.assert_not_called()
                 client.auth.token.create_orphan.assert_called_once()
-                # client.create_token.assert_called_once()
+                client.create_token.assert_not_called()
 
                 assert result[0] == token_create_response, (
                     "lookup result did not match expected result:\nlookup: %r\nexpected: %r" % (result, token_create_response)
@@ -190,6 +190,7 @@ class TestVaultTokenCreateLookup(object):
             with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
                 result = vault_token_create_lookup.run(terms=[], variables=minimal_vars, orphan=True, **pass_thru_options)
 
+                client.auth.token.create_orphan.assert_called_once()
                 client.create_token.assert_called_once()
 
                 assert result[0] == token_create_response, (
