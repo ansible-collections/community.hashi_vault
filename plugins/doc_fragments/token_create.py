@@ -15,7 +15,7 @@ options:
   orphan:
     description:
       - When C(true), uses the C(/create-orphan) API endpoint, which requires C(sudo) (but not C(root)) to create an orphan.
-      - With `hvac>=1.0.0`, requires collection version `>=3.3.0`.
+      - With C(hvac>=1.0.0), requires collection version C(>=3.3.0).
     type: bool
     default: false
   no_parent:
