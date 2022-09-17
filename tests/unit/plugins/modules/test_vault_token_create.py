@@ -12,6 +12,7 @@ import pytest
 import json
 
 from .....plugins.modules import vault_token_create
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 pytestmark = pytest.mark.usefixtures(
     'patch_ansible_module',
@@ -24,7 +25,7 @@ def _connection_options():
     return {
         'auth_method': 'token',
         'url': 'http://myvault',
-        'token': 'throwaway',
+        'token': 'rando',
     }
 
 
@@ -75,6 +76,34 @@ def token_create_response(fixture_loader):
 
 
 class TestModuleVaultTokenCreate():
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
+    def test_vault_token_create_authentication_error(self, authenticator, exc, capfd):
+        authenticator.authenticate.side_effect = exc
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'throwaway msg', "result: %r" % result
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
+    def test_vault_token_create_auth_validation_error(self, authenticator, exc, capfd):
+        authenticator.validate.side_effect = exc
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'throwaway msg'
 
     @pytest.mark.no_ansible_module_patch
     def test_vault_token_create_passthru_options_expected(self, pass_thru_options):
