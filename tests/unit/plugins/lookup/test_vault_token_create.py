@@ -17,6 +17,7 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
 from .....plugins.lookup import vault_token_create
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 
 pytest.importorskip('hvac')
@@ -77,6 +78,20 @@ class TestVaultTokenCreateLookup(object):
         with mock.patch.object(vault_token_create, 'HVAC_IMPORT_ERROR', new=ImportError()):
             with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
                 vault_token_create_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
+    def test_vault_token_create_authentication_error(self, vault_token_create_lookup, minimal_vars, authenticator, exc):
+        authenticator.authenticate.side_effect = exc
+
+        with pytest.raises(AnsibleError, match=r'throwaway msg'):
+            vault_token_create_lookup.run(terms='fake', variables=minimal_vars)
+
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
+    def test_vault_token_create_auth_validation_error(self, vault_token_create_lookup, minimal_vars, authenticator, exc):
+        authenticator.validate.side_effect = exc
+
+        with pytest.raises(AnsibleError, match=r'throwaway msg'):
+            vault_token_create_lookup.run(terms='fake', variables=minimal_vars)
 
     def test_vault_token_create_extra_terms(self, vault_token_create_lookup, authenticator, minimal_vars):
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_token_create.display.warning') as warning:
