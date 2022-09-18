@@ -88,11 +88,27 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.kv.v2.delete_latest_version_of_secret(path=path, mount_point=engine_mount_point)
+        response = client.secrets.kv.v2.delete_latest_version_of_secret(path=path, mount_point=engine_mount_point)
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
 
-    module.exit_json(changed=True, response_code=raw.status_code)
+    # https://github.com/hvac/hvac/issues/797
+    # HVAC returns a raw response object when the body is not JSON.
+    # That includes 204 responses, which are successful with no body.
+    # So we will try to detect that and a act accordingly.
+    # A better way may be to implement our own adapter for this
+    # collection, but it's a little premature to do that.
+    if hasattr(response, 'json') and callable(response.json):
+        if response.status_code == 204:
+            output = {}
+        else:
+            module.warn(
+                'Vault returned status code %i and an unparsable body.' % response.status_code)
+            output = response.content
+    else:
+        output = response
+
+    module.exit_json(changed=True, data=output)
 
 def main():
     run_module()
