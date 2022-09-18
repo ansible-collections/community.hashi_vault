@@ -1,9 +1,40 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# (c) 2022, Isaac Wagner (@idwagner)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
-module: vault_kv2_get
+module: vault_kv2_delete
+author:
+  - Isaac Wagner (@idwagner)
+short_description: Delete the latest version of a secret from HashiCorp Vault's KV version 2 secret store
+requirements:
+  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+  - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+description:
+  - Deletes the latest version of a secret from HashiCorp Vault's KV version 2 secret store.
+seealso:
+  - name: KV2 Secrets Engine
+    description: Documentation for the Vault KV secrets engine, version 2.
+    link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
+extends_documentation_fragment:
+  - community.hashi_vault.connection
+  - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
+options:
+  engine_mount_point:
+    default: secret
+  path:
+    description:
+      - Vault KV path to be deleted.
+      - This is relative to the I(engine_mount_point), so the mount path should not be included.
+      - For kv2, do not include C(/data/) or C(/metadata/).
+    type: str
+    required: True
 '''
 
 
@@ -28,7 +59,7 @@ def run_module():
 
 
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', default='kv'),
+        engine_mount_point=dict(type='str', default='secret'),
         path=dict(type='str', required=True)
     )
 
