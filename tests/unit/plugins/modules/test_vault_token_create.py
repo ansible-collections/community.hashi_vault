@@ -153,6 +153,7 @@ class TestModuleVaultTokenCreate():
         result = json.loads(out)
 
         client.create_token.assert_not_called()
+        client.auth.token.create_orphan.assert_not_called()
         client.auth.token.create.assert_called_once()
 
         assert result['login'] == token_create_response, (
@@ -223,3 +224,46 @@ class TestModuleVaultTokenCreate():
         assert result['login'] == token_create_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['login'], token_create_response)
         )
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_token_create_exception_handling_standard(self, vault_client, capfd):
+        client = vault_client
+        client.auth.token.create.side_effect = Exception('side_effect')
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'side_effect'
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
+    def test_vault_token_create_exception_handling_orphan(self, vault_client, capfd):
+        client = vault_client
+        client.auth.token.create_orphan.side_effect = Exception('side_effect')
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'side_effect'
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
+    def test_vault_token_create_exception_handling_orphan_fallback(self, vault_client, capfd):
+        client = vault_client
+        client.create_token.side_effect = Exception('side_effect')
+        client.auth.token.create_orphan.side_effect = AttributeError
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'side_effect'

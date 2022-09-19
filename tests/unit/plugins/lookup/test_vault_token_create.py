@@ -211,3 +211,35 @@ class TestVaultTokenCreateLookup(object):
                 assert result[0] == token_create_response, (
                     "lookup result did not match expected result:\nlookup: %r\nexpected: %r" % (result, token_create_response)
                 )
+
+    def test_vault_token_create_exception_handling_standard(self, vault_token_create_lookup, authenticator, minimal_vars, pass_thru_options, token_create_response):
+
+        client = mock.MagicMock()
+        client.auth.token.create.side_effect = Exception('side_effect')
+
+        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
+            with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
+                with pytest.raises(AnsibleError, match=r'^side_effect$'):
+                    vault_token_create_lookup.run(terms=[], variables=minimal_vars, **pass_thru_options)
+
+    def test_vault_token_create_exception_handling_orphan(
+        self, vault_token_create_lookup, authenticator, minimal_vars, pass_thru_options, orphan_option_translation, token_create_response
+    ):
+
+        client = mock.MagicMock()
+        client.auth.token.create_orphan.side_effect = Exception('side_effect')
+
+        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
+            with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
+                with pytest.raises(AnsibleError, match=r'^side_effect$'):
+                    vault_token_create_lookup.run(terms=[], variables=minimal_vars, orphan=True, **pass_thru_options)
+
+    def test_vault_token_create_exception_handling_orphan_fallback(self, vault_token_create_lookup, authenticator, minimal_vars, pass_thru_options, token_create_response):
+        client = mock.MagicMock()
+        client.create_token.side_effect = Exception('side_effect')
+        client.auth.token.create_orphan.side_effect = AttributeError
+
+        with mock.patch.object(vault_token_create_lookup, 'authenticator', new=authenticator):
+            with mock.patch.object(vault_token_create_lookup.helper, 'get_vault_client', return_value=client):
+                with pytest.raises(AnsibleError, match=r'^side_effect$'):
+                    vault_token_create_lookup.run(terms=[], variables=minimal_vars, orphan=True, **pass_thru_options)
