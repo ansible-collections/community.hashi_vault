@@ -12,6 +12,7 @@ import pytest
 import json
 
 from .....plugins.modules import vault_token_create
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 pytestmark = pytest.mark.usefixtures(
     'patch_ansible_module',
@@ -24,7 +25,7 @@ def _connection_options():
     return {
         'auth_method': 'token',
         'url': 'http://myvault',
-        'token': 'throwaway',
+        'token': 'rando',
     }
 
 
@@ -61,7 +62,7 @@ def pass_thru_options():
 
 
 @pytest.fixture
-def legacy_option_translation():
+def orphan_option_translation():
     return {
         'id': 'token_id',
         'role_name': 'role',
@@ -75,6 +76,34 @@ def token_create_response(fixture_loader):
 
 
 class TestModuleVaultTokenCreate():
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
+    def test_vault_token_create_authentication_error(self, authenticator, exc, capfd):
+        authenticator.authenticate.side_effect = exc
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'throwaway msg', "result: %r" % result
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
+    def test_vault_token_create_auth_validation_error(self, authenticator, exc, capfd):
+        authenticator.validate.side_effect = exc
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'throwaway msg'
 
     @pytest.mark.no_ansible_module_patch
     def test_vault_token_create_passthru_options_expected(self, pass_thru_options):
@@ -90,24 +119,24 @@ class TestModuleVaultTokenCreate():
         )
 
     @pytest.mark.no_ansible_module_patch
-    def test_vault_token_create_legacy_options_expected(self, legacy_option_translation, pass_thru_options):
-        # designed to catch the case where new legacy translations differ between tests and module
+    def test_vault_token_create_orphan_options_expected(self, orphan_option_translation, pass_thru_options):
+        # designed to catch the case where new orphan translations differ between tests and module
         # and that all listed translations are present in passthru options
 
-        module_set = set(vault_token_create.LEGACY_OPTION_TRANSLATION.items())
-        test_set = set(legacy_option_translation.items())
+        module_set = set(vault_token_create.ORPHAN_OPTION_TRANSLATION.items())
+        test_set = set(orphan_option_translation.items())
 
-        module_key_set = set(vault_token_create.LEGACY_OPTION_TRANSLATION.keys())
+        module_key_set = set(vault_token_create.ORPHAN_OPTION_TRANSLATION.keys())
         pass_thru_key_set = set(pass_thru_options.keys())
 
         assert module_set == test_set, (
-            "Legacy options in module do not match legacy options in test:\nmodule: %r\ntest: %r" % (
+            "Orphan options in module do not match orphan options in test:\nmodule: %r\ntest: %r" % (
                 dict(module_set - test_set),
                 dict(test_set - module_set),
             )
         )
-        assert vault_token_create.LEGACY_OPTION_TRANSLATION.keys() <= pass_thru_options.keys(), (
-            "Legacy option translation keys must exist in passthru options: %r" % (
+        assert vault_token_create.ORPHAN_OPTION_TRANSLATION.keys() <= pass_thru_options.keys(), (
+            "Orphan option translation keys must exist in passthru options: %r" % (
                 list(module_key_set - pass_thru_key_set),
             )
         )
@@ -124,6 +153,7 @@ class TestModuleVaultTokenCreate():
         result = json.loads(out)
 
         client.create_token.assert_not_called()
+        client.auth.token.create_orphan.assert_not_called()
         client.auth.token.create.assert_called_once()
 
         assert result['login'] == token_create_response, (
@@ -137,9 +167,9 @@ class TestModuleVaultTokenCreate():
             assert pass_thru_options.items() <= client.auth.token.create.call_args.kwargs.items()
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
-    def test_vault_token_create_legacy_options(self, pass_thru_options, legacy_option_translation, token_create_response, vault_client, capfd):
+    def test_vault_token_create_orphan_options(self, pass_thru_options, orphan_option_translation, token_create_response, vault_client, capfd):
         client = vault_client
-        client.create_token.return_value = token_create_response
+        client.auth.token.create_orphan.return_value = token_create_response
 
         with pytest.raises(SystemExit):
             vault_token_create.main()
@@ -147,8 +177,9 @@ class TestModuleVaultTokenCreate():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
+        client.create_token.assert_not_called()
         client.auth.token.create.assert_not_called()
-        client.create_token.assert_called_once()
+        client.auth.token.create_orphan.assert_called_once()
 
         assert result['login'] == token_create_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['module'], token_create_response)
@@ -156,30 +187,30 @@ class TestModuleVaultTokenCreate():
 
         if sys.version_info < (3, 8):
             # TODO: remove when python < 3.8 is dropped
-            call_kwargs = client.create_token.call_args[1]
+            call_kwargs = client.auth.token.create_orphan.call_args[1]
         else:
-            call_kwargs = client.create_token.call_args.kwargs
+            call_kwargs = client.auth.token.create_orphan.call_args.kwargs
 
-        for name, legacy in legacy_option_translation.items():
+        for name, orphan in orphan_option_translation.items():
             assert name not in call_kwargs, (
-                "'%s' was found in call to legacy method, should be '%s'" % (name, legacy)
+                "'%s' was found in call to orphan method, should be '%s'" % (name, orphan)
             )
-            assert legacy in call_kwargs, (
-                "'%s' (from '%s') was not found in call to legacy method" % (legacy, name)
+            assert orphan in call_kwargs, (
+                "'%s' (from '%s') was not found in call to orphan method" % (orphan, name)
             )
-            assert call_kwargs[legacy] == pass_thru_options.get(name), (
-                "Expected legacy param '%s' not found or value did not match:\nvalue: %r\nexpected: %r" % (
-                    legacy,
-                    call_kwargs.get(legacy),
+            assert call_kwargs[orphan] == pass_thru_options.get(name), (
+                "Expected orphan param '%s' not found or value did not match:\nvalue: %r\nexpected: %r" % (
+                    orphan,
+                    call_kwargs.get(orphan),
                     pass_thru_options.get(name),
                 )
             )
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
-    def test_vault_token_create_legacy_fallback(self, pass_thru_options, token_create_response, vault_client, module_warn, capfd):
+    def test_vault_token_create_orphan_fallback(self, token_create_response, vault_client, capfd):
         client = vault_client
-        client.create_token.side_effect = AttributeError
-        client.auth.token.create.return_value = token_create_response
+        client.create_token.return_value = token_create_response
+        client.auth.token.create_orphan.side_effect = AttributeError
 
         with pytest.raises(SystemExit):
             vault_token_create.main()
@@ -187,17 +218,52 @@ class TestModuleVaultTokenCreate():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
-        module_warn.assert_called_once_with("'create_token' method was not found. Attempting method that requires root privileges.")
-        client.auth.token.create.assert_called_once()
+        client.auth.token.create_orphan.assert_called_once()
+        client.create_token.assert_called_once()
 
         assert result['login'] == token_create_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['login'], token_create_response)
         )
 
-        # we're retesting that expected options were passed, even though there's a separate test for that,
-        # to ensure that nothing in the original legacy attempt mutates the non-legacy options during fallback
-        if sys.version_info < (3, 8):
-            # TODO: remove when python < 3.8 is dropped
-            assert pass_thru_options.items() <= client.auth.token.create.call_args[1].items()
-        else:
-            assert pass_thru_options.items() <= client.auth.token.create.call_args.kwargs.items()
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_token_create_exception_handling_standard(self, vault_client, capfd):
+        client = vault_client
+        client.auth.token.create.side_effect = Exception('side_effect')
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'side_effect'
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
+    def test_vault_token_create_exception_handling_orphan(self, vault_client, capfd):
+        client = vault_client
+        client.auth.token.create_orphan.side_effect = Exception('side_effect')
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'side_effect'
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
+    def test_vault_token_create_exception_handling_orphan_fallback(self, vault_client, capfd):
+        client = vault_client
+        client.create_token.side_effect = Exception('side_effect')
+        client.auth.token.create_orphan.side_effect = AttributeError
+
+        with pytest.raises(SystemExit) as e:
+            vault_token_create.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result['msg'] == 'side_effect'

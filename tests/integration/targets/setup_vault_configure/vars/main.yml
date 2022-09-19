@@ -60,9 +60,6 @@ vault_token_creator_policy: |
   path "auth/token/create/*" {
     capabilities = ["create", "update"]
   }
-  path "auth/token/create-orphan" {
-    capabilities = ["create", "update"]
-  }
 
 vault_orphan_creator_policy: |
   path "auth/token/create" {

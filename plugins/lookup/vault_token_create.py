@@ -134,7 +134,7 @@ class LookupModule(HashiVaultLookupBase):
         'wrap_ttl',
     ]
 
-    LEGACY_OPTION_TRANSLATION = {
+    ORPHAN_OPTION_TRANSLATION = {
         'id': 'token_id',
         'role_name': 'role',
         'type': 'token_type',
@@ -166,29 +166,27 @@ class LookupModule(HashiVaultLookupBase):
 
         pass_thru_options = self._options_adapter.get_filled_options(*self.PASS_THRU_OPTION_NAMES)
 
-        if self.get_option('orphan'):
-            pass_thru_options['no_parent'] = True
-
-        legacy_options = pass_thru_options.copy()
+        orphan_options = pass_thru_options.copy()
 
         for key in pass_thru_options.keys():
-            if key in self.LEGACY_OPTION_TRANSLATION:
-                legacy_options[self.LEGACY_OPTION_TRANSLATION[key]] = legacy_options.pop(key)
+            if key in self.ORPHAN_OPTION_TRANSLATION:
+                orphan_options[self.ORPHAN_OPTION_TRANSLATION[key]] = orphan_options.pop(key)
 
         response = None
 
         if self.get_option('orphan'):
-            # this method is deprecated, but it's the only way through hvac to get
-            # at the /create-orphan endpoint at this time.
-            # See: https://github.com/hvac/hvac/issues/758
             try:
-                response = client.create_token(orphan=True, **legacy_options)
-            except AttributeError:
-                display.warning("'create_token' method was not found. Attempting method that requires root privileges.")
+                try:
+                    # this method was added in hvac 1.0.0
+                    # See: https://github.com/hvac/hvac/pull/869
+                    response = client.auth.token.create_orphan(**orphan_options)
+                except AttributeError:
+                    # this method was removed in hvac 1.0.0
+                    # See: https://github.com/hvac/hvac/issues/758
+                    response = client.create_token(orphan=True, **orphan_options)
             except Exception as e:
                 raise AnsibleError(e)
-
-        if response is None:
+        else:
             try:
                 response = client.auth.token.create(**pass_thru_options)
             except Exception as e:

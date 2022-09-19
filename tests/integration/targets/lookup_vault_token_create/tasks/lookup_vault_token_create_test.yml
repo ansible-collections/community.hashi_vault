@@ -35,7 +35,7 @@
         - assert:
             that:
               - orphan_result is failed
-              - orphan_result.msg is search('root or sudo privileges required to create orphan token')
+              - orphan_result.msg is search('permission denied')
 
         - name: (xfail) Create an orphan token with no_parent=true
           vars:
