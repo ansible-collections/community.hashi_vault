@@ -7,7 +7,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = '''
 module: vault_kv2_delete
 author:
   - Isaac Wagner (@idwagner)
@@ -17,6 +17,9 @@ requirements:
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
   - Deletes the latest version of a secret from HashiCorp Vault's KV version 2 secret store.
+notes:
+  - This module always reports C(changed) status because it cannot guarantee idempotence.
+  - Use C(changed_when) to control that in cases where the operation is known to not change state.
 seealso:
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
@@ -37,6 +40,27 @@ options:
     required: True
 '''
 
+EXAMPLES = """
+- name: Write a value to the cubbyhole via the remote host with userpass auth
+  community.hashi_vault.vault_kv2_delete:
+    url: https://vault:8201
+    path: secret/mysecret
+    auth_method: userpass
+    username: user
+    password: '{{ passwd }}'
+  register: result
+
+- name: Display the result of the delete (this can be empty)
+  ansible.builtin.debug:
+    msg: "{{ result.data }}"
+"""
+
+RETURN = """
+data:
+  description: The raw result of the write against the given path.
+  returned: success
+  type: dict
+"""
 
 import traceback
 
