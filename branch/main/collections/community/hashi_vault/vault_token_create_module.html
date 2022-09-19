@@ -380,7 +380,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="parameter-no_parent"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-parameter-no-parent"><strong>no_parent</strong></p>
 <a class="ansibleOptionLink" href="#parameter-no_parent" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>This option only has effect if used by a <code class="docutils literal notranslate"><span class="pre">root</span></code> or <code class="docutils literal notranslate"><span class="pre">sudo</span></code> caller, or in combination with <em>orphan=true</em>.</p>
+<td><div class="ansible-option-cell"><p>This option only has effect if used by a <code class="docutils literal notranslate"><span class="pre">root</span></code> or <code class="docutils literal notranslate"><span class="pre">sudo</span></code> caller and only when <em>orphan=false</em>.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">true</span></code>, the token created will not have a parent.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
@@ -402,10 +402,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-orphan" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>When <code class="docutils literal notranslate"><span class="pre">true</span></code>, uses the <code class="docutils literal notranslate"><span class="pre">/create-orphan</span></code> API endpoint, which requires <code class="docutils literal notranslate"><span class="pre">sudo</span></code> (but not <code class="docutils literal notranslate"><span class="pre">root</span></code>) to create an orphan.</p>
-<p>Implies <em>no_parent=true</em>.</p>
-<p><strong>NOTE:</strong> as of this writing, the underlying endpoint in the <code class="docutils literal notranslate"><span class="pre">hvac</span></code> library to support this is deprecated and scheduled for removal in <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>.</p>
-<p>If <em>orphan=true</em> and we cannot access the intended endpoint, the call will be attempted with the <code class="docutils literal notranslate"><span class="pre">/create</span></code> endpoint, which requires root.</p>
-<p>If a replacement is provided in <code class="docutils literal notranslate"><span class="pre">hvac</span></code>, we will add support for it.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">hvac&gt;=1.0.0</span></code>, requires collection version <code class="docutils literal notranslate"><span class="pre">&gt;=3.3.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><span class="ansible-option-default-bold">false</span> <span class="ansible-option-default">← (default)</span></p></li>
