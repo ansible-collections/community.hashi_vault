@@ -190,13 +190,14 @@ def run_module():
 
     if module.adapter.get_option('orphan'):
         try:
-            # this method was added in hvac 1.0.0
-            # See: https://github.com/hvac/hvac/pull/869
-            response = client.auth.token.create_orphan(**orphan_options)
-        except AttributeError:
-            # this method was removed in hvac 1.0.0
-            # See: https://github.com/hvac/hvac/issues/758
-            response = client.create_token(orphan=True, **orphan_options)
+            try:
+                # this method was added in hvac 1.0.0
+                # See: https://github.com/hvac/hvac/pull/869
+                response = client.auth.token.create_orphan(**orphan_options)
+            except AttributeError:
+                # this method was removed in hvac 1.0.0
+                # See: https://github.com/hvac/hvac/issues/758
+                response = client.create_token(orphan=True, **orphan_options)
         except Exception as e:
             module.fail_json(msg=to_native(e), exception=traceback.format_exc())
     else:
