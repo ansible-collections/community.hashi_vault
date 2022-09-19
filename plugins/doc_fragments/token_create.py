@@ -20,7 +20,7 @@ options:
     default: false
   no_parent:
     description:
-      - This option only has effect if used by a C(root) or C(sudo) caller and I(orphan=false).
+      - This option only has effect if used by a C(root) or C(sudo) caller and only when I(orphan=false).
       - When C(true), the token created will not have a parent.
     type: bool
   no_default_policy:
