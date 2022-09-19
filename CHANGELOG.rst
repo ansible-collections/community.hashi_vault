@@ -5,6 +5,20 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v3.3.0
+======
+
+Release Summary
+---------------
+
+With the release of ``hvac`` version ``1.0.0``, we needed to update ``vault_token_create``'s support for orphan tokens.
+The collection's changelog is now viewable in the Ansible documentation site.
+
+Minor Changes
+-------------
+
+- vault_token_create - creation or orphan tokens uses ``hvac``'s new v1 method for creating orphans, or falls back to the v0 method if needed (https://github.com/ansible-collections/community.hashi_vault/issues/301).
+
 v3.2.0
 ======
 
