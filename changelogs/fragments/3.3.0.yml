@@ -1,4 +1,4 @@
 ---
 release_summary: |-
   With the release of ``hvac`` version ``1.0.0``, we needed to update ``vault_token_create``'s support for orphan tokens.
-  `The collection's changelog is now viewable in the Ansible documentation site <https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/docsite/CHANGELOG.html>`_.
+  The collection's changelog is now viewable in the Ansible documentation site.
