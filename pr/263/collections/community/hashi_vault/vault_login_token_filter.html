@@ -187,9 +187,9 @@
 <div class="ansibleOptionAnchor" id="parameter-optional_field"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-login-token-filter-parameter-optional-field"><strong>optional_field</strong></p>
 <a class="ansibleOptionLink" href="#parameter-optional_field" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>If this field exists in the input dictionary, then the value of that field is taken the be the login response, rather than the input dictionary itself.</p>
-<p>The purpose of this is primarily to deal with the difference between the output of lookup plugins (which return the login response directly) and modules, which return the login response in a <code class="docutils literal notranslate"><span class="pre">login</span></code> field in its return.</p>
-<p>This can be changed in case you’ve put the raw login response in some other structure, as in <code class="docutils literal notranslate"><span class="pre">my_var['login1']</span></code>, where you would set <em>optional_field=login1</em> when calling the filter on <code class="docutils literal notranslate"><span class="pre">my_var</span></code>, but you could also dereference that directly instead, calling the filter on <code class="docutils literal notranslate"><span class="pre">my_var['login1']</span></code>.</p>
+<td><div class="ansible-option-cell"><p>If this field exists in the input dictionary, then the value of that field is used as the <em>_input</em> value.</p>
+<p>The default value deals with the difference between the output of lookup plugins, and does not need to be changed in most cases.</p>
+<p>See the examples or the Filter guide for more information.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“login”</span></p>
 </div></td>
 </tr>
@@ -201,7 +201,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p>This filter is the equivalent of reading into the dictionary directly, but it has the advantages of providing semantic meaning and automatically working against the differing output of modules and the lookups.</p></li>
+<li><p>This filter is the same as reading into the <em>_input</em> dictionary directly, but it provides semantic meaning and automatically works with the differing output of the modules and lookups. See the Filter guide for more information.</p></li>
 </ul>
 </div>
 </section>
