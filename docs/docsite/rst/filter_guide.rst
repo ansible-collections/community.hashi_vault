@@ -5,7 +5,7 @@ Filter guide
 
 .. note::
 
-    :ref:`Filter Plugins <plugins_in_community.hashi_vault.filter-plugins>` are now included with other plugins in the collection index.
+    :ref:`Filter Plugins <filter-plugins>` are now included with other plugins in the collection index.
 
 
 .. contents:: Filters
