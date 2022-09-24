@@ -16,9 +16,9 @@ DOCUMENTATION:
       description: The C(community.hashi_vault) Filter Guide
   notes:
     - >-
-      This filter is the equivalent of reading into the dictionary directly,
-      but it has the advantages of providing semantic meaning
-      and automatically working against the differing output of modules and the lookups.
+      This filter is the same as reading into the I(_input) dictionary directly,
+      but it provides semantic meaning and automatically works with the differing output of the modules and lookups.
+      See the Filter guide for more information.
   options:
     _input:
       description:
@@ -28,16 +28,11 @@ DOCUMENTATION:
     optional_field:
       description:
         - >-
-          If this field exists in the input dictionary, then the value of that field is taken the be the login response,
-          rather than the input dictionary itself.
+          If this field exists in the input dictionary, then the value of that field is used as the I(_input) value.
         - >-
-          The purpose of this is primarily to deal with the difference between the output of lookup plugins
-          (which return the login response directly) and modules,
-          which return the login response in a C(login) field in its return.
-        - >-
-          This can be changed in case you've put the raw login response in some other structure,
-          as in C(my_var['login1']), where you would set I(optional_field=login1) when calling the filter on C(my_var),
-          but you could also dereference that directly instead, calling the filter on C(my_var['login1']).
+          The default value deals with the difference between the output of lookup plugins,
+          and does not need to be changed in most cases.
+        - See the examples or the Filter guide for more information.
       type: string
       default: login
   author:
