@@ -19,6 +19,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="community.hashi_vault.vault_read module – Perform a read operation against HashiCorp Vault" href="vault_read_module.html" />
@@ -135,7 +136,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">community.hashi_vault.vault_pki_generate_certificate</span></code>.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version community.hashi\_vault: </span>2.3.0</p>
+<p><span class="versionmodified added">New in version community.hashi_vault: </span>2.3.0</p>
 </div>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -190,15 +191,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">userpass</span></p></li>
-<li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
-<li><p><span class="ansible-option-choices-entry">approle</span></p></li>
-<li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
-<li><p><span class="ansible-option-choices-entry">azure</span></p></li>
-<li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
-<li><p><span class="ansible-option-choices-entry">cert</span></p></li>
-<li><p><span class="ansible-option-choices-entry">none</span></p></li>
+<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -345,9 +346,9 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If <code class="docutils literal notranslate"><span class="pre">pem_bundle</span></code>, the <code class="docutils literal notranslate"><span class="pre">certificate</span></code> field will contain the private key and certificate, concatenated. If the issuing CA is not a Vault-derived self-signed root, this will be included as well.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">pem</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">der</span></p></li>
-<li><p><span class="ansible-option-choices-entry">pem_bundle</span></p></li>
+<li><p><span class="ansible-option-default-bold">“pem”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“der”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“pem_bundle”</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -409,8 +410,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>The other option is <code class="docutils literal notranslate"><span class="pre">pkcs8</span></code> which will return the key marshalled as PEM-encoded PKCS8.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">der</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">pkcs8</span></p></li>
+<li><p><span class="ansible-option-default-bold">“der”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“pkcs8”</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -458,8 +459,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">ignore</span></p></li>
-<li><p><span class="ansible-option-default-bold">warn</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
+<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
 </ul>
 </div></td>
 </tr>
