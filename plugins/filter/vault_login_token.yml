@@ -11,10 +11,10 @@ DOCUMENTATION:
   seealso:
     - module: community.hashi_vault.vault_login
     - module: community.hashi_vault.vault_token_create
-    - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
-      description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
-    - ref: community.hashi_vault.vault_token_create lookup <ansible_collections.community.hashi_vault.vault_token_create_lookup>
-      description: The official documentation for the C(community.hashi_vault.vault_token_create) lookup plugin.
+    - plugin: community.hashi_vault.vault_login
+      plugin_type: lookup
+    - plugin: community.hashi_vault.vault_token_create
+      plugin_type: lookup
     - ref: Filter Guide <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
       description: The C(community.hashi_vault) Filter Guide
   notes:
@@ -68,6 +68,27 @@ EXAMPLES: |
       - name: Display the token
         debug:
           msg: "The token is {{ login_response | community.hashi_vault.vault_login_token }}"
+
+  - name: Use of optional_field
+    vars:
+      lookup_login_response: "{{ lookup('community.hashi_vault.vault_login') }}"
+      my_data:
+        something: somedata
+        vault_login: "{{ lookup_login_response }}"
+
+      token_from_param: "{{ my_data | community.hashi_vault.vault_login_token(optional_field='vault_login') }}"
+      token_from_deref: "{{ my_data['vault_login'] | community.hashi_vault.vault_login_token }}"
+      # if the optional field doesn't exist, the dictionary itself is still checked
+      unused_optional: "{{ my_data['vault_login'] | community.hashi_vault.vault_login_token(optional_field='missing') }}"
+    block:
+      - name: Display the variables
+        ansible.builtin.debug:
+          var: '{{ item }}'
+        loop:
+          - my_data
+          - token_from_param
+          - token_from_deref
+          - unused_optional
 
 RETURN:
   _value:
