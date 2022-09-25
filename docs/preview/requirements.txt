@@ -4,5 +4,5 @@
 
 antsibull-docs >= 1.0.0, < 2.0.0
 ansible-pygments
-sphinx
+sphinx != 5.2.0.post0  # temporary, see https://github.com/ansible-community/antsibull-docs/issues/39, https://github.com/ansible-community/antsibull-docs/issues/40
 sphinx-ansible-theme >= 0.9.0
