@@ -136,7 +136,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv1_get</span></code>.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version community.hashi\_vault: </span>2.5.0</p>
+<p><span class="versionmodified added">New in version community.hashi_vault: </span>2.5.0</p>
 </div>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -203,15 +203,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">userpass</span></p></li>
-<li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
-<li><p><span class="ansible-option-choices-entry">approle</span></p></li>
-<li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
-<li><p><span class="ansible-option-choices-entry">azure</span></p></li>
-<li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
-<li><p><span class="ansible-option-choices-entry">cert</span></p></li>
-<li><p><span class="ansible-option-choices-entry">none</span></p></li>
+<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
@@ -256,7 +256,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">aws_iam_server_id = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">aws_iam_server_id = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -318,7 +318,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">azure_client_id = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">azure_client_id = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 </li>
@@ -372,7 +372,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">azure_tenant_id = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">azure_tenant_id = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 </li>
@@ -393,7 +393,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">ca_cert = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">ca_cert = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -417,7 +417,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">cert_auth_private_key = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">cert_auth_private_key = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 </li>
@@ -435,7 +435,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">cert_auth_public_key = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">cert_auth_public_key = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 </li>
@@ -477,7 +477,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">mount_point = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">mount_point = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.5.0</span></p>
@@ -502,7 +502,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">namespace = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">namespace = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -548,7 +548,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">proxies = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">proxies = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -588,7 +588,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">retries = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">retries = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -607,8 +607,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">ignore</span></p></li>
-<li><p><span class="ansible-option-default-bold">warn</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
+<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
@@ -635,7 +635,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">role_id = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">role_id = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -676,7 +676,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">timeout = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">timeout = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -737,7 +737,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">token_path = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">token_path = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -769,7 +769,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">token_validate = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">token_validate = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
@@ -792,7 +792,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul>
 <li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">url = None</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">url = VALUE</span><span class="w"></span>
 </pre></div>
 </div>
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
