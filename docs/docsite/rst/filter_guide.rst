@@ -3,6 +3,11 @@
 Filter guide
 ============
 
+.. note::
+
+    Filter Plugins are now included with other :ref:`plugin documentation <plugins_in_community.hashi_vault>`.
+
+
 .. contents:: Filters
 
 .. _ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token:
@@ -111,7 +116,7 @@ Which produces:
         "msg": "s.drgLxu6ZtttSVn5Zkoy0huMR"
     }
 
-This filter is the equivalent of reading into the dictionary directly, but it has the advantage of providing semantic meaning and automatically working against the differing output of both the module and the lookup.
+This filter is the equivalent of reading into the dictionary directly, but it has the advantages of providing semantic meaning and automatically working against the differing output of modules and lookups.
 
 .. code-block:: yaml+jinja
 

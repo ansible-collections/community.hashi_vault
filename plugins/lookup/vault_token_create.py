@@ -21,7 +21,7 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
     - module: community.hashi_vault.vault_login
-    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   notes:
     - Token creation is a write operation (creating a token persisted to storage), so this module always reports C(changed=True).

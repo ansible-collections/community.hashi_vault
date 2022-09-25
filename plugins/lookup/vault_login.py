@@ -18,7 +18,7 @@ DOCUMENTATION = """
     - Performs a login operation against a given path in HashiCorp Vault, returning the login response, including the token.
   seealso:
     - module: community.hashi_vault.vault_login
-    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   notes:
     - This lookup does not use the term string and will not work correctly in loops. Only a single response will be returned.
