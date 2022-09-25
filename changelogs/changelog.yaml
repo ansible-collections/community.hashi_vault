@@ -539,3 +539,10 @@ releases:
     - 3.3.0.yml
     - 301-orphan-token-handling.yml
     release_date: '2022-09-19'
+  3.3.1:
+    changes:
+      release_summary: No functional changes in this release, this provides updated
+        filter documentation for the public docsite.
+    fragments:
+    - 3.3.1.yml
+    release_date: '2022-09-25'

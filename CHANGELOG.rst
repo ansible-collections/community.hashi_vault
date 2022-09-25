@@ -5,6 +5,14 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v3.3.1
+======
+
+Release Summary
+---------------
+
+No functional changes in this release, this provides updated filter documentation for the public docsite.
+
 v3.3.0
 ======
 
