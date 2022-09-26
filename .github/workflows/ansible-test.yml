@@ -40,6 +40,7 @@ jobs:
           - stable-2.11
           - stable-2.12
           - stable-2.13
+          - stable-2.14
           - devel
     steps:
 
@@ -67,7 +68,7 @@ jobs:
           # will run on all python versions it supports.
           python-version: 3.9
 
-      # Install the head of the given branch (devel, stable-2.13)
+      # Install the head of the given branch (devel, stable-2.14)
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
@@ -116,6 +117,7 @@ jobs:
           - stable-2.11
           - stable-2.12
           - stable-2.13
+          - stable-2.14
           - devel
 
     steps:
@@ -190,6 +192,7 @@ jobs:
           - stable-2.11
           - stable-2.12
           - stable-2.13
+          - stable-2.14
           - devel
         python:
           - '3.6'
@@ -301,7 +304,7 @@ jobs:
       matrix:
         ansible:
           - stable-2.12
-          - stable-2.13
+          - stable-2.14
         python:
           - 3.9
         runner:
