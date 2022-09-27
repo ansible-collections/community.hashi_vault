@@ -17,6 +17,7 @@ If you use the Ansible package and don't update collections independently, use *
 * 2.11
 * 2.12
 * 2.13
+* 2.14
 * devel (latest development commit)
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
