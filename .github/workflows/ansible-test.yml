@@ -314,11 +314,11 @@ jobs:
           - default
         exclude:
           # To add to the fragility of testing docker stuff on MacOS,
-          # stable-2.13 test containers crash; unsure of exact cause
+          # stable-2.13+ test containers crash; unsure of exact cause
           # but likely due to old versions of the runtimes.
           # We'll just stick to 2.12 for now, better than nothing.
           - runner: macos-12
-            ansible: stable-2.13
+            ansible: stable-2.14
           - runner: ubuntu-latest
             ansible: stable-2.12
 
