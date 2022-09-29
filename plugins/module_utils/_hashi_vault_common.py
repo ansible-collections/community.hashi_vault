@@ -303,7 +303,10 @@ class HashiVaultAuthMethodBase(HashiVaultOptionGroupBase):
         self._deprecator(message, version=version, date=date, collection_name=collection_name)
 
     def get_context(self, client, raw_response, revoke_token=None):
-        return HashiVaultAuthContext(self, client, raw_response, revoke_token)
+        return HashiVaultAuthContext(
+            self, client, raw_response,
+            revoke_token=revoke_token,
+        )
 
     @staticmethod
     def _stringify(input):

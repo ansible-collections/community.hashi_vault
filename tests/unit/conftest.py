@@ -14,6 +14,7 @@ import pytest
 from .compat import mock
 
 from ...plugins.module_utils._authenticator import HashiVaultAuthenticator
+from ...plugins.module_utils._hashi_vault_common import HashiVaultAuthContext
 
 
 @pytest.fixture(autouse=True)
@@ -52,10 +53,10 @@ def vault_client():
 
 
 @pytest.fixture
-def authenticator():
+def authenticator(vault_client):
     authenticator = HashiVaultAuthenticator
     authenticator.validate = mock.Mock(wraps=lambda: True)
-    authenticator.authenticate = mock.Mock(wraps=lambda client: 'throwaway')
+    authenticator.authenticate = mock.Mock(wraps=lambda client: HashiVaultAuthContext(authenticator, vault_client, "throwaway"))
     authenticator.logout = mock.Mock(warps=lambda: None)
 
     return authenticator

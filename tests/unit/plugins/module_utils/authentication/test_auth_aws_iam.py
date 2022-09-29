@@ -17,6 +17,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
+    HashiVaultAuthContext,
 )
 
 
@@ -144,7 +145,8 @@ class TestAuthAwsIam(object):
             response = auth_aws_iam.authenticate(client, use_token=use_token)
             aws_iam_login.assert_called_once_with(use_token=use_token, **expected_login_params)
 
-        assert response['auth']['client_token'] == aws_iam_login_response['auth']['client_token']
+        assert isinstance(response, HashiVaultAuthContext)
+        assert response.raw['auth']['client_token'] == aws_iam_login_response['auth']['client_token']
 
     def test_auth_aws_iam_validate_no_creds_no_boto(self, auth_aws_iam, mock_import_error):
         with mock_import_error('botocore', 'boto3'):

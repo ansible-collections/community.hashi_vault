@@ -17,6 +17,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
+    HashiVaultAuthContext,
 )
 
 
@@ -91,5 +92,6 @@ class TestAuthJwt(object):
             response = auth_jwt.authenticate(client, use_token=use_token)
             jwt_login.assert_called_once_with(**expected_login_params)
 
-        assert response['auth']['client_token'] == jwt_login_response['auth']['client_token']
+        assert isinstance(response, HashiVaultAuthContext)
+        assert response.raw['auth']['client_token'] == jwt_login_response['auth']['client_token']
         assert (client.token == jwt_login_response['auth']['client_token']) is use_token

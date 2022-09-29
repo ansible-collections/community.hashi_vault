@@ -95,5 +95,5 @@ class TestAuthApprole(object):
             response = auth_approle.authenticate(client, use_token=use_token)
             approle_login.assert_called_once_with(**expected_login_params)
 
-        assert response['auth']['client_token'] == approle_login_response['auth']['client_token']
+        assert response.raw['auth']['client_token'] == approle_login_response['auth']['client_token']
         assert (client.token == approle_login_response['auth']['client_token']) is use_token
