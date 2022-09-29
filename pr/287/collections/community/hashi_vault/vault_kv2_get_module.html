@@ -19,6 +19,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="community.hashi_vault.vault_login module – Perform a login operation against HashiCorp Vault" href="vault_login_module.html" />
@@ -76,6 +77,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">Community.Hashi_Vault</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="index.html#description">Description</a></li>
 <li class="toctree-l4"><a class="reference internal" href="index.html#communication">Communication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#changelog">Changelog</a></li>
 <li class="toctree-l4"><a class="reference internal" href="index.html#guides">Guides</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="index.html#plugin-index">Plugin Index</a></li>
 </ul>
@@ -87,6 +89,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_filter.html">Index of all Filter Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index_lookup.html">Index of all Lookup Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index_module.html">Index of all Modules</a></li>
 </ul>
@@ -126,15 +129,13 @@
 <h1>community.hashi_vault.vault_kv2_get module – Get a secret from HashiCorp Vault’s KV version 2 secret store<a class="headerlink" href="#community-hashi-vault-vault-kv2-get-module-get-a-secret-from-hashicorp-vault-s-kv-version-2-secret-store" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 3.2.0).</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 3.4.0).</p>
 <p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">community.hashi_vault</span></code>.
 You need further requirements to be able to use this module,
 see <a class="reference internal" href="#ansible-collections-community-hashi-vault-vault-kv2-get-module-requirements"><span class="std std-ref">Requirements</span></a> for details.</p>
 <p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">community.hashi_vault.vault_kv2_get</span></code>.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 2.5.0: </span>of community.hashi_vault</p>
-</div>
+<p class="ansible-version-added">New in community.hashi_vault 2.5.0</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></p></li>
@@ -179,15 +180,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">userpass</span></p></li>
-<li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
-<li><p><span class="ansible-option-choices-entry">approle</span></p></li>
-<li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
-<li><p><span class="ansible-option-choices-entry">azure</span></p></li>
-<li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
-<li><p><span class="ansible-option-choices-entry">cert</span></p></li>
-<li><p><span class="ansible-option-choices-entry">none</span></p></li>
+<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -203,7 +204,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-aws_iam_server_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-aws-iam-server-id"><strong>aws_iam_server_id</strong></p>
 <a class="ansibleOptionLink" href="#parameter-aws_iam_server_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><span class="ansible-option-versionadded">added in 0.2.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 0.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>If specified, sets the value to use for the <code class="docutils literal notranslate"><span class="pre">X-Vault-AWS-IAM-Server-ID</span></code> header as part of <code class="docutils literal notranslate"><span class="pre">GetCallerIdentity</span></code> request.</p>
 </div></td>
@@ -236,7 +237,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-azure_client_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-azure-client-id"><strong>azure_client_id</strong></p>
 <a class="ansibleOptionLink" href="#parameter-azure_client_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The client ID (also known as application ID) of the Azure AD service principal or managed identity. Should be a UUID.</p>
 <p>If not specified, will use the system assigned managed identity.</p>
@@ -245,7 +246,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-azure_client_secret"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-azure-client-secret"><strong>azure_client_secret</strong></p>
 <a class="ansibleOptionLink" href="#parameter-azure_client_secret" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The client secret of the Azure AD service principal.</p>
 </div></td>
@@ -253,7 +254,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-azure_resource"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-azure-resource"><strong>azure_resource</strong></p>
 <a class="ansibleOptionLink" href="#parameter-azure_resource" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“https://management.azure.com/”</span></p>
@@ -262,7 +263,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-azure_tenant_id"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-azure-tenant-id"><strong>azure_tenant_id</strong></p>
 <a class="ansibleOptionLink" href="#parameter-azure_tenant_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><span class="ansible-option-versionadded">added in 3.2.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The Azure Active Directory Tenant ID (also known as the Directory ID) of the service principal. Should be a UUID.</p>
 <p>Required when using a service principal to authenticate to Vault, e.g. required when both <em>azure_client_id</em> and <em>azure_client_secret</em> are specified.</p>
@@ -282,7 +283,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-cert_auth_private_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-cert-auth-private-key"><strong>cert_auth_private_key</strong></p>
 <a class="ansibleOptionLink" href="#parameter-cert_auth_private_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
-<p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, path to the private key file to authenticate with, in PEM format.</p>
 </div></td>
@@ -290,7 +291,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-cert_auth_public_key"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-cert-auth-public-key"><strong>cert_auth_public_key</strong></p>
 <a class="ansibleOptionLink" href="#parameter-cert_auth_public_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
-<p><span class="ansible-option-versionadded">added in 1.4.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.4.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>For <code class="docutils literal notranslate"><span class="pre">cert</span></code> auth, path to the certificate file to authenticate with, in PEM format.</p>
 </div></td>
@@ -347,7 +348,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-proxies"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-proxies"><strong>proxies</strong></p>
 <a class="ansibleOptionLink" href="#parameter-proxies" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
-<p><span class="ansible-option-versionadded">added in 1.1.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.1.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>URL(s) to the proxies used to access the Vault service.</p>
 <p>It can be a string or a dict.</p>
@@ -368,7 +369,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-retries"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-retries"><strong>retries</strong></p>
 <a class="ansibleOptionLink" href="#parameter-retries" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span></p>
-<p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.3.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Allows for retrying on errors, based on the <a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.Retry">Retry class in the urllib3 library</a>.</p>
 <p>This collection defines recommended defaults for retrying connections to Vault.</p>
@@ -382,25 +383,28 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-retry_action"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-retry-action"><strong>retry_action</strong></p>
 <a class="ansibleOptionLink" href="#parameter-retry_action" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.3.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Controls whether and how to show messages on <em>retries</em>.</p>
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">ignore</span></p></li>
-<li><p><span class="ansible-option-default-bold">warn</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
+<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
 </ul>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-revoke_ephemeral_token"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-revoke-ephemeral-token"><strong>revoke_ephemeral_token</strong></p>
 <a class="ansibleOptionLink" href="#parameter-revoke_ephemeral_token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 3.3.0</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Foobar</p>
+<td><div class="ansible-option-cell"><p>When <code class="docutils literal notranslate"><span class="pre">true</span></code>, tokens created implicitly by auth methods will be revoked when the operation they are used for is completed.</p>
+<p>For example, calling <a class="reference internal" href="vault_read_module.html#ansible-collections-community-hashi-vault-vault-read-module"><span class="std std-ref">community.hashi_vault.vault_read</span></a> with <code class="docutils literal notranslate"><span class="pre">userpass</span></code> auth will perform a <code class="docutils literal notranslate"><span class="pre">userpass</span></code> login to retrieve a token, perform a read with that token, then attempt to revoke the token so it can no longer be used.</p>
+<p>Revocation is considered best-effort. Errors on revocaton will not result in execution failure. A warning will be emitted on revocation failure but in some circumstances, like non-revocation failures, the warning may not be displayed.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
+<li><p><span class="ansible-option-default-bold">false</span> <span class="ansible-option-default">← (default)</span></p></li>
 <li><p><span class="ansible-option-choices-entry">true</span></p></li>
 </ul>
 </div></td>
@@ -424,7 +428,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-timeout"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-timeout"><strong>timeout</strong></p>
 <a class="ansibleOptionLink" href="#parameter-timeout" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
-<p><span class="ansible-option-versionadded">added in 1.3.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.3.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Sets the connection timeout in seconds.</p>
 <p>If not set, then the <code class="docutils literal notranslate"><span class="pre">hvac</span></code> library’s default is used.</p>
@@ -457,7 +461,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-token_validate"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-get-module-parameter-token-validate"><strong>token_validate</strong></p>
 <a class="ansibleOptionLink" href="#parameter-token_validate" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
-<p><span class="ansible-option-versionadded">added in 0.2.0 of community.hashi_vault</span></p>
+<p><span class="ansible-option-versionadded">added in community.hashi_vault 0.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>For token auth, will perform a <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> operation to determine the token’s validity before using it.</p>
 <p>Disable if your token does not have the <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> capability.</p>
