@@ -137,3 +137,30 @@ class TestVaultKv2GetLookup(object):
             assert (version is not None) == (match.group(2) == str(version))
         except IndexError:
             pass
+
+    @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
+    @pytest.mark.parametrize('engine_mount_point', ['secret', 'other'])
+    @pytest.mark.parametrize('version', [None, 2, 10])
+    def test_vault_kv2_get_logout(self, vault_kv2_get_lookup, minimal_vars, kv2_get_response, vault_client, paths, engine_mount_point, version, authenticator):
+        client = vault_client
+        rv = kv2_get_response.copy()
+        rv['data']['metadata']['version'] = version
+
+        expected = {}
+        expected['raw'] = rv.copy()
+        expected['metadata'] = expected['raw']['data']['metadata']
+        expected['data'] = expected['raw']['data']
+        expected['secret'] = expected['data']['data']
+
+        def _fake_kv2_get(path, version, mount_point):
+            r = rv.copy()
+            r['data']['data'] = r['data']['data'].copy()
+            r['data']['data'].update({'_path': path})
+            r['data']['data'].update({'_mount': mount_point})
+            return r
+
+        client.secrets.kv.v2.read_secret_version = mock.Mock(wraps=_fake_kv2_get)
+
+        response = vault_kv2_get_lookup.run(terms=paths, variables=minimal_vars, version=version, engine_mount_point=engine_mount_point)
+
+        authenticator.logout.assert_called_once_with(client)

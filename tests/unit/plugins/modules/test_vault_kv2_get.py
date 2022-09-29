@@ -166,3 +166,17 @@ class TestModuleVaultKv2Get():
             assert (opt_version is not None) == (match.group(2) == str(opt_version))
         except IndexError:
             pass
+
+    @pytest.mark.parametrize('opt_engine_mount_point', ['secret', 'other'])
+    @pytest.mark.parametrize('opt_version', [None, 2, 10])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point', 'version']], indirect=True)
+    def test_vault_kv2_get_logout(self, patch_ansible_module, kv2_get_response, vault_client, opt_engine_mount_point, opt_version, capfd, authenticator):
+        client = vault_client
+        rv = kv2_get_response.copy()
+        rv['data']['metadata']['version'] = opt_version
+        client.secrets.kv.v2.read_secret_version.return_value = rv
+
+        with pytest.raises(SystemExit) as e:
+            vault_kv2_get.main()
+
+        authenticator.logout.assert_called_once_with(client)

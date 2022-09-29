@@ -129,3 +129,15 @@ class TestModuleVaultPkiGenerateCertificate():
             vault_pki_generate_certificate.main()
 
         assert e.value.code != 0
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_pki_generate_certificate_logout(self, vault_client, capfd, authenticator):
+        hvac = pytest.importorskip('hvac')
+
+        client = vault_client
+        client.secrets.pki.generate_certificate.side_effect = hvac.exceptions.VaultError
+
+        with pytest.raises(SystemExit) as e:
+            vault_pki_generate_certificate.main()
+
+        authenticator.logout.assert_called_once_with(client)

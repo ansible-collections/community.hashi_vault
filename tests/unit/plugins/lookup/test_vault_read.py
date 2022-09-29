@@ -85,3 +85,20 @@ class TestVaultReadLookup(object):
             r = response.pop(0)
             ins_p = r.pop('_path')
             assert p == ins_p, "expected '_path=%s' field was not found in response, got %r" % (p, ins_p)
+
+    @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
+    def test_vault_read_logout(self, vault_read_lookup, minimal_vars, kv1_get_response, vault_client, paths, authenticator):
+        client = vault_client
+
+        expected_calls = [mock.call(p) for p in paths]
+
+        def _fake_kv1_get(path):
+            r = kv1_get_response.copy()
+            r.update({'_path': path})
+            return r
+
+        client.read = mock.Mock(wraps=_fake_kv1_get)
+
+        response = vault_read_lookup.run(terms=paths, variables=minimal_vars)
+
+        authenticator.logout.assert_called_once_with(client)
