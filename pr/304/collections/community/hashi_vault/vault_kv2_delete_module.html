@@ -19,6 +19,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="community.hashi_vault.vault_kv2_get module – Get a secret from HashiCorp Vault’s KV version 2 secret store" href="vault_kv2_get_module.html" />
@@ -88,6 +89,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_filter.html">Index of all Filter Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index_lookup.html">Index of all Lookup Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index_module.html">Index of all Modules</a></li>
 </ul>
@@ -178,15 +180,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">userpass</span></p></li>
-<li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
-<li><p><span class="ansible-option-choices-entry">approle</span></p></li>
-<li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
-<li><p><span class="ansible-option-choices-entry">azure</span></p></li>
-<li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
-<li><p><span class="ansible-option-choices-entry">cert</span></p></li>
-<li><p><span class="ansible-option-choices-entry">none</span></p></li>
+<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -387,8 +389,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">ignore</span></p></li>
-<li><p><span class="ansible-option-default-bold">warn</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
+<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -487,6 +489,14 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </ul>
 </div></td>
 </tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-versions"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-delete-module-parameter-versions"><strong>versions</strong></p>
+<a class="ansibleOptionLink" href="#parameter-versions" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=integer</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The version of the secret to delete.</p>
+<p>When omitted, the latest version of the secret is deleted.</p>
+</div></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -512,7 +522,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </section>
 <section id="examples">
 <h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write a value to the cubbyhole via the remote host with userpass auth</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete the latest version of the C(secret/mysecret) secret.</span><span class="w"></span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_delete</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/mysecret</span><span class="w"></span>
@@ -521,9 +531,14 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span><span class="w"></span>
 
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the result of the delete (this can be empty)</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">result.data</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete versions 1 and 3 of the C(secret/mysecret) secret.</span><span class="w"></span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_delete</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/mysecret</span><span class="w"></span>
+<span class="w">    </span><span class="nt">versions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span><span class="w"></span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user</span><span class="w"></span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -541,7 +556,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="return-data"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-delete-module-return-data"><strong>data</strong></p>
 <a class="ansibleOptionLink" href="#return-data" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>The raw result of the write against the given path.</p>
+<td><div class="ansible-option-cell"><p>The raw result of the delete against the given path.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
 </div></td>
 </tr>

@@ -19,9 +19,10 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Index of all Lookup Plugins" href="../../index_lookup.html" />
+    <link rel="next" title="Index of all Filter Plugins" href="../../index_filter.html" />
     <link rel="prev" title="community.hashi_vault.vault_token_create module – Create a HashiCorp Vault token" href="vault_token_create_module.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
 
 
@@ -88,6 +89,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_filter.html">Index of all Filter Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index_lookup.html">Index of all Lookup Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index_module.html">Index of all Modules</a></li>
 </ul>
@@ -133,9 +135,7 @@ You need further requirements to be able to use this module,
 see <a class="reference internal" href="#ansible-collections-community-hashi-vault-vault-write-module-requirements"><span class="std std-ref">Requirements</span></a> for details.</p>
 <p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">community.hashi_vault.vault_write</span></code>.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version community.hashi\_vault: </span>2.4.0</p>
-</div>
+<p class="ansible-version-added">New in community.hashi_vault 2.4.0</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></p></li>
@@ -181,15 +181,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">token</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">userpass</span></p></li>
-<li><p><span class="ansible-option-choices-entry">ldap</span></p></li>
-<li><p><span class="ansible-option-choices-entry">approle</span></p></li>
-<li><p><span class="ansible-option-choices-entry">aws_iam</span></p></li>
-<li><p><span class="ansible-option-choices-entry">azure</span></p></li>
-<li><p><span class="ansible-option-choices-entry">jwt</span></p></li>
-<li><p><span class="ansible-option-choices-entry">cert</span></p></li>
-<li><p><span class="ansible-option-choices-entry">none</span></p></li>
+<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -388,8 +388,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">ignore</span></p></li>
-<li><p><span class="ansible-option-default-bold">warn</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
+<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -614,7 +614,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 
 <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="vault_token_create_module.html" class="btn btn-neutral float-left" title="community.hashi_vault.vault_token_create module – Create a HashiCorp Vault token" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../index_lookup.html" class="btn btn-neutral float-right" title="Index of all Lookup Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../index_filter.html" class="btn btn-neutral float-right" title="Index of all Filter Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
