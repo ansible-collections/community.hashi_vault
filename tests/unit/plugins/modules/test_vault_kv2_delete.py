@@ -67,7 +67,7 @@ class TestModuleVaultKv2Delete():
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
-    def test_vault_kv2_get_auth_validation_error(self, authenticator, exc, capfd):
+    def test_vault_kv2_delete_auth_validation_error(self, authenticator, exc, capfd):
         authenticator.validate.side_effect = exc
 
         with pytest.raises(SystemExit) as e:
@@ -79,13 +79,17 @@ class TestModuleVaultKv2Delete():
         assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == 'throwaway msg'
 
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_kv2_delete_empty_response(self, patch_ansible_module, requests_unparseable_response, vault_client, capfd):
+    @pytest.mark.parametrize('opt_versions', [None, [1, 3]])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'versions']], indirect=True)
+    def test_vault_kv2_delete_empty_response(self, patch_ansible_module, opt_versions, requests_unparseable_response, vault_client, capfd):
         client = vault_client
 
         requests_unparseable_response.status_code = 204
 
-        client.secrets.kv.v2.delete_latest_version_of_secret.return_value = requests_unparseable_response
+        if opt_versions:
+            client.secrets.kv.v2.delete_secret_versions.return_value = requests_unparseable_response
+        else:
+            client.secrets.kv.v2.delete_latest_version_of_secret.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_kv2_delete.main()
@@ -97,14 +101,18 @@ class TestModuleVaultKv2Delete():
 
         assert result['data'] == {}
 
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_kv2_delete_unparseable_response(self, vault_client, requests_unparseable_response, module_warn, capfd):
+    @pytest.mark.parametrize('opt_versions', [None, [1, 3]])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'versions']], indirect=True)
+    def test_vault_kv2_delete_unparseable_response(self, vault_client, opt_versions, requests_unparseable_response, module_warn, capfd):
         client = vault_client
 
         requests_unparseable_response.status_code = 200
         requests_unparseable_response.content = '(☞ﾟヮﾟ)☞ ┻━┻'
 
-        client.secrets.kv.v2.delete_latest_version_of_secret.return_value = requests_unparseable_response
+        if opt_versions:
+            client.secrets.kv.v2.delete_secret_versions.return_value = requests_unparseable_response
+        else:
+            client.secrets.kv.v2.delete_latest_version_of_secret.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_kv2_delete.main()
@@ -137,13 +145,19 @@ class TestModuleVaultKv2Delete():
              r"^Forbidden: Permission Denied to path \['([^']+)'\]"),
         ]
     )
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'path']], indirect=True)
+    @pytest.mark.parametrize('opt_versions', [None, [1, 3]])
     @pytest.mark.parametrize('opt_path', ['path/1', 'second/path'])
-    def test_vault_kv2_get_vault_exception(self, vault_client, exc, opt_path, capfd):
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'path', 'versions']], indirect=True)
+    def test_vault_kv2_delete_vault_exception(self, vault_client, exc, opt_versions, opt_path, capfd):
 
         client = vault_client
-        client.secrets.kv.v2.delete_latest_version_of_secret.side_effect = exc[0](
-            exc[1])
+
+        if opt_versions:
+            client.secrets.kv.v2.delete_secret_versions.side_effect = exc[0](
+                exc[1])
+        else:
+            client.secrets.kv.v2.delete_latest_version_of_secret.side_effect = exc[0](
+                exc[1])
 
         with pytest.raises(SystemExit) as e:
             vault_kv2_delete.main()
