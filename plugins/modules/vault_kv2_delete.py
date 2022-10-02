@@ -38,10 +38,16 @@ options:
       - For kv2, do not include C(/data/) or C(/metadata/).
     type: str
     required: True
+  versions:
+    description:
+      - The version of the secret to delete.
+      - When omitted, the latest version of the secret is deleted.
+    type: list[int]
+    required: False
 '''
 
 EXAMPLES = """
-- name: Write a value to the cubbyhole via the remote host with userpass auth
+- name: Delete the latest version of the C(secret/mysecret) secret.
   community.hashi_vault.vault_kv2_delete:
     url: https://vault:8201
     path: secret/mysecret
@@ -50,14 +56,19 @@ EXAMPLES = """
     password: '{{ passwd }}'
   register: result
 
-- name: Display the result of the delete (this can be empty)
-  ansible.builtin.debug:
-    msg: "{{ result.data }}"
+- name: Delete versions 1 and 3 of the C(secret/mysecret) secret.
+  community.hashi_vault.vault_kv2_delete:
+    url: https://vault:8201
+    path: secret/mysecret
+    versions: [1, 3]
+    auth_method: userpass
+    username: user
+    password: '{{ passwd }}'
 """
 
 RETURN = """
 data:
-  description: The raw result of the write against the given path.
+  description: The raw result of the delete against the given path.
   returned: success
   type: dict
 """
@@ -84,7 +95,8 @@ def run_module():
 
     argspec = HashiVaultModule.generate_argspec(
         engine_mount_point=dict(type='str', default='secret'),
-        path=dict(type='str', required=True)
+        path=dict(type='str', required=True),
+        versions=dict(type='list', elements='int', required=False)
     )
 
     module = HashiVaultModule(
@@ -100,6 +112,7 @@ def run_module():
 
     engine_mount_point = module.params.get('engine_mount_point')
     path = module.params.get('path')
+    versions = module.params.get('versions')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -111,8 +124,17 @@ def run_module():
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
+
     try:
-        response = client.secrets.kv.v2.delete_latest_version_of_secret(path=path, mount_point=engine_mount_point)
+        # Vault has two separate methods, one for delete latest version,
+        # and delete specific versions.
+        if not versions:
+            response = client.secrets.kv.v2.delete_latest_version_of_secret(
+                path=path, mount_point=engine_mount_point)
+        else:
+            response = client.secrets.kv.v2.delete_secret_versions(
+                path=path, versions=versions, mount_point=engine_mount_point)
+
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
 
