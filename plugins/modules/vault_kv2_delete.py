@@ -42,7 +42,8 @@ options:
     description:
       - The version of the secret to delete.
       - When omitted, the latest version of the secret is deleted.
-    type: list[int]
+    type: list
+    elements: int
     required: False
 '''
 
@@ -90,8 +91,8 @@ else:
     HVAC_IMPORT_ERROR = None
     HAS_HVAC = True
 
-def run_module():
 
+def run_module():
 
     argspec = HashiVaultModule.generate_argspec(
         engine_mount_point=dict(type='str', default='secret'),
@@ -124,7 +125,6 @@ def run_module():
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-
     try:
         # Vault has two separate methods, one for delete latest version,
         # and delete specific versions.
@@ -155,6 +155,7 @@ def run_module():
         output = response
 
     module.exit_json(changed=True, data=output)
+
 
 def main():
     run_module()
