@@ -49,14 +49,6 @@ def _combined_options(**kwargs):
     return opt
 
 
-@pytest.fixture
-def kv2_delete_response():
-    class request_response:
-        status_code = 204
-
-    return request_response
-
-
 class TestModuleVaultKv2Delete():
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
@@ -87,13 +79,13 @@ class TestModuleVaultKv2Delete():
         assert e.value.code != 0, "result: %r" % (result,)
         assert result['msg'] == 'throwaway msg'
 
-    @pytest.mark.parametrize('opt_engine_mount_point', ['secret', 'other'])
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point']], indirect=True)
-    def test_vault_kv2_delete_return_data(self, patch_ansible_module, kv2_delete_response, vault_client, opt_engine_mount_point, capfd):
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_kv2_delete_empty_response(self, patch_ansible_module, requests_unparseable_response, vault_client, capfd):
         client = vault_client
-        client.secrets.kv.v2.delete_latest_version_of_secret.return_value = kv2_delete_response
 
-        expected_response = 204
+        requests_unparseable_response.status_code = 204
+
+        client.secrets.kv.v2.delete_latest_version_of_secret.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_kv2_delete.main()
@@ -103,15 +95,28 @@ class TestModuleVaultKv2Delete():
 
         assert e.value.code == 0, "result: %r" % (result,)
 
-        client.secrets.kv.v2.delete_latest_version_of_secret.assert_called_once_with(
-            path=patch_ansible_module['path'],
-            mount_point=patch_ansible_module['engine_mount_point'],
-        )
+        assert result['data'] == {}
 
-        assert result['response_code'] == expected_response, (
-            "module result did not match expected result:\nmodule: %r\nexpected: %r" % (
-                result['response_code'], expected_response)
-        )
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_kv2_delete_unparseable_response(self, vault_client, requests_unparseable_response, module_warn, capfd):
+        client = vault_client
+
+        requests_unparseable_response.status_code = 200
+        requests_unparseable_response.content = '(☞ﾟヮﾟ)☞ ┻━┻'
+
+        client.secrets.kv.v2.delete_latest_version_of_secret.return_value = requests_unparseable_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_kv2_delete.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code == 0, "result: %r" % (result,)
+        assert result['data'] == '(☞ﾟヮﾟ)☞ ┻━┻'
+
+        module_warn.assert_called_once_with(
+            'Vault returned status code 200 and an unparsable body.')
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_kv2_delete_no_hvac(self, capfd):
