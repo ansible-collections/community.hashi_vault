@@ -97,6 +97,15 @@
       a: two
       v: 2
 
+- name: Set up a multi versioned secret for delete (v2)
+  vault_ci_kv_put:
+    version: 2
+    mount_point: '{{ vault_kv2_mount_point }}'
+    path: '{{ vault_kv2_versioned_path }}/secret6'
+    secret:
+      v: value{{item}}
+  loop: ["1", "2", "3", "4", "5"]
+
 - name: 'Write Canary'
   vault_ci_write:
     path: '{{ vault_configure_canary.path }}'
