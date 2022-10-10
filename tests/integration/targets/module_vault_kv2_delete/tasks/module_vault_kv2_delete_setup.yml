@@ -25,5 +25,5 @@
         mount_point: '{{ vault_kv2_mount_point }}'
         path: '{{ vault_kv2_versioned_path }}/secret6'
         secret:
-          v: value{{item}}
+          v: value{{ item }}
       loop: ["1", "2", "3", "4", "5"]

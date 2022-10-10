@@ -11,16 +11,17 @@ DOCUMENTATION = '''
 module: vault_kv2_delete
 author:
   - Isaac Wagner (@idwagner)
-short_description: Delete the latest version of a secret from HashiCorp Vault's KV version 2 secret store
+short_description: Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Deletes the latest version of a secret from HashiCorp Vault's KV version 2 secret store.
+  - Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store.
 notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 seealso:
+  - module: vault_kv2_get
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
@@ -40,7 +41,7 @@ options:
     required: True
   versions:
     description:
-      - The version of the secret to delete.
+      - One or more versions of the secret to delete.
       - When omitted, the latest version of the secret is deleted.
     type: list
     elements: int
@@ -48,7 +49,7 @@ options:
 '''
 
 EXAMPLES = """
-- name: Delete the latest version of the C(secret/mysecret) secret.
+- name: Delete the latest version of the secret/mysecret secret.
   community.hashi_vault.vault_kv2_delete:
     url: https://vault:8201
     path: secret/mysecret
@@ -57,7 +58,7 @@ EXAMPLES = """
     password: '{{ passwd }}'
   register: result
 
-- name: Delete versions 1 and 3 of the C(secret/mysecret) secret.
+- name: Delete versions 1 and 3 of the secret/mysecret secret.
   community.hashi_vault.vault_kv2_delete:
     url: https://vault:8201
     path: secret/mysecret
