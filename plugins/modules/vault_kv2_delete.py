@@ -129,7 +129,9 @@ def run_module():
     try:
         # Vault has two separate methods, one for delete latest version,
         # and delete specific versions.
-        if not versions:
+        if module.check_mode:
+          response = {}
+        elif not versions:
             response = client.secrets.kv.v2.delete_latest_version_of_secret(
                 path=path, mount_point=engine_mount_point)
         else:

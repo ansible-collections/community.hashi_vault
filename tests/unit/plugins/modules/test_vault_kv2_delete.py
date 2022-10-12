@@ -172,9 +172,14 @@ class TestModuleVaultKv2Delete():
 
         assert opt_path == match.group(1)
 
+    @pytest.mark.parametrize('opt__ansible_check_mode', [False, True])
     @pytest.mark.parametrize('opt_versions', [None])
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'versions']], indirect=True)
-    def test_vault_kv2_delete_latest_version_call(self, vault_client, opt_versions, capfd):
+    @pytest.mark.parametrize('patch_ansible_module', [[
+        _combined_options(),
+        '_ansible_check_mode',
+        'versions'
+    ]], indirect=True)
+    def test_vault_kv2_delete_latest_version_call(self, vault_client, opt__ansible_check_mode, opt_versions, capfd):
 
         client = vault_client
         client.secrets.kv.v2.delete_latest_version_of_secret.return_value = {}
@@ -185,12 +190,20 @@ class TestModuleVaultKv2Delete():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
-        client.secrets.kv.v2.delete_latest_version_of_secret.assert_called_once_with(
-            path='endpoint', mount_point='secret')
+        if opt__ansible_check_mode:
+            client.secrets.kv.v2.delete_latest_version_of_secret.assert_not_called()
+        else:
+            client.secrets.kv.v2.delete_latest_version_of_secret.assert_called_once_with(
+                path='endpoint', mount_point='secret')
 
+    @pytest.mark.parametrize('opt__ansible_check_mode', [False, True])
     @pytest.mark.parametrize('opt_versions', [[1, 3]])
-    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'versions']], indirect=True)
-    def test_vault_kv2_delete_specific_versions_call(self, vault_client, opt_versions, capfd):
+    @pytest.mark.parametrize('patch_ansible_module', [[
+        _combined_options(),
+        '_ansible_check_mode',
+        'versions'
+    ]], indirect=True)
+    def test_vault_kv2_delete_specific_versions_call(self, vault_client, opt__ansible_check_mode, opt_versions, capfd):
 
         client = vault_client
         client.secrets.kv.v2.delete_secret_versions.return_value = {}
@@ -201,5 +214,8 @@ class TestModuleVaultKv2Delete():
         out, err = capfd.readouterr()
         result = json.loads(out)
 
-        client.secrets.kv.v2.delete_secret_versions.assert_called_once_with(
-            path='endpoint', mount_point='secret', versions=[1, 3])
+        if opt__ansible_check_mode:
+            client.secrets.kv.v2.delete_secret_versions.assert_not_called()
+        else:
+            client.secrets.kv.v2.delete_secret_versions.assert_called_once_with(
+                path='endpoint', mount_point='secret', versions=[1, 3])
