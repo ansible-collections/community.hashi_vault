@@ -21,7 +21,7 @@ notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 seealso:
-  - module: vault_kv2_get
+  - module: vault_kv2_delete
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
@@ -130,7 +130,7 @@ def run_module():
         # Vault has two separate methods, one for delete latest version,
         # and delete specific versions.
         if module.check_mode:
-          response = {}
+            response = {}
         elif not versions:
             response = client.secrets.kv.v2.delete_latest_version_of_secret(
                 path=path, mount_point=engine_mount_point)
