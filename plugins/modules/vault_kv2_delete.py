@@ -21,7 +21,6 @@ notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 seealso:
-  - module: vault_kv2_delete
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
