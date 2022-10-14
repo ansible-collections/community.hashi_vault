@@ -169,7 +169,7 @@
 <td><div class="ansible-option-cell"><p>The names of the options to load.</p>
 <p>Supports <code class="docutils literal notranslate"><span class="pre">fnmatch</span></code> <a class="reference external" href="https://docs.python.org/3/library/fnmatch.html">style wildcards</a>.</p>
 <p>Prepend any name or pattern with <code class="docutils literal notranslate"><span class="pre">!</span></code> to invert the match.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">[”*”]</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[&quot;*&quot;]</span></code></p>
 </div></td>
 </tr>
 </tbody>
@@ -191,8 +191,8 @@
 <td><div class="ansible-option-cell"><p>Include options whose value comes from a default.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">false</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">false</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -203,8 +203,8 @@
 <td><div class="ansible-option-cell"><p>Include options whose value is <code class="docutils literal notranslate"><span class="pre">None</span></code> (this usually means they are unset).</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">false</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">false</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -215,8 +215,8 @@
 <td><div class="ansible-option-cell"><p>Include options that begin with underscore <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">false</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">false</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -227,7 +227,7 @@
 <td><div class="ansible-option-cell"><p>The name of the plugin whose options will be returned.</p>
 <p>Only lookups are supported.</p>
 <p>Short names (without a dot <code class="docutils literal notranslate"><span class="pre">.</span></code>) will be fully qualified with <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code>.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“community.hashi_vault.vault_login”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;community.hashi_vault.vault_login&quot;</span></code></p>
 </div></td>
 </tr>
 </tbody>
@@ -471,7 +471,7 @@
 <td><div class="ansible-option-cell"><p>A dictionary of the options and their values.</p>
 <p>Only a single dictionary will be returned, even with multiple terms.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
-<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> {“retries”: 5, “timeout”: 20, “token”: “s.jRHAoqElnJDx6J5ExYelCDYR”, “url”: “<a class="reference external" href="https://vault.example.com">https://vault.example.com</a>”}</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;retries&quot;:</span> <span class="pre">5,</span> <span class="pre">&quot;timeout&quot;:</span> <span class="pre">20,</span> <span class="pre">&quot;token&quot;:</span> <span class="pre">&quot;s.jRHAoqElnJDx6J5ExYelCDYR&quot;,</span> <span class="pre">&quot;url&quot;:</span> <span class="pre">&quot;https://vault.example.com&quot;}</span></code></p>
 </div></td>
 </tr>
 </tbody>

@@ -22,7 +22,7 @@
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="community.hashi_vault.vault_kv2_delete module – Delete the latest version of a secret from HashiCorp Vault’s KV version 2 secret store" href="vault_kv2_delete_module.html" />
+    <link rel="next" title="community.hashi_vault.vault_kv2_delete module – Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store" href="vault_kv2_delete_module.html" />
     <link rel="prev" title="community.hashi_vault.vault_write lookup – Perform a write operation against HashiCorp Vault" href="vault_write_lookup.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
 
 
@@ -180,15 +180,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;token&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;userpass&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;ldap&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;approle&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;aws_iam&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;azure&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;jwt&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;cert&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -257,7 +257,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“https://management.azure.com/”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;https://management.azure.com/&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -301,7 +301,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-engine_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The path where the secret backend is mounted.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“kv”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;kv&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -388,8 +388,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
-<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;ignore&quot;</span></code></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;warn&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -432,7 +432,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-token_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>If no token is specified, will try to read the token from this file in <em>token_path</em>.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“.vault-token”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;.vault-token&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -453,8 +453,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>The default value will change to <code class="docutils literal notranslate"><span class="pre">false</span></code> in version 4.0.0.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -483,8 +483,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>Will default to <code class="docutils literal notranslate"><span class="pre">true</span></code> if neither <em>validate_certs</em> or <code class="docutils literal notranslate"><span class="pre">VAULT_SKIP_VERIFY</span></code> are set.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -560,7 +560,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> field of raw result. This can also be accessed via <code class="docutils literal notranslate"><span class="pre">raw.data</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
-<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> {“Key1”: “value1”, “Key2”: “value2”}</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;Key1&quot;:</span> <span class="pre">&quot;value1&quot;,</span> <span class="pre">&quot;Key2&quot;:</span> <span class="pre">&quot;value2&quot;}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -569,7 +569,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>This is a synthetic result. It is the same as <code class="docutils literal notranslate"><span class="pre">raw</span></code> with <code class="docutils literal notranslate"><span class="pre">data</span></code> removed.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
-<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> {“auth”: null, “lease_duration”: 2764800, “lease_id”: “”, “renewable”: false, “request_id”: “e99f145f-f02a-7073-1229-e3f191057a70”, “warnings”: null, “wrap_info”: null}</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;auth&quot;:</span> <span class="pre">null,</span> <span class="pre">&quot;lease_duration&quot;:</span> <span class="pre">2764800,</span> <span class="pre">&quot;lease_id&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;renewable&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;request_id&quot;:</span> <span class="pre">&quot;e99f145f-f02a-7073-1229-e3f191057a70&quot;,</span> <span class="pre">&quot;warnings&quot;:</span> <span class="pre">null,</span> <span class="pre">&quot;wrap_info&quot;:</span> <span class="pre">null}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -578,7 +578,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>The raw result of the read against the given path.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
-<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> {“auth”: null, “data”: {“Key1”: “value1”, “Key2”: “value2”}, “lease_duration”: 2764800, “lease_id”: “”, “renewable”: false, “request_id”: “e99f145f-f02a-7073-1229-e3f191057a70”, “warnings”: null, “wrap_info”: null}</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;auth&quot;:</span> <span class="pre">null,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">{&quot;Key1&quot;:</span> <span class="pre">&quot;value1&quot;,</span> <span class="pre">&quot;Key2&quot;:</span> <span class="pre">&quot;value2&quot;},</span> <span class="pre">&quot;lease_duration&quot;:</span> <span class="pre">2764800,</span> <span class="pre">&quot;lease_id&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;renewable&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;request_id&quot;:</span> <span class="pre">&quot;e99f145f-f02a-7073-1229-e3f191057a70&quot;,</span> <span class="pre">&quot;warnings&quot;:</span> <span class="pre">null,</span> <span class="pre">&quot;wrap_info&quot;:</span> <span class="pre">null}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -587,7 +587,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> field of the raw result. This is identical to <code class="docutils literal notranslate"><span class="pre">data</span></code> in the return values.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
-<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> {“Key1”: “value1”, “Key2”: “value2”}</p>
+<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;Key1&quot;:</span> <span class="pre">&quot;value1&quot;,</span> <span class="pre">&quot;Key2&quot;:</span> <span class="pre">&quot;value2&quot;}</span></code></p>
 </div></td>
 </tr>
 </tbody>
@@ -616,7 +616,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 
 <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="vault_write_lookup.html" class="btn btn-neutral float-left" title="community.hashi_vault.vault_write lookup – Perform a write operation against HashiCorp Vault" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="vault_kv2_delete_module.html" class="btn btn-neutral float-right" title="community.hashi_vault.vault_kv2_delete module – Delete the latest version of a secret from HashiCorp Vault’s KV version 2 secret store" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="vault_kv2_delete_module.html" class="btn btn-neutral float-right" title="community.hashi_vault.vault_kv2_delete module – Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

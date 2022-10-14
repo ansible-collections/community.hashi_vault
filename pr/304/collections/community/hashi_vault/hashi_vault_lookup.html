@@ -181,15 +181,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;token&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;userpass&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;ldap&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;approle&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;aws_iam&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;azure&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;jwt&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;cert&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
@@ -324,7 +324,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“https://management.azure.com/”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;https://management.azure.com/&quot;</span></code></p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
 <li><p>INI entry:</p>
@@ -573,8 +573,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
-<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;ignore&quot;</span></code></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;warn&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
@@ -602,9 +602,9 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">raw</span></code> returns the actual API result (deserialized), which includes metadata and may have the data nested in other keys.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">“dict”</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“values”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“raw”</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;dict&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;values&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;raw&quot;</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -700,7 +700,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-token_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>If no token is specified, will try to read the token from this file in <em>token_path</em>.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“.vault-token”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;.vault-token&quot;</span></code></p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
 <li><p>INI entry:</p>
@@ -753,8 +753,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>The default value will change to <code class="docutils literal notranslate"><span class="pre">false</span></code> in version 4.0.0.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
@@ -825,8 +825,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>Will default to <code class="docutils literal notranslate"><span class="pre">true</span></code> if neither <em>validate_certs</em> or <code class="docutils literal notranslate"><span class="pre">VAULT_SKIP_VERIFY</span></code> are set.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>

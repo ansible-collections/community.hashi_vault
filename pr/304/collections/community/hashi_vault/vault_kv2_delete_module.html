@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>community.hashi_vault.vault_kv2_delete module – Delete the latest version of a secret from HashiCorp Vault’s KV version 2 secret store &mdash; Ansible collections  documentation</title>
+  <title>community.hashi_vault.vault_kv2_delete module – Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store &mdash; Ansible collections  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/ansible.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/antsibull-minimal.css" type="text/css" />
@@ -112,7 +112,7 @@
           <li><a href="../../index.html">Collection Index</a> &raquo;</li>
           <li><a href="../index.html">Collections in the Community Namespace</a> &raquo;</li>
           <li><a href="index.html">Community.Hashi_Vault</a> &raquo;</li>
-      <li>community.hashi_vault.vault_kv2_delete module – Delete the latest version of a secret from HashiCorp Vault’s KV version 2 secret store</li>
+      <li>community.hashi_vault.vault_kv2_delete module – Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store</li>
       <li class="wy-breadcrumbs-aside">
               <!-- User defined GitHub URL -->
               <a href="https://github.com/ansible-collections/community.hashi_vault/edit/main/plugins/modules/vault_kv2_delete.py?description=%23%23%23%23%23%20SUMMARY%0A%3C!—%20Your%20description%20here%20–%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
@@ -125,8 +125,8 @@
   
            <div itemprop="articleBody">
              
-  <span class="target" id="ansible-collections-community-hashi-vault-vault-kv2-delete-module"></span><section id="community-hashi-vault-vault-kv2-delete-module-delete-the-latest-version-of-a-secret-from-hashicorp-vault-s-kv-version-2-secret-store">
-<h1>community.hashi_vault.vault_kv2_delete module – Delete the latest version of a secret from HashiCorp Vault’s KV version 2 secret store<a class="headerlink" href="#community-hashi-vault-vault-kv2-delete-module-delete-the-latest-version-of-a-secret-from-hashicorp-vault-s-kv-version-2-secret-store" title="Permalink to this heading"></a></h1>
+  <span class="target" id="ansible-collections-community-hashi-vault-vault-kv2-delete-module"></span><section id="community-hashi-vault-vault-kv2-delete-module-delete-one-or-more-versions-of-a-secret-from-hashicorp-vault-s-kv-version-2-secret-store">
+<h1>community.hashi_vault.vault_kv2_delete module – Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store<a class="headerlink" href="#community-hashi-vault-vault-kv2-delete-module-delete-one-or-more-versions-of-a-secret-from-hashicorp-vault-s-kv-version-2-secret-store" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 3.4.0).</p>
@@ -149,7 +149,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <section id="synopsis">
 <h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>Deletes the latest version of a secret from HashiCorp Vault’s KV version 2 secret store.</p></li>
+<li><p>Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store.</p></li>
 </ul>
 </section>
 <section id="requirements">
@@ -180,15 +180,15 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-default-bold">“token”</span> <span class="ansible-option-default">← (default)</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“userpass”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“ldap”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“approle”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“aws_iam”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“azure”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“jwt”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“cert”</span></p></li>
-<li><p><span class="ansible-option-choices-entry">“none”</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;token&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;userpass&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;ldap&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;approle&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;aws_iam&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;azure&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;jwt&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;cert&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -257,7 +257,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p><span class="ansible-option-versionadded">added in community.hashi_vault 3.2.0</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The resource URL for the application registered in Azure Active Directory. Usually should not be changed from the default.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“https://management.azure.com/”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;https://management.azure.com/&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -301,7 +301,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-engine_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The path where the secret backend is mounted.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“secret”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;secret&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -389,8 +389,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>This has no effect if a request is not retried.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">“ignore”</span></p></li>
-<li><p><span class="ansible-option-default-bold">“warn”</span> <span class="ansible-option-default">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;ignore&quot;</span></code></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;warn&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
 </ul>
 </div></td>
 </tr>
@@ -433,7 +433,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-token_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>If no token is specified, will try to read the token from this file in <em>token_path</em>.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <span class="ansible-option-default">“.vault-token”</span></p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;.vault-token&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -454,8 +454,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>The default value will change to <code class="docutils literal notranslate"><span class="pre">false</span></code> in version 4.0.0.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -484,8 +484,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>Will default to <code class="docutils literal notranslate"><span class="pre">true</span></code> if neither <em>validate_certs</em> or <code class="docutils literal notranslate"><span class="pre">VAULT_SKIP_VERIFY</span></code> are set.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
-<li><p><span class="ansible-option-choices-entry">false</span></p></li>
-<li><p><span class="ansible-option-choices-entry">true</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
 </ul>
 </div></td>
 </tr>
@@ -493,7 +493,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="parameter-versions"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-delete-module-parameter-versions"><strong>versions</strong></p>
 <a class="ansibleOptionLink" href="#parameter-versions" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=integer</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>The version of the secret to delete.</p>
+<td><div class="ansible-option-cell"><p>One or more versions of the secret to delete.</p>
 <p>When omitted, the latest version of the secret is deleted.</p>
 </div></td>
 </tr>
@@ -522,7 +522,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </section>
 <section id="examples">
 <h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete the latest version of the C(secret/mysecret) secret.</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete the latest version of the secret/mysecret secret.</span><span class="w"></span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_delete</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/mysecret</span><span class="w"></span>
@@ -531,7 +531,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span><span class="w"></span>
 
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete versions 1 and 3 of the C(secret/mysecret) secret.</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete versions 1 and 3 of the secret/mysecret secret.</span><span class="w"></span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_delete</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span><span class="w"></span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/mysecret</span><span class="w"></span>
