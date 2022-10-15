@@ -507,6 +507,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul class="simple">
 <li><p>This module always reports <code class="docutils literal notranslate"><span class="pre">changed</span></code> status because it cannot guarantee idempotence.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">changed_when</span></code> to control that in cases where the operation is known to not change state.</p></li>
+<li><p>In check mode, the module returns <code class="docutils literal notranslate"><span class="pre">changed</span></code> status without contacting Vault. Consider using <a class="reference internal" href="vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">community.hashi_vault.vault_kv2_get</span></a> to verify the existence of the secret first.</p></li>
 </ul>
 </div>
 </section>
@@ -515,6 +516,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
+<dt><a class="reference internal" href="vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">community.hashi_vault.vault_kv2_get</span></a></dt><dd><p>The official documentation on the <strong>community.hashi_vault.vault_kv2_get</strong> module.</p>
+</dd>
 <dt><a class="reference external" href="https://www.vaultproject.io/docs/secrets/kv/kv-v2">KV2 Secrets Engine</a></dt><dd><p>Documentation for the Vault KV secrets engine, version 2.</p>
 </dd>
 </dl>
@@ -557,6 +560,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#return-data" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The raw result of the delete against the given path.</p>
+<p>This is usually empty, but may contain warnings or other information.</p>
 <p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> success</p>
 </div></td>
 </tr>
