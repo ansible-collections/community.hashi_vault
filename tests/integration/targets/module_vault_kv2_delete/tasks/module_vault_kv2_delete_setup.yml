@@ -13,7 +13,6 @@
     vault_ci_kv2_destroy_all: '{{ vault_plugins_module_defaults_common }}'
     vault_ci_kv_put: '{{ vault_plugins_module_defaults_common }}'
   block:
-
     - name: Remove existing multi-version secret
       vault_ci_kv2_destroy_all:
         mount_point: '{{ vault_kv2_mount_point }}'

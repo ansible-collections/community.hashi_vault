@@ -20,7 +20,9 @@ description:
 notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
+  - In check mode, the module returns C(changed) status without contacting Vault. Consider using M(community.hashi_vault.vault_kv2_get) to verify the existence of the secret first.
 seealso:
+  - module: vault_kv2_get
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
@@ -69,7 +71,9 @@ EXAMPLES = """
 
 RETURN = """
 data:
-  description: The raw result of the delete against the given path.
+  description: 
+    - The raw result of the delete against the given path.
+    - This is usually empty, but may contain warnings or other information.
   returned: success
   type: dict
 """

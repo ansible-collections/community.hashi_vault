@@ -1,5 +1,4 @@
 ---
-
 - name: Var block
   vars:
     user_token: '{{ user_token_cmd.result.auth.client_token }}'
