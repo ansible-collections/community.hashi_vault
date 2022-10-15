@@ -23,7 +23,7 @@ notes:
   - In check mode, the module returns C(changed) status without contacting Vault.
     Consider using M(community.hashi_vault.vault_kv2_get) to verify the existence of the secret first.
 seealso:
-  - module: vault_kv2_get
+  - module: community.hashi_vault.vault_kv2_get
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
