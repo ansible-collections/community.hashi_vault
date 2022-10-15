@@ -52,6 +52,52 @@
               - "kv2_result['result']['data']['versions']['5']['deletion_time'] is search(regex_secret_version_not_deleted)"
             fail_msg: 'Test Seed value did not contain expected data.'
 
+        - name: Try kv2 delete latest version in check mode
+          register: kv2_result
+          community.hashi_vault.vault_kv2_delete:
+            path: "{{ vault_kv2_versioned_path }}/secret6"
+          check_mode: true
+
+        - name: Check secret versions
+          register: kv2_result
+          vault_ci_kv2_metadata_read:
+            path: "{{ vault_kv2_versioned_path }}/secret6"
+            mount_point: '{{ vault_kv2_mount_point }}'
+
+        - assert:
+            that:
+              - *assert_basics
+              - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['4']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['5']['deletion_time'] is search(regex_secret_version_not_deleted)"
+            fail_msg: 'Secret version was deleted while in check mode.'
+
+
+        - name: Try kv2 delete specific version in check mode
+          register: kv2_result
+          community.hashi_vault.vault_kv2_delete:
+            path: "{{ vault_kv2_versioned_path }}/secret6"
+            versions: [1, 3]
+          check_mode: true
+
+        - name: Check secret versions
+          register: kv2_result
+          vault_ci_kv2_metadata_read:
+            path: "{{ vault_kv2_versioned_path }}/secret6"
+            mount_point: '{{ vault_kv2_mount_point }}'
+
+        - assert:
+            that:
+              - *assert_basics
+              - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['4']['deletion_time'] is search(regex_secret_version_not_deleted)"
+              - "kv2_result['result']['data']['versions']['5']['deletion_time'] is search(regex_secret_version_not_deleted)"
+            fail_msg: 'Secret version was deleted while in check mode.'
+
         - name: Try kv2 delete version 1 and 3
           register: kv2_result
           community.hashi_vault.vault_kv2_delete:
