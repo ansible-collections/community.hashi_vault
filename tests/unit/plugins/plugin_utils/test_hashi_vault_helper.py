@@ -21,9 +21,10 @@ def hashi_vault_helper():
 
 @pytest.fixture
 def expected_stringify_candidates():
-    return set(
+    return set([
         'token',
-    )
+        'namespace',
+    ])
 
 
 class TestHashiVaultHelper(object):
