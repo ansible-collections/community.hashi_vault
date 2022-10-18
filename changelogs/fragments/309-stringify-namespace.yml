@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - connection options - the ``namespace`` connection option will be forced into a string to ensure cmpatibility with recent ``requests`` versions (https://github.com/ansible-collections/community.hashi_vault/issues/309).
