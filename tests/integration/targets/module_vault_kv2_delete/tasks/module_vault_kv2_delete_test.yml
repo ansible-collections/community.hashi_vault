@@ -58,6 +58,11 @@
             path: "{{ vault_kv2_versioned_path }}/secret6"
           check_mode: true
 
+        - assert:
+            that: &delete_assertions
+              - kv2_result is changed
+              - kv2_result.data == {}
+
         - name: Check secret versions
           register: kv2_result
           vault_ci_kv2_metadata_read:
