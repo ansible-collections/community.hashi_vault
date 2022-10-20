@@ -30,27 +30,25 @@
           <<: *defaults
           engine_mount_point: '{{ vault_kv2_mount_point }}'
       block:
+
         - name: Check kv2 existing versions
           register: kv2_result
           vault_ci_kv2_metadata_read:
             path: "{{ vault_kv2_versioned_path }}/secret6"
             mount_point: '{{ vault_kv2_mount_point }}'
-        - assert:
-            that: &assert_basics
-              - "'result' in kv2_result"
-              - "'data' in kv2_result['result']"
-              - "'versions' in kv2_result['result']['data']"
-            fail_msg: 'Test Seed value did not contain expected data.'
 
         - assert:
             that:
-              - *assert_basics
+              - "'result' in kv2_result"
+              - "'data' in kv2_result['result']"
+              - "'versions' in kv2_result['result']['data']"
               - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['4']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['5']['deletion_time'] is search(regex_secret_version_not_deleted)"
             fail_msg: 'Test Seed value did not contain expected data.'
+
 
         - name: Try kv2 delete latest version in check mode
           register: kv2_result
@@ -59,11 +57,11 @@
           check_mode: true
 
         - assert:
-            that: &delete_assertions
+            that:
               - kv2_result is changed
               - kv2_result.data == {}
 
-        - name: Check secret versions
+        - name: Read resultant secret versions
           register: kv2_result
           vault_ci_kv2_metadata_read:
             path: "{{ vault_kv2_versioned_path }}/secret6"
@@ -71,7 +69,9 @@
 
         - assert:
             that:
-              - *assert_basics
+              - "'result' in kv2_result"
+              - "'data' in kv2_result['result']"
+              - "'versions' in kv2_result['result']['data']"
               - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_not_deleted)"
@@ -87,7 +87,7 @@
             versions: [1, 3]
           check_mode: true
 
-        - name: Check secret versions
+        - name: Read resultant secret versions
           register: kv2_result
           vault_ci_kv2_metadata_read:
             path: "{{ vault_kv2_versioned_path }}/secret6"
@@ -95,13 +95,16 @@
 
         - assert:
             that:
-              - *assert_basics
+              - "'result' in kv2_result"
+              - "'data' in kv2_result['result']"
+              - "'versions' in kv2_result['result']['data']"
               - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['4']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['5']['deletion_time'] is search(regex_secret_version_not_deleted)"
             fail_msg: 'Secret version was deleted while in check mode.'
+
 
         - name: Try kv2 delete version 1 and 3
           register: kv2_result
@@ -110,11 +113,8 @@
             versions:
               - 1
               - 3
-        - assert:
-            that:
-            - *assert_basics
 
-        - name: Check secret versions
+        - name: Read resultant secret versions
           register: kv2_result
           vault_ci_kv2_metadata_read:
             path: "{{ vault_kv2_versioned_path }}/secret6"
@@ -122,7 +122,9 @@
 
         - assert:
             that:
-              - *assert_basics
+              - "'result' in kv2_result"
+              - "'data' in kv2_result['result']"
+              - "'versions' in kv2_result['result']['data']"
               - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_is_deleted)"
               - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_is_deleted)"
@@ -130,16 +132,13 @@
               - "kv2_result['result']['data']['versions']['5']['deletion_time'] is search(regex_secret_version_not_deleted)"
             fail_msg: 'Result value did not contain expected data.'
 
+
         - name: Try kv2 delete latest version
           register: kv2_result
           community.hashi_vault.vault_kv2_delete:
             path: "{{ vault_kv2_versioned_path }}/secret6"
 
-        - assert:
-            that:
-            - *assert_basics
-
-        - name: Check secret versions
+        - name: Read resultant secret versions
           register: kv2_result
           vault_ci_kv2_metadata_read:
             path: "{{ vault_kv2_versioned_path }}/secret6"
@@ -147,7 +146,9 @@
 
         - assert:
             that:
-              - *assert_basics
+              - "'result' in kv2_result"
+              - "'data' in kv2_result['result']"
+              - "'versions' in kv2_result['result']['data']"
               - "kv2_result['result']['data']['versions']['1']['deletion_time'] is search(regex_secret_version_is_deleted)"
               - "kv2_result['result']['data']['versions']['2']['deletion_time'] is search(regex_secret_version_not_deleted)"
               - "kv2_result['result']['data']['versions']['3']['deletion_time'] is search(regex_secret_version_is_deleted)"
@@ -161,12 +162,14 @@
           community.hashi_vault.vault_kv2_delete:
             path: "{{ vault_kv2_versioned_path }}/non_existent_secret"
 
+
         - name: Success expected when authorized delete on non-existent path (specific version)
           register: test_nonexistant
           community.hashi_vault.vault_kv2_delete:
             path: "{{ vault_kv2_versioned_path }}/non_existent_secret"
             versions:
               - 1
+
 
         ### failure tests
 
@@ -183,6 +186,7 @@
               - test_wrong_cred.msg is search('Invalid Vault Token')
             fail_msg: "Expected failure but got success or wrong failure message."
 
+
         - name: Failure expected when erroneous credentials are used (specific version)
           register: test_wrong_cred
           community.hashi_vault.vault_kv2_delete:
@@ -198,6 +202,7 @@
               - test_wrong_cred.msg is search('Invalid Vault Token')
             fail_msg: "Expected failure but got success or wrong failure message."
 
+
         - name: Failure expected when unauthorized secret is deleted (latest version)
           register: test_unauthorized
           community.hashi_vault.vault_kv2_delete:
@@ -209,6 +214,7 @@
               - test_unauthorized is failed
               - test_unauthorized.msg is search('Permission Denied')
             fail_msg: "Expected failure but got success or wrong failure message."
+
 
         - name: Failure expected when unauthorized secret is deleted (specific version)
           register: test_unauthorized
