@@ -105,7 +105,7 @@ def main(argv):
 
         keep.append(str(ver))
 
-    with open(os.env['GITHUB_OUTPUT'], 'a') as f:
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
         f.write('versions=')
         json.dump(f, keep)
 
