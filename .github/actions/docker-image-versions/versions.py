@@ -8,6 +8,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+import os
 import sys
 import getopt
 
@@ -104,7 +105,9 @@ def main(argv):
 
         keep.append(str(ver))
 
-    print('::set-output name=versions::%s' % json.dumps(keep))
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+        f.write('versions=')
+        json.dump(keep, f)
 
 
 if __name__ == '__main__':
