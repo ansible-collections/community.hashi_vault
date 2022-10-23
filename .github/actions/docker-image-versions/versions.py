@@ -107,7 +107,7 @@ def main(argv):
 
     with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
         f.write('versions=')
-        json.dump(f, keep)
+        json.dump(keep, f)
 
 
 if __name__ == '__main__':
