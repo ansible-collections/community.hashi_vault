@@ -53,13 +53,14 @@ class HashiVaultValueError(ValueError):
 
 class HashiVaultHelper():
 
-    STRINGIFY_CANDIDATES = set(
+    STRINGIFY_CANDIDATES = set([
         'token',    # Token will end up in a header, requests requires headers to be str or bytes,
                     # and newer versions of requests stopped converting automatically. Because our
                     # token could have been passed in from a previous lookup call, it could be one
                     # of the AnsibleUnsafe types instead, causing a failure. Tokens should always
                     # be strings, so we will convert them.
-    )
+        'namespace',    # namespace is also set in a header
+    ])
 
     def __init__(self):
         # TODO move hvac checking here?
