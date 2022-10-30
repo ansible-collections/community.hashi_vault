@@ -4,6 +4,7 @@ action_groups:
   # let's keep this in alphabetical order
   vault:
     - vault_kv1_get
+    - vault_kv2_delete
     - vault_kv2_get
     - vault_login
     - vault_pki_generate_certificate
