@@ -69,10 +69,11 @@
     vault_test_auth:
       url: '{{ ansible_hashi_vault_url }}'
   block:
-    - name: Authenticate with a token
+    - name: Authenticate with a token (with validation)
       register: response
       vault_test_auth:
         token: '{{ user_token }}'
+        token_validate: true
 
     - assert:
         that:
@@ -80,10 +81,11 @@
           - expected_policy in response.login.data.policies
           - expected_policy in response.login.auth.policies
 
-    - name: Authenticate with an invalid token
+    - name: Authenticate with an invalid token (with validation)
       register: response
       vault_test_auth:
         token: fake
+        token_validate: true
         want_exception: true
 
     - assert:

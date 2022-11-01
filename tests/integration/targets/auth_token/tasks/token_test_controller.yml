@@ -67,8 +67,9 @@
   vars:
     user_token: '{{ user_token_cmd.result.auth.client_token }}'
     expected_policy: test-policy
+    ansible_hashi_vault_token_validate: true
   block:
-    - name: Authenticate with a token
+    - name: Authenticate with a token (with validation)
       set_fact:
         response: "{{ lookup('vault_test_auth', token=user_token) }}"
 
@@ -78,7 +79,7 @@
           - expected_policy in response.login.data.policies
           - expected_policy in response.login.auth.policies
 
-    - name: Authenticate with an invalid token
+    - name: Authenticate with an invalid token (wuth validation)
       set_fact:
         response: "{{ lookup('vault_test_auth', token='fake', want_exception=true) }}"
 

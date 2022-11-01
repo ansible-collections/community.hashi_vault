@@ -10,6 +10,7 @@
       url: '{{ vault_test_server_http }}'
       auth_method: token
       token: '{{ user_token }}'
+      token_validate: true
       timeout: 5
     vault_ci_kv2_metadata_read: '{{ vault_plugins_module_defaults_common }}'
 
