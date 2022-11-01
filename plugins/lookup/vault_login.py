@@ -42,12 +42,8 @@ DOCUMENTATION = """
       type: str
       required: false
     token_validate:
-      description:
-        - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
-        - Disable if your token does not have the C(lookup-self) capability.
       default: true
 """
-# TODO: remove token_validate description in 4.0.0 when it will match the doc frag description.
 
 EXAMPLES = """
 - name: Set a fact with a lookup result

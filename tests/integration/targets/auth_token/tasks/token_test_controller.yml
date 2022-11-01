@@ -11,10 +11,8 @@
         ansible_hashi_vault_token: '{{ user_token }}'
 
     - name: Authenticate with a 'no default policy' token (failure expected)
-      # vars:
-      #   ansible_hashi_vault_token_validate: true
-      # This will fail when the default changes in 4.0.0. Uncomment above.
-      # https://github.com/ansible-collections/community.hashi_vault/issues/248
+      vars:
+        ansible_hashi_vault_token_validate: true
       set_fact:
         response: "{{ lookup('vault_test_auth', want_exception=true) }}"
 
@@ -24,10 +22,6 @@
           - response.msg is search('Invalid Vault Token')
 
     - name: Authenticate with 'no default policy' token - with no validation
-      vars:
-        ansible_hashi_vault_token_validate: false
-      # After 4.0.0, let's let this one use the default value and unset the above.
-      # https://github.com/ansible-collections/community.hashi_vault/issues/248
       set_fact:
         response: "{{ lookup('vault_test_auth') }}"
 

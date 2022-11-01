@@ -43,8 +43,7 @@ class HashiVaultAuthenticator():
         token=dict(type='str', no_log=True, default=None),
         token_path=dict(type='str', default=None, no_log=False),
         token_file=dict(type='str', default='.vault-token'),
-        # TODO: token_validate default becomes False in 4.0.0
-        token_validate=dict(type='bool'),
+        token_validate=dict(type='bool', default=False),
         username=dict(type='str'),
         password=dict(type='str', no_log=True),
         role_id=dict(type='str'),
