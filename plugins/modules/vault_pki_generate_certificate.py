@@ -37,6 +37,7 @@ DOCUMENTATION = """
         - If any requested names do not match role policy, the entire request will be denied.
       type: list
       elements: str
+      default: []
     common_name:
       description:
         - Specifies the requested CN for the certificate.
@@ -66,6 +67,7 @@ DOCUMENTATION = """
         - Only valid if the role allows IP SANs (which is the default).
       type: list
       elements: str
+      default: []
     role_name:
       description:
         - Specifies the name of the role to create the certificate against.
@@ -78,6 +80,7 @@ DOCUMENTATION = """
         - "The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8)."
       type: list
       elements: str
+      default: []
     engine_mount_point:
       description:
         - Specify the mount point used by the PKI engine.
@@ -102,6 +105,7 @@ DOCUMENTATION = """
         - Specifies the requested URI Subject Alternative Names.
       type: list
       elements: str
+      default: []
 """
 
 EXAMPLES = """
