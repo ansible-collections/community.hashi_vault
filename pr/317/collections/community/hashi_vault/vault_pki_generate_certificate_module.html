@@ -176,6 +176,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>Specifies requested Subject Alternative Names.</p>
 <p>These can be host names or email addresses; they will be parsed into their respective fields.</p>
 <p>If any requested names do not match role policy, the entire request will be denied.</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -356,6 +357,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>Specifies requested IP Subject Alternative Names.</p>
 <p>Only valid if the role allows IP SANs (which is the default).</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -390,6 +392,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>Specifies custom OID/UTF8-string SANs.</p>
 <p>These must match values specified on the role in <code class="docutils literal notranslate"><span class="pre">allowed_other_sans</span></code>.</p>
 <p>The format is the same as OpenSSL: <code class="docutils literal notranslate"><span class="pre">&lt;oid&gt;;&lt;type&gt;:&lt;value&gt;</span></code> where the only current valid type is <code class="docutils literal notranslate"><span class="pre">UTF8</span></code>.</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -547,6 +550,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-uri_sans" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Specifies the requested URI Subject Alternative Names.</p>
+<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
