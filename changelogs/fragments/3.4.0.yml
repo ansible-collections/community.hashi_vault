@@ -1,0 +1,4 @@
+---
+release_summary: |-
+  This release includes a new module, fixes (another) ``requests`` header issue, and updates some inaccurate documentation.
+  This is the last planned release before v4.0.0.
