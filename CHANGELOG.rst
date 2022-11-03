@@ -5,6 +5,30 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v3.4.0
+======
+
+Release Summary
+---------------
+
+This release includes a new module, fixes (another) ``requests`` header issue, and updates some inaccurate documentation.
+This is the last planned release before v4.0.0.
+
+Minor Changes
+-------------
+
+- vault_pki_generate_certificate - the documentation has been updated to match the argspec for the default values of options ``alt_names``, ``ip_sans``, ``other_sans``, and ``uri_sans`` (https://github.com/ansible-collections/community.hashi_vault/pull/318).
+
+Bugfixes
+--------
+
+- connection options - the ``namespace`` connection option will be forced into a string to ensure cmpatibility with recent ``requests`` versions (https://github.com/ansible-collections/community.hashi_vault/issues/309).
+
+New Modules
+-----------
+
+- vault_kv2_delete - Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store
+
 v3.3.1
 ======
 

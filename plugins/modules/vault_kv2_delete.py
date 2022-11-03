@@ -9,6 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
 module: vault_kv2_delete
+version_added: 3.4.0
 author:
   - Isaac Wagner (@idwagner)
 short_description: Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store
