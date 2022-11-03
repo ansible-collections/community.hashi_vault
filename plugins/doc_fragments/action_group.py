@@ -14,6 +14,8 @@ class ModuleDocFragment(object):
 options: {}
 attributes:
   action_group:
+    description: Use C(group/community.hashi_vault.vault) in C(module_defaults) to set defaults for this module.
+    support: full
     membership:
       - vault
 '''
