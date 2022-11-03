@@ -1,3 +1,0 @@
----
-minor_changes:
-  - vault_pki_generate_certificate - the documentation has been updated to match the argspec for the default values of options ``alt_names``, ``ip_sans``, ``other_sans``, and ``uri_sans`` (https://github.com/ansible-collections/community.hashi_vault/pull/318).
