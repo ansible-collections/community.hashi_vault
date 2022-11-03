@@ -26,6 +26,7 @@ DOCUMENTATION = """
       description: HVAC library reference about the PKI engine.
       link: https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#generate-certificate
   extends_documentation_fragment:
+    - community.hashi_vault.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
     - community.hashi_vault.engine_mount

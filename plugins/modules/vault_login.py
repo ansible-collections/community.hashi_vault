@@ -24,6 +24,7 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
   notes:

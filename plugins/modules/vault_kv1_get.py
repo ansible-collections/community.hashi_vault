@@ -26,6 +26,7 @@ seealso:
     description: Documentation for the Vault KV secrets engine, version 1.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v1
 extends_documentation_fragment:
+  - community.hashi_vault.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
