@@ -15,6 +15,7 @@ options: {}
 '''
 
     ACTION_GROUP = r'''
+options: {}
 attributes:
   action_group:
     description: Use C(group/community.hashi_vault.vault) in C(module_defaults) to set defaults for this module.
@@ -24,6 +25,7 @@ attributes:
 '''
 
     CHECK_MODE_READ_ONLY = r'''
+options: {}
 attributes:
   check_mode:
     support: full
