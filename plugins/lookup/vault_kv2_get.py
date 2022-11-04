@@ -41,10 +41,7 @@ options:
     type: str
     required: True
   engine_mount_point:
-    description:
-      - The path where the secret backend is mounted.
-      - The default value is C(kv).
-      - The default value will change to C(secret) in version 4.0.0 to match the module's default.
+    default: secret
   version:
     description: Specifies the version to return. If not set the latest version is returned.
     type: int
@@ -55,7 +52,7 @@ EXAMPLES = r'''
   ansible.builtin.set_fact:
     response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'hello', url='https://vault:8201') }}"
   # equivalent API path in 3.x.x is kv/data/hello
-  # equivalent API path in 4.0.0+ will be secret/data/hello
+  # equivalent API path in 4.0.0+ is secret/data/hello
 
 - name: Display the results
   ansible.builtin.debug:
@@ -208,14 +205,7 @@ class LookupModule(HashiVaultLookupBase):
         client = self.helper.get_vault_client(**client_args)
 
         version = self._options_adapter.get_option_default('version')
-        engine_mount_point = self._options_adapter.get_option_default('engine_mount_point')
-        if engine_mount_point is None:
-            engine_mount_point = 'kv'
-            display.deprecated(
-                "The default value for 'engine_mount_point' will change from 'kv' to 'secret'.",
-                version='4.0.0',
-                collection_name='community.hashi_vault'
-            )
+        engine_mount_point = self._options_adapter.get_option('engine_mount_point')
 
         try:
             self.authenticator.validate()
