@@ -493,6 +493,14 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>Use <code class="docutils literal notranslate"><span class="pre">group/community.hashi_vault.vault</span></code> in <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code> to set defaults for this module.</p>
 </div></td>
 </tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="attribute-check_mode"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-login-module-attribute-check-mode"><strong>check_mode</strong></p>
+<a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a></div></td>
+<td><div class="ansible-option-cell"><p><span class="ansible-attribute-support-label">Support: </span><span class="ansible-attribute-support-partial">partial</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>In check mode, this module will not perform a login, and will instead return a basic structure with an empty token. However this may not be useful if the token is required for follow on tasks. It may be better to use this module with <code class="docutils literal notranslate"><span class="pre">check_mode=no</span></code> in order to have a valid token that can be used.</p>
+</div></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -505,7 +513,6 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <li><p>The <code class="docutils literal notranslate"><span class="pre">none</span></code> auth method is not valid for this module because there is no response to return.</p></li>
 <li><p>With <code class="docutils literal notranslate"><span class="pre">token</span></code> auth, no actual login is performed. Instead, the given token’s additional information is returned in a structure that resembles what login responses look like.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">token</span></code> auth method will only return full information if <em>token_validate=True</em>. If the token does not have the <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> capability, this will fail. If <em>token_validate=False</em>, only the token value itself will be returned in the structure.</p></li>
-<li><p>In check mode, this module will not perform a login, and will instead return a basic structure with an empty token. However this may not be useful if the token is required for follow on tasks. It may be better to use this module with <code class="docutils literal notranslate"><span class="pre">check_mode=no</span></code> in order to have a valid token that can be used.</p></li>
 </ul>
 </div>
 </section>

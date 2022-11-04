@@ -520,6 +520,14 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>Use <code class="docutils literal notranslate"><span class="pre">group/community.hashi_vault.vault</span></code> in <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code> to set defaults for this module.</p>
 </div></td>
 </tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="attribute-check_mode"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-delete-module-attribute-check-mode"><strong>check_mode</strong></p>
+<a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a></div></td>
+<td><div class="ansible-option-cell"><p><span class="ansible-attribute-support-label">Support: </span><span class="ansible-attribute-support-partial">partial</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>In check mode, the module returns <code class="docutils literal notranslate"><span class="pre">changed</span></code> status without contacting Vault. Consider using <a class="reference internal" href="vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">community.hashi_vault.vault_kv2_get</span></a> to verify the existence of the secret first.</p>
+</div></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -530,7 +538,6 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul class="simple">
 <li><p>This module always reports <code class="docutils literal notranslate"><span class="pre">changed</span></code> status because it cannot guarantee idempotence.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">changed_when</span></code> to control that in cases where the operation is known to not change state.</p></li>
-<li><p>In check mode, the module returns <code class="docutils literal notranslate"><span class="pre">changed</span></code> status without contacting Vault. Consider using <a class="reference internal" href="vault_kv2_get_module.html#ansible-collections-community-hashi-vault-vault-kv2-get-module"><span class="std std-ref">community.hashi_vault.vault_kv2_get</span></a> to verify the existence of the secret first.</p></li>
 </ul>
 </div>
 </section>

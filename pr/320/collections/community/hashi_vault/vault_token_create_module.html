@@ -647,6 +647,14 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>Use <code class="docutils literal notranslate"><span class="pre">group/community.hashi_vault.vault</span></code> in <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code> to set defaults for this module.</p>
 </div></td>
 </tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="attribute-check_mode"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-token-create-module-attribute-check-mode"><strong>check_mode</strong></p>
+<a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a></div></td>
+<td><div class="ansible-option-cell"><p><span class="ansible-attribute-support-label">Support: </span><span class="ansible-attribute-support-partial">partial</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>In check mode, this module will not create a token, and will instead return a basic structure with an empty token. However, this may not be useful if the token is required for follow on tasks. It may be better to use this module with <em>check_mode=no</em> in order to have a valid token that can be used.</p>
+</div></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -657,7 +665,6 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <ul class="simple">
 <li><p>Token creation is a write operation (creating a token persisted to storage), so this module always reports <code class="docutils literal notranslate"><span class="pre">changed=True</span></code>.</p></li>
 <li><p>For the purposes of Ansible playbooks however, it may be more useful to set <em>changed_when=false</em> if you are doing idempotency checks against the target system.</p></li>
-<li><p>In check mode, this module will not create a token, and will instead return a basic structure with an empty token. However, this may not be useful if the token is required for follow on tasks. It may be better to use this module with <em>check_mode=no</em> in order to have a valid token that can be used.</p></li>
 </ul>
 </div>
 </section>
