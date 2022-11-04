@@ -17,5 +17,5 @@ attributes:
     description: Use C(group/community.hashi_vault.vault) in C(module_defaults) to set defaults for this module.
     support: full
     membership:
-      - vault
+      - community.hashi_vault.vault
 '''
