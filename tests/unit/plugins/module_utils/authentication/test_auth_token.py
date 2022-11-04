@@ -175,3 +175,14 @@ class TestAuthToken(object):
         with pytest.raises(HashiVaultValueError, match=r'Invalid Vault Token Specified'):
             with mock.patch.object(client.auth.token, 'lookup_self', raiser):
                 auth_token.authenticate(client, use_token=True, lookup_self=False)
+
+    @pytest.mark.parametrize('exc', [AttributeError, NotImplementedError])
+    def test_auth_token_authenticate_old_lookup_self(self, auth_token, adapter, client, token, exc):
+        adapter.set_option('token', token)
+
+        with mock.patch.object(client, 'lookup_token') as legacy_lookup:
+            with mock.patch.object(client.auth.token, 'lookup_self', side_effect=exc) as lookup:
+                auth_token.authenticate(client, use_token=True, lookup_self=True)
+
+                legacy_lookup.assert_called_once_with()
+                lookup.assert_called_once_with()

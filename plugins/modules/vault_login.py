@@ -41,12 +41,8 @@ DOCUMENTATION = """
       It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
   options:
     token_validate:
-      description:
-        - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
-        - Disable if your token does not have the C(lookup-self) capability.
       default: true
 """
-# TODO: remove token_validate description in 4.0.0 when it will match the doc frag description.
 
 EXAMPLES = """
 - name: Login and use the resulting token
@@ -123,8 +119,8 @@ def run_module():
         token=dict(type='str', no_log=False, default=None),
 
         # we override this from the shared argspec because the default for
-        # this module should be True, which will differ from the rest of the
-        # collection after 4.0.0.
+        # this module should be True, which differs from the rest of the
+        # collection since 4.0.0.
         token_validate=dict(type='bool', default=True)
     )
 
