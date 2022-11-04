@@ -133,3 +133,29 @@ class TestVaultKv1GetLookup(object):
             assert path == match.group(1), "expected: %s\ngot: %s" % (match.group(1), path)
         except IndexError:
             pass
+
+    @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
+    @pytest.mark.parametrize('engine_mount_point', ['kv', 'other'])
+    def test_vault_kv1_get_logout(self, vault_kv1_get_lookup, minimal_vars, kv1_get_response, vault_client, paths, engine_mount_point, authenticator):
+        client = vault_client
+
+        expected_calls = [mock.call(path=p, mount_point=engine_mount_point) for p in paths]
+
+        expected = {}
+        expected['raw'] = kv1_get_response.copy()
+        expected['metadata'] = kv1_get_response.copy()
+        expected['data'] = expected['metadata'].pop('data')
+        expected['secret'] = expected['data']
+
+        def _fake_kv1_get(path, mount_point):
+            r = kv1_get_response.copy()
+            r['data'] = r['data'].copy()
+            r['data'].update({'_path': path})
+            r['data'].update({'_mount': mount_point})
+            return r
+
+        client.secrets.kv.v1.read_secret = mock.Mock(wraps=_fake_kv1_get)
+
+        response = vault_kv1_get_lookup.run(terms=paths, variables=minimal_vars, engine_mount_point=engine_mount_point)
+
+        authenticator.logout.assert_called_once_with(client)

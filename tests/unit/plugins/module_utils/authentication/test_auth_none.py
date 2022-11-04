@@ -12,7 +12,10 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+    HashiVaultAuthMethodBase,
+    HashiVaultAuthContext,
+)
 
 
 @pytest.fixture
@@ -32,5 +35,6 @@ class TestAuthNone(object):
     def test_auth_none_authenticate(self, auth_none, client, use_token):
         result = auth_none.authenticate(client, use_token=use_token)
 
-        assert result is None
+        assert isinstance(result, HashiVaultAuthContext)
+        assert result.raw is None
         assert client.token is None

@@ -68,3 +68,20 @@ class TestHashiVaultAuthenticator(object):
         obj = authenticator._get_method_object()
 
         assert isinstance(obj, type(fake_auth_class))
+
+    @pytest.mark.parametrize('revoke', [True, False])
+    def test_method_logout_logs_out_with_token_if_revocation_requested(self, authenticator, fake_auth_class, adapter, revoke):
+        adapter.set_option("revoke_ephemeral_token", revoke)
+        client = mock.MagicMock()
+
+        authenticator.logout(client)
+
+        client.logout.assert_called_once_with(revoke_token=revoke)
+
+    def test_logout_not_implemented(self, authenticator, fake_auth_class):
+        client = mock.MagicMock()
+
+        with pytest.raises(NotImplementedError):
+            authenticator.logout(client, method='missing')
+
+        fake_auth_class.should_revoke_token.assert_not_called()

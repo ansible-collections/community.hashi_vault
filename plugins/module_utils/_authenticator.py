@@ -61,6 +61,7 @@ class HashiVaultAuthenticator():
         azure_resource=dict(type='str', default='https://management.azure.com/'),
         cert_auth_private_key=dict(type='path', no_log=False),
         cert_auth_public_key=dict(type='path'),
+        revoke_ephemeral_token=dict(type='bool', default=False),
     )
 
     def __init__(self, option_adapter, warning_callback, deprecate_callback):
@@ -100,3 +101,7 @@ class HashiVaultAuthenticator():
     def authenticate(self, *args, **kwargs):
         method = self._get_method_object(kwargs.pop('method', None))
         return method.authenticate(*args, **kwargs)
+
+    def logout(self, *args, **kwargs):
+        method = self._get_method_object(kwargs.pop('method', None))
+        return method.logout(*args, **kwargs)

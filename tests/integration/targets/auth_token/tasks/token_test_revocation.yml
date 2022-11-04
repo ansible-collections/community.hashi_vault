@@ -1,0 +1,36 @@
+- name: "Test block"
+  module_defaults:
+    community.hashi_vault.vault_read:
+      url: '{{ ansible_hashi_vault_url }}'
+      auth_method: token
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  block:
+    # the token auth method never has ephemeral tokens, so we expect all tokens
+    # to continue to be usable even if `revoke_ephemeral_token` is set to true.
+    - name: Read token information using plugin
+      community.hashi_vault.vault_read:
+        path: "auth/token/lookup-self"
+        token: "{{ user_token }}"
+        revoke_ephemeral_token: "{{ revoke_token }}"
+      register: token_info
+
+    - name: Check if token can still be used
+      community.hashi_vault.vault_read:
+        path: "auth/token/lookup-self"
+        # note: we cannot use token_info.data.data.id here, because that is
+        # identical to the `token` parameter, which is no log, so it is
+        # replaced with the verbatim string
+        # `VALUE_SPECIFIED_IN_NO_LOG_PARAMETER` (for better or worse).
+        token: '{{ user_token }}'
+        auth_method: token
+
+    - name: Read token information using lookup
+      set_fact:
+        _: "{{ lookup('community.hashi_vault.vault_read', 'auth/token/lookup-self', auth_method='token', token=user_token, url=ansible_hashi_vault_url, revoke_ephemeral_token=revoke_token) }}"
+
+    - name: Check if token can still be used
+      community.hashi_vault.vault_read:
+        path: "auth/token/lookup-self"
+        token: '{{ user_token }}'
+        auth_method: token

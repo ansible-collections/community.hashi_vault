@@ -165,21 +165,22 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        module.authenticator.authenticate(client)
+        auth = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        raw = client.secrets.kv.v1.read_secret(path=path, mount_point=engine_mount_point)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
-        if 'Invalid path for a versioned K/V secrets engine' in to_native(e):
-            msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
-        else:
-            msg = "Invalid or missing path ['%s']."
+    with auth:
+        try:
+            raw = client.secrets.kv.v1.read_secret(path=path, mount_point=engine_mount_point)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        except hvac.exceptions.InvalidPath as e:
+            if 'Invalid path for a versioned K/V secrets engine' in to_native(e):
+                msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
+            else:
+                msg = "Invalid or missing path ['%s']."
 
-        module.fail_json(msg=msg % (path,), exception=traceback.format_exc())
+            module.fail_json(msg=msg % (path,), exception=traceback.format_exc())
 
     metadata = raw.copy()
     data = metadata.pop('data')

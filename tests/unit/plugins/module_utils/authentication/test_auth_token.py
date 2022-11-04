@@ -26,6 +26,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
+    HashiVaultAuthContext,
 )
 
 
@@ -146,7 +147,8 @@ class TestAuthToken(object):
 
             sim_login.assert_called_once_with(token, expected_lookup_value)
 
-        assert response['auth']['client_token'] == token
+        assert isinstance(response, HashiVaultAuthContext)
+        assert response.raw['auth']['client_token'] == token
         assert (client.token == token) is use_token
 
     def test_auth_token_authenticate_success_on_no_validate(self, auth_token, adapter, client, token, validation_failure):
@@ -162,7 +164,7 @@ class TestAuthToken(object):
 
             sim_login.assert_called_once_with(token, None)
 
-        assert response['auth']['client_token'] == token
+        assert response.raw['auth']['client_token'] == token
         assert client.token == token
 
     def test_auth_token_authenticate_failed_validation(self, auth_token, adapter, client, token, validation_failure):

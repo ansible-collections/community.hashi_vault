@@ -156,3 +156,13 @@ class TestModuleVaultKv1Get():
             assert opt_path == match.group(1)
         except IndexError:
             pass
+
+    @pytest.mark.parametrize('opt_engine_mount_point', ['kv', 'other'])
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point']], indirect=True)
+    def test_vault_kv1_get_logout(self, patch_ansible_module, kv1_get_response, vault_client, opt_engine_mount_point, capfd, authenticator):
+        client = vault_client
+        client.secrets.kv.v1.read_secret.return_value = kv1_get_response.copy()
+
+        with pytest.raises(SystemExit) as e:
+            vault_kv1_get.main()
+        authenticator.logout.assert_called_once_with(client)

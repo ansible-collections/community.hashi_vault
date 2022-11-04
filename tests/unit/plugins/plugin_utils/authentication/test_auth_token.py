@@ -48,7 +48,7 @@ class TestAuthToken(object):
         with mock.patch.object(auth_token, '_stringify', wrapper):
             response = auth_token.authenticate(client, use_token=True, lookup_self=False)
 
-        assert isinstance(response['auth']['client_token'], (bytes, type(u''))), repr(response['auth']['client_token'])
+        assert isinstance(response.raw['auth']['client_token'], (bytes, type(u''))), repr(response.raw['auth']['client_token'])
         assert isinstance(client.token, (bytes, type(u''))), repr(client.token)
-        assert not isinstance(response['auth']['client_token'], AnsibleUnsafe), repr(response['auth']['client_token'])
+        assert not isinstance(response.raw['auth']['client_token'], AnsibleUnsafe), repr(response.raw['auth']['client_token'])
         assert not isinstance(client.token, AnsibleUnsafe), repr(client.token)

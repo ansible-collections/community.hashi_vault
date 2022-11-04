@@ -209,25 +209,28 @@ class LookupModule(HashiVaultLookupBase):
 
         try:
             self.authenticator.validate()
-            self.authenticator.authenticate(client)
+            auth = self.authenticator.authenticate(client)
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleError(e)
 
-        for term in terms:
-            try:
-                raw = client.secrets.kv.v2.read_secret_version(path=term, version=version, mount_point=engine_mount_point)
-            except hvac.exceptions.Forbidden as e:
-                raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
-            except hvac.exceptions.InvalidPath as e:
-                raise_from(
-                    AnsibleError("Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (term, version or 'latest')),
-                    e
-                )
+        with auth:
+            for term in terms:
+                try:
+                    raw = client.secrets.kv.v2.read_secret_version(path=term, version=version, mount_point=engine_mount_point)
+                except hvac.exceptions.Forbidden as e:
+                    raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
+                except hvac.exceptions.InvalidPath as e:
+                    raise_from(
+                        AnsibleError(
+                            "Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (term, version or 'latest')
+                        ),
+                        e
+                    )
 
-            data = raw['data']
-            metadata = data['metadata']
-            secret = data['data']
+                data = raw['data']
+                metadata = data['metadata']
+                secret = data['data']
 
-            ret.append(dict(raw=raw, data=data, secret=secret, metadata=metadata))
+                ret.append(dict(raw=raw, data=data, secret=secret, metadata=metadata))
 
         return ret

@@ -99,7 +99,9 @@ class TestModuleVaultLogin():
         self, patch_ansible_module, token_lookup_full_response, authenticator, vault_client,
         opt__ansible_check_mode, opt_auth_method, opt_token, opt_role_id, capfd
     ):
-        authenticator.authenticate.return_value = token_lookup_full_response
+        result = mock.MagicMock()
+        result.raw = token_lookup_full_response
+        authenticator.authenticate.return_value = result
 
         with pytest.raises(SystemExit) as e:
             vault_login.main()

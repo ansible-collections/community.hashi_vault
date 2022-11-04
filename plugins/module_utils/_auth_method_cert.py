@@ -39,4 +39,4 @@ class HashiVaultAuthMethodCert(HashiVaultAuthMethodBase):
         except NotImplementedError:
             raise NotImplementedError("cert authentication requires HVAC version 0.10.12 or higher.")
 
-        return response
+        return self.get_context(client, response)

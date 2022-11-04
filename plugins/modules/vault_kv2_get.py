@@ -181,19 +181,20 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        module.authenticator.authenticate(client)
+        auth = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=engine_mount_point)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
-        module.fail_json(
-            msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
-            exception=traceback.format_exc()
-        )
+    with auth:
+        try:
+            raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=engine_mount_point)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        except hvac.exceptions.InvalidPath as e:
+            module.fail_json(
+                msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
+                exception=traceback.format_exc()
+            )
 
     data = raw['data']
     metadata = data['metadata']

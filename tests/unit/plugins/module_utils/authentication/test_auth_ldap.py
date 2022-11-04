@@ -17,6 +17,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
+    HashiVaultAuthContext,
 )
 
 
@@ -99,5 +100,6 @@ class TestAuthLdap(object):
             response = auth_ldap.authenticate(client, use_token=use_token)
             ldap_login.assert_called_once_with(use_token=use_token, **expected_login_params)
 
-        assert response['auth']['client_token'] == ldap_login_response['auth']['client_token']
+        assert isinstance(response, HashiVaultAuthContext)
+        assert response.raw['auth']['client_token'] == ldap_login_response['auth']['client_token']
         assert (client.token == ldap_login_response['auth']['client_token']) is use_token

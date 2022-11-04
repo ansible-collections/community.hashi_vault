@@ -102,4 +102,8 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
                     if validate:
                         raise HashiVaultValueError("Invalid Vault Token Specified.")
 
-        return self._simulate_login_response(token, response)
+        full_response = self._simulate_login_response(token, response)
+        return self.get_context(client, full_response)
+
+    def logout(self, client, revoke_token=False):
+        return super(HashiVaultAuthMethodToken, self).logout(client, revoke_token)

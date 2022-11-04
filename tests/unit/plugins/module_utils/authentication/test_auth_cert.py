@@ -17,6 +17,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
+    HashiVaultAuthContext,
 )
 
 
@@ -85,5 +86,6 @@ class TestAuthCert(object):
             response = auth_cert.authenticate(client, use_token=use_token)
             cert_login.assert_called_once_with(**expected_login_params)
 
-        assert response["auth"]["client_token"] == cert_login_response["auth"]["client_token"]
+        assert isinstance(response, HashiVaultAuthContext)
+        assert response.raw["auth"]["client_token"] == cert_login_response["auth"]["client_token"]
         assert (client.token == cert_login_response["auth"]["client_token"]) is use_token

@@ -17,6 +17,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
+    HashiVaultAuthContext,
 )
 
 
@@ -116,8 +117,9 @@ class TestAuthAzure(object):
             response = auth_azure.authenticate(client, use_token=use_token)
             azure_login.assert_called_once_with(use_token=use_token, **params)
 
+        assert isinstance(response, HashiVaultAuthContext)
         assert (
-            response['auth']['client_token']
+            response.raw['auth']['client_token']
             == azure_login_response['auth']['client_token']
         )
 

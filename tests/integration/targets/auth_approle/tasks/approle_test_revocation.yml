@@ -1,0 +1,57 @@
+- name: "Test block"
+  module_defaults:
+    community.hashi_vault.vault_read:
+      url: '{{ ansible_hashi_vault_url }}'
+      auth_method: 'approle'
+      mount_point: '{{ this_path }}'
+      role_id: '{{ role_id_cmd.result.data.role_id | default(omit) }}'
+      secret_id: "{{ secret_id_cmd.result.data.secret_id | default(omit) }}"
+  block:
+    - name: 'Fetch the RoleID of the AppRole'
+      vault_ci_read:
+        path: 'auth/{{ this_path }}/role/{{ approle_name }}/role-id'
+      register: role_id_cmd
+
+    - name: 'Get a SecretID issued against the AppRole'
+      vault_ci_write:
+        path: 'auth/{{ this_path }}/role/{{ approle_name }}/secret-id'
+        data: {}
+      register: secret_id_cmd
+
+    - name: Read token information using plugin
+      community.hashi_vault.vault_read:
+        path: "auth/token/lookup-self"
+        revoke_ephemeral_token: "{{ revoke_token }}"
+      register: token_info
+
+    - name: Check if token can still be used
+      community.hashi_vault.vault_read:
+        path: "auth/token/lookup-self"
+        token: '{{ token_info.data.data.id }}'
+        auth_method: token
+      ignore_errors: true
+      register: token_check
+
+    - assert:
+        fail_msg: "A token from vault_read was unexpectedly (un-)usable"
+        that:
+        - token_check is failed or not revoke_token
+        - token_check is not failed or revoke_token
+
+    - name: Read token information using lookup
+      set_fact:
+        token: "{{ lookup('community.hashi_vault.vault_read', 'auth/token/lookup-self', auth_method='approle', mount_point=this_path, url=ansible_hashi_vault_url, role_id=role_id_cmd.result.data.role_id, secret_id=secret_id_cmd.result.data.secret_id, revoke_ephemeral_token=revoke_token) }}"
+
+    - name: Check if token can still be used
+      community.hashi_vault.vault_read:
+        path: "auth/token/lookup-self"
+        token: '{{ token.data.id }}'
+        auth_method: token
+      ignore_errors: true
+      register: token_check
+
+    - assert:
+        fail_msg: "A token from vault_read was unexpectedly (un-)usable"
+        that:
+        - token_check is failed or not revoke_token
+        - token_check is not failed or revoke_token

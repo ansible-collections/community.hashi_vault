@@ -107,17 +107,18 @@ def run_module():
 
     try:
         module.authenticator.validate()
-        module.authenticator.authenticate(client)
+        auth = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        data = client.read(path)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
+    with auth:
+        try:
+            data = client.read(path)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
 
-    if data is None:
-        module.fail_json(msg="The path '%s' doesn't seem to exist." % path)
+        if data is None:
+            module.fail_json(msg="The path '%s' doesn't seem to exist." % path)
 
     module.exit_json(data=data)
 

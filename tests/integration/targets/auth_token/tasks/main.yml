@@ -32,3 +32,13 @@
   module_defaults:
     assert:
       quiet: yes
+
+- loop: '{{ [True, False] }}'
+  include_tasks:
+    file: token_test_revocation.yml
+    apply:
+      vars:
+        revoke_token: '{{ item }}'
+      module_defaults:
+        assert:
+          quiet: yes

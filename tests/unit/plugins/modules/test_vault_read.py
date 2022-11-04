@@ -155,3 +155,13 @@ class TestModuleVaultRead():
         assert match is not None, "result: %r\ndid not match: %s" % (result, exc[2])
 
         assert opt_path == match.group(1)
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_read_logout(self, patch_ansible_module, kv1_get_response, vault_client, capfd, authenticator):
+        client = vault_client
+        client.read.return_value = kv1_get_response.copy()
+
+        with pytest.raises(SystemExit) as e:
+            vault_read.main()
+
+        authenticator.logout.assert_called_once_with(client)
