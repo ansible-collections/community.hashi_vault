@@ -12,10 +12,20 @@ class ModuleDocFragment(object):
 
     DOCUMENTATION = r'''
 options: {}
+'''
+
+    ACTION_GROUP = r'''
 attributes:
   action_group:
     description: Use C(group/community.hashi_vault.vault) in C(module_defaults) to set defaults for this module.
     support: full
     membership:
       - community.hashi_vault.vault
+'''
+
+    CHECK_MODE_READ_ONLY = r'''
+attributes:
+  check_mode:
+    support: full
+    description: This module is "read only" and operates the same regardless of check mode.
 '''
