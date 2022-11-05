@@ -1,3 +1,0 @@
----
-breaking_changes:
-  - vault_kv2_get lookup - as previously announced, the default value for ``engine_mount_point`` in the ``vault_kv2_get`` lookup has changed from ``kv`` to ``secret`` (https://github.com/ansible-collections/community.hashi_vault/issues/279).
