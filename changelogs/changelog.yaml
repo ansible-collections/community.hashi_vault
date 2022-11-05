@@ -569,3 +569,23 @@ releases:
       name: vault_kv2_delete
       namespace: ''
     release_date: '2022-11-03'
+  4.0.0:
+    changes:
+      breaking_changes:
+      - auth - the default value for ``token_validate`` has changed from ``true``
+        to ``false``, as previously announced (https://github.com/ansible-collections/community.hashi_vault/issues/248).
+      - vault_kv2_get lookup - as previously announced, the default value for ``engine_mount_point``
+        in the ``vault_kv2_get`` lookup has changed from ``kv`` to ``secret`` (https://github.com/ansible-collections/community.hashi_vault/issues/279).
+      minor_changes:
+      - modules - all modules now document their action group and support for check
+        mode in their attributes documentation (https://github.com/ansible-collections/community.hashi_vault/issues/197).
+      release_summary: The next major version of the collection includes previously
+        announced breaking changes to some default values, and improvements to module
+        documentation with attributes that describe the use of action groups and check
+        mode support.
+    fragments:
+    - 197-module-attributes.yml
+    - 248-token_validate-default.yml
+    - 279-vault_kv2_get-lookup-mount-default.yml
+    - 4.0.0.yml
+    release_date: '2022-11-05'

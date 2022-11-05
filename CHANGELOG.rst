@@ -5,6 +5,25 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v4.0.0
+======
+
+Release Summary
+---------------
+
+The next major version of the collection includes previously announced breaking changes to some default values, and improvements to module documentation with attributes that describe the use of action groups and check mode support.
+
+Minor Changes
+-------------
+
+- modules - all modules now document their action group and support for check mode in their attributes documentation (https://github.com/ansible-collections/community.hashi_vault/issues/197).
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- auth - the default value for ``token_validate`` has changed from ``true`` to ``false``, as previously announced (https://github.com/ansible-collections/community.hashi_vault/issues/248).
+- vault_kv2_get lookup - as previously announced, the default value for ``engine_mount_point`` in the ``vault_kv2_get`` lookup has changed from ``kv`` to ``secret`` (https://github.com/ansible-collections/community.hashi_vault/issues/279).
+
 v3.4.0
 ======
 

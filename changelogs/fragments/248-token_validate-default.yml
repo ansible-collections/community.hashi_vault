@@ -1,3 +1,0 @@
----
-breaking_changes:
-  - auth - the default value for ``token_validate`` has changed from ``true`` to ``false``, as previously announced (https://github.com/ansible-collections/community.hashi_vault/issues/248).
