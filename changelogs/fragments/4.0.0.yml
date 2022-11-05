@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  The next major version of the collection includes previously announced breaking changes to some default values, and improvements to module documentation with attributes that describe the use of action groups and check mode support.
