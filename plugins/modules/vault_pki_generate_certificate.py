@@ -26,9 +26,14 @@ DOCUMENTATION = """
       description: HVAC library reference about the PKI engine.
       link: https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#generate-certificate
   extends_documentation_fragment:
+    - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
     - community.hashi_vault.engine_mount
+  attributes:
+    check_mode:
+      support: partial
+      description: In check mode, this module will not contact Vault and will return an empty C(data) field and C(changed) status.
   options:
     alt_names:
       description:

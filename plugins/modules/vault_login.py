@@ -24,6 +24,7 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
   notes:
@@ -36,9 +37,13 @@ DOCUMENTATION = """
     - "The C(token) auth method will only return full information if I(token_validate=True).
       If the token does not have the C(lookup-self) capability, this will fail. If I(token_validate=False), only the token value itself
       will be returned in the structure."
-    - "In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
-      However this may not be useful if the token is required for follow on tasks.
-      It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
+  attributes:
+    check_mode:
+      support: partial
+      description:
+        - "In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
+          However this may not be useful if the token is required for follow on tasks.
+          It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
   options:
     token_validate:
       default: true

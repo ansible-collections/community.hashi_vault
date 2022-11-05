@@ -24,6 +24,8 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.hashi_vault_lookup>
       description: The official documentation for the C(community.hashi_vault.hashi_vault) lookup plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes.action_group
+    - community.hashi_vault.attributes.check_mode_read_only
     - community.hashi_vault.connection
     - community.hashi_vault.auth
   options:
