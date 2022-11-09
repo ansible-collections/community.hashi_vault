@@ -37,11 +37,13 @@ jobs:
         test_container:
           - default
         ansible:
+          - stable-2.9
+          - stable-2.10
           - stable-2.11
-          - stable-2.12
-          - stable-2.13
-          - stable-2.14
-          - devel
+          # - stable-2.12
+          # - stable-2.13
+          # - stable-2.14
+          # - devel
     steps:
 
       # ansible-test requires the collection to be in a directory in the form
@@ -114,11 +116,13 @@ jobs:
         test_container:
           - default
         ansible:
+          - stable-2.9
+          - stable-2.10
           - stable-2.11
-          - stable-2.12
-          - stable-2.13
-          - stable-2.14
-          - devel
+          # - stable-2.12
+          # - stable-2.13
+          # - stable-2.14
+          # - devel
 
     steps:
       - name: Initialize env vars
@@ -189,11 +193,13 @@ jobs:
         test_container:
           - default
         ansible:
+          - stable-2.9
+          - stable-2.10
           - stable-2.11
-          - stable-2.12
-          - stable-2.13
-          - stable-2.14
-          - devel
+          # - stable-2.12
+          # - stable-2.13
+          # - stable-2.14
+          # - devel
         python:
           - '3.6'
           - '3.7'
@@ -201,6 +207,10 @@ jobs:
           - '3.9'
           - '3.10'
         exclude:
+          - ansible: 'stable-2.9'
+            python: '3.10'
+          - ansible: 'stable-2.10'
+            python: '3.10'
           - ansible: 'stable-2.11'
             python: '3.10'
           - ansible: 'devel'
@@ -294,6 +304,7 @@ jobs:
           retention-days: 1
 
   local_test_invocation:
+    if: false
     runs-on: ${{ matrix.runner }}
     name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     env:
@@ -427,7 +438,7 @@ jobs:
       - local_test_invocation
     # don't upload coverage on scheduled runs
     # https://github.com/ansible-collections/community.hashi_vault/issues/180
-    if: ${{ github.event_name != 'schedule' }}
+    if: false
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
