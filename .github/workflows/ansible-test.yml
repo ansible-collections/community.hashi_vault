@@ -28,6 +28,7 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
   sanity:
+    if: false
     name: Sanity (Ⓐ${{ matrix.ansible }})
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -103,6 +104,7 @@ jobs:
 
 
   units:
+    if: false
     runs-on: ${{ matrix.runner }}
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
@@ -179,6 +181,7 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
   integration:
+    if: false
     runs-on: ${{ matrix.runner }}
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
@@ -303,8 +306,9 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.12
-          - stable-2.14
+          - pull/78550/head
+          # - stable-2.12
+          # - stable-2.14
         python:
           - 3.9
         runner:
@@ -420,6 +424,7 @@ jobs:
           retention-days: 1
 
   upload-coverage:
+    if: false
     needs:
       - sanity
       - units
