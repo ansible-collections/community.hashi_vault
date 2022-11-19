@@ -424,7 +424,6 @@ jobs:
           retention-days: 1
 
   upload-coverage:
-    if: false
     needs:
       - sanity
       - units
@@ -432,7 +431,8 @@ jobs:
       - local_test_invocation
     # don't upload coverage on scheduled runs
     # https://github.com/ansible-collections/community.hashi_vault/issues/180
-    if: ${{ github.event_name != 'schedule' }}
+    if: false
+    # if: ${{ github.event_name != 'schedule' }}
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
