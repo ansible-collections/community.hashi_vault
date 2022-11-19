@@ -368,6 +368,13 @@ jobs:
         # sometimes this hangs forever waiting for an IP
         uses: ./.github/actions/macos-docker
 
+      - name: cgroups, see groups run, run groups run (please run!)
+        if: ${{ startsWith(matrix.runner, 'macos') }}
+        run: |
+          sudo mkdir /sys/fs/cgroup/systemd
+          sudo mount cgroup -t cgroup /sys/fs/cgroup/systemd -o none,name=systemd,xattr
+          # chown -R {user}:{group} /sys/fs/cgroup/systemd  # only when rootless
+
       - name: Pull Ansible test images
         timeout-minutes: 5
         continue-on-error: true
