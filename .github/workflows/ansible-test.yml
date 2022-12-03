@@ -319,7 +319,7 @@ jobs:
           # We'll just stick to 2.12 for now, better than nothing.
           - runner: macos-12
             ansible: stable-2.14
-          - runner: ubuntu-20.04
+          - runner: ubuntu-latest
             ansible: stable-2.12
 
     steps:
