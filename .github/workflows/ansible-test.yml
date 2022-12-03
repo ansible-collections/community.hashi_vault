@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         runner:
-          - ubuntu-latest
+          - ubuntu-20.04
         test_container:
           - default
         ansible:
@@ -110,7 +110,7 @@ jobs:
       fail-fast: true
       matrix:
         runner:
-          - ubuntu-latest
+          - ubuntu-20.04
         test_container:
           - default
         ansible:
@@ -185,7 +185,7 @@ jobs:
       fail-fast: false
       matrix:
         runner:
-          - ubuntu-latest
+          - ubuntu-20.04
         test_container:
           - default
         ansible:
@@ -308,7 +308,7 @@ jobs:
         python:
           - 3.9
         runner:
-          - ubuntu-latest
+          - ubuntu-20.04
           - macos-12
         test_container:
           - default
@@ -319,7 +319,7 @@ jobs:
           # We'll just stick to 2.12 for now, better than nothing.
           - runner: macos-12
             ansible: stable-2.14
-          - runner: ubuntu-latest
+          - runner: ubuntu-20.04
             ansible: stable-2.12
 
     steps:
