@@ -72,10 +72,10 @@ def main(argv):
         try:
             vobj = version.parse(tag['name'])
         except Exception:
-            pass
-
-        if vobj is None or isinstance(vobj, version.LegacyVersion):
             continue
+        else:
+            if not isinstance(vobj, version.Version):
+                continue
 
         if vobj.is_prerelease is include_prerelease and vobj.is_postrelease is include_postrelease:
             versions.append(vobj)
