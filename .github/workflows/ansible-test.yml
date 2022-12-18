@@ -305,8 +305,9 @@ jobs:
       matrix:
         ansible:
           - stable-2.12
+          - stable-2.13
           - stable-2.14
-          - devel
+          # - devel
         python:
           - 3.9
         runner:
@@ -323,6 +324,8 @@ jobs:
           #   ansible: stable-2.14
           - runner: ubuntu-latest
             ansible: stable-2.12
+          - runner: ubuntu-latest
+            ansible: stable-2.13
           - runner: ubuntu-latest
             ansible: devel
 
