@@ -179,7 +179,6 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
   integration:
-    if: false
     runs-on: ${{ matrix.runner }}
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
@@ -297,37 +296,18 @@ jobs:
   local_test_invocation:
     runs-on: ${{ matrix.runner }}
     name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
-    env:
-      # needed to prevent Ansible crashing on MacOS
-      OBJC_DISABLE_INITIALIZE_FORK_SAFETY: 'YES'
     strategy:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.12
-          - stable-2.13
           - stable-2.14
-          # - devel
+          - devel
         python:
           - 3.9
         runner:
           - ubuntu-latest
-          - macos-12
         test_container:
           - default
-        exclude:
-          # To add to the fragility of testing docker stuff on MacOS,
-          # stable-2.13+ test containers crash; unsure of exact cause
-          # but likely due to old versions of the runtimes.
-          # We'll just stick to 2.12 for now, better than nothing.
-          # - runner: macos-12
-          #   ansible: stable-2.14
-          - runner: ubuntu-latest
-            ansible: stable-2.12
-          - runner: ubuntu-latest
-            ansible: stable-2.13
-          - runner: ubuntu-latest
-            ansible: devel
 
     steps:
       - name: Initialize env vars
@@ -337,7 +317,7 @@ jobs:
             COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
             COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
             COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --controller docker:${{ matrix.test_container }},cgroup=none,python=${{ matrix.python }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
+            DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --controller docker:${{ matrix.test_container }},python=${{ matrix.python }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
         uses: actions/checkout@v3
@@ -364,12 +344,6 @@ jobs:
         uses: ./.github/actions/collection-via-git
         with:
           collection: community.docker
-
-      - name: Install Docker on MacOS
-        if: ${{ startsWith(matrix.runner, 'macos') }}
-        timeout-minutes: 6
-        # sometimes this hangs forever waiting for an IP
-        uses: ./.github/actions/macos-docker
 
       - name: Pull Ansible test images
         timeout-minutes: 5
@@ -398,7 +372,6 @@ jobs:
 
       #TODO add capability in the Ansible side once vault_list and vault_delete exist
       - name: Run a third time, but delete Vault's cubbyhole contents first
-        if: startsWith(matrix.runner, 'ubuntu')
         working-directory: ${{ env.COLLECTION_PATH }}
         env:
           VAULT_TOKEN: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
