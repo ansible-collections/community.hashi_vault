@@ -179,6 +179,7 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
   integration:
+    if: false
     runs-on: ${{ matrix.runner }}
     name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
