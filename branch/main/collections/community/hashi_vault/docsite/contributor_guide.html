@@ -203,8 +203,8 @@
 <p>RST files for the docsite are in the <code class="docutils literal notranslate"><span class="pre">docs/docsite/rst/</span></code> directory. Some submissions may also require edits to <code class="docutils literal notranslate"><span class="pre">docs/docsite/extra-docs.yml</span></code>.</p>
 <p>When a pull request is submitted which changes the collection’s documentation, a new docsite will be generated and published to a temporary site, and a bot will post a comment on the PR with a link. This will let you see the rendered docs to help with spotting formatting errors.</p>
 <p>It’s also possible to build the docs locally, by installing some extra Python requirements and running the build script:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pushd</span> docs/preview
-<span class="gp">$ </span>pip install -r requirements.txt
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pushd</span><span class="w"> </span>docs/preview
+<span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 <span class="gp">$ </span>./build.sh
 </pre></div>
 </div>
@@ -226,12 +226,12 @@
 <section id="usage">
 <h5>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h5>
 <p>For ease of typing / length of commands, we’ll enter the role directory first:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pushd</span> tests/integration/targets/setup_localenv_docker
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pushd</span><span class="w"> </span>tests/integration/targets/setup_localenv_docker
 </pre></div>
 </div>
 <p>This localenv has both Ansible collection and Python requirements, so let’s get those out of the way:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
-<span class="gp">$ </span>ansible-galaxy collection install -r files/requirements/requirements.yml
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>files/requirements/requirements.txt<span class="w"> </span>-c<span class="w"> </span>files/requirements/constraints.txt
+<span class="gp">$ </span>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>files/requirements/requirements.yml
 </pre></div>
 </div>
 <p>To set up your docker-compose environment with all the defaults:</p>
@@ -250,7 +250,7 @@
 </ol>
 <p>With your containers running, you can now run the tests in docker (after returning back to the collection root):</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">popd</span>
-<span class="gp">$ </span>ansible-test integration --docker default --docker-network hashi_vault_default -v
+<span class="gp">$ </span>ansible-test<span class="w"> </span>integration<span class="w"> </span>--docker<span class="w"> </span>default<span class="w"> </span>--docker-network<span class="w"> </span>hashi_vault_default<span class="w"> </span>-v
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">--docker-network</span></code> part is important, because it ensures that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, <code class="docutils literal notranslate"><span class="pre">hashi_vault_default</span></code> comes from the default docker-compose project name used by this role (<code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code>). See the <a class="reference internal" href="#ansible-collections-community-hashi-vault-docsite-contributor-guide-localenv-docker-customization"><span class="std std-ref">customization section</span></a> for more information.</p>
@@ -376,10 +376,10 @@
 <section id="test-coverage">
 <h4><a class="toc-backref" href="#id20">Test coverage</a><a class="headerlink" href="#test-coverage" title="Permalink to this heading"></a></h4>
 <p>In CI, we use CodeCov to track coverage. We also set some specific “tags” in coverage, and one of those is to tag individual auth methods as targets for integration tests. This happens automatically in CI, however new auth methods need an entry into <code class="docutils literal notranslate"><span class="pre">codecov.yml</span></code> that maps the coverage flag to the file where the auth method is implemented. For example:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flags</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">target_auth_aws_iam</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">paths</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plugins/module_utils/_auth_method_aws_iam.py</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flags</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">target_auth_aws_iam</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plugins/module_utils/_auth_method_aws_iam.py</span>
 </pre></div>
 </div>
 </section>

@@ -149,67 +149,67 @@
 <p>The filter takes an optional parameter <code class="docutils literal notranslate"><span class="pre">optional_field</span></code> with defaults to <code class="docutils literal notranslate"><span class="pre">login</span></code>. If this field exists in the input dictionary, then the value of that field is taken the be the login response, rather than the input dictionary itself.</p>
 <p>The purpose of this is primarily to deal with the difference between the output of lookup plugins (which return the login response directly) and modules, which return the login response in a <code class="docutils literal notranslate"><span class="pre">login</span></code> field in its return.</p>
 <p>Here is a sample login response:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;accessor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mQewzgKRx5Yui1h1eMemJlMu&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;client_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;entity_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8a74ffd3-f71b-8ebe-7942-610428051ea9&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testuser&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">},</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;orphan&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;alt-policy&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;default&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;userpass-policy&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">],</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;renewable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;token_policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;alt-policy&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;default&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;userpass-policy&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">],</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">},</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;lease_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;renewable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;request_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;511e8fba-83f0-4b7e-95ea-770aa19c1957&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;warnings&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;wrap_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;accessor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mQewzgKRx5Yui1h1eMemJlMu&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;client_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;entity_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8a74ffd3-f71b-8ebe-7942-610428051ea9&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testuser&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;orphan&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;alt-policy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;userpass-policy&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;renewable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;token_policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;alt-policy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;userpass-policy&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;lease_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;renewable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;request_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;511e8fba-83f0-4b7e-95ea-770aa19c1957&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;warnings&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;wrap_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The token that we want to extract is in <code class="docutils literal notranslate"><span class="pre">auth.client_token</span></code>.</p>
 <p>Here’s an example usage with the <code class="docutils literal notranslate"><span class="pre">vault_login</span></code> module and lookup.</p>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set defaults</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:9801/</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;env&#39;</span><span class="o">,</span> <span class="s1">&#39;MY_SECRET_PASSWORD&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_login</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_url</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_auth_method</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_username</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_password</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">block</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Perform a login with a lookup and display the token</span><span class="w"></span>
-<span class="w">      </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">login_response</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_login&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">debug</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;The</span><span class="nv"> </span><span class="s">token</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">login_response</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set defaults</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:9801/</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;env&#39;</span><span class="o">,</span> <span class="s1">&#39;MY_SECRET_PASSWORD&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_login</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_url</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">      </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_auth_method</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_username</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_hashi_vault_password</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Perform a login with a lookup and display the token</span>
+<span class="w">      </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">login_response</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_login&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">      </span><span class="nt">debug</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;The</span><span class="nv"> </span><span class="s">token</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">login_response</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span> <span class="cp">}}</span><span class="s">&quot;</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Perform a login with a module</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_login</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">login_response</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Perform a login with a module</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_login</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">login_response</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the token</span><span class="w"></span>
-<span class="w">      </span><span class="nt">debug</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;The</span><span class="nv"> </span><span class="s">token</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">login_response</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the token</span>
+<span class="w">      </span><span class="nt">debug</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;The</span><span class="nv"> </span><span class="s">token</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">login_response</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span> <span class="cp">}}</span><span class="s">&quot;</span>
 </pre></div>
 </div>
 <p>Which produces:</p>
@@ -235,21 +235,21 @@
 </pre></div>
 </div>
 <p>This filter is the equivalent of reading into the dictionary directly, but it has the advantages of providing semantic meaning and automatically working against the differing output of modules and lookups.</p>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
-<span class="nt">lookup_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup_login_response</span><span class="o">[</span><span class="s1">&#39;auth&#39;</span><span class="o">][</span><span class="s1">&#39;client_token&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="nt">module_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">module_login_response</span><span class="o">[</span><span class="s1">&#39;login&#39;</span><span class="o">][</span><span class="s1">&#39;auth&#39;</span><span class="o">][</span><span class="s1">&#39;client_token&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">lookup_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup_login_response</span><span class="o">[</span><span class="s1">&#39;auth&#39;</span><span class="o">][</span><span class="s1">&#39;client_token&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="nt">module_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">module_login_response</span><span class="o">[</span><span class="s1">&#39;login&#39;</span><span class="o">][</span><span class="s1">&#39;auth&#39;</span><span class="o">][</span><span class="s1">&#39;client_token&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="s">&quot;</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">optional_field</span></code> can be changed in case you’ve put the raw login response in some other structure, but you could also dereference that directly instead.</p>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
-<span class="nt">my_data</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">something</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somedata</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vault_login</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup_login_response</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">my_data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">something</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somedata</span>
+<span class="w">  </span><span class="nt">vault_login</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup_login_response</span> <span class="cp">}}</span><span class="s">&quot;</span>
 
-<span class="nt">token_from_param</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">my_data</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span><span class="o">(</span><span class="nv">optional_field</span><span class="o">=</span><span class="s1">&#39;vault_login&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="nt">token_from_deref</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">my_data</span><span class="o">[</span><span class="s1">&#39;vault_login&#39;</span><span class="o">]</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="c1"># if the optional field doesn&#39;t exist, the dictionary itself is still checked</span><span class="w"></span>
-<span class="nt">unused_optional</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">my_data</span><span class="o">[</span><span class="s1">&#39;vault_login&#39;</span><span class="o">]</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span><span class="o">(</span><span class="nv">optional_field</span><span class="o">=</span><span class="s1">&#39;missing&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
+<span class="nt">token_from_param</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">my_data</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span><span class="o">(</span><span class="nv">optional_field</span><span class="o">=</span><span class="s1">&#39;vault_login&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="nt">token_from_deref</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">my_data</span><span class="o">[</span><span class="s1">&#39;vault_login&#39;</span><span class="o">]</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="c1"># if the optional field doesn&#39;t exist, the dictionary itself is still checked</span>
+<span class="nt">unused_optional</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">my_data</span><span class="o">[</span><span class="s1">&#39;vault_login&#39;</span><span class="o">]</span> <span class="o">|</span> <span class="nf">community</span><span class="nv">.hashi_vault.vault_login_token</span><span class="o">(</span><span class="nv">optional_field</span><span class="o">=</span><span class="s1">&#39;missing&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
 </pre></div>
 </div>
 </section>

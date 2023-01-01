@@ -260,174 +260,174 @@
 </section>
 <section id="examples">
 <h2><a class="toc-backref" href="#id6">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
-<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1">### In these examples, we assume an ansible.cfg like this:</span><span class="w"></span>
-<span class="c1"># [hashi_vault_collection]</span><span class="w"></span>
-<span class="c1"># url = https://config-based-vault.example.com</span><span class="w"></span>
-<span class="c1"># retries = 5</span><span class="w"></span>
-<span class="c1">### end ansible.cfg</span><span class="w"></span>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1">### In these examples, we assume an ansible.cfg like this:</span>
+<span class="c1"># [hashi_vault_collection]</span>
+<span class="c1"># url = https://config-based-vault.example.com</span>
+<span class="c1"># retries = 5</span>
+<span class="c1">### end ansible.cfg</span>
 
-<span class="c1">### We assume some environment variables set as well</span><span class="w"></span>
-<span class="c1"># ANSIBLE_HASHI_VAULT_URL: https://env-based-vault.example.com</span><span class="w"></span>
-<span class="c1"># ANSIBLE_HASHI_VAULT_TOKEN: s.123456789</span><span class="w"></span>
-<span class="c1">### end environment variables</span><span class="w"></span>
+<span class="c1">### We assume some environment variables set as well</span>
+<span class="c1"># ANSIBLE_HASHI_VAULT_URL: https://env-based-vault.example.com</span>
+<span class="c1"># ANSIBLE_HASHI_VAULT_TOKEN: s.123456789</span>
+<span class="c1">### end environment variables</span>
 
-<span class="c1"># playbook - ansible-core 2.12 and higher</span><span class="w"></span>
-<span class="c1">## set defaults for the collection group</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">group/community.hashi_vault.vault</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">######</span><span class="w"></span>
+<span class="c1"># playbook - ansible-core 2.12 and higher</span>
+<span class="c1">## set defaults for the collection group</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">group/community.hashi_vault.vault</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">######</span>
 
-<span class="c1"># playbook - ansible any version</span><span class="w"></span>
-<span class="c1">## set defaults for a specific module</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">######</span><span class="w"></span>
+<span class="c1"># playbook - ansible any version</span>
+<span class="c1">## set defaults for a specific module</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">######</span>
 
-<span class="c1"># playbook - ansible any version</span><span class="w"></span>
-<span class="c1">## set defaults for several modules</span><span class="w"></span>
-<span class="c1">## do not use controller&#39;s auth</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws_iam</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;!*token*&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
+<span class="c1"># playbook - ansible any version</span>
+<span class="c1">## set defaults for several modules</span>
+<span class="c1">## do not use controller&#39;s auth</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws_iam</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;!*token*&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Same with kv1</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">######</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Same with kv1</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">######</span>
 
-<span class="c1"># playbook - ansible any version</span><span class="w"></span>
-<span class="c1">## set defaults for several modules</span><span class="w"></span>
-<span class="c1">## do not use controller&#39;s auth</span><span class="w"></span>
-<span class="c1">## override returned settings</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span><span class="w"></span>
-<span class="w">    </span><span class="nt">plugin_settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;!*token*&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">overrides</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws_iam</span><span class="w"></span>
-<span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="o">(</span><span class="nv">plugin_settings.retries</span> <span class="o">|</span> <span class="nf">int</span><span class="o">)</span> <span class="o">+</span> <span class="m">2</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="c1"># playbook - ansible any version</span>
+<span class="c1">## set defaults for several modules</span>
+<span class="c1">## do not use controller&#39;s auth</span>
+<span class="c1">## override returned settings</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
+<span class="w">    </span><span class="nt">plugin_settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;!*token*&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">overrides</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws_iam</span>
+<span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="o">(</span><span class="nv">plugin_settings.retries</span> <span class="o">|</span> <span class="nf">int</span><span class="o">)</span> <span class="o">+</span> <span class="m">2</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
 <span class="w">      </span><span class="cp">{{</span>
         <span class="nv">plugin_settings</span>
         <span class="o">|</span> <span class="nf">combine</span><span class="o">(</span><span class="nv">overrides</span><span class="o">)</span>
-      <span class="cp">}}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
+      <span class="cp">}}</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Same with kv1</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">######</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Same with kv1</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">######</span>
 
-<span class="c1"># using a block is similar</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws_iam</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;!*token*&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">block</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
+<span class="c1"># using a block is similar</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws_iam</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;!*token*&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
 
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Same with kv1</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">#####</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Same with kv1</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv1_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">#####</span>
 
-<span class="c1"># use settings from a different plugin</span><span class="w"></span>
-<span class="c1">## when you need settings that are not in the default plugin (vault_login)</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dept-secrets</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="nv">plugin</span><span class="o">=</span><span class="s1">&#39;community.hashi_vault.vault_kv2_get&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">block</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">#####</span><span class="w"></span>
+<span class="c1"># use settings from a different plugin</span>
+<span class="c1">## when you need settings that are not in the default plugin (vault_login)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dept-secrets</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="nv">plugin</span><span class="o">=</span><span class="s1">&#39;community.hashi_vault.vault_kv2_get&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">#####</span>
 
-<span class="c1"># use settings from a different plugin (on an indivdual call)</span><span class="w"></span>
-<span class="c1">## short names assume community.hashi_vault</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ansible_hashi_vault_engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dept-secrets</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">block</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="nv">plugin</span><span class="o">=</span><span class="s1">&#39;vault_kv2_get&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">#####</span><span class="w"></span>
+<span class="c1"># use settings from a different plugin (on an indivdual call)</span>
+<span class="c1">## short names assume community.hashi_vault</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ansible_hashi_vault_engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dept-secrets</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">settings</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with some settings from the controller, auth from remote</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="nv">plugin</span><span class="o">=</span><span class="s1">&#39;vault_kv2_get&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">#####</span>
 
-<span class="c1"># normally, options with default values are not returned, but can be</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># we usually want to use the remote host&#39;s IAM auth</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="c1"># normally, options with default values are not returned, but can be</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># we usually want to use the remote host&#39;s IAM auth</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
 <span class="w">      </span><span class="cp">{{</span>
         <span class="nv">settings</span>
         <span class="o">|</span> <span class="nf">combine</span><span class="o">({</span><span class="s1">&#39;auth_method&#39;</span><span class="o">:</span> <span class="nv">aws_iam</span><span class="o">})</span>
-      <span class="cp">}}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">block</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Use the plugin auth method instead, even if it is the default method</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;auth_method&#39;</span><span class="o">,</span> <span class="nv">include_default</span><span class="o">=</span><span class="kp">True</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">#####</span><span class="w"></span>
+      <span class="cp">}}</span>
+<span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Use the plugin auth method instead, even if it is the default method</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;auth_method&#39;</span><span class="o">,</span> <span class="nv">include_default</span><span class="o">=</span><span class="kp">True</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">#####</span>
 
-<span class="c1"># normally, options with None/null values are not returned,</span><span class="w"></span>
-<span class="c1"># nor are private options (names begin with underscore _),</span><span class="w"></span>
-<span class="c1"># but they can be returned too if desired</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Show all plugin settings</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="nv">include_none</span><span class="o">=</span><span class="kp">True</span><span class="o">,</span> <span class="nv">include_private</span><span class="o">=</span><span class="kp">True</span><span class="o">,</span> <span class="nv">include_default</span><span class="o">=</span><span class="kp">True</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="c1">#####</span><span class="w"></span>
+<span class="c1"># normally, options with None/null values are not returned,</span>
+<span class="c1"># nor are private options (names begin with underscore _),</span>
+<span class="c1"># but they can be returned too if desired</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Show all plugin settings</span>
+<span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="nv">include_none</span><span class="o">=</span><span class="kp">True</span><span class="o">,</span> <span class="nv">include_private</span><span class="o">=</span><span class="kp">True</span><span class="o">,</span> <span class="nv">include_default</span><span class="o">=</span><span class="kp">True</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="c1">#####</span>
 
-<span class="c1"># dealing with low-precedence env vars and token sink loading</span><span class="w"></span>
-<span class="c1">## here, VAULT_ADDR is usually used with plugins, but that will not work with vault_ansible_settings.</span><span class="w"></span>
-<span class="c1">## additionally, the CLI `vault login` is used before running Ansible, so the token sink is usually used, which also will not work.</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w"></span>
-<span class="w">  </span><span class="nt">vars</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">plugin_settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;url&#39;</span><span class="o">,</span> <span class="s1">&#39;token*&#39;</span><span class="o">,</span> <span class="nv">include_default</span><span class="o">=</span><span class="kp">True</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">overrides</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">plugin_settings.url</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;ansible.builtin.env&#39;</span><span class="o">,</span> <span class="s1">&#39;VAULT_ADDR&#39;</span><span class="o">))</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="c1"># dealing with low-precedence env vars and token sink loading</span>
+<span class="c1">## here, VAULT_ADDR is usually used with plugins, but that will not work with vault_ansible_settings.</span>
+<span class="c1">## additionally, the CLI `vault login` is used before running Ansible, so the token sink is usually used, which also will not work.</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">plugin_settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">,</span> <span class="s1">&#39;url&#39;</span><span class="o">,</span> <span class="s1">&#39;token*&#39;</span><span class="o">,</span> <span class="nv">include_default</span><span class="o">=</span><span class="kp">True</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">overrides</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">plugin_settings.url</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;ansible.builtin.env&#39;</span><span class="o">,</span> <span class="s1">&#39;VAULT_ADDR&#39;</span><span class="o">))</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">      </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
 <span class="w">        </span><span class="cp">{{</span>
           <span class="nv">plugin_settings.token</span>
           <span class="o">|</span> <span class="nf">default</span><span class="o">(</span>
@@ -439,20 +439,20 @@
               <span class="o">)</span> <span class="o">|</span> <span class="nf">path_join</span>
             <span class="o">)</span>
           <span class="o">)</span>
-        <span class="cp">}}</span><span class="w"></span>
-<span class="w">      </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span><span class="w"></span>
-<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+        <span class="cp">}}</span>
+<span class="w">      </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
 <span class="w">      </span><span class="cp">{{</span>
         <span class="nv">plugin_settings</span>
         <span class="o">|</span> <span class="nf">combine</span><span class="o">(</span><span class="nv">overrides</span><span class="o">)</span>
-      <span class="cp">}}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span><span class="w"></span>
-<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span><span class="w"></span>
-<span class="c1">#####</span><span class="w"></span>
+      <span class="cp">}}</span>
+<span class="w">  </span><span class="nt">module_defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_ansible_settings&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get a secret from the remote host with settings from the controller</span>
+<span class="w">      </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app/some/secret</span>
+<span class="c1">#####</span>
 </pre></div>
 </div>
 </section>
