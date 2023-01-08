@@ -26,7 +26,8 @@ DOCUMENTATION = """
   attributes:
     check_mode:
       support: partial
-      description: In check mode, an empty response will be returned and the write will not be performed.
+      details:
+        - In check mode, an empty response will be returned and the write will not be performed.
   seealso:
     - ref: community.hashi_vault.vault_write lookup <ansible_collections.community.hashi_vault.vault_write_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_write) lookup plugin.
@@ -34,6 +35,7 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes
     - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
