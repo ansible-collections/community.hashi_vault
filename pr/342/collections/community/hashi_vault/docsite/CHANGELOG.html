@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>community.hashi_vault Release Notes &mdash; Ansible collections  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/ansible.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/antsibull-minimal.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/rtd-ethical-ads.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/images/Ansible-Mark-RGB_Black.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Filter guide" href="filter_guide.html" />
+    <link rel="prev" title="Community.Hashi_Vault" href="../index.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+    <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+    <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+    <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../../../_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ansible collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Collections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">Collection Index</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Collections in the Community Namespace</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">Community.Hashi_Vault</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#communication">Communication</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html#changelog">Changelog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#guides">Guides</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#plugin-index">Plugin Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_filter.html">Index of all Filter Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_lookup.html">Index of all Lookup Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_module.html">Index of all Modules</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ansible collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Collection Index</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Collections in the Community Namespace</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Community.Hashi_Vault</a></li>
+      <li class="breadcrumb-item active">community.hashi_vault Release Notes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <section id="community-hashi-vault-release-notes">
+<h1><a class="toc-backref" href="#id70">community.hashi_vault Release Notes</a><a class="headerlink" href="#community-hashi-vault-release-notes" title="Permalink to this heading"></a></h1>
+<div class="contents topic" id="topics">
+<p class="topic-title">Topics</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#community-hashi-vault-release-notes" id="id70">community.hashi_vault Release Notes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#v4-0-0" id="id71">v4.0.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#release-summary" id="id72">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#minor-changes" id="id73">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#breaking-changes-porting-guide" id="id74">Breaking Changes / Porting Guide</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v3-4-0" id="id75">v3.4.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id1" id="id76">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id77">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#bugfixes" id="id78">Bugfixes</a></p></li>
+<li><p><a class="reference internal" href="#new-modules" id="id79">New Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v3-3-1" id="id80">v3.3.1</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id3" id="id81">Release Summary</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v3-3-0" id="id82">v3.3.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id4" id="id83">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id84">Minor Changes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v3-2-0" id="id85">v3.2.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id6" id="id86">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id7" id="id87">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id88">Bugfixes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v3-1-0" id="id89">v3.1.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id9" id="id90">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#deprecated-features" id="id91">Deprecated Features</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id92">Bugfixes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v3-0-0" id="id93">v3.0.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id11" id="id94">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id12" id="id95">Deprecated Features</a></p></li>
+<li><p><a class="reference internal" href="#removed-features-previously-deprecated" id="id96">Removed Features (previously deprecated)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v2-5-0" id="id97">v2.5.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id13" id="id98">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id14" id="id99">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id15" id="id100">Deprecated Features</a></p></li>
+<li><p><a class="reference internal" href="#new-plugins" id="id101">New Plugins</a></p>
+<ul>
+<li><p><a class="reference internal" href="#lookup" id="id102">Lookup</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id16" id="id103">New Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v2-4-0" id="id104">v2.4.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id17" id="id105">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id106">New Plugins</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id19" id="id107">Lookup</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id20" id="id108">New Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v2-3-0" id="id109">v2.3.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id21" id="id110">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id22" id="id111">New Plugins</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id23" id="id112">Lookup</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id24" id="id113">New Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v2-2-0" id="id114">v2.2.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id25" id="id115">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id26" id="id116">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id27" id="id117">New Plugins</a></p>
+<ul>
+<li><p><a class="reference internal" href="#filter" id="id118">Filter</a></p></li>
+<li><p><a class="reference internal" href="#id28" id="id119">Lookup</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id29" id="id120">New Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v2-1-0" id="id121">v2.1.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id30" id="id122">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id31" id="id123">Deprecated Features</a></p></li>
+<li><p><a class="reference internal" href="#id32" id="id124">Removed Features (previously deprecated)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v2-0-0" id="id125">v2.0.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id33" id="id126">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id34" id="id127">Breaking Changes / Porting Guide</a></p></li>
+<li><p><a class="reference internal" href="#id35" id="id128">Removed Features (previously deprecated)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-5-0" id="id129">v1.5.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id36" id="id130">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id37" id="id131">Minor Changes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-4-1" id="id132">v1.4.1</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id38" id="id133">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id39" id="id134">Bugfixes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-4-0" id="id135">v1.4.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id40" id="id136">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id41" id="id137">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id42" id="id138">Deprecated Features</a></p></li>
+<li><p><a class="reference internal" href="#id43" id="id139">Bugfixes</a></p></li>
+<li><p><a class="reference internal" href="#id44" id="id140">New Plugins</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id45" id="id141">Lookup</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id46" id="id142">New Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-3-2" id="id143">v1.3.2</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id47" id="id144">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id48" id="id145">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id49" id="id146">Deprecated Features</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-3-1" id="id147">v1.3.1</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id50" id="id148">Release Summary</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-3-0" id="id149">v1.3.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id51" id="id150">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id52" id="id151">Minor Changes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-2-0" id="id152">v1.2.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id53" id="id153">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id54" id="id154">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id55" id="id155">Deprecated Features</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-1-3" id="id156">v1.1.3</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id56" id="id157">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id57" id="id158">Bugfixes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-1-2" id="id159">v1.1.2</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id58" id="id160">Release Summary</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-1-1" id="id161">v1.1.1</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id59" id="id162">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id60" id="id163">Bugfixes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-1-0" id="id164">v1.1.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id61" id="id165">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id62" id="id166">Minor Changes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v1-0-0" id="id167">v1.0.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id63" id="id168">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id64" id="id169">Breaking Changes / Porting Guide</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v0-2-0" id="id170">v0.2.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id65" id="id171">Release Summary</a></p></li>
+<li><p><a class="reference internal" href="#id66" id="id172">Minor Changes</a></p></li>
+<li><p><a class="reference internal" href="#id67" id="id173">Deprecated Features</a></p></li>
+<li><p><a class="reference internal" href="#id68" id="id174">Bugfixes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#v0-1-0" id="id175">v0.1.0</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id69" id="id176">Release Summary</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="v4-0-0">
+<h2><a class="toc-backref" href="#id71">v4.0.0</a><a class="headerlink" href="#v4-0-0" title="Permalink to this heading"></a></h2>
+<section id="release-summary">
+<h3><a class="toc-backref" href="#id72">Release Summary</a><a class="headerlink" href="#release-summary" title="Permalink to this heading"></a></h3>
+<p>The next major version of the collection includes previously announced breaking changes to some default values, and improvements to module documentation with attributes that describe the use of action groups and check mode support.</p>
+</section>
+<section id="minor-changes">
+<h3><a class="toc-backref" href="#id73">Minor Changes</a><a class="headerlink" href="#minor-changes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>modules - all modules now document their action group and support for check mode in their attributes documentation (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/197">https://github.com/ansible-collections/community.hashi_vault/issues/197</a>).</p></li>
+</ul>
+</section>
+<section id="breaking-changes-porting-guide">
+<h3><a class="toc-backref" href="#id74">Breaking Changes / Porting Guide</a><a class="headerlink" href="#breaking-changes-porting-guide" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>auth - the default value for <code class="docutils literal notranslate"><span class="pre">token_validate</span></code> has changed from <code class="docutils literal notranslate"><span class="pre">true</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code>, as previously announced (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/248">https://github.com/ansible-collections/community.hashi_vault/issues/248</a>).</p></li>
+<li><p>vault_kv2_get lookup - as previously announced, the default value for <code class="docutils literal notranslate"><span class="pre">engine_mount_point</span></code> in the <code class="docutils literal notranslate"><span class="pre">vault_kv2_get</span></code> lookup has changed from <code class="docutils literal notranslate"><span class="pre">kv</span></code> to <code class="docutils literal notranslate"><span class="pre">secret</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/279">https://github.com/ansible-collections/community.hashi_vault/issues/279</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-4-0">
+<h2><a class="toc-backref" href="#id75">v3.4.0</a><a class="headerlink" href="#v3-4-0" title="Permalink to this heading"></a></h2>
+<section id="id1">
+<h3><a class="toc-backref" href="#id76">Release Summary</a><a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<p>This release includes a new module, fixes (another) <code class="docutils literal notranslate"><span class="pre">requests</span></code> header issue, and updates some inaccurate documentation.
+This is the last planned release before v4.0.0.</p>
+</section>
+<section id="id2">
+<h3><a class="toc-backref" href="#id77">Minor Changes</a><a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_pki_generate_certificate - the documentation has been updated to match the argspec for the default values of options <code class="docutils literal notranslate"><span class="pre">alt_names</span></code>, <code class="docutils literal notranslate"><span class="pre">ip_sans</span></code>, <code class="docutils literal notranslate"><span class="pre">other_sans</span></code>, and <code class="docutils literal notranslate"><span class="pre">uri_sans</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/318">https://github.com/ansible-collections/community.hashi_vault/pull/318</a>).</p></li>
+</ul>
+</section>
+<section id="bugfixes">
+<h3><a class="toc-backref" href="#id78">Bugfixes</a><a class="headerlink" href="#bugfixes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>connection options - the <code class="docutils literal notranslate"><span class="pre">namespace</span></code> connection option will be forced into a string to ensure cmpatibility with recent <code class="docutils literal notranslate"><span class="pre">requests</span></code> versions (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/309">https://github.com/ansible-collections/community.hashi_vault/issues/309</a>).</p></li>
+</ul>
+</section>
+<section id="new-modules">
+<h3><a class="toc-backref" href="#id79">New Modules</a><a class="headerlink" href="#new-modules" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_kv2_delete - Delete one or more versions of a secret from HashiCorp Vault’s KV version 2 secret store</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-3-1">
+<h2><a class="toc-backref" href="#id80">v3.3.1</a><a class="headerlink" href="#v3-3-1" title="Permalink to this heading"></a></h2>
+<section id="id3">
+<h3><a class="toc-backref" href="#id81">Release Summary</a><a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<p>No functional changes in this release, this provides updated filter documentation for the public docsite.</p>
+</section>
+</section>
+<section id="v3-3-0">
+<h2><a class="toc-backref" href="#id82">v3.3.0</a><a class="headerlink" href="#v3-3-0" title="Permalink to this heading"></a></h2>
+<section id="id4">
+<h3><a class="toc-backref" href="#id83">Release Summary</a><a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<p>With the release of <code class="docutils literal notranslate"><span class="pre">hvac</span></code> version <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code>, we needed to update <code class="docutils literal notranslate"><span class="pre">vault_token_create</span></code>’s support for orphan tokens.
+The collection’s changelog is now viewable in the Ansible documentation site.</p>
+</section>
+<section id="id5">
+<h3><a class="toc-backref" href="#id84">Minor Changes</a><a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_token_create - creation or orphan tokens uses <code class="docutils literal notranslate"><span class="pre">hvac</span></code>’s new v1 method for creating orphans, or falls back to the v0 method if needed (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/301">https://github.com/ansible-collections/community.hashi_vault/issues/301</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-2-0">
+<h2><a class="toc-backref" href="#id85">v3.2.0</a><a class="headerlink" href="#v3-2-0" title="Permalink to this heading"></a></h2>
+<section id="id6">
+<h3><a class="toc-backref" href="#id86">Release Summary</a><a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
+<p>This release brings support for the <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method, adds <code class="docutils literal notranslate"><span class="pre">412</span></code> to the default list of HTTP status codes to be retried, and fixes a bug that causes failures in token auth with <code class="docutils literal notranslate"><span class="pre">requests&gt;=2.28.0</span></code>.</p>
+</section>
+<section id="id7">
+<h3><a class="toc-backref" href="#id87">Minor Changes</a><a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>community.hashi_vault collection - add support for <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method, for Azure service principal, managed identity, or plain JWT access token (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/293">https://github.com/ansible-collections/community.hashi_vault/issues/293</a>).</p></li>
+<li><p>community.hashi_vault retries - <a class="reference external" href="https://www.vaultproject.io/api-docs#412">HTTP status code 412</a> has been added to the default list of codes to be retried, for the new <a class="reference external" href="https://www.vaultproject.io/docs/faq/ssct#q-is-there-anything-else-i-need-to-consider-to-achieve-consistency-besides-upgrading-to-vault-1-10">Server Side Consistent Token feature</a> in Vault Enterprise (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/290">https://github.com/ansible-collections/community.hashi_vault/issues/290</a>).</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3><a class="toc-backref" href="#id88">Bugfixes</a><a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>community.hashi_vault plugins - tokens will be cast to a string type before being sent to <code class="docutils literal notranslate"><span class="pre">hvac</span></code> to prevent errors in <code class="docutils literal notranslate"><span class="pre">requests</span></code> when values are <code class="docutils literal notranslate"><span class="pre">AnsibleUnsafe</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/289">https://github.com/ansible-collections/community.hashi_vault/issues/289</a>).</p></li>
+<li><p>modules - fix a “variable used before assignment” that cannot be reached but causes sanity test failures (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/296">https://github.com/ansible-collections/community.hashi_vault/issues/296</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-1-0">
+<h2><a class="toc-backref" href="#id89">v3.1.0</a><a class="headerlink" href="#v3-1-0" title="Permalink to this heading"></a></h2>
+<section id="id9">
+<h3><a class="toc-backref" href="#id90">Release Summary</a><a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<p>A default value that was set incorrectly will be corrected in <code class="docutils literal notranslate"><span class="pre">4.0.0</span></code>.
+A deprecation warning will be shown until then if the value is not specified explicitly.
+This version also includes some fixes and improvements to the licensing in the collection, which does not affect any functionality.</p>
+</section>
+<section id="deprecated-features">
+<h3><a class="toc-backref" href="#id91">Deprecated Features</a><a class="headerlink" href="#deprecated-features" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_kv2_get lookup - the <code class="docutils literal notranslate"><span class="pre">engine_mount_point</span> <span class="pre">option</span></code> in the <code class="docutils literal notranslate"><span class="pre">vault_kv2_get</span></code> lookup only will change its default from <code class="docutils literal notranslate"><span class="pre">kv</span></code> to <code class="docutils literal notranslate"><span class="pre">secret</span></code> in community.hashi_vault version 4.0.0 (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/279">https://github.com/ansible-collections/community.hashi_vault/issues/279</a>).</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3><a class="toc-backref" href="#id92">Bugfixes</a><a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add SPDX license headers to individual files (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/282">https://github.com/ansible-collections/community.hashi_vault/pull/282</a>).</p></li>
+<li><p>Add missing <code class="docutils literal notranslate"><span class="pre">BSD-2-Clause.txt</span></code> file for BSD licensed content (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/275">https://github.com/ansible-collections/community.hashi_vault/issues/275</a>).</p></li>
+<li><p>Use the correct GPL license for plugin_utils (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/276">https://github.com/ansible-collections/community.hashi_vault/issues/276</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-0-0">
+<h2><a class="toc-backref" href="#id93">v3.0.0</a><a class="headerlink" href="#v3-0-0" title="Permalink to this heading"></a></h2>
+<section id="id11">
+<h3><a class="toc-backref" href="#id94">Release Summary</a><a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<p>Version 3.0.0 of <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code> drops support for Ansible 2.9 and ansible-base 2.10.
+Several deprecated features have been removed. See the changelog for the full list.</p>
+</section>
+<section id="id12">
+<h3><a class="toc-backref" href="#id95">Deprecated Features</a><a class="headerlink" href="#id12" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>token_validate options - the shared auth option <code class="docutils literal notranslate"><span class="pre">token_validate</span></code> will change its default from <code class="docutils literal notranslate"><span class="pre">true</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code> in community.hashi_vault version 4.0.0. The <code class="docutils literal notranslate"><span class="pre">vault_login</span></code> lookup and module will keep the default value of <code class="docutils literal notranslate"><span class="pre">true</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/248">https://github.com/ansible-collections/community.hashi_vault/issues/248</a>).</p></li>
+</ul>
+</section>
+<section id="removed-features-previously-deprecated">
+<h3><a class="toc-backref" href="#id96">Removed Features (previously deprecated)</a><a class="headerlink" href="#removed-features-previously-deprecated" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>aws_iam auth - the deprecated alias <code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> for the <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> value of the <code class="docutils literal notranslate"><span class="pre">auth_method</span></code> option has been removed (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/194">https://github.com/ansible-collections/community.hashi_vault/issues/194</a>).</p></li>
+<li><p>community.hashi_vault collection - support for Ansible 2.9 and ansible-base 2.10 has been removed (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/189">https://github.com/ansible-collections/community.hashi_vault/issues/189</a>).</p></li>
+<li><p>hashi_vault lookup - the deprecated <code class="docutils literal notranslate"><span class="pre">[lookup_hashi_vault]</span></code> INI config section has been removed in favor of the collection-wide <code class="docutils literal notranslate"><span class="pre">[hashi_vault_collection]</span></code> section (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/179">https://github.com/ansible-collections/community.hashi_vault/issues/179</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-5-0">
+<h2><a class="toc-backref" href="#id97">v2.5.0</a><a class="headerlink" href="#v2-5-0" title="Permalink to this heading"></a></h2>
+<section id="id13">
+<h3><a class="toc-backref" href="#id98">Release Summary</a><a class="headerlink" href="#id13" title="Permalink to this heading"></a></h3>
+<p>This release finally contains dedicated KV plugins and modules, and an exciting new lookup to help use plugin values in module calls.
+With that, we also have a guide in the collection docsite for migrating away from the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup toward dedicated content.
+We are also announcing that the <code class="docutils literal notranslate"><span class="pre">token_validate</span></code> option will change its default value in version 4.0.0.
+This is the last planned release before 3.0.0. See the porting guide for breaking changes and removed features in the next version.</p>
+</section>
+<section id="id14">
+<h3><a class="toc-backref" href="#id99">Minor Changes</a><a class="headerlink" href="#id14" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_login module &amp; lookup - no friendly error message was given when <code class="docutils literal notranslate"><span class="pre">hvac</span></code> was missing (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/257">https://github.com/ansible-collections/community.hashi_vault/issues/257</a>).</p></li>
+<li><p>vault_pki_certificate - add <code class="docutils literal notranslate"><span class="pre">vault_pki_certificate</span></code> to the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault</span></code> action group (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/251">https://github.com/ansible-collections/community.hashi_vault/issues/251</a>).</p></li>
+<li><p>vault_read module &amp; lookup - no friendly error message was given when <code class="docutils literal notranslate"><span class="pre">hvac</span></code> was missing (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/257">https://github.com/ansible-collections/community.hashi_vault/issues/257</a>).</p></li>
+<li><p>vault_token_create - add <code class="docutils literal notranslate"><span class="pre">vault_token_create</span></code> to the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault</span></code> action group (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/251">https://github.com/ansible-collections/community.hashi_vault/issues/251</a>).</p></li>
+<li><p>vault_token_create module &amp; lookup - no friendly error message was given when <code class="docutils literal notranslate"><span class="pre">hvac</span></code> was missing (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/257">https://github.com/ansible-collections/community.hashi_vault/issues/257</a>).</p></li>
+<li><p>vault_write - add <code class="docutils literal notranslate"><span class="pre">vault_write</span></code> to the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault</span></code> action group (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/251">https://github.com/ansible-collections/community.hashi_vault/issues/251</a>).</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3><a class="toc-backref" href="#id100">Deprecated Features</a><a class="headerlink" href="#id15" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>token_validate options - the shared auth option <code class="docutils literal notranslate"><span class="pre">token_validate</span></code> will change its default from <code class="docutils literal notranslate"><span class="pre">True</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> in community.hashi_vault version 4.0.0. The <code class="docutils literal notranslate"><span class="pre">vault_login</span></code> lookup and module will keep the default value of <code class="docutils literal notranslate"><span class="pre">True</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/248">https://github.com/ansible-collections/community.hashi_vault/issues/248</a>).</p></li>
+</ul>
+</section>
+<section id="new-plugins">
+<h3><a class="toc-backref" href="#id101">New Plugins</a><a class="headerlink" href="#new-plugins" title="Permalink to this heading"></a></h3>
+<section id="lookup">
+<h4><a class="toc-backref" href="#id102">Lookup</a><a class="headerlink" href="#lookup" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>vault_ansible_settings - Returns plugin settings (options)</p></li>
+<li><p>vault_kv1_get - Get a secret from HashiCorp Vault’s KV version 1 secret store</p></li>
+<li><p>vault_kv2_get - Get a secret from HashiCorp Vault’s KV version 2 secret store</p></li>
+</ul>
+</section>
+</section>
+<section id="id16">
+<h3><a class="toc-backref" href="#id103">New Modules</a><a class="headerlink" href="#id16" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_kv1_get - Get a secret from HashiCorp Vault’s KV version 1 secret store</p></li>
+<li><p>vault_kv2_get - Get a secret from HashiCorp Vault’s KV version 2 secret store</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-4-0">
+<h2><a class="toc-backref" href="#id104">v2.4.0</a><a class="headerlink" href="#v2-4-0" title="Permalink to this heading"></a></h2>
+<section id="id17">
+<h3><a class="toc-backref" href="#id105">Release Summary</a><a class="headerlink" href="#id17" title="Permalink to this heading"></a></h3>
+<p>Our first content for writing to Vault is now live.</p>
+</section>
+<section id="id18">
+<h3><a class="toc-backref" href="#id106">New Plugins</a><a class="headerlink" href="#id18" title="Permalink to this heading"></a></h3>
+<section id="id19">
+<h4><a class="toc-backref" href="#id107">Lookup</a><a class="headerlink" href="#id19" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>vault_write - Perform a write operation against HashiCorp Vault</p></li>
+</ul>
+</section>
+</section>
+<section id="id20">
+<h3><a class="toc-backref" href="#id108">New Modules</a><a class="headerlink" href="#id20" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_write - Perform a write operation against HashiCorp Vault</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-3-0">
+<h2><a class="toc-backref" href="#id109">v2.3.0</a><a class="headerlink" href="#v2-3-0" title="Permalink to this heading"></a></h2>
+<section id="id21">
+<h3><a class="toc-backref" href="#id110">Release Summary</a><a class="headerlink" href="#id21" title="Permalink to this heading"></a></h3>
+<p>This release contains new plugins and modules for creating tokens and for generating certificates with Vault’s PKI secrets engine.</p>
+</section>
+<section id="id22">
+<h3><a class="toc-backref" href="#id111">New Plugins</a><a class="headerlink" href="#id22" title="Permalink to this heading"></a></h3>
+<section id="id23">
+<h4><a class="toc-backref" href="#id112">Lookup</a><a class="headerlink" href="#id23" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>vault_token_create - Create a HashiCorp Vault token</p></li>
+</ul>
+</section>
+</section>
+<section id="id24">
+<h3><a class="toc-backref" href="#id113">New Modules</a><a class="headerlink" href="#id24" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_pki_generate_certificate - Generates a new set of credentials (private key and certificate) using HashiCorp Vault PKI</p></li>
+<li><p>vault_token_create - Create a HashiCorp Vault token</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-2-0">
+<h2><a class="toc-backref" href="#id114">v2.2.0</a><a class="headerlink" href="#v2-2-0" title="Permalink to this heading"></a></h2>
+<section id="id25">
+<h3><a class="toc-backref" href="#id115">Release Summary</a><a class="headerlink" href="#id25" title="Permalink to this heading"></a></h3>
+<p>This release contains a new lookup/module combo for logging in to Vault, and includes our first filter plugin.</p>
+</section>
+<section id="id26">
+<h3><a class="toc-backref" href="#id116">Minor Changes</a><a class="headerlink" href="#id26" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>The Filter guide has been added to the collection’s docsite.</p></li>
+</ul>
+</section>
+<section id="id27">
+<h3><a class="toc-backref" href="#id117">New Plugins</a><a class="headerlink" href="#id27" title="Permalink to this heading"></a></h3>
+<section id="filter">
+<h4><a class="toc-backref" href="#id118">Filter</a><a class="headerlink" href="#filter" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>vault_login_token - Extracts the client token from a Vault login response</p></li>
+</ul>
+</section>
+<section id="id28">
+<h4><a class="toc-backref" href="#id119">Lookup</a><a class="headerlink" href="#id28" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>vault_login - Perform a login operation against HashiCorp Vault</p></li>
+</ul>
+</section>
+</section>
+<section id="id29">
+<h3><a class="toc-backref" href="#id120">New Modules</a><a class="headerlink" href="#id29" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_login - Perform a login operation against HashiCorp Vault</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-1-0">
+<h2><a class="toc-backref" href="#id121">v2.1.0</a><a class="headerlink" href="#v2-1-0" title="Permalink to this heading"></a></h2>
+<section id="id30">
+<h3><a class="toc-backref" href="#id122">Release Summary</a><a class="headerlink" href="#id30" title="Permalink to this heading"></a></h3>
+<p>The most important change in this release is renaming the <code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> auth method to <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> and deprecating the old name. This release also announces the deprecation of Ansible 2.9 and ansible-base 2.10 support in 3.0.0.</p>
+</section>
+<section id="id31">
+<h3><a class="toc-backref" href="#id123">Deprecated Features</a><a class="headerlink" href="#id31" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Support for Ansible 2.9 and ansible-base 2.10 is deprecated, and will be removed in the next major release (community.hashi_vault 3.0.0) next spring (<a class="reference external" href="https://github.com/ansible-community/community-topics/issues/50">https://github.com/ansible-community/community-topics/issues/50</a>, <a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/189">https://github.com/ansible-collections/community.hashi_vault/issues/189</a>).</p></li>
+<li><p>aws_iam_login auth method - the <code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> method has been renamed to <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code>. The old name will be removed in collection version <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>. Until then both names will work, and a warning will be displayed when using the old name (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/193">https://github.com/ansible-collections/community.hashi_vault/pull/193</a>).</p></li>
+</ul>
+</section>
+<section id="id32">
+<h3><a class="toc-backref" href="#id124">Removed Features (previously deprecated)</a><a class="headerlink" href="#id32" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>the “legacy” integration test setup has been removed; this does not affect end users and is only relevant to contributors (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/191">https://github.com/ansible-collections/community.hashi_vault/pull/191</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-0-0">
+<h2><a class="toc-backref" href="#id125">v2.0.0</a><a class="headerlink" href="#v2-0-0" title="Permalink to this heading"></a></h2>
+<section id="id33">
+<h3><a class="toc-backref" href="#id126">Release Summary</a><a class="headerlink" href="#id33" title="Permalink to this heading"></a></h3>
+<p>Version 2.0.0 of the collection drops support for Python 2 &amp; Python 3.5, making Python 3.6 the minimum supported version.
+Some deprecated features and settings have been removed as well.</p>
+</section>
+<section id="id34">
+<h3><a class="toc-backref" href="#id127">Breaking Changes / Porting Guide</a><a class="headerlink" href="#id34" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>connection options - there is no longer a default value for the <code class="docutils literal notranslate"><span class="pre">url</span></code> option (the Vault address), so a value must be supplied (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/83">https://github.com/ansible-collections/community.hashi_vault/issues/83</a>).</p></li>
+</ul>
+</section>
+<section id="id35">
+<h3><a class="toc-backref" href="#id128">Removed Features (previously deprecated)</a><a class="headerlink" href="#id35" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>drop support for Python 2 and Python 3.5 (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/81">https://github.com/ansible-collections/community.hashi_vault/issues/81</a>).</p></li>
+<li><p>support for the following deprecated environment variables has been removed: <code class="docutils literal notranslate"><span class="pre">VAULT_AUTH_METHOD</span></code>, <code class="docutils literal notranslate"><span class="pre">VAULT_TOKEN_PATH</span></code>, <code class="docutils literal notranslate"><span class="pre">VAULT_TOKEN_FILE</span></code>, <code class="docutils literal notranslate"><span class="pre">VAULT_ROLE_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">VAULT_SECRET_ID</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/173">https://github.com/ansible-collections/community.hashi_vault/pull/173</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-5-0">
+<h2><a class="toc-backref" href="#id129">v1.5.0</a><a class="headerlink" href="#v1-5-0" title="Permalink to this heading"></a></h2>
+<section id="id36">
+<h3><a class="toc-backref" href="#id130">Release Summary</a><a class="headerlink" href="#id36" title="Permalink to this heading"></a></h3>
+<p>This release includes a new action group for use with <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code>, and additional ways of specifying the <code class="docutils literal notranslate"><span class="pre">mount_point</span></code> option for plugins.
+This will be the last <code class="docutils literal notranslate"><span class="pre">1.x</span></code> release.</p>
+</section>
+<section id="id37">
+<h3><a class="toc-backref" href="#id131">Minor Changes</a><a class="headerlink" href="#id37" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>add the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault</span></code> action group (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/172">https://github.com/ansible-collections/community.hashi_vault/pull/172</a>).</p></li>
+<li><p>auth methods - Add support for configuring the <code class="docutils literal notranslate"><span class="pre">mount_point</span></code> auth method option in plugins via the <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_MOUNT_POINT</span></code> environment variable, <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_mount_point</span></code> ansible variable, or <code class="docutils literal notranslate"><span class="pre">mount_point</span></code> INI section (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/171">https://github.com/ansible-collections/community.hashi_vault/pull/171</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-4-1">
+<h2><a class="toc-backref" href="#id132">v1.4.1</a><a class="headerlink" href="#v1-4-1" title="Permalink to this heading"></a></h2>
+<section id="id38">
+<h3><a class="toc-backref" href="#id133">Release Summary</a><a class="headerlink" href="#id38" title="Permalink to this heading"></a></h3>
+<p>This release contains a bugfix for <code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> authentication.</p>
+</section>
+<section id="id39">
+<h3><a class="toc-backref" href="#id134">Bugfixes</a><a class="headerlink" href="#id39" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>aws_iam_login auth method - fix incorrect use of <code class="docutils literal notranslate"><span class="pre">boto3</span></code>/<code class="docutils literal notranslate"><span class="pre">botocore</span></code> that prevented proper loading of AWS IAM role credentials (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/167">https://github.com/ansible-collections/community.hashi_vault/issues/167</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-4-0">
+<h2><a class="toc-backref" href="#id135">v1.4.0</a><a class="headerlink" href="#v1-4-0" title="Permalink to this heading"></a></h2>
+<section id="id40">
+<h3><a class="toc-backref" href="#id136">Release Summary</a><a class="headerlink" href="#id40" title="Permalink to this heading"></a></h3>
+<p>This release includes bugfixes, a new auth method (<code class="docutils literal notranslate"><span class="pre">cert</span></code>), and the first new content since the collection’s formation, the <code class="docutils literal notranslate"><span class="pre">vault_read</span></code> module and lookup plugin.
+We’re also announcing the deprecation of the <code class="docutils literal notranslate"><span class="pre">[lookup_hashi_vault]</span></code> INI section (which will continue working up until its removal only for the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup), to be replaced by the <code class="docutils literal notranslate"><span class="pre">[hashi_vault_collection]</span></code> section that will apply to all plugins in the collection.</p>
+</section>
+<section id="id41">
+<h3><a class="toc-backref" href="#id137">Minor Changes</a><a class="headerlink" href="#id41" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>community.hashi_vault collection - add cert auth method (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/159">https://github.com/ansible-collections/community.hashi_vault/pull/159</a>).</p></li>
+</ul>
+</section>
+<section id="id42">
+<h3><a class="toc-backref" href="#id138">Deprecated Features</a><a class="headerlink" href="#id42" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>lookup hashi_vault - the <code class="docutils literal notranslate"><span class="pre">[lookup_hashi_vault]</span></code> section in the <code class="docutils literal notranslate"><span class="pre">ansible.cfg</span></code> file is deprecated and will be removed in collection version <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>. Instead, the section <code class="docutils literal notranslate"><span class="pre">[hashi_vault_collection]</span></code> can be used, which will apply to all plugins in the collection going forward (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/144">https://github.com/ansible-collections/community.hashi_vault/pull/144</a>).</p></li>
+</ul>
+</section>
+<section id="id43">
+<h3><a class="toc-backref" href="#id139">Bugfixes</a><a class="headerlink" href="#id43" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>aws_iam_login auth - the <code class="docutils literal notranslate"><span class="pre">aws_security_token</span></code> option was not used, causing assumed role credentials to fail (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/160">https://github.com/ansible-collections/community.hashi_vault/issues/160</a>).</p></li>
+<li><p>hashi_vault collection - a fallback import supporting the <code class="docutils literal notranslate"><span class="pre">retries</span></code> option for <code class="docutils literal notranslate"><span class="pre">urllib3</span></code> via <code class="docutils literal notranslate"><span class="pre">requests.packages.urllib3</span></code> was not correctly formed (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/116">https://github.com/ansible-collections/community.hashi_vault/issues/116</a>).</p></li>
+<li><p>hashi_vault collection - unhandled exception with <code class="docutils literal notranslate"><span class="pre">token</span></code> auth when <code class="docutils literal notranslate"><span class="pre">token_file</span></code> exists but is a directory (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/152">https://github.com/ansible-collections/community.hashi_vault/issues/152</a>).</p></li>
+</ul>
+</section>
+<section id="id44">
+<h3><a class="toc-backref" href="#id140">New Plugins</a><a class="headerlink" href="#id44" title="Permalink to this heading"></a></h3>
+<section id="id45">
+<h4><a class="toc-backref" href="#id141">Lookup</a><a class="headerlink" href="#id45" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>vault_read - Perform a read operation against HashiCorp Vault</p></li>
+</ul>
+</section>
+</section>
+<section id="id46">
+<h3><a class="toc-backref" href="#id142">New Modules</a><a class="headerlink" href="#id46" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>vault_read - Perform a read operation against HashiCorp Vault</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-3-2">
+<h2><a class="toc-backref" href="#id143">v1.3.2</a><a class="headerlink" href="#v1-3-2" title="Permalink to this heading"></a></h2>
+<section id="id47">
+<h3><a class="toc-backref" href="#id144">Release Summary</a><a class="headerlink" href="#id47" title="Permalink to this heading"></a></h3>
+<p>This release adds requirements detection support for Ansible Execution Environments. It also updates and adds new guides in our <a class="reference external" href="https://docs.ansible.com/ansible/devel/collections/community/hashi_vault">collection docsite</a>.
+This release also announces the dropping of Python 3.5 support in version <code class="docutils literal notranslate"><span class="pre">2.0.0</span></code> of the collection, alongside the previous announcement dropping Python 2.x in <code class="docutils literal notranslate"><span class="pre">2.0.0</span></code>.</p>
+</section>
+<section id="id48">
+<h3><a class="toc-backref" href="#id145">Minor Changes</a><a class="headerlink" href="#id48" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault collection - add <code class="docutils literal notranslate"><span class="pre">execution-environment.yml</span></code> and a python requirements file to better support <code class="docutils literal notranslate"><span class="pre">ansible-builder</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/105">https://github.com/ansible-collections/community.hashi_vault/pull/105</a>).</p></li>
+</ul>
+</section>
+<section id="id49">
+<h3><a class="toc-backref" href="#id146">Deprecated Features</a><a class="headerlink" href="#id49" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault collection - support for Python 3.5 will be dropped in version <code class="docutils literal notranslate"><span class="pre">2.0.0</span></code> of <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/81">https://github.com/ansible-collections/community.hashi_vault/issues/81</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-3-1">
+<h2><a class="toc-backref" href="#id147">v1.3.1</a><a class="headerlink" href="#v1-3-1" title="Permalink to this heading"></a></h2>
+<section id="id50">
+<h3><a class="toc-backref" href="#id148">Release Summary</a><a class="headerlink" href="#id50" title="Permalink to this heading"></a></h3>
+<p>This release fixes an error in the documentation. No functionality is changed so it’s not necessary to upgrade from <code class="docutils literal notranslate"><span class="pre">1.3.0</span></code>.</p>
+</section>
+</section>
+<section id="v1-3-0">
+<h2><a class="toc-backref" href="#id149">v1.3.0</a><a class="headerlink" href="#v1-3-0" title="Permalink to this heading"></a></h2>
+<section id="id51">
+<h3><a class="toc-backref" href="#id150">Release Summary</a><a class="headerlink" href="#id51" title="Permalink to this heading"></a></h3>
+<p>This release adds two connection-based options for controlling timeouts and retrying failed Vault requests.</p>
+</section>
+<section id="id52">
+<h3><a class="toc-backref" href="#id151">Minor Changes</a><a class="headerlink" href="#id52" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">retries</span></code> and <code class="docutils literal notranslate"><span class="pre">retry_action</span></code> to enable built-in retry on failure (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/71">https://github.com/ansible-collections/community.hashi_vault/pull/71</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">timeout</span></code> option to control connection timeouts (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/100">https://github.com/ansible-collections/community.hashi_vault/pull/100</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-2-0">
+<h2><a class="toc-backref" href="#id152">v1.2.0</a><a class="headerlink" href="#v1-2-0" title="Permalink to this heading"></a></h2>
+<section id="id53">
+<h3><a class="toc-backref" href="#id153">Release Summary</a><a class="headerlink" href="#id53" title="Permalink to this heading"></a></h3>
+<p>This release brings several new ways of accessing options, like using Ansible vars, and addng new environment variables and INI config entries.
+A special <code class="docutils literal notranslate"><span class="pre">none</span></code> auth type is also added, for working with certain Vault Agent configurations.
+This release also announces the deprecation of Python 2 support in version <code class="docutils literal notranslate"><span class="pre">2.0.0</span></code> of the collection.</p>
+</section>
+<section id="id54">
+<h3><a class="toc-backref" href="#id154">Minor Changes</a><a class="headerlink" href="#id54" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_CA_CERT</span></code> env var (with <code class="docutils literal notranslate"><span class="pre">VAULT_CACERT</span></code> low-precedence fallback) for <code class="docutils literal notranslate"><span class="pre">ca_cert</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/97">https://github.com/ansible-collections/community.hashi_vault/pull/97</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_PASSWORD</span></code> env var and <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_password</span></code> ansible var for <code class="docutils literal notranslate"><span class="pre">password</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/96">https://github.com/ansible-collections/community.hashi_vault/pull/96</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_USERNAME</span></code> env var and <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_username</span></code> ansible var for <code class="docutils literal notranslate"><span class="pre">username</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/96">https://github.com/ansible-collections/community.hashi_vault/pull/96</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_auth_method</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_ca_cert</span></code> ansible var for <code class="docutils literal notranslate"><span class="pre">ca_cert</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/97">https://github.com/ansible-collections/community.hashi_vault/pull/97</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_namespace</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">namespace</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_proxies</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_role_id</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_secret_id</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_token_file</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">token_file</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/95">https://github.com/ansible-collections/community.hashi_vault/pull/95</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_token_path</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">token_path</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/95">https://github.com/ansible-collections/community.hashi_vault/pull/95</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_token_validate</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_token</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_url</span></code> and <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_addr</span></code> Ansible vars entries to the <code class="docutils literal notranslate"><span class="pre">url</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/86">https://github.com/ansible-collections/community.hashi_vault/pull/86</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_validate_certs</span></code> Ansible vars entry to the <code class="docutils literal notranslate"><span class="pre">validate_certs</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/95">https://github.com/ansible-collections/community.hashi_vault/pull/95</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">ca_cert</span></code> INI config file key <code class="docutils literal notranslate"><span class="pre">ca_cert</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/97">https://github.com/ansible-collections/community.hashi_vault/pull/97</a>).</p></li>
+<li><p>hashi_vault lookup - add <code class="docutils literal notranslate"><span class="pre">none</span></code> auth type which allows for passive auth via a Vault agent (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/80">https://github.com/ansible-collections/community.hashi_vault/pull/80</a>).</p></li>
+</ul>
+</section>
+<section id="id55">
+<h3><a class="toc-backref" href="#id155">Deprecated Features</a><a class="headerlink" href="#id55" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault collection - support for Python 2 will be dropped in version <code class="docutils literal notranslate"><span class="pre">2.0.0</span></code> of <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/81">https://github.com/ansible-collections/community.hashi_vault/issues/81</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-3">
+<h2><a class="toc-backref" href="#id156">v1.1.3</a><a class="headerlink" href="#v1-1-3" title="Permalink to this heading"></a></h2>
+<section id="id56">
+<h3><a class="toc-backref" href="#id157">Release Summary</a><a class="headerlink" href="#id56" title="Permalink to this heading"></a></h3>
+<p>This release fixes a bug with <code class="docutils literal notranslate"><span class="pre">userpass</span></code> authentication and <code class="docutils literal notranslate"><span class="pre">hvac</span></code> versions 0.9.6 and higher.</p>
+</section>
+<section id="id57">
+<h3><a class="toc-backref" href="#id158">Bugfixes</a><a class="headerlink" href="#id57" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault - userpass authentication did not work with hvac 0.9.6 or higher (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/68">https://github.com/ansible-collections/community.hashi_vault/pull/68</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-2">
+<h2><a class="toc-backref" href="#id159">v1.1.2</a><a class="headerlink" href="#v1-1-2" title="Permalink to this heading"></a></h2>
+<section id="id58">
+<h3><a class="toc-backref" href="#id160">Release Summary</a><a class="headerlink" href="#id58" title="Permalink to this heading"></a></h3>
+<p>This release contains the same functionality as 1.1.1. The only change is to mark some code as internal to the collection. If you are already using 1.1.1 as an end user you do not need to update.</p>
+</section>
+</section>
+<section id="v1-1-1">
+<h2><a class="toc-backref" href="#id161">v1.1.1</a><a class="headerlink" href="#v1-1-1" title="Permalink to this heading"></a></h2>
+<section id="id59">
+<h3><a class="toc-backref" href="#id162">Release Summary</a><a class="headerlink" href="#id59" title="Permalink to this heading"></a></h3>
+<p>This bugfix release restores the use of the <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> environment variable for setting the <code class="docutils literal notranslate"><span class="pre">url</span></code> option.
+See the PR linked from the changelog entry for details and workarounds if you cannot upgrade.</p>
+</section>
+<section id="id60">
+<h3><a class="toc-backref" href="#id163">Bugfixes</a><a class="headerlink" href="#id60" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault - restore use of <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> environment variable as a low preference env var (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/61">https://github.com/ansible-collections/community.hashi_vault/pull/61</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-0">
+<h2><a class="toc-backref" href="#id164">v1.1.0</a><a class="headerlink" href="#v1-1-0" title="Permalink to this heading"></a></h2>
+<section id="id61">
+<h3><a class="toc-backref" href="#id165">Release Summary</a><a class="headerlink" href="#id61" title="Permalink to this heading"></a></h3>
+<p>This release contains a new <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option for the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup.</p>
+</section>
+<section id="id62">
+<h3><a class="toc-backref" href="#id166">Minor Changes</a><a class="headerlink" href="#id62" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault - add <code class="docutils literal notranslate"><span class="pre">proxies</span></code> option (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/50">https://github.com/ansible-collections/community.hashi_vault/pull/50</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-0-0">
+<h2><a class="toc-backref" href="#id167">v1.0.0</a><a class="headerlink" href="#v1-0-0" title="Permalink to this heading"></a></h2>
+<section id="id63">
+<h3><a class="toc-backref" href="#id168">Release Summary</a><a class="headerlink" href="#id63" title="Permalink to this heading"></a></h3>
+<p>Our first major release contains a single breaking change that will affect only a small subset of users. No functionality is removed. See the details in the changelog to determine if you’re affected and if so how to transition to remediate.</p>
+</section>
+<section id="id64">
+<h3><a class="toc-backref" href="#id169">Breaking Changes / Porting Guide</a><a class="headerlink" href="#id64" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault - the <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> environment variable is now checked last for the <code class="docutils literal notranslate"><span class="pre">url</span></code> parameter. For details on which use cases are impacted, see (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/8">https://github.com/ansible-collections/community.hashi_vault/issues/8</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-2-0">
+<h2><a class="toc-backref" href="#id170">v0.2.0</a><a class="headerlink" href="#v0-2-0" title="Permalink to this heading"></a></h2>
+<section id="id65">
+<h3><a class="toc-backref" href="#id171">Release Summary</a><a class="headerlink" href="#id65" title="Permalink to this heading"></a></h3>
+<p>Several backwards-compatible bugfixes and enhancements in this release.
+Some environment variables are deprecated and have standardized replacements.</p>
+</section>
+<section id="id66">
+<h3><a class="toc-backref" href="#id172">Minor Changes</a><a class="headerlink" href="#id66" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add optional <code class="docutils literal notranslate"><span class="pre">aws_iam_server_id</span></code> parameter as the value for <code class="docutils literal notranslate"><span class="pre">X-Vault-AWS-IAM-Server-ID</span></code> header (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/27">https://github.com/ansible-collections/community.hashi_vault/pull/27</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_ADDR</span></code> environment variable added for option <code class="docutils literal notranslate"><span class="pre">url</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/8">https://github.com/ansible-collections/community.hashi_vault/issues/8</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_AUTH_METHOD</span></code> environment variable added for option <code class="docutils literal notranslate"><span class="pre">auth_method</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/17">https://github.com/ansible-collections/community.hashi_vault/issues/17</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_ROLE_ID</span></code> environment variable added for option <code class="docutils literal notranslate"><span class="pre">role_id</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/20">https://github.com/ansible-collections/community.hashi_vault/issues/20</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_SECRET_ID</span></code> environment variable added for option <code class="docutils literal notranslate"><span class="pre">secret_id</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/20">https://github.com/ansible-collections/community.hashi_vault/issues/20</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_TOKEN_FILE</span></code> environment variable added for option <code class="docutils literal notranslate"><span class="pre">token_file</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/15">https://github.com/ansible-collections/community.hashi_vault/issues/15</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_TOKEN_PATH</span></code> environment variable added for option <code class="docutils literal notranslate"><span class="pre">token_path</span></code> (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/15">https://github.com/ansible-collections/community.hashi_vault/issues/15</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">namespace</span></code> parameter can be specified in INI or via env vars <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_NAMESPACE</span></code> (new) and <code class="docutils literal notranslate"><span class="pre">VAULT_NAMESPACE</span></code> (lower preference)  (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/14">https://github.com/ansible-collections/community.hashi_vault/issues/14</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">token</span></code> parameter can now be specified via <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_TOKEN</span></code> as well as via <code class="docutils literal notranslate"><span class="pre">VAULT_TOKEN</span></code> (the latter with lower preference) (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/16">https://github.com/ansible-collections/community.hashi_vault/issues/16</a>).</p></li>
+<li><p>hashi_vault - add <code class="docutils literal notranslate"><span class="pre">token_validate</span></code> option to control token validation (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/24">https://github.com/ansible-collections/community.hashi_vault/pull/24</a>).</p></li>
+<li><p>hashi_vault - uses new AppRole method in hvac 0.10.6 with fallback to deprecated method with warning (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/33">https://github.com/ansible-collections/community.hashi_vault/pull/33</a>).</p></li>
+</ul>
+</section>
+<section id="id67">
+<h3><a class="toc-backref" href="#id173">Deprecated Features</a><a class="headerlink" href="#id67" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> environment variable for option <code class="docutils literal notranslate"><span class="pre">url</span></code> will have its precedence lowered in 1.0.0; use <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_ADDR</span></code> to intentionally override a config value (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/8">https://github.com/ansible-collections/community.hashi_vault/issues/8</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">VAULT_AUTH_METHOD</span></code> environment variable for option <code class="docutils literal notranslate"><span class="pre">auth_method</span></code> will be removed in 2.0.0, use <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_AUTH_METHOD</span></code> instead (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/17">https://github.com/ansible-collections/community.hashi_vault/issues/17</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">VAULT_ROLE_ID</span></code> environment variable for option <code class="docutils literal notranslate"><span class="pre">role_id</span></code> will be removed in 2.0.0, use <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_ROLE_ID</span></code> instead (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/20">https://github.com/ansible-collections/community.hashi_vault/issues/20</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">VAULT_SECRET_ID</span></code> environment variable for option <code class="docutils literal notranslate"><span class="pre">secret_id</span></code> will be removed in 2.0.0, use <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_SECRET_ID</span></code> instead (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/20">https://github.com/ansible-collections/community.hashi_vault/issues/20</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">VAULT_TOKEN_FILE</span></code> environment variable for option <code class="docutils literal notranslate"><span class="pre">token_file</span></code> will be removed in 2.0.0, use <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_TOKEN_FILE</span></code> instead (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/15">https://github.com/ansible-collections/community.hashi_vault/issues/15</a>).</p></li>
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">VAULT_TOKEN_PATH</span></code> environment variable for option <code class="docutils literal notranslate"><span class="pre">token_path</span></code> will be removed in 2.0.0, use <code class="docutils literal notranslate"><span class="pre">ANSIBLE_HASHI_VAULT_TOKEN_PATH</span></code> instead (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/15">https://github.com/ansible-collections/community.hashi_vault/issues/15</a>).</p></li>
+</ul>
+</section>
+<section id="id68">
+<h3><a class="toc-backref" href="#id174">Bugfixes</a><a class="headerlink" href="#id68" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>hashi_vault - <code class="docutils literal notranslate"><span class="pre">mount_point</span></code> parameter did not work with <code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> auth method (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/7">https://github.com/ansible-collections/community.hashi_vault/issues/7</a>)</p></li>
+<li><p>hashi_vault - fallback logic for handling deprecated style of auth in hvac was not implemented correctly (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/pull/33">https://github.com/ansible-collections/community.hashi_vault/pull/33</a>).</p></li>
+<li><p>hashi_vault - parameter <code class="docutils literal notranslate"><span class="pre">mount_point</span></code> does not work with JWT auth (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/29">https://github.com/ansible-collections/community.hashi_vault/issues/29</a>).</p></li>
+<li><p>hashi_vault - tokens without <code class="docutils literal notranslate"><span class="pre">lookup-self</span></code> ability can’t be used because of validation (<a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues/18">https://github.com/ansible-collections/community.hashi_vault/issues/18</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-1-0">
+<h2><a class="toc-backref" href="#id175">v0.1.0</a><a class="headerlink" href="#v0-1-0" title="Permalink to this heading"></a></h2>
+<section id="id69">
+<h3><a class="toc-backref" href="#id176">Release Summary</a><a class="headerlink" href="#id69" title="Permalink to this heading"></a></h3>
+<p>Our first release matches the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup functionality provided by <code class="docutils literal notranslate"><span class="pre">community.general</span></code> version <code class="docutils literal notranslate"><span class="pre">1.3.0</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Community.Hashi_Vault" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="filter_guide.html" class="btn btn-neutral float-right" title="Filter guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
