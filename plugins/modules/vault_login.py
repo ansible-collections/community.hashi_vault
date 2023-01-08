@@ -44,7 +44,7 @@ DOCUMENTATION = """
       details:
         - In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
           However this may not be useful if the token is required for follow on tasks.
-        - It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used.
+        - It may be better to use this module with C(check_mode=false) in order to have a valid token that can be used.
   options:
     token_validate:
       default: true
