@@ -24,15 +24,16 @@ notes:
 attributes:
   check_mode:
     support: partial
-    description:
+    details:
       - In check mode, the module returns C(changed) status without contacting Vault.
-        Consider using M(community.hashi_vault.vault_kv2_get) to verify the existence of the secret first.
+      - Consider using M(community.hashi_vault.vault_kv2_get) to verify the existence of the secret first.
 seealso:
   - module: community.hashi_vault.vault_kv2_get
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
 extends_documentation_fragment:
+  - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth

@@ -27,6 +27,7 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes
     - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
@@ -39,10 +40,10 @@ DOCUMENTATION = """
   attributes:
     check_mode:
       support: partial
-      description:
+      details:
         - In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
           However, this may not be useful if the token is required for follow on tasks.
-          It may be better to use this module with I(check_mode=no) in order to have a valid token that can be used.
+        - It may be better to use this module with I(check_mode=false) in order to have a valid token that can be used.
   options: {}
 """
 

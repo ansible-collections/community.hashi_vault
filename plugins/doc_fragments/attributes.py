@@ -12,6 +12,9 @@ class ModuleDocFragment(object):
 
     DOCUMENTATION = r'''
 options: {}
+attributes:
+    check_mode:
+      description: Can run in C(check_mode) and return changed status prediction without modifying target.
 '''
 
     ACTION_GROUP = r'''
@@ -24,10 +27,12 @@ attributes:
       - community.hashi_vault.vault
 '''
 
+    # Should be used together with the standard fragment
     CHECK_MODE_READ_ONLY = r'''
 options: {}
 attributes:
   check_mode:
     support: full
-    description: This module is "read only" and operates the same regardless of check mode.
+    details:
+      - This module is "read only" and operates the same regardless of check mode.
 '''
