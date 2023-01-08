@@ -1,3 +1,3 @@
 ---
-trivial_changes:
+trivial:
   - the attribute documentation has been updated to correct the ``description`` and ``details`` fields (https://github.com/ansible-collections/community.hashi_vault/issues/325).
