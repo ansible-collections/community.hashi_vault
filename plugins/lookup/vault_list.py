@@ -1,4 +1,4 @@
-# (c) 2021, Tom Kivlin (@tomkivlin)
+# (c) 2023, Tom Kivlin (@tomkivlin)
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
