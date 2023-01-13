@@ -33,32 +33,30 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret
+- name: List all secrets at a path
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'secret/data/hello', url='https://vault:8201') }}"
+    msg: "{{ lookup('community.hashi_vault.vault_list', 'secret', url='https://vault:8201') }}"
 
-- name: Retrieve an approle role ID
+- name: List access policies
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/approle/role/role-name/role-id', url='https://vault:8201') }}"
+    msg: "{{ lookup('community.hashi_vault.vault_list', 'sys/policies/acl', url='https://vault:8201') }}"
 
-- name: Perform multiple reads with a single Vault login
+- name: Perform multiple list operations with a single Vault login
   vars:
     paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - secret
+      - sys/policies/acl
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+    msg: "{{ lookup('community.hashi_vault.vault_list', *paths, auth_method='userpass', username=user, password=pwd) }}"
 
-- name: Perform multiple reads with a single Vault login in a loop
+- name: Perform multiple list operations with a single Vault login in a loop
   vars:
     paths:
-      - secret/data/hello
-      - auth/approle/role/role-one/role-id
-      - auth/approle/role/role-two/role-id
+      - secret
+      - sys/policies/acl
   ansible.builtin.debug:
     msg: '{{ item }}'
-  loop: "{{ query('community.hashi_vault.vault_read', *paths, auth_method='userpass', username=user, password=pwd) }}"
+  loop: "{{ query('community.hashi_vault.vault_list', *paths, auth_method='userpass', username=user, password=pwd) }}"
 
 - name: Perform multiple reads with a single Vault login in a loop (via with_)
   vars:
@@ -67,10 +65,9 @@ EXAMPLES = """
     ansible_hashi_vault_password: '{{ pwd }}'
   ansible.builtin.debug:
     msg: '{{ item }}'
-  with_community.hashi_vault.vault_read:
-    - secret/data/hello
-    - auth/approle/role/role-one/role-id
-    - auth/approle/role/role-two/role-id
+  with_community.hashi_vault.vault_list:
+    - secret
+    - sys/policies/acl
 """
 
 RETURN = """

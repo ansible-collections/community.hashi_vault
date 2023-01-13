@@ -52,15 +52,15 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ secret.data }}"
 
-- name: List role IDs from Vault via the remote host
+- name: List access policies from Vault via the remote host
   community.hashi_vault.vault_list:
     url: https://vault:8201
-    path: auth/approle
-  register: approle_id
+    path: sys/policies/acl
+  register: policies
 
 - name: Display the role IDs
   ansible.builtin.debug:
-    msg: "{{ approle_id.data }}"
+    msg: "{{ policies.data }}"
 """
 
 RETURN = """
