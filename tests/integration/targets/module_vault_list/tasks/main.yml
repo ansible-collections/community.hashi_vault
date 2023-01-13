@@ -1,0 +1,3 @@
+---
+- import_tasks: module_vault_list_setup.yml
+- import_tasks: module_vault_list_test.yml

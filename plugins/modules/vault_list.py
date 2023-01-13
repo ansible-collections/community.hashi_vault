@@ -39,10 +39,10 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Read a kv2 secret from Vault via the remote host with userpass auth
-  community.hashi_vault.vault_read:
+- name: List kv2 secrets from Vault via the remote host with userpass auth
+  community.hashi_vault.vault_list:
     url: https://vault:8201
-    path: secret/data/hello
+    path: secret
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
@@ -50,17 +50,17 @@ EXAMPLES = """
 
 - name: Display the secret data
   ansible.builtin.debug:
-    msg: "{{ secret.data.data.data }}"
+    msg: "{{ secret.data }}"
 
-- name: Retrieve an approle role ID from Vault via the remote host
-  community.hashi_vault.vault_read:
+- name: List role IDs from Vault via the remote host
+  community.hashi_vault.vault_list:
     url: https://vault:8201
-    path: auth/approle/role/role-name/role-id
+    path: auth/approle
   register: approle_id
 
-- name: Display the role ID
+- name: Display the role IDs
   ansible.builtin.debug:
-    msg: "{{ approle_id.data.data.role_id }}"
+    msg: "{{ approle_id.data }}"
 """
 
 RETURN = """

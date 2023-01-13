@@ -13,6 +13,13 @@
     options:
       version: 2
 
+- name: 'Create KV v2 secrets engine to test unauthorized access'
+  vault_ci_enable_engine:
+    backend_type: kv
+    path: '{{ unauthorized_vault_kv2_mount_point }}'
+    options:
+      version: 2
+
 - name: Create a test policy
   vault_ci_policy_put:
     name: test-policy
@@ -53,6 +60,15 @@
     path: "{{ vault_kv2_path }}/secret{{ item }}"
     version: 2
     mount_point: '{{ vault_kv2_mount_point }}'
+    secret:
+      value: 'foo{{ item }}'
+
+- name: 'Create KV v2 secrets in unauthorized path'
+  loop: [1, 2, 3, 4, 5]
+  vault_ci_kv_put:
+    path: "{{ vault_kv2_path }}/secret{{ item }}"
+    version: 2
+    mount_point: '{{ unauthorized_vault_kv2_mount_point }}'
     secret:
       value: 'foo{{ item }}'
 

@@ -8,6 +8,7 @@ vault_kv1_path: testproject
 vault_kv1_api_path: '{{ vault_kv1_mount_point }}/{{ vault_kv1_path }}'
 
 vault_kv2_mount_point: kv2
+unauthorized_vault_kv2_mount_point: kv2_noauth
 
 vault_kv2_path: testproject
 vault_kv2_multi_path: testmulti
@@ -18,6 +19,12 @@ vault_kv2_multi_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_multi_p
 vault_kv2_versioned_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_versioned_path }}'
 vault_kv2_delete_api_path: '{{ vault_kv2_mount_point }}/delete/{{ vault_kv2_versioned_path }}'
 vault_kv2_metadata_api_path: '{{ vault_kv2_mount_point }}/metadata/{{ vault_kv2_versioned_path }}'
+vault_kv2_api_list_path: '{{ vault_kv2_mount_point }}/metadata'
+
+vault_policy_api_list_path: 'sys/policies/acl'
+
+vault_kv2_api_list_inexistent_path: 'non_existent_{{ vault_kv2_mount_point }}/metadata'
+vault_kv2_api_list_unauthorized_path: '{{ unauthorized_vault_kv2_mount_point }}/metadata'
 
 vault_base_policy: |
   path "{{ vault_kv1_api_path }}/secret1" {
@@ -68,6 +75,15 @@ vault_base_policy: |
   }
   path "{{ vault_kv2_metadata_api_path }}/secret6" {
     capabilities = ["read"]
+  }
+  path "{{ vault_kv2_api_list_path }}" {
+    capabilities = ["list"]
+  }
+  path "{{ vault_policy_api_list_path }}" {
+    capabilities = ["list"]
+  }
+  path "{{ vault_kv2_api_list_unauthorized_path }}" {
+    capabilities = ["deny"]
   }
 
 vault_token_creator_policy: |
