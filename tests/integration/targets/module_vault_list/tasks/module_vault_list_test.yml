@@ -58,5 +58,5 @@
     - assert:
         that:
           - test_inexistent is failed
-          - test_inexistent.msg is search("Permission Denied")  # This is the error received when listing a non-existent path
+          - test_inexistent.msg is search("doesn't seem to exist")
         fail_msg: "Expected failure but got success or wrong failure message."
