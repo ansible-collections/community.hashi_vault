@@ -48,9 +48,16 @@ def _combined_options(**kwargs):
     return opt
 
 
-@pytest.fixture
-def kv1_get_response(fixture_loader):
-    return fixture_loader('kv1_get_response.json')
+LIST_FIXTURES = [
+    'kv2_list_response.json',
+    'policy_list_response.json',
+    'userpass_list_response.json',
+]
+
+
+@pytest.fixture(params=LIST_FIXTURES)
+def list_response(request, fixture_loader):
+    return fixture_loader(request.param)
 
 
 class TestModuleVaultList():
@@ -84,9 +91,9 @@ class TestModuleVaultList():
         assert result['msg'] == 'throwaway msg'
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_list_return_data(self, patch_ansible_module, kv1_get_response, vault_client, capfd):
+    def test_vault_list_return_data(self, patch_ansible_module, list_response, vault_client, capfd):
         client = vault_client
-        client.list.return_value = kv1_get_response.copy()
+        client.list.return_value = list_response.copy()
 
         with pytest.raises(SystemExit) as e:
             vault_list.main()
@@ -98,7 +105,7 @@ class TestModuleVaultList():
 
         client.list.assert_called_once_with(patch_ansible_module['path'])
 
-        assert result['data'] == kv1_get_response, "module result did not match expected result:\nexpected: %r\ngot: %r" % (kv1_get_response, result)
+        assert result['data'] == list_response, "module result did not match expected result:\nexpected: %r\ngot: %r" % (kv1_get_response, result)
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_list_no_data(self, patch_ansible_module, vault_client, capfd):
