@@ -1,0 +1,15 @@
+{
+    "auth": null,
+    "data": {
+        "keys": [
+            "Policy1",
+            "Policy2"
+        ]
+    },
+    "lease_duration": 0,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "96f2857e-5e33-1957-ea7e-be58f483faa3",
+    "warnings": null,
+    "wrap_info": null
+}
