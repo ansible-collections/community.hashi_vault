@@ -23,7 +23,7 @@ vault_kv2_api_list_path: '{{ vault_kv2_mount_point }}/metadata'
 
 vault_policy_api_list_path: 'sys/policies/acl'
 
-vault_kv2_api_list_inexistent_path: 'non_existent_{{ vault_kv2_mount_point }}/metadata'
+vault_kv2_api_list_inexistent_path: '{{ vault_kv2_mount_point }}/metadata/__inexistant'
 vault_kv2_api_list_unauthorized_path: '{{ unauthorized_vault_kv2_mount_point }}/metadata'
 
 vault_base_policy: |
@@ -75,6 +75,9 @@ vault_base_policy: |
   }
   path "{{ vault_kv2_metadata_api_path }}/secret6" {
     capabilities = ["read"]
+  }
+  path "{{ vault_kv2_api_list_inexistent_path }}" {
+    capabilities = ["list"]
   }
   path "{{ vault_kv2_api_list_path }}" {
     capabilities = ["list"]
