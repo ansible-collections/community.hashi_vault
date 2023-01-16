@@ -519,10 +519,6 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <dl class="simple">
 <dt><a class="reference internal" href="vault_list_lookup.html#ansible-collections-community-hashi-vault-vault-list-lookup"><span class="std std-ref">community.hashi_vault.vault_list lookup</span></a></dt><dd><p>The official documentation for the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_list</span></code> lookup plugin.</p>
 </dd>
-<dt><a class="reference internal" href="vault_read_lookup.html#ansible-collections-community-hashi-vault-vault-read-lookup"><span class="std std-ref">community.hashi_vault.vault_read lookup</span></a></dt><dd><p>The official documentation for the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_read</span></code> lookup plugin.</p>
-</dd>
-<dt><a class="reference internal" href="hashi_vault_lookup.html#ansible-collections-community-hashi-vault-hashi-vault-lookup"><span class="std std-ref">community.hashi_vault.hashi_vault lookup</span></a></dt><dd><p>The official documentation for the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.hashi_vault</span></code> lookup plugin.</p>
-</dd>
 </dl>
 </div>
 </section>
@@ -547,9 +543,9 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sys/policies/acl</span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">policies</span>
 
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the role IDs</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the policy names</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">policies.data</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">policies.data.keys</span> <span class="cp">}}</span><span class="s">&quot;</span>
 </pre></div>
 </div>
 </section>
