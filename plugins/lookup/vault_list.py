@@ -18,8 +18,6 @@ DOCUMENTATION = """
     - Performs a generic list operation against a given path in HashiCorp Vault.
   seealso:
     - module: community.hashi_vault.vault_list
-    - ref: community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.hashi_vault_lookup>
-      description: The official documentation for the C(community.hashi_vault.hashi_vault) lookup plugin.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.connection.plugins
@@ -29,7 +27,7 @@ DOCUMENTATION = """
     _terms:
       description: Vault path(s) to be listed.
       type: str
-      required: True
+      required: true
 """
 
 EXAMPLES = """
@@ -58,7 +56,7 @@ EXAMPLES = """
     msg: '{{ item }}'
   loop: "{{ query('community.hashi_vault.vault_list', *paths, auth_method='userpass', username=user, password=pwd) }}"
 
-- name: Perform multiple reads with a single Vault login in a loop (via with_)
+- name: Perform list operations with a single Vault login in a loop (via with_)
   vars:
     ansible_hashi_vault_auth_method: userpass
     ansible_hashi_vault_username: '{{ user }}'

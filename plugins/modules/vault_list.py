@@ -21,10 +21,6 @@ DOCUMENTATION = """
   seealso:
     - ref: community.hashi_vault.vault_list lookup <ansible_collections.community.hashi_vault.vault_list_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_list) lookup plugin.
-    - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
-      description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
-    - ref: community.hashi_vault.hashi_vault lookup <ansible_collections.community.hashi_vault.hashi_vault_lookup>
-      description: The official documentation for the C(community.hashi_vault.hashi_vault) lookup plugin.
   extends_documentation_fragment:
     - community.hashi_vault.attributes
     - community.hashi_vault.attributes.action_group
@@ -35,7 +31,7 @@ DOCUMENTATION = """
     path:
       description: Vault path to be listed.
       type: str
-      required: True
+      required: true
 """
 
 EXAMPLES = """
@@ -58,9 +54,9 @@ EXAMPLES = """
     path: sys/policies/acl
   register: policies
 
-- name: Display the role IDs
+- name: Display the policy names
   ansible.builtin.debug:
-    msg: "{{ policies.data }}"
+    msg: "{{ policies.data.keys }}"
 """
 
 RETURN = """

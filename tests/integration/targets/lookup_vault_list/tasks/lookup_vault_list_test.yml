@@ -29,7 +29,7 @@
           - item | type_debug == 'dict'
           - "'data' in item"
           - "'keys' in item['data']"
-          # - "'value' in item['data']['keys']"
+          - item['data']['keys'] | type_debug == 'list'
         fail_msg: 'Return value was not correct type or items do not match.'
       loop: '{{ list_results }}'
 
@@ -91,7 +91,7 @@
           - item | type_debug == 'dict'
           - "'data' in item"
           - "'keys' in item['data']"
-          # - "'value' in item['data']['data']"
+          - item['data']['keys'] | type_debug == 'list'
         fail_msg: 'Return value was not correct type or items do not match.'
       with_community.hashi_vault.vault_list:
         - '{{ vault_kv2_api_list_path }}'
