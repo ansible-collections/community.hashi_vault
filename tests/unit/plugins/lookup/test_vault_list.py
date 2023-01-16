@@ -33,19 +33,16 @@ def vault_list_lookup():
     return lookup_loader.get('community.hashi_vault.vault_list')
 
 
-@pytest.fixture
-def kv2_list_response(fixture_loader):
-    return fixture_loader('kv2_list_response.json')
+LIST_FIXTURES = [
+    'kv2_list_response.json',
+    'policy_list_response.json',
+    'userpass_list_response.json',
+]
 
 
-@pytest.fixture
-def policy_list_response(fixture_loader):
-    return fixture_loader('policy_list_response.json')
-
-
-@pytest.fixture
-def userpass_list_response(fixture_loader):
-    return fixture_loader('userpass_list_response.json')
+@pytest.fixture(params=LIST_FIXTURES)
+def list_response(request, fixture_loader):
+    return fixture_loader(request.param)
 
 
 class TestVaultListLookup(object):
@@ -73,65 +70,17 @@ class TestVaultListLookup(object):
             vault_list_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
-    def test_vault_list_return_data(self, vault_list_lookup, minimal_vars, kv2_list_response, vault_client, paths):
+    def test_vault_list_return_data(self, vault_list_lookup, minimal_vars, list_response, vault_client, paths):
         client = vault_client
 
         expected_calls = [mock.call(p) for p in paths]
 
-        def _fake_kv1_get(path):
-            r = kv2_list_response.copy()
+        def _fake_list_operation(path):
+            r = list_response.copy()
             r.update({'_path': path})
             return r
 
-        client.list = mock.Mock(wraps=_fake_kv1_get)
-
-        response = vault_list_lookup.run(terms=paths, variables=minimal_vars)
-
-        client.list.assert_has_calls(expected_calls)
-
-        assert len(response) == len(paths), "%i paths processed but got %i responses" % (len(paths), len(response))
-
-        for p in paths:
-            r = response.pop(0)
-            ins_p = r.pop('_path')
-            assert p == ins_p, "expected '_path=%s' field was not found in response, got %r" % (p, ins_p)
-
-    @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
-    def test_vault_list_return_data(self, vault_list_lookup, minimal_vars, policy_list_response, vault_client, paths):
-        client = vault_client
-
-        expected_calls = [mock.call(p) for p in paths]
-
-        def _fake_kv1_get(path):
-            r = policy_list_response.copy()
-            r.update({'_path': path})
-            return r
-
-        client.list = mock.Mock(wraps=_fake_kv1_get)
-
-        response = vault_list_lookup.run(terms=paths, variables=minimal_vars)
-
-        client.list.assert_has_calls(expected_calls)
-
-        assert len(response) == len(paths), "%i paths processed but got %i responses" % (len(paths), len(response))
-
-        for p in paths:
-            r = response.pop(0)
-            ins_p = r.pop('_path')
-            assert p == ins_p, "expected '_path=%s' field was not found in response, got %r" % (p, ins_p)
-
-    @pytest.mark.parametrize('paths', [['fake1'], ['fake2', 'fake3']])
-    def test_vault_list_return_data(self, vault_list_lookup, minimal_vars, userpass_list_response, vault_client, paths):
-        client = vault_client
-
-        expected_calls = [mock.call(p) for p in paths]
-
-        def _fake_kv1_get(path):
-            r = userpass_list_response.copy()
-            r.update({'_path': path})
-            return r
-
-        client.list = mock.Mock(wraps=_fake_kv1_get)
+        client.list = mock.Mock(wraps=_fake_list_operation)
 
         response = vault_list_lookup.run(terms=paths, variables=minimal_vars)
 
