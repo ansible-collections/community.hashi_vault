@@ -66,6 +66,20 @@ EXAMPLES = """
   with_community.hashi_vault.vault_list:
     - secret
     - sys/policies/acl
+
+- name: Create dictionary fact consisting of secret name (e.g. username) and value of a key (e.g. 'password') within that secret
+  ansible.builtin.set_fact:
+    credentials: "{{ credentials|default([]) + [ {'username': item, 'password': lookup('community.hashi_vault.vault_kv2_get', item, engine_mount_point='vpn-users').secret.password} ] }}"
+  loop: "{{ query('community.hashi_vault.vault_list', 'vpn-users/metadata')[0].data['keys'] }}"
+  no_log: true
+- ansible.builtin.debug:
+    msg: "{{ credentials }}"
+
+- name: List all userpass users and output the token policies for each user
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.vault_read', 'auth/userpass/users/' + item).data.token_policies }}"
+  loop: "{{ query('community.hashi_vault.vault_list', 'auth/userpass/users')[0].data['keys'] }}"
+
 """
 
 RETURN = """
