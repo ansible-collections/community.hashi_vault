@@ -38,7 +38,7 @@ EXAMPLES = """
 - name: List kv2 secrets from Vault via the remote host with userpass auth
   community.hashi_vault.vault_list:
     url: https://vault:8201
-    path: secret
+    path: secret/metadata/path
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
