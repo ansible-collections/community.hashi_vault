@@ -38,15 +38,17 @@ EXAMPLES = """
 - name: List kv2 secrets from Vault via the remote host with userpass auth
   community.hashi_vault.vault_list:
     url: https://vault:8201
-    path: secret/metadata/path
+    path: secret/metadata
+    # For kv2, the path needs to follow the pattern 'mount_point/metadata' to list all secrets in that path
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
   register: secret
 
-- name: Display the secret data
+- name: Display the secrets found at the path provided above
   ansible.builtin.debug:
-    msg: "{{ secret.data }}"
+    msg: "{{ secret.data.data['keys'] }}"
+    # Note that secret.data.data.keys won't work as 'keys' is a built-in method
 
 - name: List access policies from Vault via the remote host
   community.hashi_vault.vault_list:
@@ -56,7 +58,8 @@ EXAMPLES = """
 
 - name: Display the policy names
   ansible.builtin.debug:
-    msg: "{{ policies.data.keys }}"
+    msg: "{{ policies.data.data['keys'] }}"
+    # Note that secret.data.data.keys won't work as 'keys' is a built-in method
 """
 
 RETURN = """
