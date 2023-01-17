@@ -527,15 +527,17 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">List kv2 secrets from Vault via the remote host with userpass auth</span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_list</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
-<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/metadata/path</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/metadata</span>
+<span class="w">    </span><span class="c1"># For kv2, the path needs to follow the pattern &#39;mount_point/metadata&#39; to list all secrets in that path</span>
 <span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
 <span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user</span>
 <span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret</span>
 
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the secret data</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the secrets found at the path provided above</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">secret.data</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">secret.data.data</span><span class="o">[</span><span class="s1">&#39;keys&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="c1"># Note that secret.data.data.keys won&#39;t work as &#39;keys&#39; is a built-in method</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">List access policies from Vault via the remote host</span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_list</span><span class="p">:</span>
@@ -545,7 +547,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the policy names</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">policies.data.keys</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">policies.data.data</span><span class="o">[</span><span class="s1">&#39;keys&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="c1"># Note that secret.data.data.keys won&#39;t work as &#39;keys&#39; is a built-in method</span>
 </pre></div>
 </div>
 </section>
