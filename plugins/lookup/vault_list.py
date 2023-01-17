@@ -33,7 +33,8 @@ DOCUMENTATION = """
 EXAMPLES = """
 - name: List all secrets at a path
   ansible.builtin.debug:
-    msg: "{{ lookup('community.hashi_vault.vault_list', 'secret/metadata/path', url='https://vault:8201') }}"
+    msg: "{{ lookup('community.hashi_vault.vault_list', 'secret/metadata', url='https://vault:8201') }}"
+    # For kv2, the path needs to follow the pattern 'mount_point/metadata' to list all secrets in that path
 
 - name: List access policies
   ansible.builtin.debug:
@@ -42,7 +43,7 @@ EXAMPLES = """
 - name: Perform multiple list operations with a single Vault login
   vars:
     paths:
-      - secret/metadata/path
+      - secret/metadata
       - sys/policies/acl
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.vault_list', *paths, auth_method='userpass', username=user, password=pwd) }}"
@@ -50,7 +51,7 @@ EXAMPLES = """
 - name: Perform multiple list operations with a single Vault login in a loop
   vars:
     paths:
-      - secret/metadata/path
+      - secret/metadata
       - sys/policies/acl
   ansible.builtin.debug:
     msg: '{{ item }}'
@@ -64,7 +65,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: '{{ item }}'
   with_community.hashi_vault.vault_list:
-    - secret/metadata/path
+    - secret/metadata
     - sys/policies/acl
 
 - name: Create fact consisting of list of dictionaries each with secret name (e.g. username) and value of a key (e.g. 'password') within that secret
