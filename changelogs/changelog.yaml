@@ -589,3 +589,33 @@ releases:
     - 279-vault_kv2_get-lookup-mount-default.yml
     - 4.0.0.yml
     release_date: '2022-11-05'
+  4.1.0:
+    changes:
+      deprecated_features:
+      - ansible-core - support for ``ansible-core`` versions ``2.11`` and ``2.12``
+        will be dropped in collection version ``5.0.0``, making ``2.13`` the minimum
+        supported version of ``ansible-core`` (https://github.com/ansible-collections/community.hashi_vault/issues/340).
+      - hvac - the minimum version of ``hvac`` to be supported in collection version
+        ``5.0.0`` will be at least ``1.0.2``; this minimum may be raised before ``5.0.0``
+        is released, so please subscribe to the linked issue and look out for new
+        notices in the changelog (https://github.com/ansible-collections/community.hashi_vault/issues/324).
+      release_summary: 'This release brings new generic ``vault_list`` plugins from
+        a new contributor!
+
+        There are also some deprecation notices for the next major version, and some
+        updates to documentation attributes.'
+    fragments:
+    - 324-deprecate-hvac.yml
+    - 325-fix attributes.yml
+    - 340-deprecate-core-211-212.yml
+    - 4.1.0.yml
+    modules:
+    - description: Perform a list operation against HashiCorp Vault
+      name: vault_list
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Perform a list operation against HashiCorp Vault
+        name: vault_list
+        namespace: null
+    release_date: '2023-01-18'
