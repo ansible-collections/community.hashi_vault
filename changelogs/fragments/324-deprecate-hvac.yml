@@ -1,0 +1,3 @@
+---
+deprecated_features:
+  - hvac - the minimum version of ``hvac`` to be supported in collection version ``5.0.0`` will be at least ``1.0.2``; this minimum may be raised before ``5.0.0`` is released, so please subscribe to the linked issue and look out for new notices in the changelog (https://github.com/ansible-collections/community.hashi_vault/issues/324).
