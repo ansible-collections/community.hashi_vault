@@ -1,0 +1,4 @@
+---
+release_summary: |-
+  This release brings new generic ``vault_list`` plugins from a new contributor!
+  There are also some deprecation notices for the next major version, and some updates to documentation attributes.
