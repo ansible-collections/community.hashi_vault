@@ -20,6 +20,10 @@ flags:
     paths:
       - plugins/modules/vault_kv2_get.py
 
+  target_module_vault_list:
+    paths:
+      - plugins/modules/vault_list.py
+
   target_module_vault_login:
     paths:
       - plugins/modules/vault_login.py
@@ -43,6 +47,10 @@ flags:
   target_lookup_vault_kv2_get:
     paths:
       - plugins/lookup/vault_kv2_get.py
+
+  target_lookup_vault_list:
+    paths:
+      - plugins/lookup/vault_list.py
 
   target_lookup_vault_login:
     paths:
