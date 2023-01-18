@@ -26,7 +26,7 @@ vault_policy_api_list_path: 'sys/policies/acl'
 
 vault_kv2_api_list_inexistent_path: '{{ vault_kv2_mount_point }}/metadata/__inexistent'
 vault_kv2_api_list_inexistent_mount_point: '{{ vault_kv2_mount_point }}__inexistent/metadata'
-vault_kv2_api_list_inexistent_unauthorized_path: '{{ vault_kv2_mount_point }}/metadata/__inexistent_no_auth'
+vault_kv2_api_list_inexistent_unauthorized_path: '{{ vault_kv2_mount_point }}/metadate/__inexistent_no_auth'
 vault_kv2_api_list_unauthorized_path: '{{ unauthorized_vault_kv2_mount_point }}/metadata'
 
 vault_base_policy: |
