@@ -102,7 +102,7 @@
           - test_inexistent.msg is search("doesn't seem to exist")
         fail_msg: "Expected failure but got success or wrong failure message."
 
-    # If an inexistent path is listed by is included in a policy statement that denies access, the API returns a 403 error.
+    # If an inexistent path is included in a policy statement that denies access, the list API returns a 403 error.
     - name: 'Failure expected when inexistent path is listed but is explicitly mentioned in a policy statement'
       vars:
         path_inexistent_unauthorized: "{{ lookup('community.hashi_vault.vault_list', vault_kv2_api_list_inexistent_unauthorized_path, **kwargs) }}"
