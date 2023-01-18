@@ -34,7 +34,7 @@ EXAMPLES = """
 - name: List all secrets at a path
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.vault_list', 'secret/metadata', url='https://vault:8201') }}"
-    # For kv2, the path needs to follow the pattern 'mount_point/metadata' to list all secrets in that path
+    # For kv2, the path needs to follow the pattern 'mount_point/metadata' or 'mount_point/metadata/path' to list all secrets in that path
 
 - name: List access policies
   ansible.builtin.debug:

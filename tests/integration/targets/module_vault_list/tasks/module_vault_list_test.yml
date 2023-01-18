@@ -22,6 +22,18 @@
           - "'keys' in kv2_path['data']['data']"
         fail_msg: 'Return value did not contain expected fields.'
 
+    - name: 'Check kv2 mount point list'
+      register: kv2_mount_point
+      community.hashi_vault.vault_list:
+        path: "{{ vault_kv2_api_list_mount_point }}"
+
+    - assert:
+        that:
+          - "'data' in kv2_mount_point"
+          - "'data' in kv2_mount_point['data']"
+          - "'keys' in kv2_mount_point['data']['data']"
+        fail_msg: 'Return value did not contain expected fields.'
+
     ### failure tests
 
     - name: 'Failure expected when erroneous credentials are used'
@@ -49,6 +61,19 @@
           - test_unauthorized.msg is search('Permission Denied')
         fail_msg: "Expected failure but got success or wrong failure message."
 
+    # When an inexistent mount point is listed, the API returns a 403 error, not 404.
+    - name: 'Failure expected when inexistent mount point is listed'
+      register: test_inexistent_mount_point
+      community.hashi_vault.vault_list:
+        path: "{{ vault_kv2_api_list_inexistent_mount_point }}"
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_inexistent_mount_point is failed
+          - test_inexistent_mount_point.msg is search("Permission Denied")
+        fail_msg: "Expected failure but got success or wrong failure message."
+
     - name: 'Failure expected when inexistent path is listed'
       register: test_inexistent
       community.hashi_vault.vault_list:
@@ -59,4 +84,17 @@
         that:
           - test_inexistent is failed
           - test_inexistent.msg is search("doesn't seem to exist")
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    # If an inexistent path is listed by is included in a policy statement that denies access, the API returns a 403 error.
+    - name: 'Failure expected when inexistent path is listed but is explicitly mentioned in a policy statement'
+      register: test_inexistent_unauthorized
+      community.hashi_vault.vault_list:
+        path: "{{ vault_kv2_api_list_inexistent_unauthorized_path }}"
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_inexistent_unauthorized is failed
+          - test_inexistent_unauthorized.msg is search("Permission Denied")
         fail_msg: "Expected failure but got success or wrong failure message."

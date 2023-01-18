@@ -19,11 +19,14 @@ vault_kv2_multi_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_multi_p
 vault_kv2_versioned_api_path: '{{ vault_kv2_mount_point }}/data/{{ vault_kv2_versioned_path }}'
 vault_kv2_delete_api_path: '{{ vault_kv2_mount_point }}/delete/{{ vault_kv2_versioned_path }}'
 vault_kv2_metadata_api_path: '{{ vault_kv2_mount_point }}/metadata/{{ vault_kv2_versioned_path }}'
-vault_kv2_api_list_path: '{{ vault_kv2_mount_point }}/metadata'
+vault_kv2_api_list_mount_point: '{{ vault_kv2_mount_point }}/metadata'
+vault_kv2_api_list_path: '{{ vault_kv2_mount_point }}/metadata/{{ vault_kv2_path }}'
 
 vault_policy_api_list_path: 'sys/policies/acl'
 
-vault_kv2_api_list_inexistent_path: '{{ vault_kv2_mount_point }}/metadata/__inexistant'
+vault_kv2_api_list_inexistent_path: '{{ vault_kv2_mount_point }}/metadata/__inexistent'
+vault_kv2_api_list_inexistent_mount_point: '{{ vault_kv2_mount_point }}__inexistent/metadata'
+vault_kv2_api_list_inexistent_unauthorized_path: '{{ vault_kv2_mount_point }}/metadata/__inexistent_no_auth'
 vault_kv2_api_list_unauthorized_path: '{{ unauthorized_vault_kv2_mount_point }}/metadata'
 
 vault_base_policy: |
@@ -76,7 +79,7 @@ vault_base_policy: |
   path "{{ vault_kv2_metadata_api_path }}/secret6" {
     capabilities = ["read"]
   }
-  path "{{ vault_kv2_api_list_inexistent_path }}" {
+  path "{{ vault_kv2_api_list_mount_point }}/*" {
     capabilities = ["list"]
   }
   path "{{ vault_kv2_api_list_path }}" {
@@ -84,6 +87,9 @@ vault_base_policy: |
   }
   path "{{ vault_policy_api_list_path }}" {
     capabilities = ["list"]
+  }
+  path "{{ vault_kv2_api_list_inexistent_unauthorized_path }}" {
+    capabilities = ["deny"]
   }
   path "{{ vault_kv2_api_list_unauthorized_path }}" {
     capabilities = ["deny"]

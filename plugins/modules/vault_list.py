@@ -39,7 +39,7 @@ EXAMPLES = """
   community.hashi_vault.vault_list:
     url: https://vault:8201
     path: secret/metadata
-    # For kv2, the path needs to follow the pattern 'mount_point/metadata' to list all secrets in that path
+    # For kv2, the path needs to follow the pattern 'mount_point/metadata' or 'mount_point/metadata/path' to list all secrets in that path
     auth_method: userpass
     username: user
     password: '{{ passwd }}'

@@ -17,6 +17,15 @@
           - "'keys' in kv2_secret2['data']"
         fail_msg: 'Return value did not contain expected fields.'
 
+    - name: 'Check kv2 mount point list'
+      vars:
+        kv2_mount_point: "{{ lookup('community.hashi_vault.vault_list', vault_kv2_api_list_mount_point, **kwargs) }}"
+      assert:
+        that:
+          - "'data' in kv2_mount_point"
+          - "'keys' in kv2_mount_point['data']"
+        fail_msg: 'Return value did not contain expected fields.'
+
     - name: "Check multiple path list as array"
       vars:
         paths:
@@ -64,6 +73,21 @@
           - test_unauthorized.msg is search('Permission Denied')
         fail_msg: "Expected failure but got success or wrong failure message."
 
+    # When an inexistent mount point is listed, the API returns a 403 error, not 404.
+    - name: 'Failure expected when inexistent mount point is listed'
+      vars:
+        mount_point_inexistent: "{{ lookup('community.hashi_vault.vault_list', vault_kv2_api_list_inexistent_mount_point, **kwargs) }}"
+      debug:
+        msg: 'Failure is expected ({{ mount_point_inexistent }})'
+      register: test_inexistent_mount_point
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_inexistent_mount_point is failed
+          - test_inexistent_mount_point.msg is search("Permission Denied")
+        fail_msg: "Expected failure but got success or wrong failure message."
+
     - name: 'Failure expected when inexistent path is listed'
       vars:
         path_inexistent: "{{ lookup('community.hashi_vault.vault_list', vault_kv2_api_list_inexistent_path, **kwargs) }}"
@@ -76,6 +100,21 @@
         that:
           - test_inexistent is failed
           - test_inexistent.msg is search("doesn't seem to exist")
+        fail_msg: "Expected failure but got success or wrong failure message."
+
+    # If an inexistent path is listed by is included in a policy statement that denies access, the API returns a 403 error.
+    - name: 'Failure expected when inexistent path is listed but is explicitly mentioned in a policy statement'
+      vars:
+        path_inexistent_unauthorized: "{{ lookup('community.hashi_vault.vault_list', vault_kv2_api_list_inexistent_unauthorized_path, **kwargs) }}"
+      debug:
+        msg: 'Failure is expected ({{ path_inexistent_unauthorized }})'
+      register: test_inexistent_unauthorized
+      ignore_errors: true
+
+    - assert:
+        that:
+          - test_inexistent_unauthorized is failed
+          - test_inexistent_unauthorized.msg is search("Permission Denied")
         fail_msg: "Expected failure but got success or wrong failure message."
 
     # do this last so our set_fact doesn't affect any other tests
