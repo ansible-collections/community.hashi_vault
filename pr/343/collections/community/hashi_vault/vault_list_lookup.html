@@ -847,7 +847,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">List all secrets at a path</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.vault_list&#39;</span><span class="o">,</span> <span class="s1">&#39;secret/metadata&#39;</span><span class="o">,</span> <span class="nv">url</span><span class="o">=</span><span class="s1">&#39;https://vault:8201&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
-<span class="w">    </span><span class="c1"># For kv2, the path needs to follow the pattern &#39;mount_point/metadata&#39; to list all secrets in that path</span>
+<span class="w">    </span><span class="c1"># For kv2, the path needs to follow the pattern &#39;mount_point/metadata&#39; or &#39;mount_point/metadata/path&#39; to list all secrets in that path</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">List access policies</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>

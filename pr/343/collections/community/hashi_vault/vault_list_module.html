@@ -528,7 +528,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_list</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret/metadata</span>
-<span class="w">    </span><span class="c1"># For kv2, the path needs to follow the pattern &#39;mount_point/metadata&#39; to list all secrets in that path</span>
+<span class="w">    </span><span class="c1"># For kv2, the path needs to follow the pattern &#39;mount_point/metadata&#39; or &#39;mount_point/metadata/path&#39; to list all secrets in that path</span>
 <span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
 <span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user</span>
 <span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span>
