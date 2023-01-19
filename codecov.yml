@@ -7,6 +7,12 @@ ignore:
 fixes:
   - "ansible_collections/community/hashi_vault/::"
 
+coverage:
+  status:
+    patch:
+      default:
+        target: 100%
+
 flags:
   target_filter_vault_login_token:
     paths:
