@@ -5,6 +5,34 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v4.1.0
+======
+
+Release Summary
+---------------
+
+This release brings new generic ``vault_list`` plugins from a new contributor!
+There are also some deprecation notices for the next major version, and some updates to documentation attributes.
+
+Deprecated Features
+-------------------
+
+- ansible-core - support for ``ansible-core`` versions ``2.11`` and ``2.12`` will be dropped in collection version ``5.0.0``, making ``2.13`` the minimum supported version of ``ansible-core`` (https://github.com/ansible-collections/community.hashi_vault/issues/340).
+- hvac - the minimum version of ``hvac`` to be supported in collection version ``5.0.0`` will be at least ``1.0.2``; this minimum may be raised before ``5.0.0`` is released, so please subscribe to the linked issue and look out for new notices in the changelog (https://github.com/ansible-collections/community.hashi_vault/issues/324).
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- vault_list - Perform a list operation against HashiCorp Vault
+
+New Modules
+-----------
+
+- vault_list - Perform a list operation against HashiCorp Vault
+
 v4.0.0
 ======
 
