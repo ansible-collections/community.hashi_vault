@@ -60,7 +60,7 @@ def main(argv):
     tag_url = TAG_URI % image
 
     sess = requests.Session()
-    retry = Retry(total=5, backoff_factor=0.2)
+    retry = Retry(total=5, backoff_factor=0.2, respect_retry_after_header=False)
     adapter = HTTPAdapter(max_retries=retry)
     sess.mount('https://', adapter)
 
