@@ -17,11 +17,18 @@ import json
 import requests
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
-
+from warnings import warn
 from packaging import version
 
 
 TAG_URI = 'https://registry.hub.docker.com/v2/repositories/library/%s/tags?page_size=1024'
+
+
+class WarningRetry(Retry):
+    def new(self, **kwargs):
+        if self.total > 0:
+            warn(f"Error on request. Retries remaining: {self.total}")
+        return super().new(**kwargs)
 
 
 def main(argv):
@@ -60,7 +67,7 @@ def main(argv):
     tag_url = TAG_URI % image
 
     sess = requests.Session()
-    retry = Retry(total=5, backoff_factor=0.2, respect_retry_after_header=False)
+    retry = WarningRetry(total=5, backoff_factor=0.2, respect_retry_after_header=False)
     adapter = HTTPAdapter(max_retries=retry)
     sess.mount('https://', adapter)
 
