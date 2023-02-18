@@ -8,11 +8,8 @@ __metaclass__ = type
 
 import pytest
 
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
-
-from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
-
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase
+from ......plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
+from ......plugins.module_utils._hashi_vault_common import HashiVaultAuthMethodBase
 
 
 @pytest.fixture

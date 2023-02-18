@@ -7,8 +7,6 @@ __metaclass__ = type
 
 import pytest
 
-from ...compat import mock
-
 
 @pytest.fixture
 def minimal_vars():
