@@ -109,7 +109,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 # because all of the hvac calls happen in module utils, but
 # we would like to control the error message here for consistency.
 try:
-    import hvac
+    import hvac # pylint: disable=unused-import
 except ImportError:
     HAS_HVAC = False
     HVAC_IMPORT_ERROR = traceback.format_exc()

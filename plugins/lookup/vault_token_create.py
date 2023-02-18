@@ -108,7 +108,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 display = Display()
 
 try:
-    import hvac
+    import hvac # pylint: disable=unused-import
 except ImportError as imp_exc:
     HVAC_IMPORT_ERROR = imp_exc
 else:

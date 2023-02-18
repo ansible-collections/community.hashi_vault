@@ -4,14 +4,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import (absolute_import, division, print_function)
-from _pytest.fixtures import fixture
-from _pytest.python_api import raises
 __metaclass__ = type
 
 import os
 import pytest
 
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
+from ......tests.unit.compat import mock
 
 try:
     import hvac
@@ -19,11 +17,11 @@ except ImportError:
     # python 2.6, which isn't supported anyway
     hvac = mock.MagicMock()
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import (
+from ......plugins.module_utils._auth_method_token import (
     HashiVaultAuthMethodToken,
 )
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+from ......plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
 )
