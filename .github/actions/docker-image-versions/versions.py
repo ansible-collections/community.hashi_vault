@@ -27,7 +27,7 @@ TAG_URI = 'https://registry.hub.docker.com/v2/repositories/library/%s/tags?page_
 class WarningRetry(Retry):
     def new(self, **kwargs):
         if self.total > 0:
-            warn(f"Error on request. Retries remaining: {self.total}")
+            warn('Error on request. Retries remaining: %i' % (self.total,))
         return super().new(**kwargs)
 
 
