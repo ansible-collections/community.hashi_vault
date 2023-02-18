@@ -102,14 +102,14 @@ import traceback
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import missing_required_lib
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from ...plugins.module_utils._hashi_vault_module import HashiVaultModule
+from ...plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 # we don't actually need to import hvac directly in this module
 # because all of the hvac calls happen in module utils, but
 # we would like to control the error message here for consistency.
 try:
-    import hvac # pylint: disable=unused-import
+    import hvac  # pylint: disable=unused-import
 except ImportError:
     HAS_HVAC = False
     HVAC_IMPORT_ERROR = traceback.format_exc()
