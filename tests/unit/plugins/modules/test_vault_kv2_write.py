@@ -1,0 +1,127 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2023 Devon Mar (@devon-mar)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
+import json
+
+import pytest
+from ansible.module_utils.basic import missing_required_lib
+
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from .....plugins.modules import vault_kv2_write
+from ...compat import mock
+
+hvac = pytest.importorskip("hvac")
+
+pytestmark = pytest.mark.usefixtures(
+    "patch_ansible_module",
+    "patch_authenticator",
+    "patch_get_vault_client",
+)
+
+
+def _connection_options():
+    return {
+        "auth_method": "token",
+        "url": "http://myvault",
+        "token": "beep-boop",
+    }
+
+
+def _sample_options():
+    return {
+        "engine_mount_point": "secret",
+        "path": "endpoint",
+        "data": {"foo": "bar"},
+    }
+
+
+def _combined_options(**kwargs):
+    opt = _connection_options()
+    opt.update(_sample_options())
+    opt.update(kwargs)
+    return opt
+
+
+class TestModuleVaultKv2Write:
+    @pytest.mark.parametrize(
+        "patch_ansible_module", [_combined_options()], indirect=True
+    )
+    @pytest.mark.parametrize(
+        "exc",
+        [HashiVaultValueError("throwaway msg"), NotImplementedError("throwaway msg")],
+    )
+    def test_vault_kv2_get_authentication_error(self, authenticator, exc, capfd):
+        authenticator.authenticate.side_effect = exc
+
+        with pytest.raises(SystemExit) as e:
+            vault_kv2_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result["msg"] == "throwaway msg", "result: %r" % result
+
+    @pytest.mark.parametrize(
+        "patch_ansible_module", [_combined_options()], indirect=True
+    )
+    @pytest.mark.parametrize(
+        "exc",
+        [HashiVaultValueError("throwaway msg"), NotImplementedError("throwaway msg")],
+    )
+    def test_vault_kv2_get_auth_validation_error(self, authenticator, exc, capfd):
+        authenticator.validate.side_effect = exc
+
+        with pytest.raises(SystemExit) as e:
+            vault_kv2_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result["msg"] == "throwaway msg"
+
+    @pytest.mark.parametrize(
+        "patch_ansible_module", [_combined_options()], indirect=True
+    )
+    def test_vault_kv2_get_no_hvac(self, capfd):
+        with mock.patch.multiple(
+            vault_kv2_write, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True
+        ):
+            with pytest.raises(SystemExit) as e:
+                vault_kv2_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result["msg"] == missing_required_lib("hvac")
+
+    @pytest.mark.parametrize(
+        "patch_ansible_module", [[_combined_options()]], indirect=True
+    )
+    @pytest.mark.parametrize(
+        "response",
+        ({"thishasnodata": {}}, {"data": {"not data": {}}}),
+    )
+    def test_vault_kv2_write_read_responses(
+        self, vault_client, capfd, response
+    ):
+        client = vault_client
+
+        client.secrets.kv.v2.read_secret_version.return_value = response
+
+        with pytest.raises(SystemExit) as e:
+            vault_kv2_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert "Vault response did not contain data" in result["msg"]

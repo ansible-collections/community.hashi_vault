@@ -1,0 +1,6 @@
+---
+- import_tasks: setup.yml
+- block:
+    - import_tasks: test.yml
+  always:
+    - import_tasks: cleanup.yml

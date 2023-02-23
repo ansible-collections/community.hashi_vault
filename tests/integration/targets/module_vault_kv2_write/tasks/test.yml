@@ -1,0 +1,311 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_kv2_write:
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+      engine_mount_point: "{{ vault_kv2_mount_point }}"
+    vault_ci_read:
+      url: "{{ vault_test_server_http }}"
+      token: "{{ user_token }}"
+  block:
+    - name: Incorrect token
+      ignore_errors: true
+      community.hashi_vault.vault_kv2_write:
+        path: "{{ vault_kv2_path }}/write1"
+        token: notavalidtoken
+        data:
+          foo: bar
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+
+    - name: Test create (check=True)
+      check_mode: true
+      community.hashi_vault.vault_kv2_write: &write
+        path: "{{ vault_kv2_path }}/write1"
+        data: "{{ write_data0 }}"
+      register: kv2_check
+
+    - assert:
+        that:
+          - kv2_check is changed
+
+    - name: Check that the secret doesn't exist
+      vault_ci_read: &read1
+        path: "{{ vault_kv2_api_path }}/write1"
+      register: ci_read
+
+    - assert:
+        that:
+          - ci_read.result == None
+
+    - name: Test create (check=False)
+      community.hashi_vault.vault_kv2_write: *write
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - ci_read.result.data.data == write_data0
+          - result is changed
+          - "'raw' in result"
+
+    - name: Test create (idempotency)
+      community.hashi_vault.vault_kv2_write: *write
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - ci_read.result.data.data == write_data0
+          - result is not changed
+          - ci_read.result.data.metadata.version == 1
+
+    - name: Test write/overwrite (check=True)
+      check_mode: true
+      community.hashi_vault.vault_kv2_write: &overwrite
+        path: "{{ vault_kv2_path }}/write1"
+        data: "{{ write_data1 }}"
+      register: kv2_check
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - kv2_check is changed
+          - ci_read.result.data.data == write_data0
+          - ci_read.result.data.metadata.version == 1
+
+    - name: Test write/overwrite (check=False)
+      community.hashi_vault.vault_kv2_write: *overwrite
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - ci_read.result.data.data == write_data1
+          - ci_read.result.data.metadata.version == 2
+          - result is changed
+          - "'raw' in result"
+
+    - name: Test write/overwrite (idempotency)
+      community.hashi_vault.vault_kv2_write: *overwrite
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - ci_read.result.data.data == write_data1
+          - result is not changed
+          - ci_read.result.data.metadata.version == 2
+
+    - name: Test patch (check=True)
+      check_mode: true
+      community.hashi_vault.vault_kv2_write: &patch
+        path: "{{ vault_kv2_path }}/write1"
+        patch: true
+        data: "{{ write_patch }}"
+      register: kv2_check
+
+    - assert:
+        that:
+          - kv2_check is changed
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - name: The secret shouldn't be changed yet
+      assert:
+        that:
+          - ci_read.result.data.data == write_data1
+          - ci_read.result.data.metadata.version == 2
+
+    - name: Test patch (check=False)
+      community.hashi_vault.vault_kv2_write: *patch
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - result is changed
+          - "'raw' in result"
+          - ci_read.result.data.data == write_data2
+          - ci_read.result.data.metadata.version == 3
+
+    - name: Test patch (idempotency)
+      community.hashi_vault.vault_kv2_write: *patch
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - result is not changed
+          - ci_read.result.data.data == write_data2
+          - ci_read.result.data.metadata.version == 3
+
+    - name: Test patch secret that doesn't exist (check=False)
+      ignore_errors: true
+      community.hashi_vault.vault_kv2_write: &patch_404
+        path: "{{ vault_kv2_path }}/404"
+        patch: true
+        data:
+          foo: bar
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.msg is search("Patch only works on an existing secret.")
+
+    - name: Test patch secret that doesn't exist (check=true)
+      ignore_errors: true
+      check_mode: true
+      community.hashi_vault.vault_kv2_write: *patch_404
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.msg is search("Patch only works on an existing secret.")
+
+    - name: Test write secret forbidden (check=True)
+      ignore_errors: true
+      check_mode: true
+      community.hashi_vault.vault_kv2_write: &write_deny
+        path: "{{ vault_kv2_path }}/deny"
+        data:
+          foo: bar
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.msg is search("Permission denied reading")
+
+    - name: Test write secret forbidden (check=False)
+      ignore_errors: true
+      community.hashi_vault.vault_kv2_write: *write_deny
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.msg is search("Permission denied reading")
+
+    - name: Test write cas (check=True)
+      check_mode: true
+      community.hashi_vault.vault_kv2_write: &write_case
+        cas: 3
+        path: "{{ vault_kv2_path }}/write1"
+        data:
+          foo: bar
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - result is changed
+          - ci_read.result.data.data == write_data2
+          - ci_read.result.data.metadata.version == 3
+
+    - name: Test write cas (check=False)
+      community.hashi_vault.vault_kv2_write: *write_case
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - result is changed
+          - ci_read.result.data.data == write_data3
+          - ci_read.result.data.metadata.version == 4
+
+    - name: Test write cas (idempotency)
+      community.hashi_vault.vault_kv2_write: *write_case
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - result is not changed
+          - ci_read.result.data.data == write_data3
+          - ci_read.result.data.metadata.version == 4
+
+    - name: Test write cas wrong value
+      ignore_errors: true
+      community.hashi_vault.vault_kv2_write:
+        path: "{{ vault_kv2_path }}/write1"
+        cas: 1
+        data:
+          new: data
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.module_stderr is search("check-and-set parameter did not match the current version")
+
+    - name: cas=True patch=True should fail
+      ignore_errors: true
+      community.hashi_vault.vault_kv2_write:
+        path: "{{ vault_kv2_path }}/write1"
+        cas: true
+        patch: true
+        data:
+          new: data
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.msg is search("Cannot use cas when patch is true.")
+
+    - name: Test forbidden write
+      ignore_errors: true
+      community.hashi_vault.vault_kv2_write:
+        path: "{{ vault_kv2_path }}/readonly"
+        data:
+          key1: val1
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - result.msg is search("Permission denied writing to")

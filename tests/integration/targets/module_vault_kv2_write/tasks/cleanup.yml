@@ -1,0 +1,11 @@
+---
+- module_defaults:
+    vault_ci_kv2_destroy_all: "{{ vault_plugins_module_defaults_common }}"
+  block:
+  - name: Ensure test secrets are deleted
+    vault_ci_kv2_destroy_all:
+      path: "{{ item }}"
+      mount_point: "{{ vault_kv2_mount_point }}"
+    loop:
+      - "{{ vault_kv2_path }}/write1"
+      - "{{ vault_kv2_path }}/readonly"
