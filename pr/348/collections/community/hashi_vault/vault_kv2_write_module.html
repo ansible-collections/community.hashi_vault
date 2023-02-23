@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>community.hashi_vault.vault_kv2_write module – Perform a write/patch operation against a KVv2 secret in HashiCorp vault. &mdash; Ansible collections  documentation</title>
+  <title>community.hashi_vault.vault_kv2_write module – Perform a write/patch operation against a KVv2 secret in HashiCorp Vault &mdash; Ansible collections  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/ansible.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/antsibull-minimal.css" type="text/css" />
@@ -115,7 +115,7 @@
           <li class="breadcrumb-item"><a href="../../index.html">Collection Index</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Collections in the Community Namespace</a></li>
           <li class="breadcrumb-item"><a href="index.html">Community.Hashi_Vault</a></li>
-      <li class="breadcrumb-item active">community.hashi_vault.vault_kv2_write module – Perform a write/patch operation against a KVv2 secret in HashiCorp vault.</li>
+      <li class="breadcrumb-item active">community.hashi_vault.vault_kv2_write module – Perform a write/patch operation against a KVv2 secret in HashiCorp Vault</li>
       <li class="wy-breadcrumbs-aside">
               <!-- User defined GitHub URL -->
               <a href="https://github.com/ansible-collections/community.hashi_vault/edit/main/plugins/modules/vault_kv2_write.py?description=%23%23%23%23%23%20SUMMARY%0A%3C!—%20Your%20description%20here%20–%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
@@ -129,7 +129,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="ansible-collections-community-hashi-vault-vault-kv2-write-module"></span><section id="community-hashi-vault-vault-kv2-write-module-perform-a-write-patch-operation-against-a-kvv2-secret-in-hashicorp-vault">
-<h1>community.hashi_vault.vault_kv2_write module – Perform a write/patch operation against a KVv2 secret in HashiCorp vault.<a class="headerlink" href="#community-hashi-vault-vault-kv2-write-module-perform-a-write-patch-operation-against-a-kvv2-secret-in-hashicorp-vault" title="Permalink to this heading"></a></h1>
+<h1>community.hashi_vault.vault_kv2_write module – Perform a write/patch operation against a KVv2 secret in HashiCorp Vault<a class="headerlink" href="#community-hashi-vault-vault-kv2-write-module-perform-a-write-patch-operation-against-a-kvv2-secret-in-hashicorp-vault" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 4.2.0-devel).</p>
@@ -152,7 +152,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <section id="synopsis">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>Perform a write/patch operation against a KVv2 secret in HashiCorp vault.</p></li>
+<li><p>Perform a write/patch operation against a KVv2 secret in HashiCorp Vault.</p></li>
 </ul>
 </section>
 <section id="requirements">
@@ -553,21 +553,21 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <section id="examples">
 <h2><a class="toc-backref" href="#id5" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write/create a secret</span>
-<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv1_write</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_write</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span>
 <span class="w">    </span><span class="nt">data</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">foo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bar</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Patch an existing secret</span>
-<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv1_write</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_write</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span>
 <span class="w">    </span><span class="nt">data</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">my</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new key</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write with check and set</span>
-<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv1_write</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_write</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">caspath</span>
 <span class="w">    </span><span class="nt">cas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
