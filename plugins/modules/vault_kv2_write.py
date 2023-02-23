@@ -13,9 +13,9 @@ module: vault_kv2_write
 version_added: 4.2.0
 author:
   - Devon Mar (@devon-mar)
-short_description: Perform a write/patch operation against a KVv2 secret in HashiCorp vault.
+short_description: Perform a write/patch operation against a KVv2 secret in HashiCorp Vault
 description:
-  - Perform a write/patch operation against a KVv2 secret in HashiCorp vault.
+  - Perform a write/patch operation against a KVv2 secret in HashiCorp Vault.
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
@@ -59,21 +59,21 @@ options:
 
 EXAMPLES = r"""
 - name: Write/create a secret
-  community.hashi_vault.vault_kv1_write:
+  community.hashi_vault.vault_kv2_write:
     url: https://vault:8201
     path: hello
     data:
       foo: bar
 
 - name: Patch an existing secret
-  community.hashi_vault.vault_kv1_write:
+  community.hashi_vault.vault_kv2_write:
     url: https://vault:8201
     path: hello
     data:
       my: new key
 
 - name: Write with check and set
-  community.hashi_vault.vault_kv1_write:
+  community.hashi_vault.vault_kv2_write:
     url: https://vault:8201
     path: caspath
     cas: 0
