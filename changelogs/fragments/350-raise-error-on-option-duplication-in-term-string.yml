@@ -1,0 +1,2 @@
+bugfixes:
+  - parse_kev_term() - function parsed the term string with option duplication. Function now raises error on option duplication in the term string.
