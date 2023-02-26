@@ -42,6 +42,9 @@ class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
                 else:
                     raise AnsibleError("%s lookup plugin needs key=value pairs, but received %s" % (plugin_name, term))
 
+            if key in param_dict:
+                raise AnsibleOptionsError("Duplicate key '%s' in the term string '%s'" % (key, term))
+
             param_dict[key] = value
 
         return param_dict
