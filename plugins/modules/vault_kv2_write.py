@@ -54,7 +54,7 @@ options:
     type: int
     description:
       - Perform a check-and-set operation.
-      - C(patch) must be C(false).
+      - I(patch) must be C(false).
 """
 
 EXAMPLES = r"""
