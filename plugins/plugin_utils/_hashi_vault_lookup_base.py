@@ -12,7 +12,7 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-from ansible.errors import AnsibleError
+from ansible.errors import AnsibleError, AnsibleOptionsError
 from ansible.plugins.lookup import LookupBase
 from ansible.utils.display import Display
 
