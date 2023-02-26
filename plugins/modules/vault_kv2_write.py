@@ -125,7 +125,7 @@ def run_module():
     argspec = HashiVaultModule.generate_argspec(
         engine_mount_point=dict(type="str", default="secret"),
         path=dict(type="str", required=True),
-        data=dict(type="dict", required=True),
+        data=dict(type="dict", required=True, no_log=True),
         cas=dict(type="int"),
         patch=dict(type="bool", default=False),
     )
