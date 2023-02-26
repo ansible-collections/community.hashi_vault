@@ -69,6 +69,7 @@ EXAMPLES = r"""
   community.hashi_vault.vault_kv2_write:
     url: https://vault:8201
     path: hello
+    patch: true
     data:
       my: new key
 

@@ -223,7 +223,7 @@
 
     - name: Test write cas (check=True)
       check_mode: true
-      community.hashi_vault.vault_kv2_write: &write_case
+      community.hashi_vault.vault_kv2_write: &write_cas
         cas: 3
         path: "{{ vault_kv2_path }}/write1"
         data:
@@ -241,7 +241,7 @@
           - ci_read.result.data.metadata.version == 3
 
     - name: Test write cas (check=False)
-      community.hashi_vault.vault_kv2_write: *write_case
+      community.hashi_vault.vault_kv2_write: *write_cas
       register: result
 
     - name: Read the secret
@@ -255,7 +255,7 @@
           - ci_read.result.data.metadata.version == 4
 
     - name: Test write cas (idempotency)
-      community.hashi_vault.vault_kv2_write: *write_case
+      community.hashi_vault.vault_kv2_write: *write_cas
       register: result
 
     - name: Read the secret
