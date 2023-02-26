@@ -1,2 +1,2 @@
 bugfixes:
-  - parse_kev_term() - function parsed the term string with option duplication. Function now raises error on option duplication in the term string.
+  - parse_kev_term() - function parsed the term string with option duplication. Function now raises error on option duplication in the term string (https://github.com/ansible-collections/community.hashi_vault/issues/349).
