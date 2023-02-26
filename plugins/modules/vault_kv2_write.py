@@ -49,7 +49,7 @@ options:
     description:
       - Update an existing KVv2 secret with C(data) instead of overwriting.
       - The secret must already exist.
-      - C(cas) must be C(false).
+      - I(cas) must be C(false).
   cas:
     type: int
     description:
