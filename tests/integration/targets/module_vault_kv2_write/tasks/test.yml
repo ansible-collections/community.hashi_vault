@@ -280,7 +280,7 @@
     - assert:
         that:
           - result is failed
-          - result.module_stderr is search("check-and-set parameter did not match the current version")
+          - result.msg is search("InvalidRequest")
 
     - name: cas=True patch=True should fail
       ignore_errors: true
