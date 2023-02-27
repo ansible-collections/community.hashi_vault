@@ -9,5 +9,6 @@
     loop:
       - path: "{{ vault_kv2_path }}/write1"
       - path: "{{ vault_kv2_path }}/readonly"
+      - path: "{{ vault_kv2_path }}/writeonly"
       - path: "write1"
         mount: "{{ cas_required_vault_kv2_mount_point }}"

@@ -79,6 +79,10 @@ vault_base_policy: |
   path "{{ vault_kv2_api_path }}/404" {
     capabilities = ["read", "create", "update"]
   }
+  # module_vault_kv2_write tests
+  path "{{ vault_kv2_api_path }}/writeonly" {
+    capabilities = ["create", "update"]
+  }
   path "{{ vault_kv2_mount_point }}/metadata/{{ vault_kv2_path }}/write1" {
     capabilities = ["delete"]
   }

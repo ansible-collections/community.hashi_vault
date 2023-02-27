@@ -104,15 +104,13 @@ class TestModuleVaultKv2Write:
         assert result["msg"] == missing_required_lib("hvac")
 
     @pytest.mark.parametrize(
-        "patch_ansible_module", [[_combined_options()]], indirect=True
+        "patch_ansible_module", [[_combined_options(read=True)]], indirect=True
     )
     @pytest.mark.parametrize(
         "response",
         ({"thishasnodata": {}}, {"data": {"not data": {}}}),
     )
-    def test_vault_kv2_write_read_responses(
-        self, vault_client, capfd, response
-    ):
+    def test_vault_kv2_write_read_responses(self, vault_client, capfd, response):
         client = vault_client
 
         client.secrets.kv.v2.read_secret_version.return_value = response

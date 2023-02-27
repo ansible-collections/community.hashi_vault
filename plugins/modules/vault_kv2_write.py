@@ -28,6 +28,8 @@ extends_documentation_fragment:
 attributes:
   check_mode:
     support: full
+    details:
+      - Supported if I(read) is C(true).
 options:
   engine_mount_point:
     type: str
@@ -47,7 +49,7 @@ options:
     type: bool
     default: false
     description:
-      - Update an existing KVv2 secret with C(data) instead of overwriting.
+      - Update an existing KVv2 secret with I(data) instead of overwriting.
       - The secret must already exist.
       - I(cas) must be C(false).
   cas:
@@ -55,6 +57,13 @@ options:
     description:
       - Perform a check-and-set operation.
       - I(patch) must be C(false).
+  read:
+    type: bool
+    default: false
+    description:
+      - Read the secret first and write only when I(data) differs from the read data.
+      - Requires C(read) permission on the secret if C(true).
+      - If C(false), this module will always write to I(path).
 """
 
 EXAMPLES = r"""
@@ -107,10 +116,12 @@ import traceback
 
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import missing_required_lib
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import \
-    HashiVaultValueError
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import \
-    HashiVaultModule
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+    HashiVaultValueError,
+)
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import (
+    HashiVaultModule,
+)
 
 try:
     import hvac
@@ -129,6 +140,7 @@ def run_module():
         data=dict(type="dict", required=True, no_log=True),
         cas=dict(type="int"),
         patch=dict(type="bool", default=False),
+        read=dict(type="bool", default=False),
     )
 
     module = HashiVaultModule(
@@ -147,6 +159,7 @@ def run_module():
     cas = module.params.get("cas")
     data = module.params.get("data")
     patch = module.params.get("patch")
+    read = module.params.get("read")
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -161,31 +174,36 @@ def run_module():
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        response = client.secrets.kv.v2.read_secret_version(
-            path=path, mount_point=mount_point
-        )
-        if "data" not in response or "data" not in response["data"]:
-            module.fail_json(msg="Vault response did not contain data: %s" % response)
-        current_data = response["data"]["data"]
-    except hvac.exceptions.InvalidPath:
-        if patch is True:
+    if read is True:
+        try:
+            response = client.secrets.kv.v2.read_secret_version(
+                path=path, mount_point=mount_point
+            )
+            if "data" not in response or "data" not in response["data"]:
+                module.fail_json(
+                    msg="Vault response did not contain data: %s" % response
+                )
+            current_data = response["data"]["data"]
+        except hvac.exceptions.InvalidPath:
+            if patch is True:
+                module.fail_json(
+                    msg="Path '%s' has not been written to previously. Patch only works on an existing secret."
+                    % path,
+                    exception=traceback.format_exc(),
+                )
+            current_data = {}
+        except hvac.exceptions.Forbidden:
             module.fail_json(
-                msg="Path '%s' has not been written to previously. Patch only works on an existing secret."
-                % path,
+                msg="Permission denied reading %s" % path,
                 exception=traceback.format_exc(),
             )
+        except hvac.exceptions.VaultError:
+            module.fail_json(
+                msg="VaultError reading %s" % path,
+                exception=traceback.format_exc(),
+            )
+    else:
         current_data = {}
-    except hvac.exceptions.Forbidden:
-        module.fail_json(
-            msg="Permission denied reading %s" % path,
-            exception=traceback.format_exc(),
-        )
-    except hvac.exceptions.VaultError:
-        module.fail_json(
-            msg="VaultError reading %s" % path,
-            exception=traceback.format_exc(),
-        )
 
     if patch is True:
         changed = any(current_data.get(k) != v for k, v in data.items())
@@ -209,6 +227,11 @@ def run_module():
         except hvac.exceptions.InvalidRequest:
             module.fail_json(
                 msg="InvalidRequest writing to '%s'" % path,
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidPath:
+            module.fail_json(
+                msg="InvalidPath writing to '%s'" % path,
                 exception=traceback.format_exc(),
             )
         except hvac.exceptions.Forbidden:
