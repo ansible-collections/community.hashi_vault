@@ -4,8 +4,10 @@
   block:
   - name: Ensure test secrets are deleted
     vault_ci_kv2_destroy_all:
-      path: "{{ item }}"
-      mount_point: "{{ vault_kv2_mount_point }}"
+      path: "{{ item.path }}"
+      mount_point: "{{ item.mount | default(vault_kv2_mount_point) }}"
     loop:
-      - "{{ vault_kv2_path }}/write1"
-      - "{{ vault_kv2_path }}/readonly"
+      - path: "{{ vault_kv2_path }}/write1"
+      - path: "{{ vault_kv2_path }}/readonly"
+      - path: "write1"
+        mount: "{{ cas_required_vault_kv2_mount_point }}"
