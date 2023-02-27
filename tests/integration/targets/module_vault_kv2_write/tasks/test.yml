@@ -312,12 +312,15 @@
 
     - name: Test create on cas_required=True mount
       community.hashi_vault.vault_kv2_write:
-        path: "{{ cas_required_vault_kv2_mount_point }}/write1"
+        engine_mount_point: "{{ cas_required_vault_kv2_mount_point }}"
+        path: write1
         data: "{{ write_data3 }}"
+        cas: 0
       register: result
 
     - name: Read the secret
-      vault_ci_read: *read1
+      vault_ci_read:
+        path: "{{ cas_required_vault_kv2_mount_point }}/data/write1"
       register: ci_read
 
     - assert:

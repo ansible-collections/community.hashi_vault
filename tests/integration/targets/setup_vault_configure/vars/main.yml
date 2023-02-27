@@ -68,7 +68,7 @@ vault_base_policy: |
     capabilities = ["read"]
   }
   # module_vault_kv2_write tests
-  path "{{ cas_required_vault_kv2_mount_point }}/write1" {
+  path "{{ cas_required_vault_kv2_mount_point }}/data/write1" {
     capabilities = ["read", "create", "update"]
   }
   # module_vault_kv2_write tests
