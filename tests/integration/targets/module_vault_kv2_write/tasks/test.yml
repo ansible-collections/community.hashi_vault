@@ -309,3 +309,19 @@
         that:
           - result is failed
           - result.msg is search("Permission denied writing to")
+
+    - name: Test create on cas_required=True mount
+      community.hashi_vault.vault_kv2_write:
+        path: "{{ cas_required_vault_kv2_mount_point }}/write1"
+        data: "{{ write_data3 }}"
+      register: result
+
+    - name: Read the secret
+      vault_ci_read: *read1
+      register: ci_read
+
+    - assert:
+        that:
+          - result is changed
+          - ci_read.result.data.data == write_data3
+          - ci_read.result.data.metadata.version == 1

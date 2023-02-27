@@ -20,6 +20,19 @@
     options:
       version: 2
 
+- name: 'Create KV v2 secrets engine for cas_required=True'
+  vault_ci_enable_engine:
+    backend_type: kv
+    path: '{{ cas_required_vault_kv2_mount_point }}'
+    options:
+      version: 2
+
+- name: Set cas_required=True
+  vault_ci_write:
+    path: "{{ cas_required_vault_kv2_mount_point }}/config"
+    data:
+      cas_required: true
+
 - name: Create a test policy
   vault_ci_policy_put:
     name: test-policy

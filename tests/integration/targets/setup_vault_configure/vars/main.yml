@@ -9,6 +9,7 @@ vault_kv1_api_path: '{{ vault_kv1_mount_point }}/{{ vault_kv1_path }}'
 
 vault_kv2_mount_point: kv2
 unauthorized_vault_kv2_mount_point: kv2_noauth
+cas_required_vault_kv2_mount_point: kv2_cas
 
 vault_kv2_path: testproject
 vault_kv2_multi_path: testmulti
