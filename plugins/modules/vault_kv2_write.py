@@ -152,7 +152,7 @@ def run_module():
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
 
-    if cas and patch is True:
+    if cas is not None and patch is True:
         module.fail_json(msg="Cannot use cas when patch is true.")
 
     try:
@@ -198,7 +198,7 @@ def run_module():
             "secret": data,
             "mount_point": mount_point,
         }
-        if cas:
+        if cas is not None:
             args["cas"] = cas
 
         try:
