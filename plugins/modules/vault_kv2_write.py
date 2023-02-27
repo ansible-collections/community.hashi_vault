@@ -206,6 +206,11 @@ def run_module():
                 raw = client.secrets.kv.v2.patch(**args)
             else:
                 raw = client.secrets.kv.v2.create_or_update_secret(**args)
+        except hvac.exceptions.InvalidRequest:
+            module.fail_json(
+                msg="InvalidRequest writing to '%s'" % path,
+                exception=traceback.format_exc(),
+            )
         except hvac.exceptions.Forbidden:
             module.fail_json(
                 msg="Permission denied writing to '%s'" % path,
