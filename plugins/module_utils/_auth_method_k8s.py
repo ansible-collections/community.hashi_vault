@@ -18,7 +18,7 @@ import os
 
 
 class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
-    '''HashiVault option group class for auth: k8s'''
+    '''HashiVault option group class for auth: kubernetes'''
 
     NAME = 'kubernetes'
     OPTIONS = ['kubernetes_token', 'kubernetes_token_path', 'role_id', 'mount_point']
