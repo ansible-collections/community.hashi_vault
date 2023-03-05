@@ -11,8 +11,8 @@ import pytest
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
-from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_plugin import HashiVaultPlugin
-from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from ......plugins.plugin_utils._hashi_vault_plugin import HashiVaultPlugin
+from ......plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
 
 @pytest.fixture
