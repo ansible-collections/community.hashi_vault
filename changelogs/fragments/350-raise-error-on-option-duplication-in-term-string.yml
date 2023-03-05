@@ -1,2 +1,6 @@
+---
 bugfixes:
-  - parse_kev_term() - function parsed the term string with option duplication. Function now raises error on option duplication in the term string (https://github.com/ansible-collections/community.hashi_vault/issues/349).
+  - hashi_vault lookup - a term string with duplicate options would silently use the last value. The lookup now shows a warning on option duplication (https://github.com/ansible-collections/community.hashi_vault/issues/349).
+
+deprecated_features:
+  - hashi_vault lookup - in ``v5.0.0`` duplicate term string options will raise an exception instead of showing a warning (https://github.com/ansible-collections/community.hashi_vault/issues/350).
