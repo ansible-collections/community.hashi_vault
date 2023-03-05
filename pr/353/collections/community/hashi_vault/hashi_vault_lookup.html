@@ -197,14 +197,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">auth_method = token</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">auth_method = token</span>
 </pre></div>
@@ -243,14 +236,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>If specified, sets the value to use for the <code class="docutils literal notranslate"><span class="pre">X-Vault-AWS-IAM-Server-ID</span></code> header as part of <code class="docutils literal notranslate"><span class="pre">GetCallerIdentity</span></code> request.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">aws_iam_server_id = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">aws_iam_server_id = VALUE</span>
 </pre></div>
@@ -387,15 +373,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If not specified by any other means, the <code class="docutils literal notranslate"><span class="pre">VAULT_CACERT</span></code> environment variable will be used.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">ca_cert = VALUE</span>
-</pre></div>
-</div>
-<p><span class="ansible-option-versionadded">added in community.hashi_vault 1.2.0</span></p>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">ca_cert = VALUE</span>
 </pre></div>
@@ -525,15 +503,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If environment variable <code class="docutils literal notranslate"><span class="pre">VAULT_NAMESPACE</span></code> is set, its value will be used last among all ways to specify <em>namespace</em>.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">namespace = VALUE</span>
-</pre></div>
-</div>
-<p><span class="ansible-option-versionadded">added in community.hashi_vault 0.2.0</span></p>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">namespace = VALUE</span>
 </pre></div>
@@ -579,14 +549,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If not specified, <a class="reference external" href="https://requests.readthedocs.io/en/master/user/advanced/#proxies">environment variables from the Requests library</a> are used.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">proxies = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">proxies = VALUE</span>
 </pre></div>
@@ -626,14 +589,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>For detailed information on retries, see the collection User Guide.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">retries = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">retries = VALUE</span>
 </pre></div>
@@ -659,14 +615,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">retry_action = warn</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">retry_action = warn</span>
 </pre></div>
@@ -705,14 +654,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>For <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth, <em>role_id</em> is required.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">role_id = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">role_id = VALUE</span>
 </pre></div>
@@ -760,14 +702,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If not set, then the <code class="docutils literal notranslate"><span class="pre">hvac</span></code> library’s default is used.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">timeout = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">timeout = VALUE</span>
 </pre></div>
@@ -805,14 +740,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;.vault-token&quot;</span></code></p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">token_file = .vault-token</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">token_file = .vault-token</span>
 </pre></div>
@@ -835,14 +763,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <td><div class="ansible-option-cell"><p>If no token is specified, will try to read the <em>token_file</em> from this path.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">token_path = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">token_path = VALUE</span>
 </pre></div>
@@ -872,14 +793,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </ul>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">token_validate = false</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">token_validate = false</span>
 </pre></div>
@@ -902,14 +816,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> is also not defined then an error will be raised.</p>
 <p class="ansible-option-line"><span class="ansible-option-configuration">Configuration:</span></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">lookup_hashi_vault</span><span class="p p-Indicator">]</span>
-<span class="l l-Scalar l-Scalar-Plain">url = VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">hashi_vault_collection</span><span class="p p-Indicator">]</span>
 <span class="l l-Scalar l-Scalar-Plain">url = VALUE</span>
 </pre></div>
