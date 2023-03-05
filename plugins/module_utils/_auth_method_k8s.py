@@ -23,8 +23,8 @@ class HashiVaultAuthMethodKubernetes(HashiVaultAuthMethodBase):
     NAME = 'kubernetes'
     OPTIONS = ['kubernetes_token', 'kubernetes_token_path', 'role_id', 'mount_point']
 
-    def __init__(self, option_adapter, warning_callback):
-        super(HashiVaultAuthMethodKubernetes, self).__init__(option_adapter, warning_callback)
+    def __init__(self, option_adapter, warning_callback, deprecate_callback):
+        super(HashiVaultAuthMethodKubernetes, self).__init__(option_adapter, warning_callback, deprecate_callback)
 
     def validate(self):
         self.validate_by_required_fields('role_id')
