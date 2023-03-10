@@ -6,12 +6,11 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
 import os
 import pytest
 
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+from .....tests.unit.compat import mock
+from .....plugins.module_utils._hashi_vault_common import (
     HashiVaultHelper,
     _stringify,
 )

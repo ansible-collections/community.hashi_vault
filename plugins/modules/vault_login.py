@@ -21,9 +21,11 @@ DOCUMENTATION = """
   seealso:
     - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
-    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes
+    - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
   notes:
@@ -36,17 +38,17 @@ DOCUMENTATION = """
     - "The C(token) auth method will only return full information if I(token_validate=True).
       If the token does not have the C(lookup-self) capability, this will fail. If I(token_validate=False), only the token value itself
       will be returned in the structure."
-    - "In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
-      However this may not be useful if the token is required for follow on tasks.
-      It may be better to use this module with C(check_mode=no) in order to have a valid token that can be used."
+  attributes:
+    check_mode:
+      support: partial
+      details:
+        - In check mode, this module will not perform a login, and will instead return a basic structure with an empty token.
+          However this may not be useful if the token is required for follow on tasks.
+        - It may be better to use this module with C(check_mode=false) in order to have a valid token that can be used.
   options:
     token_validate:
-      description:
-        - For token auth, will perform a C(lookup-self) operation to determine the token's validity before using it.
-        - Disable if your token does not have the C(lookup-self) capability.
       default: true
 """
-# TODO: remove token_validate description in 4.0.0 when it will match the doc frag description.
 
 EXAMPLES = """
 - name: Login and use the resulting token
@@ -100,18 +102,19 @@ import traceback
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import missing_required_lib
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from ...plugins.module_utils._hashi_vault_module import HashiVaultModule
+from ...plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 # we don't actually need to import hvac directly in this module
 # because all of the hvac calls happen in module utils, but
 # we would like to control the error message here for consistency.
 try:
-    import hvac
+    import hvac  # pylint: disable=unused-import
 except ImportError:
     HAS_HVAC = False
     HVAC_IMPORT_ERROR = traceback.format_exc()
 else:
+    HVAC_IMPORT_ERROR = None
     HAS_HVAC = True
 
 
@@ -122,8 +125,8 @@ def run_module():
         token=dict(type='str', no_log=False, default=None),
 
         # we override this from the shared argspec because the default for
-        # this module should be True, which will differ from the rest of the
-        # collection after 4.0.0.
+        # this module should be True, which differs from the rest of the
+        # collection since 4.0.0.
         token_validate=dict(type='bool', default=True)
     )
 

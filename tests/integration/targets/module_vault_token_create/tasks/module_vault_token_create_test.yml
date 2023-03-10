@@ -37,7 +37,7 @@
         - assert:
             that:
               - orphan_result is failed
-              - orphan_result.msg is search('root or sudo privileges required to create orphan token')
+              - orphan_result.msg is search('permission denied')
 
         - name: (xfail) Create an orphan token with no_parent=true
           register: no_parent_result
@@ -169,4 +169,10 @@
               - "'client_token' in result.login.auth"
               - result.login.auth.client_token != 'static_token'
               - result.login.auth.client_token == None
-              - lookup('vault_test_auth', token='static_token', url=vault_test_server_http, want_exception=True) is failed
+              - >-
+                lookup('vault_test_auth',
+                  token='static_token',
+                  token_validate=true,
+                  url=vault_test_server_http,
+                  want_exception=True
+                ) is failed

@@ -1,6 +1,7 @@
 ---
 - name: Var block
   vars:
+    ansible_hashi_vault_token_validate: true
     user_token: '{{ user_token_cmd.result.auth.client_token }}'
     kwargs:
       url: '{{ vault_test_server_http }}'

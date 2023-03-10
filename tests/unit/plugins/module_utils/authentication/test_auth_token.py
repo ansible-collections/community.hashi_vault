@@ -4,14 +4,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import (absolute_import, division, print_function)
-from _pytest.fixtures import fixture
-from _pytest.python_api import raises
 __metaclass__ = type
 
 import os
 import pytest
 
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
+from ......tests.unit.compat import mock
 
 try:
     import hvac
@@ -19,11 +17,11 @@ except ImportError:
     # python 2.6, which isn't supported anyway
     hvac = mock.MagicMock()
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import (
+from ......plugins.module_utils._auth_method_token import (
     HashiVaultAuthMethodToken,
 )
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+from ......plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultValueError,
 )
@@ -175,3 +173,14 @@ class TestAuthToken(object):
         with pytest.raises(HashiVaultValueError, match=r'Invalid Vault Token Specified'):
             with mock.patch.object(client.auth.token, 'lookup_self', raiser):
                 auth_token.authenticate(client, use_token=True, lookup_self=False)
+
+    @pytest.mark.parametrize('exc', [AttributeError, NotImplementedError])
+    def test_auth_token_authenticate_old_lookup_self(self, auth_token, adapter, client, token, exc):
+        adapter.set_option('token', token)
+
+        with mock.patch.object(client, 'lookup_token') as legacy_lookup:
+            with mock.patch.object(client.auth.token, 'lookup_self', side_effect=exc) as lookup:
+                auth_token.authenticate(client, use_token=True, lookup_self=True)
+
+                legacy_lookup.assert_called_once_with()
+                lookup.assert_called_once_with()

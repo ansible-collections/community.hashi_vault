@@ -8,7 +8,7 @@ __metaclass__ = type
 
 import pytest
 
-from ansible.utils.unsafe_proxy import AnsibleUnsafe, AnsibleUnsafeBytes, AnsibleUnsafeText
+from ansible.utils.unsafe_proxy import AnsibleUnsafeBytes, AnsibleUnsafeText
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultHelper
@@ -21,9 +21,10 @@ def hashi_vault_helper():
 
 @pytest.fixture
 def expected_stringify_candidates():
-    return set(
+    return set([
         'token',
-    )
+        'namespace',
+    ])
 
 
 class TestHashiVaultHelper(object):

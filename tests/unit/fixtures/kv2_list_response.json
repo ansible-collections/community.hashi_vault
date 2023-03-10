@@ -1,0 +1,15 @@
+{
+    "auth": null,
+    "data": {
+        "keys": [
+            "Secret1",
+            "Secret2"
+        ]
+    },
+    "lease_duration": 0,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "02e4b52a-23b1-9a1c-cf2b-3799edb17fed",
+    "warnings": null,
+    "wrap_info": null
+}

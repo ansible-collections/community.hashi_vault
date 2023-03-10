@@ -8,6 +8,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+import os
 import sys
 import getopt
 
@@ -16,11 +17,18 @@ import json
 import requests
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
-
+from warnings import warn
 from packaging import version
 
 
 TAG_URI = 'https://registry.hub.docker.com/v2/repositories/library/%s/tags?page_size=1024'
+
+
+class WarningRetry(Retry):
+    def new(self, **kwargs):
+        if self.total > 0:
+            warn('Error on request. Retries remaining: %i' % (self.total,))
+        return super().new(**kwargs)
 
 
 def main(argv):
@@ -59,7 +67,7 @@ def main(argv):
     tag_url = TAG_URI % image
 
     sess = requests.Session()
-    retry = Retry(total=5, backoff_factor=0.2)
+    retry = WarningRetry(total=5, backoff_factor=0.2, respect_retry_after_header=False)
     adapter = HTTPAdapter(max_retries=retry)
     sess.mount('https://', adapter)
 
@@ -71,10 +79,10 @@ def main(argv):
         try:
             vobj = version.parse(tag['name'])
         except Exception:
-            pass
-
-        if vobj is None or isinstance(vobj, version.LegacyVersion):
             continue
+        else:
+            if not isinstance(vobj, version.Version):
+                continue
 
         if vobj.is_prerelease is include_prerelease and vobj.is_postrelease is include_postrelease:
             versions.append(vobj)
@@ -104,7 +112,9 @@ def main(argv):
 
         keep.append(str(ver))
 
-    print('::set-output name=versions::%s' % json.dumps(keep))
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+        f.write('versions=')
+        json.dump(keep, f)
 
 
 if __name__ == '__main__':

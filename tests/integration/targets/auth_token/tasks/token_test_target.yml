@@ -11,9 +11,7 @@
     - name: Authenticate with a 'no default policy' token (failure expected)
       register: response
       vault_test_auth:
-        # token_validate: true
-        # This will fail when the default changes in 4.0.0. Uncomment above.
-        # https://github.com/ansible-collections/community.hashi_vault/issues/248
+        token_validate: true
         want_exception: true
 
     - assert:
@@ -24,9 +22,6 @@
     - name: Authenticate with 'no default policy' token - with no validation
       register: response
       vault_test_auth:
-        token_validate: false
-        # After 4.0.0, let's let this one use the default value and unset the above.
-        # https://github.com/ansible-collections/community.hashi_vault/issues/248
 
     - assert:
         that: response.login.auth.client_token == user_token
@@ -74,10 +69,11 @@
     vault_test_auth:
       url: '{{ ansible_hashi_vault_url }}'
   block:
-    - name: Authenticate with a token
+    - name: Authenticate with a token (with validation)
       register: response
       vault_test_auth:
         token: '{{ user_token }}'
+        token_validate: true
 
     - assert:
         that:
@@ -85,10 +81,11 @@
           - expected_policy in response.login.data.policies
           - expected_policy in response.login.auth.policies
 
-    - name: Authenticate with an invalid token
+    - name: Authenticate with an invalid token (with validation)
       register: response
       vault_test_auth:
         token: fake
+        token_validate: true
         want_exception: true
 
     - assert:

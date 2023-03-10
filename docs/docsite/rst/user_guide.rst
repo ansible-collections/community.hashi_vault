@@ -31,7 +31,7 @@ The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readth
 
 In general, we recommend using the latest version of ``hvac`` that is supported for your given Python version because that is what we test against. Where possible we will try to list version-specific restrictions here, but this list may not be exhaustive.
 
-* ``hvac`` 0.7.0+ (for namespace support)
+* ``hvac`` 0.7.0+ (for Azure auth and namespace support)
 * ``hvac`` 0.9.6+ (to avoid most deprecation warnings)
 * ``hvac`` 0.10.5+ (for JWT auth)
 * ``hvac`` 0.10.6+ (to avoid deprecation warning for AppRole)
@@ -41,6 +41,7 @@ Other requirements
 ------------------
 
 * ``boto3`` (only if loading credentials from a boto session, for example using an AWS profile or IAM role credentials)
+* ``azure-identity`` (only if using a service principal or managed identity)
 
 Retrying failed requests
 ========================

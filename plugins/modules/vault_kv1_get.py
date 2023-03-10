@@ -26,6 +26,9 @@ seealso:
     description: Documentation for the Vault KV secrets engine, version 1.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v1
 extends_documentation_fragment:
+  - community.hashi_vault.attributes
+  - community.hashi_vault.attributes.action_group
+  - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
@@ -135,6 +138,7 @@ except ImportError:
     HAS_HVAC = False
     HVAC_IMPORT_ERROR = traceback.format_exc()
 else:
+    HVAC_IMPORT_ERROR = None
     HAS_HVAC = True
 
 

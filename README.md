@@ -17,6 +17,7 @@ If you use the Ansible package and don't update collections independently, use *
 * 2.11
 * 2.12
 * 2.13
+* 2.14
 * devel (latest development commit)
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
@@ -74,7 +75,7 @@ Once the new collection is published and the Zuul job is finished, add a release
 
 ## Release notes
 
-See the [changelog](https://github.com/ansible-collections/community.hashi_vault/tree/main/CHANGELOG.rst).
+See the [rendered changelog](https://ansible-collections.github.io/community.hashi_vault/branch/main/collections/community/hashi_vault/docsite/CHANGELOG.html) or the [raw generated changelog](https://github.com/ansible-collections/community.hashi_vault/tree/main/CHANGELOG.rst).
 
 ## FAQ
 

@@ -23,6 +23,11 @@ DOCUMENTATION = """
     - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
     - This module always reports C(changed) status because it cannot guarantee idempotence.
     - Use C(changed_when) to control that in cases where the operation is known to not change state.
+  attributes:
+    check_mode:
+      support: partial
+      details:
+        - In check mode, an empty response will be returned and the write will not be performed.
   seealso:
     - ref: community.hashi_vault.vault_write lookup <ansible_collections.community.hashi_vault.vault_write_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_write) lookup plugin.
@@ -30,6 +35,8 @@ DOCUMENTATION = """
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes
+    - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
     - community.hashi_vault.wrapping
@@ -110,6 +117,7 @@ except ImportError:
     HAS_HVAC = False
     HVAC_IMPORT_ERROR = traceback.format_exc()
 else:
+    HVAC_IMPORT_ERROR = None
     HAS_HVAC = True
 
 

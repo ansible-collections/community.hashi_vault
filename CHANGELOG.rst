@@ -5,6 +5,119 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v4.1.0
+======
+
+Release Summary
+---------------
+
+This release brings new generic ``vault_list`` plugins from a new contributor!
+There are also some deprecation notices for the next major version, and some updates to documentation attributes.
+
+Deprecated Features
+-------------------
+
+- ansible-core - support for ``ansible-core`` versions ``2.11`` and ``2.12`` will be dropped in collection version ``5.0.0``, making ``2.13`` the minimum supported version of ``ansible-core`` (https://github.com/ansible-collections/community.hashi_vault/issues/340).
+- hvac - the minimum version of ``hvac`` to be supported in collection version ``5.0.0`` will be at least ``1.0.2``; this minimum may be raised before ``5.0.0`` is released, so please subscribe to the linked issue and look out for new notices in the changelog (https://github.com/ansible-collections/community.hashi_vault/issues/324).
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- vault_list - Perform a list operation against HashiCorp Vault
+
+New Modules
+-----------
+
+- vault_list - Perform a list operation against HashiCorp Vault
+
+v4.0.0
+======
+
+Release Summary
+---------------
+
+The next major version of the collection includes previously announced breaking changes to some default values, and improvements to module documentation with attributes that describe the use of action groups and check mode support.
+
+Minor Changes
+-------------
+
+- modules - all modules now document their action group and support for check mode in their attributes documentation (https://github.com/ansible-collections/community.hashi_vault/issues/197).
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- auth - the default value for ``token_validate`` has changed from ``true`` to ``false``, as previously announced (https://github.com/ansible-collections/community.hashi_vault/issues/248).
+- vault_kv2_get lookup - as previously announced, the default value for ``engine_mount_point`` in the ``vault_kv2_get`` lookup has changed from ``kv`` to ``secret`` (https://github.com/ansible-collections/community.hashi_vault/issues/279).
+
+v3.4.0
+======
+
+Release Summary
+---------------
+
+This release includes a new module, fixes (another) ``requests`` header issue, and updates some inaccurate documentation.
+This is the last planned release before v4.0.0.
+
+Minor Changes
+-------------
+
+- vault_pki_generate_certificate - the documentation has been updated to match the argspec for the default values of options ``alt_names``, ``ip_sans``, ``other_sans``, and ``uri_sans`` (https://github.com/ansible-collections/community.hashi_vault/pull/318).
+
+Bugfixes
+--------
+
+- connection options - the ``namespace`` connection option will be forced into a string to ensure cmpatibility with recent ``requests`` versions (https://github.com/ansible-collections/community.hashi_vault/issues/309).
+
+New Modules
+-----------
+
+- vault_kv2_delete - Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store
+
+v3.3.1
+======
+
+Release Summary
+---------------
+
+No functional changes in this release, this provides updated filter documentation for the public docsite.
+
+v3.3.0
+======
+
+Release Summary
+---------------
+
+With the release of ``hvac`` version ``1.0.0``, we needed to update ``vault_token_create``'s support for orphan tokens.
+The collection's changelog is now viewable in the Ansible documentation site.
+
+Minor Changes
+-------------
+
+- vault_token_create - creation or orphan tokens uses ``hvac``'s new v1 method for creating orphans, or falls back to the v0 method if needed (https://github.com/ansible-collections/community.hashi_vault/issues/301).
+
+v3.2.0
+======
+
+Release Summary
+---------------
+
+This release brings support for the ``azure`` auth method, adds ``412`` to the default list of HTTP status codes to be retried, and fixes a bug that causes failures in token auth with ``requests>=2.28.0``.
+
+Minor Changes
+-------------
+
+- community.hashi_vault collection - add support for ``azure`` auth method, for Azure service principal, managed identity, or plain JWT access token (https://github.com/ansible-collections/community.hashi_vault/issues/293).
+- community.hashi_vault retries - `HTTP status code 412 <https://www.vaultproject.io/api-docs#412>`__ has been added to the default list of codes to be retried, for the new `Server Side Consistent Token feature <https://www.vaultproject.io/docs/faq/ssct#q-is-there-anything-else-i-need-to-consider-to-achieve-consistency-besides-upgrading-to-vault-1-10>`__ in Vault Enterprise (https://github.com/ansible-collections/community.hashi_vault/issues/290).
+
+Bugfixes
+--------
+
+- community.hashi_vault plugins - tokens will be cast to a string type before being sent to ``hvac`` to prevent errors in ``requests`` when values are ``AnsibleUnsafe`` (https://github.com/ansible-collections/community.hashi_vault/issues/289).
+- modules - fix a "variable used before assignment" that cannot be reached but causes sanity test failures (https://github.com/ansible-collections/community.hashi_vault/issues/296).
+
 v3.1.0
 ======
 

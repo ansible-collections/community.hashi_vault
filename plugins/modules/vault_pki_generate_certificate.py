@@ -26,9 +26,16 @@ DOCUMENTATION = """
       description: HVAC library reference about the PKI engine.
       link: https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#generate-certificate
   extends_documentation_fragment:
+    - community.hashi_vault.attributes
+    - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
     - community.hashi_vault.engine_mount
+  attributes:
+    check_mode:
+      support: partial
+      details:
+        - In check mode, this module will not contact Vault and will return an empty C(data) field and C(changed) status.
   options:
     alt_names:
       description:
@@ -37,6 +44,7 @@ DOCUMENTATION = """
         - If any requested names do not match role policy, the entire request will be denied.
       type: list
       elements: str
+      default: []
     common_name:
       description:
         - Specifies the requested CN for the certificate.
@@ -66,6 +74,7 @@ DOCUMENTATION = """
         - Only valid if the role allows IP SANs (which is the default).
       type: list
       elements: str
+      default: []
     role_name:
       description:
         - Specifies the name of the role to create the certificate against.
@@ -78,6 +87,7 @@ DOCUMENTATION = """
         - "The format is the same as OpenSSL: C(<oid>;<type>:<value>) where the only current valid type is C(UTF8)."
       type: list
       elements: str
+      default: []
     engine_mount_point:
       description:
         - Specify the mount point used by the PKI engine.
@@ -102,6 +112,7 @@ DOCUMENTATION = """
         - Specifies the requested URI Subject Alternative Names.
       type: list
       elements: str
+      default: []
 """
 
 EXAMPLES = """
@@ -206,10 +217,12 @@ HAS_HVAC = False
 try:
     import hvac
     from hvac.api.secrets_engines.pki import DEFAULT_MOUNT_POINT
-    HAS_HVAC = True
 except ImportError:
     HVAC_IMPORT_ERROR = traceback.format_exc()
     HAS_HVAC = False
+else:
+    HVAC_IMPORT_ERROR = None
+    HAS_HVAC = True
 
 
 def run_module():

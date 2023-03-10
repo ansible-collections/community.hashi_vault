@@ -29,7 +29,7 @@ def option_dict():
 
 
 @pytest.fixture(params=[AnsibleUnsafeBytes(b'ub_opaque'), AnsibleUnsafeText(u'ut_opaque'), b'b_opaque', u't_opaque'])
-def token(request):
+def stringy(request):
     return request.param
 
 
@@ -39,9 +39,8 @@ def auth_token(adapter, warner, deprecator):
 
 
 class TestAuthToken(object):
-
-    def test_auth_token_unsafes(self, auth_token, client, adapter, token):
-        adapter.set_option('token', token)
+    def test_auth_token_unsafes(self, auth_token, client, adapter, stringy):
+        adapter.set_option('token', stringy)
         adapter.set_option('token_validate', False)
 
         wrapper = mock.Mock(wraps=auth_token._stringify)

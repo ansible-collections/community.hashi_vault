@@ -24,9 +24,11 @@ DOCUMENTATION = """
     - module: community.hashi_vault.vault_login
     - ref: community.hashi_vault.vault_login lookup <ansible_collections.community.hashi_vault.vault_login_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_login) lookup plugin.
-    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.docsite.filter_guide.vault_login_token>
+    - ref: community.hashi_vault.vault_login_token filter <ansible_collections.community.hashi_vault.vault_login_token_filter>
       description: The official documentation for the C(community.hashi_vault.vault_login_token) filter plugin.
   extends_documentation_fragment:
+    - community.hashi_vault.attributes
+    - community.hashi_vault.attributes.action_group
     - community.hashi_vault.connection
     - community.hashi_vault.auth
     - community.hashi_vault.token_create
@@ -35,9 +37,13 @@ DOCUMENTATION = """
     - Token creation is a write operation (creating a token persisted to storage), so this module always reports C(changed=True).
     - For the purposes of Ansible playbooks however,
       it may be more useful to set I(changed_when=false) if you are doing idempotency checks against the target system.
-    - In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
-      However, this may not be useful if the token is required for follow on tasks.
-      It may be better to use this module with I(check_mode=no) in order to have a valid token that can be used.
+  attributes:
+    check_mode:
+      support: partial
+      details:
+        - In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
+          However, this may not be useful if the token is required for follow on tasks.
+        - It may be better to use this module with I(check_mode=false) in order to have a valid token that can be used.
   options: {}
 """
 
@@ -131,7 +137,7 @@ PASS_THRU_OPTION_NAMES = [
 ]
 
 
-LEGACY_OPTION_TRANSLATION = {
+ORPHAN_OPTION_TRANSLATION = {
     'id': 'token_id',
     'role_name': 'role',
     'type': 'token_type',
@@ -175,14 +181,11 @@ def run_module():
 
     pass_thru_options = module.adapter.get_filled_options(*PASS_THRU_OPTION_NAMES)
 
-    if module.adapter.get_option('orphan'):
-        pass_thru_options['no_parent'] = True
-
-    legacy_options = pass_thru_options.copy()
+    orphan_options = pass_thru_options.copy()
 
     for key in pass_thru_options.keys():
-        if key in LEGACY_OPTION_TRANSLATION:
-            legacy_options[LEGACY_OPTION_TRANSLATION[key]] = legacy_options.pop(key)
+        if key in ORPHAN_OPTION_TRANSLATION:
+            orphan_options[ORPHAN_OPTION_TRANSLATION[key]] = orphan_options.pop(key)
 
     # token creation is a write operation, using storage and resources
     changed = True
@@ -192,17 +195,18 @@ def run_module():
         module.exit_json(changed=changed, login={'auth': {'client_token': None}})
 
     if module.adapter.get_option('orphan'):
-        # this method is deprecated, but it's the only way through hvac to get
-        # at the /create-orphan endpoint at this time.
-        # See: https://github.com/hvac/hvac/issues/758
         try:
-            response = client.create_token(orphan=True, **legacy_options)
-        except AttributeError:
-            module.warn("'create_token' method was not found. Attempting method that requires root privileges.")
+            try:
+                # this method was added in hvac 1.0.0
+                # See: https://github.com/hvac/hvac/pull/869
+                response = client.auth.token.create_orphan(**orphan_options)
+            except AttributeError:
+                # this method was removed in hvac 1.0.0
+                # See: https://github.com/hvac/hvac/issues/758
+                response = client.create_token(orphan=True, **orphan_options)
         except Exception as e:
             module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
-    if response is None:
+    else:
         try:
             response = client.auth.token.create(**pass_thru_options)
         except Exception as e:

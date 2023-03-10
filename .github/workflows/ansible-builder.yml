@@ -3,10 +3,12 @@ name: ansible-builder
 on:
   push:
     paths:
+      - '.github/workflows/ansible-builder.yml'
       - 'meta/execution-environment.yml'
       - 'meta/ee-requirements.txt'
   pull_request:
     paths:
+      - '.github/workflows/ansible-builder.yml'
       - 'meta/execution-environment.yml'
       - 'meta/ee-requirements.txt'
   schedule:
@@ -27,7 +29,7 @@ jobs:
           path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION_NAME }}
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
 

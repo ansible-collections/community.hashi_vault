@@ -1,0 +1,33 @@
+{
+    "request_id": "cbfb16b9-4cf6-917d-182b-170801fc5a4e",
+    "lease_id": "",
+    "renewable": false,
+    "lease_duration": 0,
+    "data": null,
+    "wrap_info": null,
+    "warnings": null,
+    "auth": {
+        "client_token": "hvs.CAESIH6iy4yyvKMpk-vcaaVvU8nGfZFRCcH92hVa24lGNxHNGh4KHGh2cy5qU29Ua1FscTJIQ3BBY1AwTDM4dzNpR0E",
+        "accessor": "60U0DvUOIMOIGI7kzAneeD2x",
+        "policies": [
+            "default",
+            "azure-sample-policy"
+        ],
+        "token_policies": [
+            "default",
+            "azure-sample-policy"
+        ],
+        "metadata": {
+            "resource_group_name": "",
+            "role": "msi-vault",
+            "subscription_id": ""
+        },
+        "lease_duration": 2764800,
+        "renewable": true,
+        "entity_id": "ff6a9d66-c2eb-6b78-e463-b3192243b5c1",
+        "token_type": "service",
+        "orphan": true,
+        "mfa_requirement": null,
+        "num_uses": 0
+    }
+}
