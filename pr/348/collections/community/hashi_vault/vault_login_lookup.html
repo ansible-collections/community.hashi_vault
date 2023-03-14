@@ -144,7 +144,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <li><p><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></p></li>
 <li><p><a class="reference internal" href="#requirements" id="id2">Requirements</a></p></li>
 <li><p><a class="reference internal" href="#terms" id="id3">Terms</a></p></li>
-<li><p><a class="reference internal" href="#parameters" id="id4">Parameters</a></p></li>
+<li><p><a class="reference internal" href="#keyword-parameters" id="id4">Keyword parameters</a></p></li>
 <li><p><a class="reference internal" href="#notes" id="id5">Notes</a></p></li>
 <li><p><a class="reference internal" href="#see-also" id="id6">See Also</a></p></li>
 <li><p><a class="reference internal" href="#examples" id="id7">Examples</a></p></li>
@@ -184,8 +184,10 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </tbody>
 </table>
 </section>
-<section id="parameters">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h2>
+<section id="keyword-parameters">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Keyword parameters</a><a class="headerlink" href="#keyword-parameters" title="Permalink to this heading"></a></h2>
+<p>This describes keyword parameters of the lookup. These are the values <code class="docutils literal notranslate"><span class="pre">key1=value1</span></code>, <code class="docutils literal notranslate"><span class="pre">key2=value2</span></code> and so on in the following
+examples: <code class="docutils literal notranslate"><span class="pre">lookup('community.hashi_vault.vault_login',</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2,</span> <span class="pre">...)</span></code> and <code class="docutils literal notranslate"><span class="pre">query('community.hashi_vault.vault_login',</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2,</span> <span class="pre">...)</span></code></p>
 <table class="ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
@@ -840,6 +842,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
+<li><p>When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
+<code class="docutils literal notranslate"><span class="pre">lookup('community.hashi_vault.vault_login',</span> <span class="pre">term1,</span> <span class="pre">term2,</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2)</span></code> and <code class="docutils literal notranslate"><span class="pre">query('community.hashi_vault.vault_login',</span> <span class="pre">term1,</span> <span class="pre">term2,</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2)</span></code></p></li>
 <li><p>This lookup does not use the term string and will not work correctly in loops. Only a single response will be returned.</p></li>
 <li><p>A login is a write operation (creating a token persisted to storage), so this module always reports <code class="docutils literal notranslate"><span class="pre">changed=True</span></code>, except when used with <code class="docutils literal notranslate"><span class="pre">token</span></code> auth, because no new token is created in that case. For the purposes of Ansible playbooks however, it may be more useful to set <code class="docutils literal notranslate"><span class="pre">changed_when=false</span></code> if you’re doing idempotency checks against the target system.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">none</span></code> auth method is not valid for this plugin because there is no response to return.</p></li>
