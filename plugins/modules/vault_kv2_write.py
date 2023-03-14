@@ -13,7 +13,7 @@ module: vault_kv2_write
 version_added: 4.2.0
 author:
   - Devon Mar (@devon-mar)
-short_description: Perform a write/patch operation against a KVv2 secret in HashiCorp Vault
+short_description: Perform a write operation against a KVv2 secret in HashiCorp Vault
 description:
   - Perform a write/patch operation against a KVv2 secret in HashiCorp Vault.
 requirements:
@@ -46,18 +46,10 @@ options:
     required: true
     description:
       - KVv2 secret data to write/patch.
-  patch:
-    type: bool
-    default: false
-    description:
-      - Update an existing KVv2 secret with I(data) instead of overwriting.
-      - The secret must already exist.
-      - I(cas) must be C(false).
   cas:
     type: int
     description:
       - Perform a check-and-set operation.
-      - I(patch) must be C(false).
   read:
     type: bool
     default: false
@@ -74,14 +66,6 @@ EXAMPLES = r"""
     path: hello
     data:
       foo: bar
-
-- name: Patch an existing secret
-  community.hashi_vault.vault_kv2_write:
-    url: https://vault:8201
-    path: hello
-    patch: true
-    data:
-      my: new key
 
 - name: Write with check and set
   community.hashi_vault.vault_kv2_write:
@@ -140,7 +124,6 @@ def run_module():
         path=dict(type="str", required=True),
         data=dict(type="dict", required=True, no_log=True),
         cas=dict(type="int"),
-        patch=dict(type="bool", default=False),
         read=dict(type="bool", default=False),
     )
 
@@ -159,15 +142,11 @@ def run_module():
     path = module.params.get("path")
     cas = module.params.get("cas")
     data = module.params.get("data")
-    patch = module.params.get("patch")
     read = module.params.get("read")
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
-
-    if cas is not None and patch is True:
-        module.fail_json(msg="Cannot use cas when patch is true.")
 
     try:
         module.authenticator.validate()
@@ -186,12 +165,6 @@ def run_module():
                 )
             current_data = response["data"]["data"]
         except hvac.exceptions.InvalidPath:
-            if patch is True:
-                module.fail_json(
-                    msg="Path '%s' has not been written to previously. Patch only works on an existing secret."
-                    % path,
-                    exception=traceback.format_exc(),
-                )
             current_data = {}
         except hvac.exceptions.Forbidden:
             module.fail_json(
@@ -206,10 +179,7 @@ def run_module():
     else:
         current_data = {}
 
-    if patch is True:
-        changed = any(current_data.get(k) != v for k, v in data.items())
-    else:
-        changed = current_data != data
+    changed = current_data != data
 
     if changed is True and module.check_mode is False:
         args = {
@@ -221,10 +191,7 @@ def run_module():
             args["cas"] = cas
 
         try:
-            if patch is True:
-                raw = client.secrets.kv.v2.patch(**args)
-            else:
-                raw = client.secrets.kv.v2.create_or_update_secret(**args)
+            raw = client.secrets.kv.v2.create_or_update_secret(**args)
         except hvac.exceptions.InvalidRequest:
             module.fail_json(
                 msg="InvalidRequest writing to '%s'" % path,

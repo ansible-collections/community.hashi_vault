@@ -121,98 +121,6 @@
           - result is not changed
           - ci_read.result.data.metadata.version == 2
 
-    - name: Test patch (check=true)
-      check_mode: true
-      community.hashi_vault.vault_kv2_write: &patch
-        path: "{{ vault_kv2_path }}/write1"
-        patch: true
-        data: "{{ write_patch }}"
-        read: true
-      register: kv2_check
-
-    - assert:
-        that:
-          - kv2_check is changed
-
-    - name: Read the secret
-      vault_ci_read: *read1
-      register: ci_read
-
-    - name: The secret shouldn't be changed yet
-      assert:
-        that:
-          - ci_read.result.data.data == write_data1
-          - ci_read.result.data.metadata.version == 2
-
-    - name: Test patch (check=false)
-      community.hashi_vault.vault_kv2_write: *patch
-      register: result
-
-    - name: Read the secret
-      vault_ci_read: *read1
-      register: ci_read
-
-    - assert:
-        that:
-          - result is changed
-          - "'raw' in result"
-          - ci_read.result.data.data == write_data2
-          - ci_read.result.data.metadata.version == 3
-
-    - name: Test patch (idempotency)
-      community.hashi_vault.vault_kv2_write: *patch
-      register: result
-
-    - name: Read the secret
-      vault_ci_read: *read1
-      register: ci_read
-
-    - assert:
-        that:
-          - result is not changed
-          - ci_read.result.data.data == write_data2
-          - ci_read.result.data.metadata.version == 3
-
-    - name: Test patch secret that doesn't exist (check=false, read=true)
-      ignore_errors: true
-      community.hashi_vault.vault_kv2_write: &patch_404
-        path: "{{ vault_kv2_path }}/404"
-        patch: true
-        data:
-          foo: bar
-        read: true
-      register: result
-
-    - assert:
-        that:
-          - result is failed
-          - result.msg is search("Patch only works on an existing secret.")
-
-    - name: Test patch secret that doesn't exist (check=true, read=true)
-      ignore_errors: true
-      check_mode: true
-      community.hashi_vault.vault_kv2_write: *patch_404
-      register: result
-
-    - assert:
-        that:
-          - result is failed
-          - result.msg is search("Patch only works on an existing secret.")
-
-    - name: Test patch secret that doesn't exist (check=false, read=false)
-      ignore_errors: true
-      community.hashi_vault.vault_kv2_write:
-        path: "{{ vault_kv2_path }}/404"
-        patch: true
-        data:
-          foo: bar
-      register: result
-
-    - assert:
-        that:
-          - result is failed
-          - result.msg is search("InvalidPath")
-
     - name: Test write secret forbidden (check=true, read=true)
       ignore_errors: true
       community.hashi_vault.vault_kv2_write: &write_deny_read
@@ -262,10 +170,9 @@
     - name: Test write cas (check=true)
       check_mode: true
       community.hashi_vault.vault_kv2_write: &write_cas
-        cas: 3
+        cas: 2
         path: "{{ vault_kv2_path }}/write1"
-        data:
-          foo: bar
+        data: "{{ write_data2 }}"
         read: true
       register: result
 
@@ -276,8 +183,8 @@
     - assert:
         that:
           - result is changed
-          - ci_read.result.data.data == write_data2
-          - ci_read.result.data.metadata.version == 3
+          - ci_read.result.data.data == write_data1
+          - ci_read.result.data.metadata.version == 2
 
     - name: Test write cas (check=false)
       community.hashi_vault.vault_kv2_write: *write_cas
@@ -290,8 +197,8 @@
     - assert:
         that:
           - result is changed
-          - ci_read.result.data.data == write_data3
-          - ci_read.result.data.metadata.version == 4
+          - ci_read.result.data.data == write_data2
+          - ci_read.result.data.metadata.version == 3
 
     - name: Test write cas (idempotency)
       community.hashi_vault.vault_kv2_write: *write_cas
@@ -304,8 +211,8 @@
     - assert:
         that:
           - result is not changed
-          - ci_read.result.data.data == write_data3
-          - ci_read.result.data.metadata.version == 4
+          - ci_read.result.data.data == write_data2
+          - ci_read.result.data.metadata.version == 3
 
     - name: Test write cas wrong value
       ignore_errors: true
@@ -321,22 +228,6 @@
         that:
           - result is failed
           - result.msg is search("InvalidRequest")
-
-    - name: cas=true patch=true should fail
-      ignore_errors: true
-      community.hashi_vault.vault_kv2_write:
-        path: "{{ vault_kv2_path }}/write1"
-        cas: true
-        patch: true
-        data:
-          new: data
-        read: true
-      register: result
-
-    - assert:
-        that:
-          - result is failed
-          - result.msg is search("Cannot use cas when patch is true.")
 
     - name: Test forbidden write
       ignore_errors: true
