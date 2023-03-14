@@ -27,9 +27,10 @@ extends_documentation_fragment:
   - community.hashi_vault.engine_mount
 attributes:
   check_mode:
-    support: full
+    support: partial
     details:
-      - Supported if I(read) is C(true).
+      - If I(read) is C(true), full check mode functionality is supported.
+      - If I(read) is C(false), the status will always be C(changed) but a write will not be performed in check mode.
 options:
   engine_mount_point:
     type: str
