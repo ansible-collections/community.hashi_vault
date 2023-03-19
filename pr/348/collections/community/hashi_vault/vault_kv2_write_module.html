@@ -14,7 +14,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -376,8 +375,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-read"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-write-module-parameter-read"><strong>read</strong></p>
-<a class="ansibleOptionLink" href="#parameter-read" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+<div class="ansibleOptionAnchor" id="parameter-read_before_write"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-write-module-parameter-read-before-write"><strong>read_before_write</strong></p>
+<a class="ansibleOptionLink" href="#parameter-read_before_write" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Read the secret first and write only when <em>data</em> differs from the read data.</p>
 <p>Requires <code class="docutils literal notranslate"><span class="pre">read</span></code> permission on the secret if <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
@@ -542,8 +541,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="attribute-check_mode"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-write-module-attribute-check-mode"><strong>check_mode</strong></p>
 <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a></div></td>
 <td><div class="ansible-option-cell"><p><span class="ansible-attribute-support-label">Support: </span><span class="ansible-attribute-support-partial">partial</span></p>
-<p>If <em>read</em> is <code class="docutils literal notranslate"><span class="pre">true</span></code>, full check mode functionality is supported.</p>
-<p>If <em>read</em> is <code class="docutils literal notranslate"><span class="pre">false</span></code>, the status will always be <code class="docutils literal notranslate"><span class="pre">changed</span></code> but a write will not be performed in check mode.</p>
+<p>If <em>read_before_write</em> is <code class="docutils literal notranslate"><span class="pre">true</span></code>, full check mode functionality is supported.</p>
+<p>If <em>read_before_write</em> is <code class="docutils literal notranslate"><span class="pre">false</span></code>, the status will always be <code class="docutils literal notranslate"><span class="pre">changed</span></code> but a write will not be performed in check mode.</p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Can run in <code class="docutils literal notranslate"><span class="pre">check_mode</span></code> and return changed status prediction without modifying target.</p>
 </div></td>
