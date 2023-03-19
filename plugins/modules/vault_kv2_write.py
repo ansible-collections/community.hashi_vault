@@ -67,13 +67,21 @@ EXAMPLES = r"""
     data:
       foo: bar
 
-- name: Write with check and set
+- name: Create a secret with CAS (the secret must not exist)
   community.hashi_vault.vault_kv2_write:
     url: https://vault:8201
     path: caspath
     cas: 0
     data:
       foo: bar
+
+- name: Update a secret with CAS
+  community.hashi_vault.vault_kv2_write:
+    url: https://vault:8201
+    path: caspath
+    cas: 2
+    data:
+      hello: world
 """
 
 RETURN = r"""
