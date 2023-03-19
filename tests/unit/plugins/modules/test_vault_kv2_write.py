@@ -104,7 +104,7 @@ class TestModuleVaultKv2Write:
         assert result["msg"] == missing_required_lib("hvac")
 
     @pytest.mark.parametrize(
-        "patch_ansible_module", [[_combined_options(read=True)]], indirect=True
+        "patch_ansible_module", [[_combined_options(read_before_write=True)]], indirect=True
     )
     @pytest.mark.parametrize(
         "response",
@@ -128,7 +128,7 @@ class TestModuleVaultKv2Write:
 
     @pytest.mark.parametrize("exc", [hvac.exceptions.VaultError("throwaway msg")])
     @pytest.mark.parametrize(
-        "patch_ansible_module", [_combined_options(read=True)], indirect=True
+        "patch_ansible_module", [_combined_options(read_before_write=True)], indirect=True
     )
     def test_vault_kv2_write_read_vault_error(self, vault_client, capfd, exc):
         client = vault_client

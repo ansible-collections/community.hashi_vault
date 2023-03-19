@@ -29,8 +29,8 @@ attributes:
   check_mode:
     support: partial
     details:
-      - If I(read) is C(true), full check mode functionality is supported.
-      - If I(read) is C(false), the status will always be C(changed) but a write will not be performed in check mode.
+      - If I(read_before_write) is C(true), full check mode functionality is supported.
+      - If I(read_before_write) is C(false), the status will always be C(changed) but a write will not be performed in check mode.
 options:
   engine_mount_point:
     type: str
@@ -50,7 +50,7 @@ options:
     type: int
     description:
       - Perform a check-and-set operation.
-  read:
+  read_before_write:
     type: bool
     default: false
     description:
@@ -124,7 +124,7 @@ def run_module():
         path=dict(type="str", required=True),
         data=dict(type="dict", required=True, no_log=True),
         cas=dict(type="int"),
-        read=dict(type="bool", default=False),
+        read_before_write=dict(type="bool", default=False),
     )
 
     module = HashiVaultModule(
@@ -142,7 +142,7 @@ def run_module():
     path = module.params.get("path")
     cas = module.params.get("cas")
     data = module.params.get("data")
-    read = module.params.get("read")
+    read = module.params.get("read_before_write")
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()

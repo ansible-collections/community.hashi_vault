@@ -30,7 +30,7 @@
       community.hashi_vault.vault_kv2_write: &write
         path: "{{ vault_kv2_path }}/write1"
         data: "{{ write_data0 }}"
-        read: true
+        read_before_write: true
       register: kv2_check
 
     - assert:
@@ -79,7 +79,7 @@
       community.hashi_vault.vault_kv2_write: &overwrite
         path: "{{ vault_kv2_path }}/write1"
         data: "{{ write_data1 }}"
-        read: true
+        read_before_write: true
       register: kv2_check
 
     - name: Read the secret
@@ -127,7 +127,7 @@
         path: "{{ vault_kv2_path }}/deny"
         data:
           foo: bar
-        read: true
+        read_before_write: true
       register: result
 
     - assert:
@@ -173,7 +173,7 @@
         cas: 2
         path: "{{ vault_kv2_path }}/write1"
         data: "{{ write_data2 }}"
-        read: true
+        read_before_write: true
       register: result
 
     - name: Read the secret
@@ -221,7 +221,7 @@
         cas: 1
         data:
           new: data
-        read: true
+        read_before_write: true
       register: result
 
     - assert:
@@ -248,7 +248,7 @@
         path: write1
         data: "{{ write_data3 }}"
         cas: 0
-        read: true
+        read_before_write: true
       register: result
 
     - name: Read the secret
@@ -267,7 +267,7 @@
       check_mode: true
       community.hashi_vault.vault_kv2_write:
         path: "{{ vault_kv2_path }}/writeonly"
-        read: true
+        read_before_write: true
         data:
           foo: bar
       register: result
@@ -280,7 +280,7 @@
       ignore_errors: true
       community.hashi_vault.vault_kv2_write:
         path: "{{ vault_kv2_path }}/writeonly"
-        read: true
+        read_before_write: true
         data:
           foo: bar
       register: result
