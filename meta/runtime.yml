@@ -6,6 +6,7 @@ action_groups:
     - vault_kv1_get
     - vault_kv2_delete
     - vault_kv2_get
+    - vault_kv2_write
     - vault_list
     - vault_login
     - vault_pki_generate_certificate
