@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-module: vault_kv2_write
+module: community.hashi_vault.vault_kv2_write
 version_added: 4.2.0
 author:
   - Devon Mar (@devon-mar)
@@ -20,9 +20,9 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 seealso:
-  - module: vault_write
-  - module: vault_kv2_get
-  - module: vault_kv2_delete
+  - module: community.hashi_vault.vault_write
+  - module: community.hashi_vault.vault_kv2_get
+  - module: community.hashi_vault.vault_kv2_delete
   - ref: community.hashi_vault.vault_write lookup <ansible_collections.community.hashi_vault.vault_write_lookup>
     description: The official documentation for the C(community.hashi_vault.vault_write) lookup plugin.
   - name: KV2 Secrets Engine

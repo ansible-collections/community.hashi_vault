@@ -18,7 +18,7 @@ DOCUMENTATION = """
     - Performs a generic write operation against a given path in HashiCorp Vault, returning any output.
   seealso:
     - module: community.hashi_vault.vault_write
-    - module: vault_kv2_write
+    - module: community.hashi_vault.vault_kv2_write
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
     - module: community.hashi_vault.vault_read

@@ -29,7 +29,7 @@ attributes:
       - Consider using M(community.hashi_vault.vault_kv2_get) to verify the existence of the secret first.
 seealso:
   - module: community.hashi_vault.vault_kv2_get
-  - module: vault_kv2_write
+  - module: community.hashi_vault.vault_kv2_write
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2

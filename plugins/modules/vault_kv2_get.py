@@ -22,7 +22,7 @@ seealso:
   - ref: community.hashi_vault.vault_kv2_get lookup <ansible_collections.community.hashi_vault.vault_kv2_get_lookup>
     description: The official documentation for the C(community.hashi_vault.vault_kv2_get) lookup plugin.
   - module: community.hashi_vault.vault_kv1_get
-  - module: vault_kv2_write
+  - module: community.hashi_vault.vault_kv2_write
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
