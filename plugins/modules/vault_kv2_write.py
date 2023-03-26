@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-module: community.hashi_vault.vault_kv2_write
+module: vault_kv2_write
 version_added: 4.2.0
 author:
   - Devon Mar (@devon-mar)
