@@ -56,7 +56,7 @@ options:
     description:
       - Read the secret first and write only when I(data) differs from the read data.
       - Requires C(read) permission on the secret if C(true).
-      - If C(false), this module will always write to I(path).
+      - If C(false), this module will always write to I(path) when not in check mode.
 """
 
 EXAMPLES = r"""
