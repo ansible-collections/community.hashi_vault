@@ -380,7 +380,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 <td><div class="ansible-option-cell"><p>Read the secret first and write only when <em>data</em> differs from the read data.</p>
 <p>Requires <code class="docutils literal notranslate"><span class="pre">read</span></code> permission on the secret if <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">false</span></code>, this module will always write to <em>path</em>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">false</span></code>, this module will always write to <em>path</em> when not in check mode.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">false</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
