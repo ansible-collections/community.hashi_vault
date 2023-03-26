@@ -9,6 +9,7 @@ vault_kv1_api_path: '{{ vault_kv1_mount_point }}/{{ vault_kv1_path }}'
 
 vault_kv2_mount_point: kv2
 unauthorized_vault_kv2_mount_point: kv2_noauth
+cas_required_vault_kv2_mount_point: kv2_cas
 
 vault_kv2_path: testproject
 vault_kv2_multi_path: testmulti
@@ -57,6 +58,33 @@ vault_base_policy: |
   }
   path "{{ vault_kv2_api_path }}/secret4" {
     capabilities = ["read", "update"]
+  }
+  # module_vault_kv2_write tests
+  path "{{ vault_kv2_api_path }}/write1" {
+    capabilities = ["read", "create", "update"]
+  }
+  # module_vault_kv2_write tests
+  path "{{ vault_kv2_api_path }}/readonly" {
+    capabilities = ["read"]
+  }
+  # module_vault_kv2_write tests
+  path "{{ cas_required_vault_kv2_mount_point }}/data/write1" {
+    capabilities = ["read", "create", "update"]
+  }
+  # module_vault_kv2_write tests
+  path "{{ vault_kv2_api_path }}/deny" {
+    capabilities = ["deny"]
+  }
+  # module_vault_kv2_write tests
+  path "{{ vault_kv2_api_path }}/404" {
+    capabilities = ["read", "create", "update"]
+  }
+  # module_vault_kv2_write tests
+  path "{{ vault_kv2_api_path }}/writeonly" {
+    capabilities = ["create", "update"]
+  }
+  path "{{ vault_kv2_mount_point }}/metadata/{{ vault_kv2_path }}/write1" {
+    capabilities = ["delete"]
   }
   path "{{ vault_kv2_api_path }}/non_existent_secret" {
     capabilities = ["read"]

@@ -1,0 +1,16 @@
+---
+write_data0:
+  foo: bar
+  key1: changeme
+
+write_data1:
+  foo: bar
+  key2: val2
+
+write_data2:
+  foo: bar
+  key2: value2
+  key3: value3
+
+write_data3:
+  foo: bar

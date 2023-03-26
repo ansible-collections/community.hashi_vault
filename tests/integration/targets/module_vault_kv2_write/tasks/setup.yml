@@ -1,0 +1,29 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_kv2_destroy_all: "{{ vault_plugins_module_defaults_common }}"
+  block:
+    - name: Ensure test secrets are deleted
+      vault_ci_kv2_destroy_all:
+        path: "{{ item.path }}"
+        mount_point: "{{ item.mount | default(vault_kv2_mount_point) }}"
+      loop:
+        - path: "{{ vault_kv2_path }}/write1"
+        - path: "{{ vault_kv2_path }}/readonly"
+        - path: "{{ vault_kv2_path }}/writeonly"
+        - path: "write1"
+          mount: "{{ cas_required_vault_kv2_mount_point }}"
+
+    - name: Create a test non-root token
+      vault_ci_token_create:
+        policies: [test-policy]
+      register: user_token_cmd
+
+    - name: Write to readonly
+      vault_ci_write:
+        path: "{{ vault_kv2_api_path }}/readonly"
+        data:
+          data:
+            foo: bar
