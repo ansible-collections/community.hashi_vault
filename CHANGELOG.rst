@@ -5,6 +5,29 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v4.2.0
+======
+
+Release Summary
+---------------
+
+This release contains a new module for KVv2 writes, and a new warning for duplicated term string options in the ``hashi_vault`` lookup.
+
+Deprecated Features
+-------------------
+
+- hashi_vault lookup - in ``v5.0.0`` duplicate term string options will raise an exception instead of showing a warning (https://github.com/ansible-collections/community.hashi_vault/issues/356).
+
+Bugfixes
+--------
+
+- hashi_vault lookup - a term string with duplicate options would silently use the last value. The lookup now shows a warning on option duplication (https://github.com/ansible-collections/community.hashi_vault/issues/349).
+
+New Modules
+-----------
+
+- vault_kv2_write - Perform a write operation against a KVv2 secret in HashiCorp Vault
+
 v4.1.0
 ======
 

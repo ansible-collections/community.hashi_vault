@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This release contains a new module for KVv2 writes, and a new warning for duplicated term string options in the ``hashi_vault`` lookup.

@@ -619,3 +619,21 @@ releases:
         name: vault_list
         namespace: null
     release_date: '2023-01-18'
+  4.2.0:
+    changes:
+      bugfixes:
+      - hashi_vault lookup - a term string with duplicate options would silently use
+        the last value. The lookup now shows a warning on option duplication (https://github.com/ansible-collections/community.hashi_vault/issues/349).
+      deprecated_features:
+      - hashi_vault lookup - in ``v5.0.0`` duplicate term string options will raise
+        an exception instead of showing a warning (https://github.com/ansible-collections/community.hashi_vault/issues/356).
+      release_summary: This release contains a new module for KVv2 writes, and a new
+        warning for duplicated term string options in the ``hashi_vault`` lookup.
+    fragments:
+    - 350-raise-error-on-option-duplication-in-term-string.yml
+    - 4.2.0.yml
+    modules:
+    - description: Perform a write operation against a KVv2 secret in HashiCorp Vault
+      name: vault_kv2_write
+      namespace: ''
+    release_date: '2023-03-26'
