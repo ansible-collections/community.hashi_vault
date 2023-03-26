@@ -150,7 +150,7 @@ def run_module():
     path = module.params.get("path")
     cas = module.params.get("cas")
     data = module.params.get("data")
-    read = module.params.get("read_before_write")
+    read_before_write = module.params.get("read_before_write")
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -162,7 +162,7 @@ def run_module():
     except (NotImplementedError, HashiVaultValueError) as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    if read is True:
+    if read_before_write is True:
         try:
             response = client.secrets.kv.v2.read_secret_version(
                 path=path, mount_point=mount_point
