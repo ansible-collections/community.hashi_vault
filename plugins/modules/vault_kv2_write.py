@@ -19,6 +19,15 @@ description:
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+seealso:
+  - module: community.hashi_vault.vault_write
+  - module: community.hashi_vault.vault_kv2_get
+  - module: community.hashi_vault.vault_kv2_delete
+  - ref: community.hashi_vault.vault_write lookup <ansible_collections.community.hashi_vault.vault_write_lookup>
+    description: The official documentation for the C(community.hashi_vault.vault_write) lookup plugin.
+  - name: KV2 Secrets Engine
+    description: Documentation for the Vault KV secrets engine, version 2.
+    link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
