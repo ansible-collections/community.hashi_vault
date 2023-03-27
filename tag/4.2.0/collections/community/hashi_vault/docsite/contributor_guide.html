@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributor guide &mdash; Ansible collections  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/ansible.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/antsibull-minimal.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/rtd-ethical-ads.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/images/Ansible-Mark-RGB_Black.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="localenv developer guide" href="localenv_developer_guide.html" />
+    <link rel="prev" title="Lookup guide" href="lookup_guide.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+    <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+    <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+    <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../../../_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Ansible collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Collections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">Collection Index</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Collections in the Community Namespace</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">Community.Hashi_Vault</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#communication">Communication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#changelog">Changelog</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html#guides">Guides</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#plugin-index">Plugin Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_filter.html">Index of all Filter Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_lookup.html">Index of all Lookup Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_module.html">Index of all Modules</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ansible collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Collection Index</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Collections in the Community Namespace</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Community.Hashi_Vault</a></li>
+      <li class="breadcrumb-item active">Contributor guide</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <section id="contributor-guide">
+<span id="ansible-collections-community-hashi-vault-docsite-contributor-guide"></span><h1>Contributor guide<a class="headerlink" href="#contributor-guide" title="Permalink to this heading"></a></h1>
+<p>This guide aims to help anyone who wishes to contribute to the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code> collection.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This guide can be improved with your help! Open a <a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues">GitHub issue in the repository</a> or contribute directly by following the instructions below.</p>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#quick-start" id="id2">Quick start</a></p></li>
+<li><p><a class="reference internal" href="#contributing-documentation" id="id3">Contributing documentation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#readme-and-other-markdown-files" id="id4">README and other markdown files</a></p></li>
+<li><p><a class="reference internal" href="#module-and-plugin-documentation" id="id5">Module and plugin documentation</a></p></li>
+<li><p><a class="reference internal" href="#collection-docsite" id="id6">Collection docsite</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-tests-locally" id="id7">Running tests locally</a></p>
+<ul>
+<li><p><a class="reference internal" href="#integration-tests" id="id8">Integration Tests</a></p>
+<ul>
+<li><p><a class="reference internal" href="#docker-compose-localenv" id="id9">Docker Compose localenv</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#contributing-auth-methods" id="id10">Contributing auth methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#file-location-scope" id="id11">File location &amp; scope</a></p></li>
+<li><p><a class="reference internal" href="#class-anatomy" id="id12">Class anatomy</a></p></li>
+<li><p><a class="reference internal" href="#raising-exceptions-and-warnings" id="id13">Raising exceptions and warnings</a></p></li>
+<li><p><a class="reference internal" href="#accessing-options" id="id14">Accessing options</a></p></li>
+<li><p><a class="reference internal" href="#the-authenticator" id="id15">The authenticator</a></p></li>
+<li><p><a class="reference internal" href="#auth-method-options-and-documentation" id="id16">Auth method options and documentation</a></p></li>
+<li><p><a class="reference internal" href="#testing-auth-methods" id="id17">Testing auth methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#unit-tests" id="id18">Unit tests</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id19">Integration tests</a></p></li>
+<li><p><a class="reference internal" href="#test-coverage" id="id20">Test coverage</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="quick-start">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Quick start</a><a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Log into your GitHub account.</p></li>
+<li><p>Fork the <a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault">ansible-collections/community.hashi_vault repository</a> by clicking the <strong>Fork</strong> button in the upper right corner. This will create a fork in your own account.</p></li>
+<li><p>Clone the repository locally, following <a class="reference external" href="https://docs.ansible.com/ansible/devel/dev_guide/developing_collections_contributing.html#hacking-collections" title="(in Ansible vdevel)"><span class="xref std std-ref">the example instructions here</span></a> (but replace <code class="docutils literal notranslate"><span class="pre">general</span></code> with <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code>). <strong>Pay special attention to the local path structure</strong> of the cloned repository as described in those instructions (for example <code class="docutils literal notranslate"><span class="pre">ansible_collections/community/hashi_vault</span></code>).</p></li>
+<li><p>As mentioned on that page, commit your changes to a branch, push them to your fork, and create a pull request (GitHub will automatically prompt you to do so when you look at your repository).</p></li>
+<li><p><a class="reference external" href="https://docs.ansible.com/ansible/devel/community/development_process.html#community-changelogs" title="(in Ansible vdevel)"><span class="xref std std-ref">See the guidance on Changelogs</span></a> and include a <a class="reference external" href="https://docs.ansible.com/ansible/devel/community/development_process.html#changelogs-how-to" title="(in Ansible vdevel)"><span class="xref std std-ref">changelog fragment</span></a> if appropriate.</p></li>
+</ol>
+</section>
+<section id="contributing-documentation">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Contributing documentation</a><a class="headerlink" href="#contributing-documentation" title="Permalink to this heading"></a></h2>
+<p>Additions to the collection documentation are very welcome! We have three primary types of documentation, each with their own syntax and rules.</p>
+<section id="readme-and-other-markdown-files">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">README and other markdown files</a><a class="headerlink" href="#readme-and-other-markdown-files" title="Permalink to this heading"></a></h3>
+<p>Markdown files (those with the extension <code class="docutils literal notranslate"><span class="pre">.md</span></code>) can be found in several directories within the repository. These files are primarily aimed at developers and those browsing the repository, to explain or give context to the other files nearby.</p>
+<p>The main exception to the above is the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> in the repository root. This file is more important because it provides introductory information and links for anyone browsing the repository, both on GitHub and on the collection’s <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">Ansible Galaxy page</a>.</p>
+<p>Markdown files can be previewed natively in GitHub, so they are easy to validate by reviewers, and there are no specific tests that need to run against them.</p>
+<p>Your IDE or code editor may also be able to preview these files. For example <a class="reference external" href="https://code.visualstudio.com/docs/languages/markdown#_markdown-preview">Visual Studio Code has built-in markdown preview</a>.</p>
+</section>
+<section id="module-and-plugin-documentation">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Module and plugin documentation</a><a class="headerlink" href="#module-and-plugin-documentation" title="Permalink to this heading"></a></h3>
+<p>This type of documentation gets generated from structured YAML, inside of a Python string. It is included in the same code that it’s documenting, or in a separate Python file, such as a doc fragment. Please see the <a class="reference external" href="https://docs.ansible.com/ansible/devel/dev_guide/developing_modules_documenting.html#developing-modules-documenting" title="(in Ansible vdevel)"><span class="xref std std-ref">module format and documentation guidance</span></a> for more information.</p>
+<p>This type of documentation is highly structured and tested with <code class="docutils literal notranslate"><span class="pre">ansible-test</span> <span class="pre">sanity</span></code>. Full instructions are available on the <a class="reference external" href="https://docs.ansible.com/ansible/devel/dev_guide/testing_documentation.html#testing-module-documentation" title="(in Ansible vdevel)"><span class="xref std std-ref">testing module documentation</span></a> page.</p>
+<p>Additionally, the docsite build on pull requests (or built locally) will include module and plugin documentation as well. See the next section for details.</p>
+</section>
+<section id="collection-docsite">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Collection docsite</a><a class="headerlink" href="#collection-docsite" title="Permalink to this heading"></a></h3>
+<p>The collection docsite is what you are reading now. It is written in reStructuredText (RST) format and published on the <a class="reference external" href="https://docs.ansible.com/ansible/devel/index.html#ansible-documentation" title="(in Ansible vdevel)"><span class="xref std std-ref">ansible_documentation</span></a> site. This is where we have long-form documentation that doesn’t fit into the other two categories.</p>
+<p>If you are considering adding an entirely new document here it may be best to open a GitHub issue first to discuss the idea and how best to organize it.</p>
+<p>Refer to the <a class="reference external" href="https://docs.ansible.com/ansible/devel/dev_guide/style_guide/index.html#style-guide" title="(in Ansible vdevel)"><span class="xref std std-ref">Ansible style guide</span></a> for all submissions to the collection docsite.</p>
+<p>RST files for the docsite are in the <code class="docutils literal notranslate"><span class="pre">docs/docsite/rst/</span></code> directory. Some submissions may also require edits to <code class="docutils literal notranslate"><span class="pre">docs/docsite/extra-docs.yml</span></code>.</p>
+<p>When a pull request is submitted which changes the collection’s documentation, a new docsite will be generated and published to a temporary site, and a bot will post a comment on the PR with a link. This will let you see the rendered docs to help with spotting formatting errors.</p>
+<p>It’s also possible to build the docs locally, by installing some extra Python requirements and running the build script:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pushd</span><span class="w"> </span>docs/preview
+<span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<span class="gp">$ </span>./build.sh
+</pre></div>
+</div>
+<p>You can then find the generated HTML in <code class="docutils literal notranslate"><span class="pre">docs/preview/build/html</span></code> and can open them locally in your browser.</p>
+</section>
+</section>
+<section id="running-tests-locally">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Running tests locally</a><a class="headerlink" href="#running-tests-locally" title="Permalink to this heading"></a></h2>
+<p>If you’re making anything more than very small or one-time changes, run the tests locally to avoid having to push a commit for each thing, and waiting for the CI to run tests.</p>
+<p>First, <a class="reference external" href="https://docs.ansible.com/ansible/devel/dev_guide/developing_collections_testing.html#testing-collections" title="(in Ansible vdevel)"><span class="xref std std-ref">review the guidance on testing collections</span></a>, as it applies to this collection as well.</p>
+<section id="integration-tests">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Integration Tests</a><a class="headerlink" href="#integration-tests" title="Permalink to this heading"></a></h3>
+<p>Unlike other collections, we require an <a class="reference external" href="https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html#integration-config-yml">integration_config.yml</a> file for properly running integration tests, as the tests require external dependencies (like a Vault server) and they need to know where to find those dependencies.</p>
+<p>If you have contributed to this collection or to the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup plugin in the past, you might remember that the integration tests used to download, extract, and run a Vault server during the course of the tests, by default. This <em>legacy mode</em> is <strong>no longer available</strong>.</p>
+<section id="docker-compose-localenv">
+<span id="ansible-collections-community-hashi-vault-docsite-contributor-guide-localenv-docker"></span><h4><a class="toc-backref" href="#id9" role="doc-backlink">Docker Compose localenv</a><a class="headerlink" href="#docker-compose-localenv" title="Permalink to this heading"></a></h4>
+<p>The recommended way to run the tests has Vault and other dependencies running in their own containers, set up via docker-compose, and the integration tests run in their own container separately.</p>
+<p>We have a pre-defined “localenv” setup role for this purpose.</p>
+<section id="usage">
+<h5>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h5>
+<p>For ease of typing / length of commands, we’ll enter the role directory first:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pushd</span><span class="w"> </span>tests/integration/targets/setup_localenv_docker
+</pre></div>
+</div>
+<p>This localenv has both Ansible collection and Python requirements, so let’s get those out of the way:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>files/requirements/requirements.txt<span class="w"> </span>-c<span class="w"> </span>files/requirements/constraints.txt
+<span class="gp">$ </span>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>files/requirements/requirements.yml
+</pre></div>
+</div>
+<p>To set up your docker-compose environment with all the defaults:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./setup.sh
+</pre></div>
+</div>
+<p>The setup script does the following:</p>
+<ol class="arabic simple">
+<li><p>Template a <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> for the project.</p></li>
+<li><p>Generate a private key and self-signed certificate for Vault.</p></li>
+<li><p>Template a Vault config file.</p></li>
+<li><p>Bring down the existing compose project.</p></li>
+<li><p>Bring up the compose project as defined by the vars (specified or defaults).</p></li>
+<li><p>Template an <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> file that has all the right settings for integration tests to connect.</p></li>
+<li><p>Copy the integration config to the correct location <em>if there isn’t already one there</em> (it won’t overwrite, in case you had customized changes).</p></li>
+</ol>
+<p>With your containers running, you can now run the tests in docker (after returning back to the collection root):</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">popd</span>
+<span class="gp">$ </span>ansible-test<span class="w"> </span>integration<span class="w"> </span>--docker<span class="w"> </span>default<span class="w"> </span>--docker-network<span class="w"> </span>hashi_vault_default<span class="w"> </span>-v
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--docker-network</span></code> part is important, because it ensures that the Ansible test container is in the same network as the dependency containers, that way the test container can reach them by their container names. The network name, <code class="docutils literal notranslate"><span class="pre">hashi_vault_default</span></code> comes from the default docker-compose project name used by this role (<code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code>). See the <a class="reference internal" href="#ansible-collections-community-hashi-vault-docsite-contributor-guide-localenv-docker-customization"><span class="std std-ref">customization section</span></a> for more information.</p>
+<p>Running <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> again can be used to re-deploy the containers, or if you prefer you can use the generated <code class="docutils literal notranslate"><span class="pre">files/.output/&lt;project_name&gt;/docker-compose.yml</span></code> directly with local tools.</p>
+<p>If running again, remember to manually copy the contents of newly generated <code class="docutils literal notranslate"><span class="pre">files/.output/integration_config.yml</span></code> to the integration root, or delete the file in the root before re-running setup so that it copies the file automatically.</p>
+</section>
+<section id="customization">
+<span id="ansible-collections-community-hashi-vault-docsite-contributor-guide-localenv-docker-customization"></span><h5>Customization<a class="headerlink" href="#customization" title="Permalink to this heading"></a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> passes any additional params you send it to the <code class="docutils literal notranslate"><span class="pre">ansible-playbook</span></code> command it calls, so you can customize variables with the standard <code class="docutils literal notranslate"><span class="pre">--extra-vars</span></code> (or <code class="docutils literal notranslate"><span class="pre">-e</span></code>) option. There are many advanced scenarios possible, but a few things you might want to override:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vault_version</span></code> – can target any version of Vault for which a docker container exists (this is the container’s tag), defaults to <code class="docutils literal notranslate"><span class="pre">latest</span></code></p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">docker_compose</span></code> (defaults to <code class="docutils literal notranslate"><span class="pre">clean</span></code> but could be set to <code class="docutils literal notranslate"><span class="pre">up</span></code>, <code class="docutils literal notranslate"><span class="pre">down</span></code>, or <code class="docutils literal notranslate"><span class="pre">none</span></code>)</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">up</span></code> – similar to running <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span></code> (no op if the project is running as it should)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">down</span></code> – similar to <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code> (destroys the project)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clean</span></code> – (default) similar to <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code> followed by <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">none</span></code> – does the other tasks, including templating, but does not bring the project up or down. With this option, the <code class="docutils literal notranslate"><span class="pre">community.docker</span></code> collection is not required.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vault_crypto_force</span></code> – by default this is <code class="docutils literal notranslate"><span class="pre">false</span></code> so if the cert and key exist they won’t be regenerated. Setting to <code class="docutils literal notranslate"><span class="pre">true</span></code> will overwrite them.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vault_port_http</span></code>, <code class="docutils literal notranslate"><span class="pre">vault_port_https</span></code>, <code class="docutils literal notranslate"><span class="pre">proxy_port</span></code> – all of the ports are exposed to the host, so if you already have any of the default ports in use on your host, you may need to override these.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vault_container_name</span></code>, <code class="docutils literal notranslate"><span class="pre">proxy_container_name</span></code> – these are the names for their respective containers, which will also be the DNS names used within the container network. In case you have the default names in use you may need to override these.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docker_compose_project_name</span></code> – unlikely to need to be changed, but it affects the name of the docker network which will be needed for your <code class="docutils literal notranslate"><span class="pre">ansible-test</span></code> invocation, so it’s worth mentioning. For example, if you set this to <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault</span></code> then the docker network name will be <code class="docutils literal notranslate"><span class="pre">ansible_hashi_vault_default</span></code>.</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<section id="contributing-auth-methods">
+<span id="ansible-collections-community-hashi-vault-docsite-contributor-guide-contributing-auth-methods"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">Contributing auth methods</a><a class="headerlink" href="#contributing-auth-methods" title="Permalink to this heading"></a></h2>
+<p>In this collection, auth methods are shared among all plugins and modules rather than being re-implemented in each one. This saves the effort of re-inventing the wheel, prevents test bloat by having to test functionality across auth methods, and provides a consistent experience.</p>
+<section id="file-location-scope">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">File location &amp; scope</a><a class="headerlink" href="#file-location-scope" title="Permalink to this heading"></a></h3>
+<p>Auth methods are implemented as classes in <code class="docutils literal notranslate"><span class="pre">module_utils</span></code>, in a file named <code class="docutils literal notranslate"><span class="pre">plugins/module_utils/_auth_method_&lt;method_name&gt;.py</span></code>. The leading underscore indicates that the module util is private to the collection and that it is not intended to be used outside the collection; this lets us make changes as needed without needing to release a new major version, and clearly indicates to would-be downstream users that they should not rely on these utils outside content within the collection.</p>
+<p>In addition, all auth method module utils within the collection must contain a comment explaining this, such as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># FOR INTERNAL COLLECTION USE ONLY</span>
+<span class="c1"># The interfaces in this file are meant for use within the community.hashi_vault collection</span>
+<span class="c1"># and may not remain stable to outside uses. Changes may be made in ANY release, even a bugfix release.</span>
+<span class="c1"># See also: https://github.com/ansible/community/issues/539#issuecomment-780839686</span>
+<span class="c1"># Please open an issue if you have questions about this.</span>
+</pre></div>
+</div>
+<p>It is best to look at <a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/tree/main/plugins/module_utils">existing auth methods</a> to get a feel for how they are implemented.</p>
+</section>
+<section id="class-anatomy">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Class anatomy</a><a class="headerlink" href="#class-anatomy" title="Permalink to this heading"></a></h3>
+<p>Each auth method class should be named <code class="docutils literal notranslate"><span class="pre">HashiVaultAuthMethod&lt;MethodName&gt;</span></code> and inherit from <code class="docutils literal notranslate"><span class="pre">HashiVaultAuthMethodBase</span></code>.</p>
+<p>The base class provides some common functionality, like standardizing a way to emit warnings and providing a common function for validating required options.</p>
+<p>An auth method must run the base class’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> function.</p>
+<p>It must implement two methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">validate()</span></code> – this method does everything it can to ensure that the requirements are met for performing authentication with this particular auth method. This may include checking for required options, validating the values of those options, pulling in additional information and context from the environment, preparing that information for use by <code class="docutils literal notranslate"><span class="pre">authenticate()</span></code>, etc. Generally speaking, it should not contact Vault, and should minimize reliance on external sources and services, but that is a guideline and the details will depend on the specifics of the auth method in question. <code class="docutils literal notranslate"><span class="pre">validate()</span></code> raises an exception if validation fails. If it succeeds, nothing is returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">authenticate(client,</span> <span class="pre">use_token=False)</span></code> – this method performs the actual authentication, and it returns the API result of the authentication (which will include the token, lease information, etc.). The HVAC client object is passed in, as well an optional parameter <code class="docutils literal notranslate"><span class="pre">use_token</span></code> which specifies whether the client should have its token field set to the result of authentication (typically this is desired).</p></li>
+</ul>
+<p>The auth method class should also contain two fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NAME</span></code> – the name of the auth method.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OPTIONS</span></code> – a list containing the name of every option that may be used by the auth method, including optional options; this list should not include the <code class="docutils literal notranslate"><span class="pre">auth_method</span></code> option.</p></li>
+</ul>
+</section>
+<section id="raising-exceptions-and-warnings">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Raising exceptions and warnings</a><a class="headerlink" href="#raising-exceptions-and-warnings" title="Permalink to this heading"></a></h3>
+<p>Because auth methods are shared among both Ansible modules and Ansible plugins, any exceptions raised must be applicable to both. Standard Python exceptions like <code class="docutils literal notranslate"><span class="pre">KeyError</span></code> can be raised if they appropriate.</p>
+<p>In situations where you would normally raise <code class="docutils literal notranslate"><span class="pre">AnsibleError</span></code> (in plugins), or call <code class="docutils literal notranslate"><span class="pre">module.fail_json()</span></code> (in modules), you may raise <code class="docutils literal notranslate"><span class="pre">HashiVaultValueError</span></code> with your error message. Plugins and modules in this collection should expect this type and act accordingly.</p>
+<p>Similarly for warnings, because plugins and modules implement warnings differently, module util code that needs to warn takes a warning callback, and this is true for auth methods as well.</p>
+<p>The base class provides a <code class="docutils literal notranslate"><span class="pre">warn()</span></code> method that handles calling the callback specified at class init, so a simple <code class="docutils literal notranslate"><span class="pre">self.warn()</span></code> can be used in auth method code.</p>
+</section>
+<section id="accessing-options">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Accessing options</a><a class="headerlink" href="#accessing-options" title="Permalink to this heading"></a></h3>
+<p>Because auth methods are shared among both Ansible modules and Ansible plugins, which do not access options in the same way, this collection implements a class called <code class="docutils literal notranslate"><span class="pre">HashiVaultOptionAdapter</span></code>. This class provides a standard interface for accessing option values in code that must work in both plugins and modules.</p>
+<p>It implements the following methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_option(key)</span></code> – gets the option with the specified name. Raises <code class="docutils literal notranslate"><span class="pre">KeyError</span></code> if the option is not present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_option_default(key,</span> <span class="pre">default=None)</span></code> – gets the option with the specified name. If it’s not present, returns the value of <code class="docutils literal notranslate"><span class="pre">default</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_option(key,</span> <span class="pre">value)</span></code> – sets the value of the specified option <code class="docutils literal notranslate"><span class="pre">key</span></code> to <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_option_default(key,</span> <span class="pre">default=None)</span></code> – returns the value of the option <code class="docutils literal notranslate"><span class="pre">key</span></code>. If the key is not present, sets its value to <code class="docutils literal notranslate"><span class="pre">default</span></code> and returns that value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">has_option(key)</span></code> – returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the specified option <em>is present</em> (<code class="docutils literal notranslate"><span class="pre">None</span></code> value counts as present).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_options(**kwargs)</span></code> – sets options to the key/value pairs specified in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_options(*args)</span></code> – returns a dict of the option names specified in <code class="docutils literal notranslate"><span class="pre">args</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_filtered_options(filter,</span> <span class="pre">*args)</span></code> – returns a dict of the option names specified in <code class="docutils literal notranslate"><span class="pre">args</span></code>, if the callable <code class="docutils literal notranslate"><span class="pre">filter</span></code> (which has <code class="docutils literal notranslate"><span class="pre">key</span></code> and <code class="docutils literal notranslate"><span class="pre">value</span></code> passed into it) returns <code class="docutils literal notranslate"><span class="pre">True</span></code> for the given key/value pair.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_filled_options(*args)</span></code> – returns a dict of the option names specified in <code class="docutils literal notranslate"><span class="pre">*args</span></code> that are not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</section>
+<section id="the-authenticator">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The authenticator</a><a class="headerlink" href="#the-authenticator" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">HashiVaultAuthenticator</span></code> class is how most of the content in the collection will handle authentication, rather than having to directly references each individual auth method. As a result, <code class="docutils literal notranslate"><span class="pre">_authenticator.py</span></code> needs to be modified for every new auth method, because it imports and directly references each class. See <a class="reference external" href="https://github.com/ansible-collections/community.hashi_vault/blob/main/plugins/module_utils/_authenticator.py">the implementation of this class</a> to find the places that need to be modified.</p>
+</section>
+<section id="auth-method-options-and-documentation">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Auth method options and documentation</a><a class="headerlink" href="#auth-method-options-and-documentation" title="Permalink to this heading"></a></h3>
+<p>Because auth methods are shared among collection content, their options are documented in doc_fragment plugins. Because many options end up being shared among many auth methods (for example <code class="docutils literal notranslate"><span class="pre">role_id</span></code>, <code class="docutils literal notranslate"><span class="pre">username</span></code>, <code class="docutils literal notranslate"><span class="pre">password</span></code>), we do not have a separate doc fragment for each auth method, as this would end up with duplicated option documentation.</p>
+<p>Instead, all of the options for auth methods are in <code class="docutils literal notranslate"><span class="pre">plugins/doc_fragments/auth.py</span></code>.</p>
+<p>This contains the standard <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> field, as well as a <code class="docutils literal notranslate"><span class="pre">PLUGINS</span></code> field. The reason for this split is that there are certain parts of the documentation that are only applicable to plugins; namely the <code class="docutils literal notranslate"><span class="pre">env</span></code>, <code class="docutils literal notranslate"><span class="pre">ini</span></code>, and <code class="docutils literal notranslate"><span class="pre">vars</span></code> entries.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> should contains all fields common to both, like <code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">version_added</span></code>, <code class="docutils literal notranslate"><span class="pre">required</span></code>, etc., while anything plugin-specific goes in <code class="docutils literal notranslate"><span class="pre">PLUGINS</span></code>.</p>
+<p>Since plugins and modules will reference the doc fragments, it’s not usually required to modify the docstrings in the content directly; if it seems necessary, please raise an issue to discuss.</p>
+<p>Wherever possible, we should provide <code class="docutils literal notranslate"><span class="pre">env</span></code>, <code class="docutils literal notranslate"><span class="pre">ini</span></code>, and <code class="docutils literal notranslate"><span class="pre">vars</span></code> alternatives for specifying options, to give maximum flexibility for plugins. Occasionally, these won’t make sense, like providing <code class="docutils literal notranslate"><span class="pre">token</span></code> (a sensitive value) in <code class="docutils literal notranslate"><span class="pre">ini</span></code>.</p>
+<p>When deciding to implement new options for an auth method, consider whether existing options can or should be reused. If a new option is needed, consider scoping its name to the auth method, in order to differentiate it from current or future option names that could be confusing in another context.</p>
+<p>For example <code class="docutils literal notranslate"><span class="pre">cert_auth_public_key</span></code> and <code class="docutils literal notranslate"><span class="pre">cert_auth_private_key</span></code> were named that way to prevent them being confused with other certificate options that relate to the Vault connection, or other contexts where specific plugins or modules might need key pairs.</p>
+</section>
+<section id="testing-auth-methods">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Testing auth methods</a><a class="headerlink" href="#testing-auth-methods" title="Permalink to this heading"></a></h3>
+<p>Because auth methods are shared across the collection, we want them to be very well tested. Auth methods have both unit and integration tests, and the combination of those should give us high confidence that the methods work as intended.</p>
+<section id="unit-tests">
+<h4><a class="toc-backref" href="#id18" role="doc-backlink">Unit tests</a><a class="headerlink" href="#unit-tests" title="Permalink to this heading"></a></h4>
+<p>Unit tests allow us to check some of the functionality that is difficult to test effectively in integration tests, like checking that every possible combination of options behaves as it should, or simulating conditions that we can’t easily reproduce. The coverage of various scenarios should be extensive, and the details of which, or how complex they are, will depend on the intricacies of the auth method itself. Looking at existing examples is highly recommended.</p>
+<p>A pytest fixture is provided to load fixtures files that contain sample Vault API responses. Using these allows for mocking of the HVAC authentication calls within the unit tests.</p>
+</section>
+<section id="id1">
+<h4><a class="toc-backref" href="#id19" role="doc-backlink">Integration tests</a><a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
+<p>Our integration tests provide a running Vault server, and with that we can set up any auth methods we want (in theory). In practice, auth methods often require external services to integrate with. When possible, we should consider setting up such external services so that we can create a meaningful, real life integration and test it.</p>
+<p>Often however, this is not possible, or difficult. We must consider that tests are not only run in CI, but should be able to be run locally as well.</p>
+<section id="mocking-integrations">
+<h5>Mocking integrations<a class="headerlink" href="#mocking-integrations" title="Permalink to this heading"></a></h5>
+<p>We have implemented <a class="reference external" href="https://github.com/jmartin82/mmock">MMock (Monster Mock)</a> in our integration test setup to help with this. This server is setup to proxy its requests to the test Vault server, but you can write configurations that allow it to return different data for specific requests. By carefully constructing these responses, we can simulate the Vault API’s response to login requests for specific auth methods, and also simulate its failures. With that, we can then run integration tests that hopefully provide us some assurance that we are implementing it correctly.</p>
+</section>
+<section id="testing-plugin-and-module-usage">
+<h5>Testing plugin and module Usage<a class="headerlink" href="#testing-plugin-and-module-usage" title="Permalink to this heading"></a></h5>
+<p>Auth methods are usable from modules and plugins, so integration tests for an auth method must test it via both plugins and modules.</p>
+<p>We provide custom modules and plugins specifically for testing auth methods within the integration tests. These are simplified implementations but they use the common code that should be used by all content, and they can be set to return some useful information about the login process. See the existing tests for details.</p>
+</section>
+</section>
+<section id="test-coverage">
+<h4><a class="toc-backref" href="#id20" role="doc-backlink">Test coverage</a><a class="headerlink" href="#test-coverage" title="Permalink to this heading"></a></h4>
+<p>In CI, we use CodeCov to track coverage. We also set some specific “tags” in coverage, and one of those is to tag individual auth methods as targets for integration tests. This happens automatically in CI, however new auth methods need an entry into <code class="docutils literal notranslate"><span class="pre">codecov.yml</span></code> that maps the coverage flag to the file where the auth method is implemented. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flags</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">target_auth_aws_iam</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plugins/module_utils/_auth_method_aws_iam.py</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lookup_guide.html" class="btn btn-neutral float-left" title="Lookup guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="localenv_developer_guide.html" class="btn btn-neutral float-right" title="localenv developer guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
