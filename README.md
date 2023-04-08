@@ -18,6 +18,7 @@ If you use the Ansible package and don't update collections independently, use *
 * 2.12
 * 2.13
 * 2.14
+* 2.15
 * devel (latest development commit)
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
@@ -45,6 +46,7 @@ Currently we support and test against Python versions:
 * 3.8
 * 3.9
 * 3.10
+* 3.11
 
 Note that for controller-side plugins, only the Python versions supported by the Ansible controller are supported (for example, you cannot use Python 3.7 with Ansible core 2.12).
 
