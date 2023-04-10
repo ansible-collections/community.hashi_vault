@@ -214,12 +214,12 @@
 </pre></div>
 </div>
 <p>Which produces:</p>
-<div class="highlight-ansible-output notranslate"><div class="highlight"><pre><span></span><span class="w">TASK [Perform a login with a lookup and display the token]  ********************************</span>
+<div class="highlight-ansible-output notranslate"><div class="highlight"><pre><span></span>TASK [Perform a login with a lookup and display the token]  ********************************
 <span class="k">ok</span><span class="p">:</span> <span class="p">[</span><span class="nv">localhost</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span>
     <span class="nt">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span>
 <span class="p">}</span>
 
-<span class="w">TASK [Perform a login with a module]  *****************************************************</span>
+TASK [Perform a login with a module]  *****************************************************
 <span class="k">ok</span><span class="p">:</span> <span class="p">[</span><span class="nv">localhost</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span><span class="nt">&quot;changed&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;auth&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;accessor&quot;</span><span class="p">:</span> <span class="s">&quot;mQewzgKRx5Yui1h1eMemJlMu&quot;</span><span class="p">,</span>
 <span class="nt">&quot;client_token&quot;</span><span class="p">:</span> <span class="s">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span><span class="p">,</span> <span class="nt">&quot;entity_id&quot;</span><span class="p">:</span> <span class="s">&quot;8a74ffd3-f71b-8ebe-7942-610428051ea9&quot;</span><span class="p">,</span>
 <span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span> <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;testuser&quot;</span><span class="p">},</span> <span class="nt">&quot;orphan&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nt">&quot;policies&quot;</span><span class="p">:</span>
@@ -227,9 +227,9 @@
 <span class="s">&quot;default&quot;</span><span class="p">,</span> <span class="s">&quot;userpass-policy&quot;</span><span class="p">],</span> <span class="nt">&quot;token_type&quot;</span><span class="p">:</span> <span class="s">&quot;service&quot;</span><span class="p">},</span> <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
 <span class="nt">&quot;lease_id&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nt">&quot;renewable&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nt">&quot;request_id&quot;</span><span class="p">:</span> <span class="s">&quot;511e8fba-83f0-4b7e-95ea-770aa19c1957&quot;</span><span class="p">,</span>
 <span class="nt">&quot;warnings&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;wrap_info&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">}}</span>
-<span class="w">}</span>
+}
 
-<span class="w">TASK [Display the token]  *****************************************************************</span>
+TASK [Display the token]  *****************************************************************
 <span class="k">ok</span><span class="p">:</span> <span class="p">[</span><span class="nv">localhost</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span>
     <span class="nt">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span>
 <span class="p">}</span>
