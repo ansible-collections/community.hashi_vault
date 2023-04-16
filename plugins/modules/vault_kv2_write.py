@@ -101,7 +101,6 @@ EXAMPLES = r"""
     url: https://vault:8200
     path: hello
 
-
 ## patch without CAS
 - name: Update the secret
   vars:
