@@ -15,7 +15,7 @@ author:
   - Devon Mar (@devon-mar)
 short_description: Perform a write operation against a KVv2 secret in HashiCorp Vault
 description:
-  - Perform a write/patch operation against a KVv2 secret in HashiCorp Vault.
+  - Perform a write operation against a KVv2 secret in HashiCorp Vault.
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
@@ -54,7 +54,7 @@ options:
     type: dict
     required: true
     description:
-      - KVv2 secret data to write/patch.
+      - KVv2 secret data to write.
   cas:
     type: int
     description:
@@ -91,6 +91,46 @@ EXAMPLES = r"""
     cas: 2
     data:
       hello: world
+
+# This module does not have patch capability built in.
+# Patching can be achieved with multiple tasks.
+
+- name: Retrieve current secret
+  register: current
+  community.hashi_vault.vault_kv2_get:
+    url: https://vault:8200
+    path: hello
+
+## patch without CAS
+- name: Update the secret
+  vars:
+    values_to_update:
+      foo: baz
+      hello: goodbye
+  community.hashi_vault.vault_kv2_write:
+    url: https://vault:8200
+    path: hello
+    data: >-
+      {{
+        current.secret
+        | combine(values_to_update)
+      }}
+
+## patch with CAS
+- name: Update the secret
+  vars:
+    values_to_update:
+      foo: baz
+      hello: goodbye
+  community.hashi_vault.vault_kv2_write:
+    url: https://vault:8200
+    path: hello
+    cas: '{{ current.metadata.version | int }}'
+    data: >-
+      {{
+        current.secret
+        | combine(values_to_update)
+      }}
 """
 
 RETURN = r"""
