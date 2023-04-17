@@ -152,7 +152,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <section id="synopsis">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>Perform a write/patch operation against a KVv2 secret in HashiCorp Vault.</p></li>
+<li><p>Perform a write operation against a KVv2 secret in HashiCorp Vault.</p></li>
 </ul>
 </section>
 <section id="requirements">
@@ -310,7 +310,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="parameter-data"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-kv2-write-module-parameter-data"><strong>data</strong></p>
 <a class="ansibleOptionLink" href="#parameter-data" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span> / <span class="ansible-option-required">required</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>KVv2 secret data to write/patch.</p>
+<td><div class="ansible-option-cell"><p>KVv2 secret data to write.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -593,6 +593,46 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">    </span><span class="nt">cas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="w">    </span><span class="nt">data</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">hello</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world</span>
+
+<span class="c1"># This module does not have patch capability built in.</span>
+<span class="c1"># Patching can be achieved with multiple tasks.</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Retrieve current secret</span>
+<span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">current</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_get</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8200</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span>
+
+<span class="c1">## patch without CAS</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update the secret</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">values_to_update</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">foo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">baz</span>
+<span class="w">      </span><span class="nt">hello</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">goodbye</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_write</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8200</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span>
+<span class="w">    </span><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<span class="w">      </span><span class="cp">{{</span>
+        <span class="nv">current.secret</span>
+        <span class="o">|</span> <span class="nf">combine</span><span class="o">(</span><span class="nv">values_to_update</span><span class="o">)</span>
+      <span class="cp">}}</span>
+
+<span class="c1">## patch with CAS</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update the secret</span>
+<span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">values_to_update</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">foo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">baz</span>
+<span class="w">      </span><span class="nt">hello</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">goodbye</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_write</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8200</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span>
+<span class="w">    </span><span class="nt">cas</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">current.metadata.version</span> <span class="o">|</span> <span class="nf">int</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<span class="w">      </span><span class="cp">{{</span>
+        <span class="nv">current.secret</span>
+        <span class="o">|</span> <span class="nf">combine</span><span class="o">(</span><span class="nv">values_to_update</span><span class="o">)</span>
+      <span class="cp">}}</span>
 </pre></div>
 </div>
 </section>
