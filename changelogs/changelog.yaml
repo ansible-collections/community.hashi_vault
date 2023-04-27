@@ -637,3 +637,10 @@ releases:
       name: vault_kv2_write
       namespace: ''
     release_date: '2023-03-26'
+  4.2.1:
+    changes:
+      release_summary: This patch version updates the documentation for the ``vault_kv2_write``
+        module. There are no functional changes.
+    fragments:
+    - 4.2.1.yml
+    release_date: '2023-04-27'
