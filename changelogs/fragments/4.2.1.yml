@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This patch version updates the documentation for the ``vault_kv2_write`` module. There are no functional changes.
