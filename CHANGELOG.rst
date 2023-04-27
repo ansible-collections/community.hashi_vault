@@ -5,6 +5,14 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v4.2.1
+======
+
+Release Summary
+---------------
+
+This patch version updates the documentation for the ``vault_kv2_write`` module. There are no functional changes.
+
 v4.2.0
 ======
 
