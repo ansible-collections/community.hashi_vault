@@ -171,11 +171,7 @@ class TestVaultTokenCreateLookup(object):
                     "lookup result did not match expected result:\nlookup: %r\nexpected: %r" % (result, token_create_response)
                 )
 
-                if sys.version_info < (3, 8):
-                    # TODO: remove when python < 3.8 is dropped
-                    call_kwargs = client.auth.token.create_orphan.call_args[1]
-                else:
-                    call_kwargs = client.auth.token.create_orphan.call_args.kwargs
+                call_kwargs = client.auth.token.create_orphan.call_args.kwargs
 
                 for name, orphan in orphan_option_translation.items():
                     assert name not in call_kwargs, (
