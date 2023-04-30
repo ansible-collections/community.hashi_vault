@@ -37,8 +37,6 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.11
-          - stable-2.12
           - stable-2.13
           - stable-2.14
           - stable-2.15
@@ -115,8 +113,6 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.11
-          - stable-2.12
           - stable-2.13
           - stable-2.14
           - stable-2.15
@@ -191,8 +187,6 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.11
-          - stable-2.12
           - stable-2.13
           - stable-2.14
           - stable-2.15
@@ -207,12 +201,6 @@ jobs:
         exclude:
           # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
           # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
-          - ansible: 'stable-2.11'
-            python: '3.10'
-          - ansible: 'stable-2.11'
-            python: '3.11'
-          - ansible: 'stable-2.12'
-            python: '3.11'
           - ansible: 'stable-2.13'
             python: '3.11'
           - ansible: 'stable-2.15'
@@ -436,24 +424,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: ./cov
-
-      # Before Ansible 2.12, units always used a "target" of "units", and we don't want a flag of "target_units".
-      # After 2.12, target can be "controller" or "module_utils" and we'll preserve them for now.
-      # If we decide that those targets are not helpful, we can simplify processing by removing this run block
-      # and just having two ansible-codecov calls, one for units (that excludes target) and one for integration.
-      # That change would also make integration processing faster because we can hardcode the integration flag as an additional flag.
-      - name: Move Ansible pre-2.12 units
-        run: |
-          mkdir ./cov-units-pre2.12
-          mv ./cov/coverage=units=ansible_stable-2.11=data ./cov-units-pre2.12
-
-      - name: Upload Ansible pre-2.12 unit coverage reports to Codecov
-        uses: ./.github/actions/ansible-codecov
-        with:
-          directory: ./cov-units-pre2.12
-          additional-flags: units
-          file-flag-pattern: coverage=units=units={env_%}.xml
-          directory-flag-pattern: =ansible_{ansible-%}=
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage reports to Codecov

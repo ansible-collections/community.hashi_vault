@@ -11,11 +11,7 @@ import pytest
 
 from ......tests.unit.compat import mock
 
-try:
-    import hvac
-except ImportError:
-    # python 2.6, which isn't supported anyway
-    hvac = mock.MagicMock()
+import hvac
 
 from ......plugins.module_utils._auth_method_token import (
     HashiVaultAuthMethodToken,
