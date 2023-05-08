@@ -37,7 +37,7 @@
         - assert:
             that:
               - result.inner is failed
-              - result.msg is search('Cannot connect to proxy')
+              - result.msg is search('(?:Cannot|Unable to) connect to proxy')
               - result.retries == 2
 
     - name: HTTPS connection
@@ -80,5 +80,5 @@
         - assert:
             that:
               - result.inner is failed
-              - result.msg is search('Cannot connect to proxy')
+              - result.msg is search('(?:Cannot|Unable to) connect to proxy')
               - result.retries == 2
