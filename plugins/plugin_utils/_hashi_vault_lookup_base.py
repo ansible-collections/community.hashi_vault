@@ -12,7 +12,7 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-from ansible.errors import AnsibleError
+from ansible.errors import AnsibleError, AnsibleOptionsError
 from ansible.plugins.lookup import LookupBase
 from ansible.utils.display import Display
 
@@ -43,11 +43,8 @@ class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
                     raise AnsibleError("%s lookup plugin needs key=value pairs, but received %s" % (plugin_name, term))
 
             if key in param_dict:
-                removed_in = '5.0.0'
                 msg = "Duplicate key '%s' in the term string '%s'." % (key, term)
-                display.deprecated(msg + "\nIn version %s of the collection, this will raise an exception." % (removed_in, ), removed_in)
-                # TODO: v5.0.0: remove deprecation message, uncomment: https://github.com/ansible-collections/community.hashi_vault/pull/350
-                # raise AnsibleOptionsError(msg)
+                raise AnsibleOptionsError(msg)
 
             param_dict[key] = value
 
