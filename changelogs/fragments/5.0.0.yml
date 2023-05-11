@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This version makes some relatively minor but technically breaking changes. Support for ``ansible-core`` versions ``2.11`` and ``2.12`` have been dropped, and there is now a minimum supported version of ``hvac`` which will be updated over time. A warning in the ``hashi_vault`` lookup on duplicate option specifications in the term string has been changed to a fatal error.

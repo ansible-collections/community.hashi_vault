@@ -5,6 +5,21 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v5.0.0
+======
+
+Release Summary
+---------------
+
+This version makes some relatively minor but technically breaking changes. Support for ``ansible-core`` versions ``2.11`` and ``2.12`` have been dropped, and there is now a minimum supported version of ``hvac`` which will be updated over time. A warning in the ``hashi_vault`` lookup on duplicate option specifications in the term string has been changed to a fatal error.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Support for ``ansible-core`` 2.11 and 2.12 has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/340).
+- The minimum version of ``hvac`` for ``community.hashi_vault`` is now ``1.1.0`` (https://github.com/ansible-collections/community.hashi_vault/issues/324).
+- hashi_vault lookup - duplicate option entries in the term string now raises an exception instead of a warning (https://github.com/ansible-collections/community.hashi_vault/issues/356).
+
 v4.2.1
 ======
 
