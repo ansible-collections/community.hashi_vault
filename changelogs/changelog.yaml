@@ -644,3 +644,22 @@ releases:
     fragments:
     - 4.2.1.yml
     release_date: '2023-04-27'
+  5.0.0:
+    changes:
+      breaking_changes:
+      - Support for ``ansible-core`` 2.11 and 2.12 has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/340).
+      - The minimum version of ``hvac`` for ``community.hashi_vault`` is now ``1.1.0``
+        (https://github.com/ansible-collections/community.hashi_vault/issues/324).
+      - hashi_vault lookup - duplicate option entries in the term string now raises
+        an exception instead of a warning (https://github.com/ansible-collections/community.hashi_vault/issues/356).
+      release_summary: This version makes some relatively minor but technically breaking
+        changes. Support for ``ansible-core`` versions ``2.11`` and ``2.12`` have
+        been dropped, and there is now a minimum supported version of ``hvac`` which
+        will be updated over time. A warning in the ``hashi_vault`` lookup on duplicate
+        option specifications in the term string has been changed to a fatal error.
+    fragments:
+    - 324-minimum-hvac-version.yml
+    - 340-drop-core-211-212.yml
+    - 356-duplicate-term-options.yml
+    - 5.0.0.yml
+    release_date: '2023-05-11'
