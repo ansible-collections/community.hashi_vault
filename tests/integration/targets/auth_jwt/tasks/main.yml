@@ -47,7 +47,7 @@
         this_path: '{{ item }}'
       module_defaults:
         assert:
-          quiet: yes
+          quiet: true
 
 - name: Run JWT tests (target)
   loop: '{{ auth_paths }}'

@@ -28,7 +28,7 @@
       register: response
       vault_test_auth:
         username: fail-me-username
-        want_exception: yes
+        want_exception: true
 
     - assert:
         fail_msg: "An invalid request somehow did not cause a failure."

@@ -30,7 +30,7 @@
       vault_test_auth:
         cert_auth_public_key: "{{ invalid_auth_cert_cert }}"
         cert_auth_private_key: "{{ invalid_auth_cert_key }}"
-        want_exception: yes
+        want_exception: true
       register: response
 
     - assert:

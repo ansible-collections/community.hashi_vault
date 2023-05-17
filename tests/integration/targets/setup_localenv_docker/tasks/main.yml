@@ -21,19 +21,19 @@
 - name: "Check if cert already exists"
   stat:
     path: '{{ vault_cert_file }}'
-    follow: yes
-    get_attributes: no
-    get_checksum: no
-    get_mime: no
+    follow: true
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
   register: cert_status
 
 - name: "Check if key already exists"
   stat:
     path: '{{ vault_key_file }}'
-    follow: yes
-    get_attributes: no
-    get_checksum: no
-    get_mime: no
+    follow: true
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
   register: key_status
 
 - name: "Generate certs"
@@ -67,4 +67,4 @@
   template:
     src: integration_config.yml.j2
     dest: '{{ output_dir }}/integration_config.yml'
-    force: yes
+    force: true

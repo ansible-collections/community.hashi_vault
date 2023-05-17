@@ -20,4 +20,4 @@
         this_path: '{{ item[0] }}'
       module_defaults:
         assert:
-          quiet: yes
+          quiet: true
