@@ -39,7 +39,7 @@
     - name: Try a login in check mode
       register: result
       community.hashi_vault.vault_login:
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:

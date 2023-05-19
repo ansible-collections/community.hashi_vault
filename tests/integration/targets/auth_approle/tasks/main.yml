@@ -49,4 +49,4 @@
             use_secret_id: '{{ item[0][1] == secret_id_role }}'
           module_defaults:
             assert:
-              quiet: yes
+              quiet: true

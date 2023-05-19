@@ -30,7 +30,7 @@
       register: response
       vault_test_auth:
         jwt: '{{ jwt_invalid }}'
-        want_exception: yes
+        want_exception: true
 
     - assert:
         fail_msg: "An invalid JWT somehow did not cause a failure."

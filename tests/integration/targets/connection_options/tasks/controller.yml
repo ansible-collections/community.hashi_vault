@@ -2,7 +2,7 @@
 - name: Connection Tests
   module_defaults:
     assert:
-      quiet: yes
+      quiet: true
   vars:
     # we don't set kwargs: {} here because of https://github.com/ansible/ansible/issues/75286
     test_cmd: &test
@@ -37,7 +37,7 @@
         - name: test HTTP with wrong proxy
           <<: *test
           vars:
-            vault_test_connection_want_exception: yes
+            vault_test_connection_want_exception: true
             ansible_hashi_vault_proxies: http://127.0.0.1:4567
             ansible_hashi_vault_retries: 2
 
@@ -67,8 +67,8 @@
         - name: test HTTPS with cert validation
           <<: *test
           vars:
-            vault_test_connection_want_args: yes
-            vault_test_connection_want_exception: yes
+            vault_test_connection_want_args: true
+            vault_test_connection_want_exception: true
 
         - <<: *assert
 
@@ -85,8 +85,8 @@
         - name: test HTTPS with wrong proxy & cert validation
           <<: *test
           vars:
-            vault_test_connection_want_exception: yes
-            ansible_hashi_vault_validate_certs: yes
+            vault_test_connection_want_exception: true
+            ansible_hashi_vault_validate_certs: true
             ansible_hashi_vault_proxies: http://127.0.0.1:4567
             ansible_hashi_vault_retries: 2
 

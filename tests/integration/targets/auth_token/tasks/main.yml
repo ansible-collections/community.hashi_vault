@@ -26,9 +26,9 @@
 - import_tasks: token_test_target.yml
   module_defaults:
     assert:
-      quiet: yes
+      quiet: true
 
 - import_tasks: token_test_controller.yml
   module_defaults:
     assert:
-      quiet: yes
+      quiet: true

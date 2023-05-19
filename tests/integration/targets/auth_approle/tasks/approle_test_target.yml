@@ -40,7 +40,7 @@
       register: response
       vault_test_auth:
         secret_id: fake
-        want_exception: yes
+        want_exception: true
 
     - assert:
         fail_msg: "An invalid secret ID somehow did not cause a failure."

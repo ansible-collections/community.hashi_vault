@@ -28,7 +28,7 @@
       register: response
       vault_test_auth:
         password: fake
-        want_exception: yes
+        want_exception: true
 
     - assert:
         fail_msg: "An invalid password somehow did not cause a failure."

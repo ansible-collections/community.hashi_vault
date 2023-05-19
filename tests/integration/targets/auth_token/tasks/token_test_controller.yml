@@ -56,7 +56,7 @@
         token: '{{ response.login.auth.client_token }}'
         path: '{{ secret }}'
       register: secret_data
-      ignore_errors: yes
+      ignore_errors: true
 
     - assert:
         that:
