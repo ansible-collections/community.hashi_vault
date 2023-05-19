@@ -83,6 +83,7 @@ class TestHashiVaultLookupBase(object):
         expected_template = "Duplicate key '%s' in the term string '%s'."
         expected_msg = expected_template % (dup_key, term)
         expected_re = re_escape(expected_msg)
+        expected_match = "^%s$" % (expected_re,)
 
-        with pytest.raises(AnsibleOptionsError, match=f"^{expected_re}$"):
+        with pytest.raises(AnsibleOptionsError, match=expected_match):
             hashi_vault_lookup_module.parse_kev_term(term, plugin_name='fake', first_unqualified=dup_key)
