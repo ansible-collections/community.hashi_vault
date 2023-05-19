@@ -1001,7 +1001,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <code class="docutils literal notranslate"><span class="pre">lookup('community.hashi_vault.vault_token_create',</span> <span class="pre">term1,</span> <span class="pre">term2,</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2)</span></code> and <code class="docutils literal notranslate"><span class="pre">query('community.hashi_vault.vault_token_create',</span> <span class="pre">term1,</span> <span class="pre">term2,</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2)</span></code></p></li>
 <li><p>Token creation is a write operation (creating a token persisted to storage), so this module always reports <code class="docutils literal notranslate"><span class="pre">changed=True</span></code>.</p></li>
 <li><p>For the purposes of Ansible playbooks however, it may be more useful to set <em>changed_when=false</em> if you are doing idempotency checks against the target system.</p></li>
-<li><p>In check mode, this module will not create a token, and will instead return a basic structure with an empty token. However, this may not be useful if the token is required for follow on tasks. It may be better to use this module with <em>check_mode=no</em> in order to have a valid token that can be used.</p></li>
+<li><p>In check mode, this module will not create a token, and will instead return a basic structure with an empty token. However, this may not be useful if the token is required for follow on tasks. It may be better to use this module with <em>check_mode=false</em> in order to have a valid token that can be used.</p></li>
 </ul>
 </div>
 </section>
