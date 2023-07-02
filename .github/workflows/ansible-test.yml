@@ -386,7 +386,7 @@ jobs:
           echo 'vault list cubbyhole \
           | tail -n +3 \
           | xargs -I{} -n 1 vault delete cubbyhole/{}' \
-          | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i vault sh
+          | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i hashicorp/vault sh
 
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
 
