@@ -17,14 +17,6 @@ __metaclass__ = type
 import os
 
 
-HAS_HVAC = False
-try:
-    import hvac
-    HAS_HVAC = True
-except ImportError:
-    HAS_HVAC = False
-
-
 def _stringify(input):
     '''
     This method is primarily used to Un-Unsafe values that come from Ansible.
@@ -50,6 +42,8 @@ def _stringify(input):
 class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
+class HashiVaultHVACError(ImportError):
+    '''Use in commoncode to signal HVAC is missing.'''
 
 class HashiVaultHelper():
 
@@ -63,8 +57,11 @@ class HashiVaultHelper():
     ])
 
     def __init__(self):
-        # TODO move hvac checking here?
-        pass
+        try:
+            import hvac
+        except ImportError:
+            from ansible.module_utils.basic import missing_required_lib
+            raise HashiVaultHVACError(missing_required_lib('hvac'))
 
     @staticmethod
     def _stringify(input):
