@@ -44,6 +44,11 @@ class HashiVaultValueError(ValueError):
 
 class HashiVaultHVACError(ImportError):
     '''Use in commoncode to signal HVAC is missing.'''
+    def __init__(self, error, msg):
+        super().__init__(error)
+        self.msg = msg
+        self.error = error
+
 
 class HashiVaultHelper():
 
@@ -59,9 +64,9 @@ class HashiVaultHelper():
     def __init__(self):
         try:
             import hvac
-        except ImportError:
+        except ImportError as e:
             from ansible.module_utils.basic import missing_required_lib
-            raise HashiVaultHVACError(missing_required_lib('hvac'))
+            raise HashiVaultHVACError(error=str(e), msg=missing_required_lib('hvac'))
 
     @staticmethod
     def _stringify(input):

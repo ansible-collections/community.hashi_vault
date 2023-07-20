@@ -35,10 +35,9 @@ class HashiVaultModule(AnsibleModule):
         try:
             self.helper = HashiVaultHelper()
         except HashiVaultHVACError as exc:
-            import traceback
             self.fail_json(
-                msg=str(exc),
-                exception=traceback.format_exc()
+                msg=exc.msg,
+                exception=exc.error
             )
 
         self.adapter = HashiVaultOptionAdapter.from_dict(self.params)

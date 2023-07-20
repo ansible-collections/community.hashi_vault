@@ -37,7 +37,7 @@ class HashiVaultPlugin(AnsiblePlugin):
             self.helper = HashiVaultHelper()
         except HashiVaultHVACError as exc:
             from ansible.errors import AnsibleError
-            raise AnsibleError(str(exc))
+            raise AnsibleError(exc.msg)
 
         self._options_adapter = HashiVaultOptionAdapter.from_ansible_plugin(self)
         self.connection_options = HashiVaultConnectionOptions(self._options_adapter, self._generate_retry_callback)
