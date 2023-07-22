@@ -157,10 +157,10 @@ class TestAuthAzure(object):
             credential.get_token.return_value.token = jwt
             auth_azure.validate()
 
-            assert mocked_credential_class.called_once_with(
+            mocked_credential_class.assert_called_once_with(
                 azure_tenant_id, azure_client_id, azure_client_secret
             )
-            assert credential.get_token.called_once_with(
+            credential.get_token.assert_called_once_with(
                 'https://management.azure.com//.default'
             )
 
@@ -194,8 +194,8 @@ class TestAuthAzure(object):
             credential.get_token.return_value.token = jwt
             auth_azure.validate()
 
-            assert mocked_credential_class.called_once_with(azure_client_id)
-            assert credential.get_token.called_once_with(
+            mocked_credential_class.assert_called_once_with(azure_client_id)
+            credential.get_token.assert_called_once_with(
                 'https://management.azure.com//.default'
             )
 
@@ -215,8 +215,8 @@ class TestAuthAzure(object):
             credential.get_token.return_value.token = jwt
             auth_azure.validate()
 
-            assert mocked_credential_class.called_once_with()
-            assert credential.get_token.called_once_with(
+            mocked_credential_class.assert_called_once_with()
+            credential.get_token.assert_called_once_with(
                 'https://management.azure.com//.default'
             )
 

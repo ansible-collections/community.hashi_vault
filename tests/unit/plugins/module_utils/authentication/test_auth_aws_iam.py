@@ -163,7 +163,7 @@ class TestAuthAwsIam(object):
 
         params = auth_aws_iam._auth_aws_iam_login_params
 
-        assert boto3.session.Session.called_once_with(profile_name=profile)
+        boto3.session.Session.assert_called_once_with(profile_name=profile)
 
         assert params['access_key'] == aws_access_key
         assert params['secret_key'] == aws_secret_key
