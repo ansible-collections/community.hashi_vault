@@ -64,6 +64,7 @@ class HashiVaultHelper():
     def __init__(self):
         try:
             import hvac
+            self.hvac = hvac
         except ImportError as e:
             from ansible.module_utils.basic import missing_required_lib
             raise HashiVaultHVACError(error=str(e), msg=missing_required_lib('hvac'))
@@ -96,7 +97,7 @@ class HashiVaultHelper():
                 if key in self.STRINGIFY_CANDIDATES:
                     kwargs[key] = self._stringify(kwargs[key])
 
-        client = hvac.Client(**kwargs)
+        client = self.hvac.Client(**kwargs)
 
         # logout to prevent accidental use of inferred tokens
         # https://github.com/ansible-collections/community.hashi_vault/issues/13
