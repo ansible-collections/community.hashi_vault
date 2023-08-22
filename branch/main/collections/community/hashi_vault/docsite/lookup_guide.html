@@ -14,11 +14,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=7f41d439"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="Contributor guide" href="contributor_guide.html" />
@@ -128,7 +128,7 @@
            <div itemprop="articleBody">
              
   <section id="lookup-guide">
-<span id="ansible-collections-community-hashi-vault-docsite-lookup-guide"></span><h1>Lookup guide<a class="headerlink" href="#lookup-guide" title="Permalink to this heading"></a></h1>
+<span id="ansible-collections-community-hashi-vault-docsite-lookup-guide"></span><h1>Lookup guide<a class="headerlink" href="#lookup-guide" title="Link to this heading"></a></h1>
 <p>This guide is not a comprehensive listing of included lookup plugins and how to use them, rather it is intended to explain the role of the lookup plugins in <code class="docutils literal notranslate"><span class="pre">community.hashi_vault</span></code> and how they are they used, especially when compared to modules of the same name.</p>
 <p>For information about the <code class="docutils literal notranslate"><span class="pre">hashi_vault</span></code> lookup specifically, see <a class="reference internal" href="about_hashi_vault_lookup.html#ansible-collections-community-hashi-vault-docsite-about-hashi-vault-lookup"><span class="std std-ref">this page that covers it in detail</span></a>.</p>
 <nav class="contents local" id="contents">
@@ -143,10 +143,10 @@
 </ul>
 </nav>
 <section id="lookups-and-writes">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Lookups and writes</a><a class="headerlink" href="#lookups-and-writes" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Lookups and writes</a><a class="headerlink" href="#lookups-and-writes" title="Link to this heading"></a></h2>
 <p>Most Ansible lookups perform read-only, non-destructive operations. They are run in templating, they generally <em>return</em>  values, and they <strong>do not run differently in check mode</strong> (that is they do the same thing they would in normal mode, even if that means changing something). However, some lookups do change state, sometimes by performing write operations. For example, the <code class="docutils literal notranslate"><span class="pre">password</span></code> <a class="reference external" href="https://docs.ansible.com/ansible/devel/collections/ansible/builtin/password_lookup.html#ansible-collections-ansible-builtin-password-lookup" title="(in Ansible vdevel)"><span class="xref std std-ref">lookup</span></a> writes a generated password to a file, to act as a sort of cache, and the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> <a class="reference external" href="https://docs.ansible.com/ansible/devel/collections/ansible/builtin/pipe_lookup.html#ansible-collections-ansible-builtin-pipe-lookup" title="(in Ansible vdevel)"><span class="xref std std-ref">lookup</span></a> runs an arbitrary shell command so it could easily write or change state.</p>
 <section id="writes-in-vault">
-<h3><a class="toc-backref" href="#id2" role="doc-backlink">Writes in Vault</a><a class="headerlink" href="#writes-in-vault" title="Permalink to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Writes in Vault</a><a class="headerlink" href="#writes-in-vault" title="Link to this heading"></a></h3>
 <p>Operations that perform writes in Vault are not limited to the obvious ones such as writing a secret value, creating a policy, or enabling a new auth method.</p>
 <p>Any operation that creates a token for example, such as any login operation, is also a write; tokens use storage in Vault and having too many active tokens is a common cause of performance problems.</p>
 <p>Additionally, some values in Vault can only be “read” at the moment of their creation, and so the only way to retrieve such a value, is to get it as a response from the “write” that created it. A common example is AppRole secret IDs.</p>
@@ -156,12 +156,12 @@
 <p>When considering built-in support for auth methods, any auth method other than <code class="docutils literal notranslate"><span class="pre">token</span></code> or <code class="docutils literal notranslate"><span class="pre">none</span></code> makes every lookup, even <code class="docutils literal notranslate"><span class="pre">vault_read</span></code>, into something that’s changing state and performing a write within Vault. This actually applies to many modules too, even when using check mode.</p>
 </section>
 <section id="how-to-reason-about-when-to-use-lookups">
-<h3><a class="toc-backref" href="#id3" role="doc-backlink">How to reason about when to use lookups</a><a class="headerlink" href="#how-to-reason-about-when-to-use-lookups" title="Permalink to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">How to reason about when to use lookups</a><a class="headerlink" href="#how-to-reason-about-when-to-use-lookups" title="Link to this heading"></a></h3>
 <p>Because there is potential for writes in any lookup, it is very important to carefully consider when you are using a lookup vs. a module/other plugin. Check mode has no effect on lookups, so there is potential to perform many writes within your check mode run, but maybe sometimes you want that, for example if you’re performing a <code class="docutils literal notranslate"><span class="pre">vault_login</span></code> via lookup to retrieve a token to use in your module calls, you may want that to still happen in check mode so that your module calls can properly check the things they need to.</p>
 <p>Some modules that are read focused, like the <code class="docutils literal notranslate"><span class="pre">vault_read</span></code> module, when used with auth other than <code class="docutils literal notranslate"><span class="pre">token</span></code> or <code class="docutils literal notranslate"><span class="pre">none</span></code>, will still perform an internal login even in check mode, so this is still another consideration.</p>
 </section>
 <section id="lookups-and-lazy-templating">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">Lookups and lazy templating</a><a class="headerlink" href="#lookups-and-lazy-templating" title="Permalink to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Lookups and lazy templating</a><a class="headerlink" href="#lookups-and-lazy-templating" title="Link to this heading"></a></h3>
 <p>The capacity for lookups to perform writes or change state is exacerbated by Ansible’s “lazy” templating, if not used carefully.</p>
 <p>Consider the following example:</p>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">vars</span><span class="p">:</span>

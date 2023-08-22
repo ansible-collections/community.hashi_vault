@@ -14,11 +14,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=7f41d439"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="community.hashi_vault.vault_kv1_get module – Get a secret from HashiCorp Vault’s KV version 1 secret store" href="../vault_kv1_get_module.html" />
@@ -128,7 +128,7 @@
            <div itemprop="articleBody">
              
   <section id="localenv-developer-guide">
-<span id="ansible-collections-community-hashi-vault-docsite-localenv-developer-guide"></span><h1>localenv developer guide<a class="headerlink" href="#localenv-developer-guide" title="Permalink to this heading"></a></h1>
+<span id="ansible-collections-community-hashi-vault-docsite-localenv-developer-guide"></span><h1>localenv developer guide<a class="headerlink" href="#localenv-developer-guide" title="Link to this heading"></a></h1>
 <p>A “localenv” role in this collection sets up the external dependencies required to run the integration tests. The idea is to provide a pre-packaged way for a contributor to set up their local environment in a consistent, repeatable way.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -147,15 +147,15 @@
 </ul>
 </nav>
 <section id="required-external-dependencies">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Required external dependencies</a><a class="headerlink" href="#required-external-dependencies" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Required external dependencies</a><a class="headerlink" href="#required-external-dependencies" title="Link to this heading"></a></h2>
 <section id="hashicorp-vault">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">HashiCorp Vault</a><a class="headerlink" href="#hashicorp-vault" title="Permalink to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">HashiCorp Vault</a><a class="headerlink" href="#hashicorp-vault" title="Link to this heading"></a></h3>
 <p>A Vault server is required for the integration tests. Using <a class="reference external" href="https://www.vaultproject.io/docs/concepts/dev-server">Vault Dev Server Mode</a> is recommended as it’s the easiest and fastest way to get a server started.</p>
 <p>A unencrypted (plain HTTP) listener is <em>required</em> for our purposes as most of the tests will expect to connect that way.</p>
 <p>To run the tests that deal specifically with TLS/HTTPS access, you must start the Vault server with a TLS enabled listener. The TLS address:port, and the CA cert (or the cert itself if self-signed) must be supplied.</p>
 <p>The <strong>root token</strong> of the Vault server is needed, as the integration tests make changes to Vault’s configuration, and expect to have that token available to do so. It’s possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the <code class="docutils literal notranslate"><span class="pre">-dev-root-token-id</span></code> option or <code class="docutils literal notranslate"><span class="pre">VAULT_DEV_ROOT_TOKEN_ID</span></code> environment variable (see <a class="reference external" href="https://www.vaultproject.io/docs/commands/server#dev-options">Dev Options</a>).</p>
 <section id="relevant-integration-config-yml-variables">
-<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#relevant-integration-config-yml-variables" title="Permalink to this heading"></a></h4>
+<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#relevant-integration-config-yml-variables" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15%" />
@@ -194,11 +194,11 @@
 </section>
 </section>
 <section id="proxy-server">
-<h3><a class="toc-backref" href="#id5" role="doc-backlink">Proxy server</a><a class="headerlink" href="#proxy-server" title="Permalink to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Proxy server</a><a class="headerlink" href="#proxy-server" title="Link to this heading"></a></h3>
 <p>A proxy server is used to test the proxy connectivity options.</p>
 <p>In theory any proxy supporting http/s targets could be used for this purpose, but <a class="reference external" href="https://github.com/tinyproxy/tinyproxy">tinyproxy</a> is recommended for being, well.. tiny, as well as easy to configure and run, and available in package managers and containers.</p>
 <section id="id1">
-<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
+<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15%" />
@@ -221,13 +221,13 @@
 </section>
 </section>
 <section id="mmock-server">
-<h3><a class="toc-backref" href="#id6" role="doc-backlink">MMock server</a><a class="headerlink" href="#mmock-server" title="Permalink to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">MMock server</a><a class="headerlink" href="#mmock-server" title="Link to this heading"></a></h3>
 <p><a class="reference external" href="https://github.com/jmartin82/mmock">MMock (short for Monster Mock)</a> is an HTTP server designed for mocking HTTP responses. It can also transparently proxy through to a real server. We use it to proxy our test Vault server while intercepting certain API calls to Vault and returning mocked responses.</p>
 <p>This is useful for Vault integrations that are more difficult to set up in our CI environment.</p>
 <p>For example, we use this for testing the <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> auth method, since we don’t have an AWS account we can use and configure and connect to from our GitHub CI.</p>
 <p>For these integration tests, all Vault interactions are directed to MMock rather than directly to Vault, and we pre-configure MMock to respond to the relevant calls in a way that models a real Vault server’s success and failure responses.</p>
 <section id="id2">
-<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h4>
+<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15%" />
@@ -251,7 +251,7 @@
 </section>
 </section>
 <section id="localenv-role-conventions">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">localenv role conventions</a><a class="headerlink" href="#localenv-role-conventions" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">localenv role conventions</a><a class="headerlink" href="#localenv-role-conventions" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">files/.output</span></code> to hold generated artifacts.</p></li>
 <li><p>Anything generated should be in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>; conversely anything not in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> should not be overwritten or modified by this process. That is, there should be no changes to git status that arise from this.</p></li>
