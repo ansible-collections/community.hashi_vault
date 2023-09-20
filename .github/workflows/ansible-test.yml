@@ -40,6 +40,7 @@ jobs:
           - stable-2.13
           - stable-2.14
           - stable-2.15
+          - stable-2.16
           - devel
     steps:
 
@@ -116,6 +117,7 @@ jobs:
           - stable-2.13
           - stable-2.14
           - stable-2.15
+          - stable-2.16
           - devel
 
     steps:
@@ -190,6 +192,7 @@ jobs:
           - stable-2.13
           - stable-2.14
           - stable-2.15
+          - stable-2.16
           - devel
         python:
           - '3.6'
@@ -203,6 +206,14 @@ jobs:
           # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
           - ansible: 'stable-2.13'
             python: '3.11'
+          - ansible: 'stable-2.16'
+            python: '3.6'
+          - ansible: 'stable-2.16'
+            python: '3.7'
+          - ansible: 'stable-2.16'
+            python: '3.8'
+          - ansible: 'stable-2.16'
+            python: '3.9'
           - ansible: 'stable-2.15'
             python: '3.6'
           - ansible: 'stable-2.15'
@@ -215,6 +226,8 @@ jobs:
             python: '3.7'
           - ansible: 'devel'
             python: '3.8'
+          - ansible: 'devel'
+            python: '3.9'
 
     steps:
       - name: Initialize env vars
@@ -306,10 +319,10 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.15
+          - stable-2.16
           - devel
         python:
-          - '3.10'
+          - '3.11'
         runner:
           - ubuntu-latest
         test_container:
