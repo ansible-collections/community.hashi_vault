@@ -180,7 +180,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}+V[-${{ matrix.vault_minus }}])
     strategy:
       fail-fast: false
       matrix:
@@ -188,6 +188,9 @@ jobs:
           - ubuntu-latest
         test_container:
           - default
+        vault_minus:
+          - 0
+          - 1
         ansible:
           - stable-2.13
           - stable-2.14
@@ -256,6 +259,7 @@ jobs:
         id: vault_versions
         uses: ./.github/actions/docker-image-versions
         with:
+          image: hashicorp/vault
           num_major_versions: 1
           num_minor_versions: 2
           num_micro_versions: 1
@@ -271,23 +275,10 @@ jobs:
           working-directory: ${{ env.COLLECTION_PATH }}
           ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
-      - name: Set Vault Version (older)
+      - name: Set Vault Version
         uses: briantist/ezenv@v1
         with:
           env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
-
-      - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
-        run: ./setup.sh -e vault_version=${VAULT_VERSION}
-        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
-
-      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test ${{ env.TEST_INVOCATION }}
-        working-directory: ${{ env.COLLECTION_PATH }}
-
-      - name: Set Vault Version (newer)
-        uses: briantist/ezenv@v1
-        with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[0] }}
 
       - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
