@@ -108,8 +108,8 @@ import traceback
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import missing_required_lib
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from ..module_utils._hashi_vault_module import HashiVaultModule
+from ..module_utils._hashi_vault_common import HashiVaultValueError
 
 try:
     import hvac
