@@ -157,7 +157,16 @@ def run_module():
         if module.check_mode:
             response = {}
         else:
-            response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
+            try:
+                # TODO: write_data will eventually turn back into write
+                # see: https://github.com/hvac/hvac/issues/1034
+                response = client.write_data(path=path, wrap_ttl=wrap_ttl, data=data)
+            except AttributeError:
+                # https://github.com/ansible-collections/community.hashi_vault/issues/389
+                if "path" in data or "wrap_ttl" in data:
+                    module.fail_json("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2")
+                else:
+                    response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
     except hvac.exceptions.Forbidden:
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath:
