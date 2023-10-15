@@ -278,7 +278,7 @@ jobs:
       - name: Set Vault Version
         uses: briantist/ezenv@v1
         with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
+          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[matrix.vault_minus] }}
 
       - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
