@@ -307,8 +307,7 @@ jobs:
           retention-days: 1
 
   local_test_invocation:
-    # runs-on: ${{ matrix.runner }}
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ${{ matrix.runner }}
     name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
       fail-fast: false
