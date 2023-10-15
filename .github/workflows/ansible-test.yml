@@ -68,7 +68,7 @@ jobs:
           python-version: '3.11'
 
       # Install the head of the given branch (devel, stable-2.14)
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
@@ -141,7 +141,7 @@ jobs:
           # will run on all python versions it supports.
           python-version: '3.11'
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
@@ -264,7 +264,7 @@ jobs:
           num_minor_versions: 2
           num_micro_versions: 1
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
@@ -342,7 +342,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Install community.crypto
