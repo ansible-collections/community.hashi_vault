@@ -1,0 +1,6 @@
+---
+removed_features:
+  - The minimum supported version of ``ansible-core`` is now ``2.14``, support for ``2.13`` has been dropped (https://github.com/ansible-collections/community.hashi_vault/pull/403).
+
+trivial:
+  - The ``docker-image-versions`` action in the collection has been updated to support dockerhub images that are not in the default namespace. The ``image`` input is now required and no longer defaults to ``vault`` which is no longer the current location of Vault images (https://github.com/ansible-collections/community.hashi_vault/pull/403).
