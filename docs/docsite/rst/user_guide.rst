@@ -33,7 +33,7 @@ In general, we recommend using the latest version of ``hvac`` that is supported 
 
 As of ``community.hashi_vault`` version ``5.0.0`` we are setting a minimum supported version of ``hvac``.
 
-**The current required minimum ``hvac`` version is ``1.1.0``.**
+**The current required minimum** ``hvac`` **version is** ``1.2.1``.
 
 Other requirements
 ------------------
