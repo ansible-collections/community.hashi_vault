@@ -21,7 +21,7 @@ from warnings import warn
 from packaging import version
 
 
-TAG_URI = 'https://registry.hub.docker.com/v2/repositories/library/%s/tags?page_size=1024'
+TAG_URI = 'https://registry.hub.docker.com/v2/repositories/%s/%s/tags?page_size=1024'
 
 
 class WarningRetry(Retry):
@@ -49,7 +49,7 @@ def main(argv):
 
     for opt, arg in opts:
         if opt == '--image':
-            image = arg
+            image = image_name = arg
         elif opt == '--num_major_versions':
             num_major_versions = int(arg)
         elif opt == '--num_minor_versions':
@@ -64,7 +64,12 @@ def main(argv):
     if image is None:
         raise ValueError('image must be supplied.')
 
-    tag_url = TAG_URI % image
+    if '/' in image:
+        org, image_name = image.split('/')
+    else:
+        org = 'library'
+
+    tag_url = TAG_URI % (org, image_name)
 
     sess = requests.Session()
     retry = WarningRetry(total=5, backoff_factor=0.2, respect_retry_after_header=False)
@@ -112,7 +117,7 @@ def main(argv):
 
         keep.append(str(ver))
 
-    with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+    with open(os.environ.get('GITHUB_OUTPUT', '/dev/stdout'), 'a') as f:
         f.write('versions=')
         json.dump(keep, f)
 
