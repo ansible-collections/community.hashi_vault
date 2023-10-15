@@ -226,6 +226,8 @@ jobs:
           - ansible: 'stable-2.15'
             python: '3.7'
           - ansible: 'stable-2.15'
+            python: '3.12'
+          - ansible: 'stable-2.15'
             python: '3.8'
           - ansible: 'stable-2.14'
             python: '3.12'
