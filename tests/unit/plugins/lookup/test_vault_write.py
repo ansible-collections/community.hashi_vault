@@ -68,18 +68,18 @@ class TestVaultWriteLookup(object):
     def test_vault_write_return_data(self, vault_write_lookup, minimal_vars, approle_secret_id_write_response, vault_client, paths, data, wrap_ttl):
         client = vault_client
 
-        expected_calls = [mock.call(path=p, wrap_ttl=wrap_ttl, **data) for p in paths]
+        expected_calls = [mock.call(path=p, wrap_ttl=wrap_ttl, data=data) for p in paths]
 
-        def _fake_write(path, wrap_ttl, **data):
+        def _fake_write(path, wrap_ttl, data={}):
             r = approle_secret_id_write_response.copy()
             r.update({'path': path})
             return r
 
-        client.write = mock.Mock(wraps=_fake_write)
+        client.write_data = mock.Mock(wraps=_fake_write)
 
         response = vault_write_lookup.run(terms=paths, variables=minimal_vars, wrap_ttl=wrap_ttl, data=data)
 
-        client.write.assert_has_calls(expected_calls)
+        client.write_data.assert_has_calls(expected_calls)
 
         assert len(response) == len(paths), "%i paths processed but got %i responses" % (len(paths), len(response))
 
@@ -96,7 +96,7 @@ class TestVaultWriteLookup(object):
 
         requests_unparseable_response.status_code = 204
 
-        client.write.return_value = requests_unparseable_response
+        client.write_data.return_value = requests_unparseable_response
 
         response = vault_write_lookup.run(terms=['fake'], variables=minimal_vars)
 
@@ -108,7 +108,7 @@ class TestVaultWriteLookup(object):
         requests_unparseable_response.status_code = 200
         requests_unparseable_response.content = '﷽'
 
-        client.write.return_value = requests_unparseable_response
+        client.write_data.return_value = requests_unparseable_response
 
         with mock.patch('ansible_collections.community.hashi_vault.plugins.lookup.vault_write.display.warning') as warning:
             response = vault_write_lookup.run(terms=['fake'], variables=minimal_vars)
@@ -127,7 +127,7 @@ class TestVaultWriteLookup(object):
     def test_vault_write_exceptions(self, vault_write_lookup, minimal_vars, vault_client, exc):
         client = vault_client
 
-        client.write.side_effect = exc[0]
+        client.write_data.side_effect = exc[0]
 
         with pytest.raises(AnsibleError, match=exc[1]):
             vault_write_lookup.run(terms=['fake'], variables=minimal_vars)

@@ -88,7 +88,7 @@ class TestModuleVaultWrite():
     @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data', 'wrap_ttl']], indirect=True)
     def test_vault_write_return_data(self, patch_ansible_module, approle_secret_id_write_response, vault_client, opt_wrap_ttl, opt_data, capfd):
         client = vault_client
-        client.write.return_value = approle_secret_id_write_response
+        client.write_data.return_value = approle_secret_id_write_response
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -98,7 +98,7 @@ class TestModuleVaultWrite():
 
         assert e.value.code == 0, "result: %r" % (result,)
 
-        client.write.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=opt_wrap_ttl, **opt_data)
+        client.write_data.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=opt_wrap_ttl, data=opt_data)
 
         assert result['data'] == approle_secret_id_write_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['data'], approle_secret_id_write_response)
@@ -110,7 +110,7 @@ class TestModuleVaultWrite():
 
         requests_unparseable_response.status_code = 204
 
-        client.write.return_value = requests_unparseable_response
+        client.write_data.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -129,7 +129,7 @@ class TestModuleVaultWrite():
         requests_unparseable_response.status_code = 200
         requests_unparseable_response.content = '﷽'
 
-        client.write.return_value = requests_unparseable_response
+        client.write_data.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -166,7 +166,7 @@ class TestModuleVaultWrite():
     def test_vault_write_vault_exception(self, vault_client, exc, capfd):
 
         client = vault_client
-        client.write.side_effect = exc[0]
+        client.write_data.side_effect = exc[0]
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
