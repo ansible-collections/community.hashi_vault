@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This release fixes a bug in ``vault_write`` ahead of the collection's next major release.
