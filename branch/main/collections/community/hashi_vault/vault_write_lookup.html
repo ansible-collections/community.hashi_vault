@@ -452,6 +452,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <a class="ansibleOptionLink" href="#parameter-data" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>A dictionary to be serialized to JSON and then sent as the request body.</p>
+<p>If the dictionary contains keys named <code class="docutils literal notranslate"><span class="pre">path</span></code> or <code class="docutils literal notranslate"><span class="pre">wrap_ttl</span></code>, the call will fail with <code class="docutils literal notranslate"><span class="pre">hvac&lt;1.2</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
