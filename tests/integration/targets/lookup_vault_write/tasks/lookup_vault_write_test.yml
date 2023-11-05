@@ -11,6 +11,9 @@
     test_data:
       a: 1
       b: two
+      # https://github.com/ansible-collections/community.hashi_vault/issues/389
+      path: path_value
+      wrap_ttl: wrap_ttl_value
   block:
     - name: Write data to the cubbyhole
       vars:

@@ -43,7 +43,9 @@ DOCUMENTATION = """
       type: str
       required: true
     data:
-      description: A dictionary to be serialized to JSON and then sent as the request body.
+      description:
+        - A dictionary to be serialized to JSON and then sent as the request body.
+        - If the dictionary contains keys named C(path) or C(wrap_ttl), the call will fail with C(hvac<1.2).
       type: dict
       required: false
       default: {}
@@ -122,8 +124,8 @@ from ansible.utils.display import Display
 
 from ansible.module_utils.six import raise_from
 
-from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from ..plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from ..module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
@@ -164,7 +166,16 @@ class LookupModule(HashiVaultLookupBase):
 
         for term in terms:
             try:
-                response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
+                try:
+                    # TODO: write_data will eventually turn back into write
+                    # see: https://github.com/hvac/hvac/issues/1034
+                    response = client.write_data(path=term, wrap_ttl=wrap_ttl, data=data)
+                except AttributeError as e:
+                    # https://github.com/ansible-collections/community.hashi_vault/issues/389
+                    if "path" in data or "wrap_ttl" in data:
+                        raise_from(AnsibleError("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2"), e)
+                    else:
+                        response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
             except hvac.exceptions.Forbidden as e:
                 raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
             except hvac.exceptions.InvalidPath as e:
