@@ -70,7 +70,7 @@ class TestVaultWriteLookup(object):
 
         expected_calls = [mock.call(path=p, wrap_ttl=wrap_ttl, data=data) for p in paths]
 
-        def _fake_write(path, wrap_ttl, data={}):
+        def _fake_write(path, wrap_ttl, data=None):
             r = approle_secret_id_write_response.copy()
             r.update({'path': path})
             return r
