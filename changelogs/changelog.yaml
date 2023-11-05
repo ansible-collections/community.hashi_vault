@@ -663,3 +663,17 @@ releases:
     - 356-duplicate-term-options.yml
     - 5.0.0.yml
     release_date: '2023-05-11'
+  5.0.1:
+    changes:
+      bugfixes:
+      - vault_write - the ``vault_write`` lookup and module were not able to write
+        data containing keys named ``path`` or ``wrap_ttl`` due to a bug in the ``hvac``
+        library. These plugins have now been updated to take advantage of fixes in
+        ``hvac>=1.2`` to address this (https://github.com/ansible-collections/community.hashi_vault/issues/389).
+      release_summary: This release fixes a bug in ``vault_write`` ahead of the collection's
+        next major release.
+    fragments:
+    - 381-localenv_docker.yml
+    - 404-vault_write-spicy-keys.yml
+    - 5.0.1.yml
+    release_date: '2023-11-05'

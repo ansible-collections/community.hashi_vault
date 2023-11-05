@@ -5,6 +5,19 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v5.0.1
+======
+
+Release Summary
+---------------
+
+This release fixes a bug in ``vault_write`` ahead of the collection's next major release.
+
+Bugfixes
+--------
+
+- vault_write - the ``vault_write`` lookup and module were not able to write data containing keys named ``path`` or ``wrap_ttl`` due to a bug in the ``hvac`` library. These plugins have now been updated to take advantage of fixes in ``hvac>=1.2`` to address this (https://github.com/ansible-collections/community.hashi_vault/issues/389).
+
 v5.0.0
 ======
 
