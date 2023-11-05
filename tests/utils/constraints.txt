@@ -52,7 +52,7 @@ typed-ast == 1.4.0  # 1.4.0 is required to compile on Python 3.8
 wrapt == 1.11.1
 
 # hvac
-hvac >= 1.1.0 ; python_version >= '3.6'
+hvac >= 1.2.1 ; python_version >= '3.6'
 
 # urllib3
 # these should be satisfied naturally by the requests versions required by hvac anyway
