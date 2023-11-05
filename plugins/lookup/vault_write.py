@@ -43,7 +43,9 @@ DOCUMENTATION = """
       type: str
       required: true
     data:
-      description: A dictionary to be serialized to JSON and then sent as the request body.
+      description:
+        - A dictionary to be serialized to JSON and then sent as the request body.
+        - If the dictionary contains keys named C(path) or C(wrap_ttl), the call will fail with C(hvac<1.2).
       type: dict
       required: false
       default: {}
