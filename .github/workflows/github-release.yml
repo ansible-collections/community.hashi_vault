@@ -28,7 +28,7 @@ jobs:
         run: pip install pyyaml ansible-core
 
       - name: Validate version is published to Galaxy
-        run: ansible-galaxy collection download -vvv -p /tmp 'community.hashi_vault:==${{ github.event.inputs.version }}''
+        run: ansible-galaxy collection download -vvv -p /tmp 'community.hashi_vault:==${{ github.event.inputs.version }}'
 
       - name: Build release description
         shell: python
