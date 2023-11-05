@@ -2,7 +2,7 @@
 
 namespace: community
 name: hashi_vault
-version: 6.0.0
+version: 6.1.0-devel
 readme: README.md
 authors:
   - Julie Davila (@juliedavila) <julie(at)davila.io>
