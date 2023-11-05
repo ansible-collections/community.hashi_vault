@@ -1,0 +1,3 @@
+---
+release_summary: |-
+  This major version of the collection has no functional changes from the previous version, however the minimum versions of ``hvac`` and ``ansible-core`` have been raised. While the collection may still work with those earlier versions, future changes will not test against them.
