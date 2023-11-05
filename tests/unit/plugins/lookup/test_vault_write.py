@@ -131,3 +131,36 @@ class TestVaultWriteLookup(object):
 
         with pytest.raises(AnsibleError, match=exc[1]):
             vault_write_lookup.run(terms=['fake'], variables=minimal_vars)
+
+    @pytest.mark.parametrize(
+        'data',
+        [
+            {"path": mock.sentinel.path_value},
+            {"wrap_ttl": mock.sentinel.wrap_ttl_value},
+            {"path": mock.sentinel.data_value, "wrap_ttl": mock.sentinel.write_ttl_value},
+        ],
+    )
+    def test_vault_write_data_fallback_bad_params(self, vault_write_lookup, minimal_vars, vault_client, data):
+        client = vault_client
+        client.mock_add_spec(['write'])
+
+        with pytest.raises(AnsibleError, match=r"To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1\.2"):
+            vault_write_lookup.run(terms=['fake'], variables=minimal_vars, data=data)
+
+        client.write.assert_not_called()
+
+    @pytest.mark.parametrize(
+        'data',
+        [
+            {"item1": mock.sentinel.item1_value},
+            {"item2": mock.sentinel.item2_value},
+            {"item1": mock.sentinel.item1_value, "item2": mock.sentinel.item2_value},
+        ],
+    )
+    def test_vault_write_data_fallback_write(self, vault_write_lookup, minimal_vars, vault_client, data):
+        client = vault_client
+        client.mock_add_spec(['write'])
+
+        vault_write_lookup.run(terms=['fake'], variables=minimal_vars, data=data)
+
+        client.write.assert_called_once_with(path='fake', wrap_ttl=None, **data)

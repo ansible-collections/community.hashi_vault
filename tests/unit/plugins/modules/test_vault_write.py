@@ -176,3 +176,51 @@ class TestModuleVaultWrite():
 
         assert e.value.code != 0, "result: %r" % (result,)
         assert re.search(exc[1], result['msg']) is not None
+
+    @pytest.mark.parametrize(
+        'opt_data',
+        [
+            {"path": 'path_value'},
+            {"wrap_ttl": 'wrap_ttl_value'},
+            {"path": 'data_value', "wrap_ttl": 'write_ttl_value'},
+        ],
+    )
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data']], indirect=True)
+    def test_vault_write_data_fallback_bad_params(self, vault_client, opt_data, capfd):
+        client = vault_client
+        client.mock_add_spec(['write'])
+
+        with pytest.raises(SystemExit) as e:
+            vault_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert re.search(r"To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1\.2", result['msg']) is not None
+
+        client.write.assert_not_called()
+
+    @pytest.mark.parametrize(
+        'opt_data',
+        [
+            {"item1": 'item1_value'},
+            {"item2": 'item2_value'},
+            {"item1": 'item1_value', "item2": 'item2_value'},
+        ],
+    )
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data']], indirect=True)
+    def test_vault_write_data_fallback_write(self, vault_client, opt_data, patch_ansible_module, approle_secret_id_write_response, capfd):
+        client = vault_client
+        client.mock_add_spec(['write'])
+        client.write.return_value = approle_secret_id_write_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code == 0, "result: %r" % (result,)
+
+        client.write.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=None, **opt_data)
