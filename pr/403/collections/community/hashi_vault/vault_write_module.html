@@ -133,7 +133,7 @@
 <h1>community.hashi_vault.vault_write module – Perform a write operation against HashiCorp Vault<a class="headerlink" href="#community-hashi-vault-vault-write-module-perform-a-write-operation-against-hashicorp-vault" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 5.1.0-devel).</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 5.0.1).</p>
 <p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">community.hashi_vault</span></code>.
 You need further requirements to be able to use this module,
 see <a class="reference internal" href="#ansible-collections-community-hashi-vault-vault-write-module-requirements"><span class="std std-ref">Requirements</span></a> for details.</p>
@@ -307,6 +307,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <a class="ansibleOptionLink" href="#parameter-data" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>A dictionary to be serialized to JSON and then sent as the request body.</p>
+<p>If the dictionary contains keys named <code class="docutils literal notranslate"><span class="pre">path</span></code> or <code class="docutils literal notranslate"><span class="pre">wrap_ttl</span></code>, the call will fail with <code class="docutils literal notranslate"><span class="pre">hvac&lt;1.2</span></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
