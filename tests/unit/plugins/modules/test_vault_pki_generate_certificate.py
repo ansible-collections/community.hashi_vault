@@ -71,7 +71,7 @@ def translated_options(sample_options):
         if k in toplevel:
             opt[toplevel[k]] = v
         else:
-            if type(v) is list:
+            if isinstance(v, list):
                 val = ','.join(v)
             else:
                 val = v
