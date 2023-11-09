@@ -46,4 +46,4 @@
         fail_msg: "An invalid secret ID somehow did not cause a failure."
         that:
           - (response.inner is failed) == use_secret_id
-          - not use_secret_id or response.msg is search('invalid secret id')
+          - not use_secret_id or response.msg is search('(?i)invalid (?:role or )?secret id')
