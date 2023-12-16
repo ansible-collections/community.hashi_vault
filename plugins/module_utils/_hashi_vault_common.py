@@ -24,6 +24,15 @@ try:
 except ImportError:
     HAS_HVAC = False
 
+try:
+    from ansible.utils.unsafe_proxy import AnsibleUnsafe, AnsibleUnsafeBytes
+except ImportError:
+    class AnsibleUnsafe:
+        pass
+
+    class AnsibleUnsafeBytes(bytes, AnsibleUnsafe):
+        pass
+
 
 def _stringify(input):
     '''
@@ -32,6 +41,22 @@ def _stringify(input):
     by the values.
     '''
 
+    if not isinstance(input, AnsibleUnsafe):
+        return input
+
+    if hasattr(input, "_strip_unsafe"):
+        if isinstance(input, AnsibleUnsafeBytes):
+            return input._strip_unsafe()
+            raise
+            return input.__bytes__()
+        else:
+            return input._strip_unsafe()
+    # except AttributeError:
+    #     raise
+    #     # This version of Ansible doesn't contain the method.
+    #     # Use the old way.
+    #     pass
+
     # Since this is a module_util, and will be used by both plugins and modules,
     # we cannot import the AnsibleUnsafe* types, because they are controller-only.
     # However, they subclass the native types, so we can check for that.
@@ -39,7 +64,7 @@ def _stringify(input):
     # bytes is the only consistent type to check against in both py2 and py3
     if isinstance(input, bytes):
         # seems redundant, but this will give us a regular bytes object even
-        # when the input is AnsibleUnsafeBytes
+        # when the input is AnsibleUnsafeBytes (in older Ansible versions)
         return bytes(input)
     else:
         # instead of checking for py2 vs. py3 to cast to str or unicode,
