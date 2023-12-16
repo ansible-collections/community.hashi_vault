@@ -41,8 +41,8 @@ def _stringify(input):
     by the values.
     '''
 
-    if not isinstance(input, AnsibleUnsafe):
-        return input
+    # if not isinstance(input, AnsibleUnsafe):
+    #     return input
 
     if hasattr(input, "_strip_unsafe"):
         if isinstance(input, AnsibleUnsafeBytes):
