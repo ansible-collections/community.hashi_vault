@@ -46,8 +46,8 @@ def _stringify(input):
 
     if hasattr(input, "_strip_unsafe"):
         if isinstance(input, AnsibleUnsafeBytes):
-            return input._strip_unsafe()
-            raise
+            # return input._strip_unsafe()
+            # raise
             return input.__bytes__()
         else:
             return input._strip_unsafe()
