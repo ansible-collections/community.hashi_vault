@@ -24,14 +24,14 @@ try:
 except ImportError:
     HAS_HVAC = False
 
-try:
-    from ansible.utils.unsafe_proxy import AnsibleUnsafe, AnsibleUnsafeBytes
-except ImportError:
-    class AnsibleUnsafe:
-        pass
+# try:
+#     from ansible.utils.unsafe_proxy import AnsibleUnsafe, AnsibleUnsafeBytes
+# except ImportError:
+#     class AnsibleUnsafe:
+#         pass
 
-    class AnsibleUnsafeBytes(bytes, AnsibleUnsafe):
-        pass
+#     class AnsibleUnsafeBytes(bytes, AnsibleUnsafe):
+#         pass
 
 
 def _stringify(input):
@@ -45,12 +45,15 @@ def _stringify(input):
     #     return input
 
     if hasattr(input, "_strip_unsafe"):
-        if isinstance(input, AnsibleUnsafeBytes):
-            # return input._strip_unsafe()
-            # raise
-            return input.__bytes__()
-        else:
+        # if isinstance(input, AnsibleUnsafeBytes):
+        #     # return input._strip_unsafe()
+        #     # raise
+        #     return input.__bytes__()
+        # else:
+        try:
             return input._strip_unsafe()
+        except AttributeError:
+            return input.__bytes__()
     # except AttributeError:
     #     raise
     #     # This version of Ansible doesn't contain the method.
