@@ -126,7 +126,6 @@ class TestHashiVaultOptionAdapter(object):
             assert sample_dict[option] == value
             assert adapter.get_option(option) == value
 
-
     @pytest.mark.parametrize('default', [MARKER])
     @pytest.mark.parametrize('option,expected', [(o, SAMPLE_DICT[o]) for o in SAMPLE_KEYS])
     def test_set_option_default_existing(self, adapter, option, default, expected, sample_dict):
@@ -160,7 +159,7 @@ class TestHashiVaultOptionAdapter(object):
         for mark in request.node.own_markers:
             if mark.name == 'option_adapter_raise_on_missing':
                 from ansible.errors import AnsibleError
-                with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting:.*?was not defined in configuration"):
+                with pytest.raises(AnsibleError, match=r"^Requested entry.*?setting:.*?was not defined in configuration"):
                     adapter.set_options(**update)
                 break
         else:
