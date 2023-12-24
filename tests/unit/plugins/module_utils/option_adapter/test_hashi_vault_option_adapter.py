@@ -8,7 +8,7 @@ __metaclass__ = type
 
 import pytest
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
+from ......plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
 
 
 SAMPLE_DICT = {

@@ -15,9 +15,17 @@ __metaclass__ = type
 
 import pytest
 
+from packaging import version
+from ansible.release import __version__ as ansible_version
 from ansible.plugins import AnsiblePlugin
 
 from ......plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
+
+
+ver = version.parse(ansible_version)
+cutoff = version.parse('2.17')
+option_adapter_from_plugin_marks = pytest.mark.option_adapter_raise_on_missing if ver.release >= cutoff.release else []
+# https://github.com/ansible-collections/community.hashi_vault/issues/417
 
 
 def _generate_options(opts: dict) -> dict:
@@ -49,7 +57,7 @@ def adapter_from_ansible_plugin(ansible_plugin):
 @pytest.fixture(params=[
     'dict',
     'dict_defaults',
-    pytest.param('ansible_plugin', marks=pytest.mark.option_adapter_raise_on_missing),
+    pytest.param('ansible_plugin', marks=option_adapter_from_plugin_marks),
 ])
 def adapter(request, adapter_from_dict, adapter_from_dict_defaults, adapter_from_ansible_plugin):
     return {
