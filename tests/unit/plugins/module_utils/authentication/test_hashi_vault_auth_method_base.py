@@ -8,8 +8,6 @@ __metaclass__ = type
 
 import pytest
 
-from ....compat import mock
-
 from ......plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultOptionGroupBase,
