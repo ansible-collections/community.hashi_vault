@@ -65,7 +65,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
@@ -139,7 +139,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
@@ -256,7 +256,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -344,7 +344,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
