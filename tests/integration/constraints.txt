@@ -57,3 +57,8 @@ hvac >= 1.2.1 ; python_version >= '3.6'
 # urllib3
 # these should be satisfied naturally by the requests versions required by hvac anyway
 urllib3 >= 1.15 ; python_version >= '3.6' # we need raise_on_status for retry support to raise the correct exceptions https://github.com/urllib3/urllib3/blob/main/CHANGES.rst#115-2016-04-06
+
+# requests
+# https://github.com/psf/requests/pull/6356
+requests >= 2.29 ; python_version >= '3.7'
+requests <  2.28 ; python_version <  '3.7'

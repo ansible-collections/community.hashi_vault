@@ -305,13 +305,14 @@ class LookupModule(HashiVaultLookupBase):
             field = s_f[1]
         else:
             field = None
-        self.set_option('secret_field', field)
+
+        self._secret_field = field
 
     def get(self):
         '''gets a secret. should always return a list'''
 
+        field = self._secret_field
         secret = self.get_option('secret')
-        field = self.get_option('secret_field')
         return_as = self.get_option('return_format')
 
         try:

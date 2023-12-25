@@ -12,7 +12,6 @@ import pytest
 from .....tests.unit.compat import mock
 from .....plugins.module_utils._hashi_vault_common import (
     HashiVaultHelper,
-    _stringify,
 )
 
 
@@ -48,12 +47,3 @@ class TestHashiVaultHelper(object):
         client = hashi_vault_helper.get_vault_client(hashi_vault_logout_inferred_token=True)
 
         assert client.token is None
-
-    def test_has_stringify(self, hashi_vault_helper):
-        v = 'X'
-        wrapper = mock.Mock(wraps=_stringify)
-        with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common._stringify', wrapper):
-            r = hashi_vault_helper._stringify(v)
-
-        wrapper.assert_called_once_with(v)
-        assert r == v, '%r != %r' % (r, v)

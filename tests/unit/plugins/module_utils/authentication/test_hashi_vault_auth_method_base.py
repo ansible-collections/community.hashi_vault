@@ -8,13 +8,10 @@ __metaclass__ = type
 
 import pytest
 
-from ansible_collections.community.hashi_vault.tests.unit.compat import mock
-
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
+from ......plugins.module_utils._hashi_vault_common import (
     HashiVaultAuthMethodBase,
     HashiVaultOptionGroupBase,
     HashiVaultValueError,
-    _stringify,
 )
 
 
@@ -75,12 +72,3 @@ class TestHashiVaultAuthMethodBase(object):
         auth_base.deprecate(msg, version, date, collection_name)
 
         deprecator.assert_called_once_with(msg, version=version, date=date, collection_name=collection_name)
-
-    def test_has_stringify(self, auth_base):
-        v = 'X'
-        wrapper = mock.Mock(wraps=_stringify)
-        with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common._stringify', wrapper):
-            r = auth_base._stringify(v)
-
-        wrapper.assert_called_once_with(v)
-        assert r == v

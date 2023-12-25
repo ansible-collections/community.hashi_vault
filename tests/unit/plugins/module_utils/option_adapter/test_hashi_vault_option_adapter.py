@@ -8,7 +8,7 @@ __metaclass__ = type
 
 import pytest
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
+from ......plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
 
 
 SAMPLE_DICT = {
@@ -103,18 +103,32 @@ class TestHashiVaultOptionAdapter(object):
     def test_has_option(self, adapter, option, expected):
         assert adapter.has_option(option) == expected
 
-    @pytest.mark.parametrize('value', ['__VALUE'])
-    @pytest.mark.parametrize('option', (SAMPLE_KEYS + MISSING_KEYS))
-    def test_set_option(self, adapter, option, value, sample_dict):
+    @pytest.mark.parametrize('option', SAMPLE_KEYS)
+    def test_set_option_existing(self, adapter, option, sample_dict):
+        value = type(sample_dict.get(option, ""))()
         adapter.set_option(option, value)
-
         # first check the underlying data, then ensure the adapter refelcts the change too
         assert sample_dict[option] == value
         assert adapter.get_option(option) == value
 
+    @pytest.mark.parametrize('option', MISSING_KEYS)
+    def test_set_option_missing(self, request, adapter, option, sample_dict):
+        value = MARKER
+
+        for mark in request.node.own_markers:
+            if mark.name == 'option_adapter_raise_on_missing':
+                from ansible.errors import AnsibleError
+                with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting: {option}.*?was not defined in configuration"):
+                    adapter.set_option(option, value)
+                break
+        else:
+            adapter.set_option(option, value)
+            assert sample_dict[option] == value
+            assert adapter.get_option(option) == value
+
     @pytest.mark.parametrize('default', [MARKER])
-    @pytest.mark.parametrize('option,expected', [(o, SAMPLE_DICT[o]) for o in SAMPLE_KEYS] + [(o, MARKER) for o in MISSING_KEYS])
-    def test_set_option_default(self, adapter, option, default, expected, sample_dict):
+    @pytest.mark.parametrize('option,expected', [(o, SAMPLE_DICT[o]) for o in SAMPLE_KEYS])
+    def test_set_option_default_existing(self, adapter, option, default, expected, sample_dict):
         value = adapter.set_option_default(option, default)
 
         # check return data, underlying data structure, and adapter retrieval
@@ -122,24 +136,46 @@ class TestHashiVaultOptionAdapter(object):
         assert sample_dict[option] == expected
         assert adapter.get_option(option) == expected
 
-    @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
-    def test_set_options(self, adapter, options, sample_dict):
-        update = dict([(o, '__VALUE_%i' % i) for i, o in enumerate(options)])
+    @pytest.mark.parametrize('default', [MARKER])
+    @pytest.mark.parametrize('option,expected', [(o, MARKER) for o in MISSING_KEYS])
+    def test_set_option_default_missing(self, request, adapter, option, default, expected, sample_dict):
+        for mark in request.node.own_markers:
+            if mark.name == 'option_adapter_raise_on_missing':
+                from ansible.errors import AnsibleError
+                with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting: {option}.*?was not defined in configuration"):
+                    adapter.set_option_default(option, default)
+                break
+        else:
+            value = adapter.set_option_default(option, default)
+            # check return data, underlying data structure, and adapter retrieval
+            assert value == expected
+            assert sample_dict[option] == expected
+            assert adapter.get_option(option) == expected
 
-        adapter.set_options(**update)
+    @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
+    def test_set_options(self, request, adapter, options, sample_dict):
+        update = dict([(o, type(sample_dict.get(o, ""))(i)) for i, o in enumerate(options)])
+
+        for mark in request.node.own_markers:
+            if mark.name == 'option_adapter_raise_on_missing':
+                from ansible.errors import AnsibleError
+                with pytest.raises(AnsibleError, match=r"^Requested entry.*?setting:.*?was not defined in configuration"):
+                    adapter.set_options(**update)
+                break
+        else:
+            adapter.set_options(**update)
+            for k in MISSING_KEYS:
+                if k in update:
+                    assert sample_dict[k] == update[k]
+                    assert adapter.get_option(k) == update[k]
+                else:
+                    assert k not in sample_dict
+                    assert not adapter.has_option(k)
 
         for k in SAMPLE_KEYS:
             expected = update[k] if k in update else SAMPLE_DICT[k]
             assert sample_dict[k] == expected
             assert adapter.get_option(k) == expected
-
-        for k in MISSING_KEYS:
-            if k in update:
-                assert sample_dict[k] == update[k]
-                assert adapter.get_option(k) == update[k]
-            else:
-                assert k not in sample_dict
-                assert not adapter.has_option(k)
 
     @pytest.mark.parametrize('options', [[SAMPLE_KEYS[0], MISSING_KEYS[0]]])
     def test_get_options_mixed(self, adapter, options):

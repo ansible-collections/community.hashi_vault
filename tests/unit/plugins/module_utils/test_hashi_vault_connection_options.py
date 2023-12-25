@@ -101,7 +101,7 @@ class TestHashiVaultConnectionOptions(object):
         with mock.patch.dict(os.environ, envpatch):
             connection_options._boolean_or_cacert()
 
-        assert predefined_options['ca_cert'] == expected
+        assert connection_options._conopt_verify == expected
 
     # _process_option_proxies
     # proxies can be specified as a dictionary where key is protocol/scheme
@@ -248,7 +248,7 @@ class TestHashiVaultConnectionOptions(object):
 
         # these should always be returned
         assert 'url' in opts and opts['url'] == predefined_options['url']
-        assert 'verify' in opts and opts['verify'] == predefined_options['ca_cert']
+        assert 'verify' in opts and opts['verify'] == connection_options._conopt_verify
 
         # these are optional
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']

@@ -12,4 +12,4 @@ __metaclass__ = type
 # So we really do want to import * and so we disable lint failure on wildcard imports.
 #
 # pylint: disable=wildcard-import,unused-wildcard-import
-from ansible_collections.community.hashi_vault.tests.unit.plugins.module_utils.option_adapter.test_hashi_vault_option_adapter import *
+from ...module_utils.option_adapter.test_hashi_vault_option_adapter import *
