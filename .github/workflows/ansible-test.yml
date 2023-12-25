@@ -303,7 +303,7 @@ jobs:
         if: ${{ github.event_name != 'schedule' }}
         uses: actions/upload-artifact@v4
         with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=vault_minus_${{ matrix.vault_minus }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
