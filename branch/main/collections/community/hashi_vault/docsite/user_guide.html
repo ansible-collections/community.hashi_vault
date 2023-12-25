@@ -157,6 +157,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">boto3</span></code> (only if loading credentials from a boto session, for example using an AWS profile or IAM role credentials)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">azure-identity</span></code> (only if using a service principal or managed identity)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requests</span></code> — with <code class="docutils literal notranslate"><span class="pre">requests&gt;=2.28,&lt;2.29</span></code>, setting certain options (<code class="docutils literal notranslate"><span class="pre">token</span></code>, <code class="docutils literal notranslate"><span class="pre">namespace</span></code>) to values that come from lookups will raise an exception, do to Ansible’s marking of the values as “unsafe” for templating. We recommend using <code class="docutils literal notranslate"><span class="pre">requests&gt;=2.29</span></code>, which won’t work with Python 3.6.</p></li>
 </ul>
 </section>
 </section>
