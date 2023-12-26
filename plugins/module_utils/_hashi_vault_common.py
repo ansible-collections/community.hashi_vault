@@ -20,6 +20,7 @@ import os
 class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
+
 class HashiVaultHVACError(ImportError):
     '''Use in commoncode to signal HVAC is missing.'''
     def __init__(self, error, msg):
