@@ -317,12 +317,20 @@ jobs:
         ansible:
           - stable-2.16
           - devel
+        delete_canaries:
+          - true
+          - false
         python:
           - '3.12'
         runner:
           - ubuntu-latest
         test_container:
           - default
+        exclude:
+          - ansible: devel
+            delete_canaries: false
+          - ansible: stable-2.16
+            delete_canaries: true
 
     steps:
       - name: Initialize env vars
@@ -385,13 +393,9 @@ jobs:
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Run integration again (ensure tests do not break against still-running containers)
-        run: |
-          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
-        working-directory: ${{ env.COLLECTION_PATH }}
-
       #TODO add capability in the Ansible side once vault_list and vault_delete exist
-      - name: Run a third time, but delete Vault's cubbyhole contents first
+      - name: Delete Vault's cubbyhole contents (ensure test setup is idempotent)
+        if: matrix.delete_canaries
         working-directory: ${{ env.COLLECTION_PATH }}
         env:
           VAULT_TOKEN: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
@@ -402,6 +406,9 @@ jobs:
           | xargs -I{} -n 1 vault delete cubbyhole/{}' \
           | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i hashicorp/vault sh
 
+      - name: Run integration again (ensure tests do not break against still-running containers)
+        working-directory: ${{ env.COLLECTION_PATH }}
+        run: |
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
 
         # ansible-test support producing code coverage data
