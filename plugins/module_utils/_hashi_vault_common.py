@@ -31,8 +31,12 @@ class HashiVaultHVACError(ImportError):
 
 class HashiVaultHelper():
     def __init__(self):
-        # TODO move hvac checking here?
-        pass
+        try:
+            import hvac
+            self.hvac = hvac
+        except ImportError as e:
+            from ansible.module_utils.basic import missing_required_lib
+            raise HashiVaultHVACError(error=str(e), msg=missing_required_lib('hvac'))
 
     def get_vault_client(
         self,
