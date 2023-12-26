@@ -15,18 +15,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.12
 
       - name: Install PyYaml
-        run: pip install pyyaml
+        run: pip install pyyaml ansible-core
 
       - name: Validate version is published to Galaxy
-        run: curl --head -s -f -o /dev/null https://galaxy.ansible.com/download/community-hashi_vault-${{ github.event.inputs.version }}.tar.gz
+        run: ansible-galaxy collection download -vvv -p /tmp 'community.hashi_vault:==${{ github.event.inputs.version }}'
 
       - name: Build release description
         shell: python

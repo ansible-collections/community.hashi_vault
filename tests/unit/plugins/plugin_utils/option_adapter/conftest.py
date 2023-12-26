@@ -15,18 +15,33 @@ __metaclass__ = type
 
 import pytest
 
+from packaging import version
+from ansible.release import __version__ as ansible_version
 from ansible.plugins import AnsiblePlugin
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
+from ......plugins.module_utils._hashi_vault_common import HashiVaultOptionAdapter
 
 
-class FakePlugin(AnsiblePlugin):
-    _load_name = 'community.hashi_vault.fake'
+ver = version.parse(ansible_version)
+cutoff = version.parse('2.17')
+option_adapter_from_plugin_marks = pytest.mark.option_adapter_raise_on_missing if ver.release >= cutoff.release else []
+# https://github.com/ansible-collections/community.hashi_vault/issues/417
+
+
+def _generate_options(opts: dict) -> dict:
+    return {k: {"type": type(v).__name__} if v is not None else {} for k, v in opts.items()}
 
 
 @pytest.fixture
 def ansible_plugin(sample_dict):
-    plugin = FakePlugin()
+    optdef = _generate_options(opts=sample_dict)
+
+    class LookupModule(AnsiblePlugin):
+        _load_name = 'community.hashi_vault.fake'
+
+    import ansible.constants as C
+    C.config.initialize_plugin_configuration_definitions("lookup", LookupModule._load_name, optdef)
+    plugin = LookupModule()
     plugin._options = sample_dict
     return plugin
 
@@ -39,7 +54,11 @@ def adapter_from_ansible_plugin(ansible_plugin):
     return _create_adapter_from_ansible_plugin
 
 
-@pytest.fixture(params=['dict', 'dict_defaults', 'ansible_plugin'])
+@pytest.fixture(params=[
+    'dict',
+    'dict_defaults',
+    pytest.param('ansible_plugin', marks=option_adapter_from_plugin_marks),
+])
 def adapter(request, adapter_from_dict, adapter_from_dict_defaults, adapter_from_ansible_plugin):
     return {
         'dict': adapter_from_dict,

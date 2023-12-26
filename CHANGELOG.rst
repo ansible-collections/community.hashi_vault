@@ -5,6 +5,37 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v6.0.0
+======
+
+Release Summary
+---------------
+
+This major version of the collection has no functional changes from the previous version, however the minimum versions of ``hvac`` and ``ansible-core`` have been raised. While the collection may still work with those earlier versions, future changes will not test against them.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- The minimum required version of ``hvac`` is now ``1.2.1`` (https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/docsite/user_guide.html#hvac-version-specifics).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- The minimum supported version of ``ansible-core`` is now ``2.14``, support for ``2.13`` has been dropped (https://github.com/ansible-collections/community.hashi_vault/pull/403).
+
+v5.0.1
+======
+
+Release Summary
+---------------
+
+This release fixes a bug in ``vault_write`` ahead of the collection's next major release.
+
+Bugfixes
+--------
+
+- vault_write - the ``vault_write`` lookup and module were not able to write data containing keys named ``path`` or ``wrap_ttl`` due to a bug in the ``hvac`` library. These plugins have now been updated to take advantage of fixes in ``hvac>=1.2`` to address this (https://github.com/ansible-collections/community.hashi_vault/issues/389).
+
 v5.0.0
 ======
 

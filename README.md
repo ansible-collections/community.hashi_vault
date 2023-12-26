@@ -12,15 +12,16 @@ Browsing the [**devel** collection documentation](https://docs.ansible.com/ansib
 We also separately publish [**latest commit** collection documentation](https://ansible-collections.github.io/community.hashi_vault/branch/main/) which shows docs for the _latest commit in the `main` branch_.
 
 If you use the Ansible package and don't update collections independently, use **latest**, if you install or update this collection directly from Galaxy, use **devel**. If you are looking to contribute, use **latest commit**.
+
 ## Tested with Ansible
 
-* 2.13
-* 2.14
-* 2.15
-* devel (latest development commit)
+Please refer to the [`ansible-core` support matrix](https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix) to see which versions of `ansible-core` are still supported or end-of-life.
+
+Generally, we release a new major version of this collection a little before the release of a new `ansible-core` version, which is around every 6 months. In that release, we will update the CI matrix to drop the core versions that are about to go EoL, and add in new core versions if they have not been added already.
+
+We also regularly test against the [`devel` branch](https://github.com/ansible/ansible/tree/devel) (latest development commit).
 
 See [the CI configuration](https://github.com/ansible-collections/community.hashi_vault/blob/main/.github/workflows/ansible-test.yml) for the most accurate testing information.
-<!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
 
 ## Tested with Vault
 
@@ -45,6 +46,7 @@ Currently we support and test against Python versions:
 * 3.9
 * 3.10
 * 3.11
+* 3.12
 
 Note that for controller-side plugins, only the Python versions supported by the Ansible controller are supported (for example, you cannot use Python 3.7 with Ansible core 2.12).
 

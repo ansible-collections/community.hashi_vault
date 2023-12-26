@@ -1,3 +1,0 @@
----
-trivial:
-  - setup_localenv_docker role - the container images used in the docker localenv role are now set in role defaults so that they can be overridden (https://github.com/ansible-collections/community.hashi_vault/issues/381).

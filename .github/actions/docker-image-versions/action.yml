@@ -8,8 +8,7 @@ outputs:
 inputs:
   image:
     description: The docker image name.
-    required: false
-    default: vault
+    required: true
   num_major_versions:
     description: Number of unique major versions to return.
     required: false

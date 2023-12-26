@@ -663,3 +663,32 @@ releases:
     - 356-duplicate-term-options.yml
     - 5.0.0.yml
     release_date: '2023-05-11'
+  5.0.1:
+    changes:
+      bugfixes:
+      - vault_write - the ``vault_write`` lookup and module were not able to write
+        data containing keys named ``path`` or ``wrap_ttl`` due to a bug in the ``hvac``
+        library. These plugins have now been updated to take advantage of fixes in
+        ``hvac>=1.2`` to address this (https://github.com/ansible-collections/community.hashi_vault/issues/389).
+      release_summary: This release fixes a bug in ``vault_write`` ahead of the collection's
+        next major release.
+    fragments:
+    - 381-localenv_docker.yml
+    - 404-vault_write-spicy-keys.yml
+    - 5.0.1.yml
+    release_date: '2023-11-05'
+  6.0.0:
+    changes:
+      breaking_changes:
+      - The minimum required version of ``hvac`` is now ``1.2.1`` (https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/docsite/user_guide.html#hvac-version-specifics).
+      release_summary: This major version of the collection has no functional changes
+        from the previous version, however the minimum versions of ``hvac`` and ``ansible-core``
+        have been raised. While the collection may still work with those earlier versions,
+        future changes will not test against them.
+      removed_features:
+      - The minimum supported version of ``ansible-core`` is now ``2.14``, support
+        for ``2.13`` has been dropped (https://github.com/ansible-collections/community.hashi_vault/pull/403).
+    fragments:
+    - 403-core-vault-python.yml
+    - 6.0.0.yml
+    release_date: '2023-11-05'

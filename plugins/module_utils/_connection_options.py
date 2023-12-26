@@ -100,11 +100,11 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
         # validate_certs is only used to optionally change the value of ca_cert
         def _filter(k, v):
-            return v is not None and k != 'validate_certs'
+            return v is not None and k not in ('validate_certs', 'ca_cert')
 
         # our transformed ca_cert value will become the verify parameter for the hvac client
         hvopts = self._options.get_filtered_options(_filter, *self.OPTIONS)
-        hvopts['verify'] = hvopts.pop('ca_cert')
+        hvopts['verify'] = self._conopt_verify
 
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
@@ -255,6 +255,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
                 validate_certs = True
 
         if not (validate_certs and ca_cert):
-            self._options.set_option('ca_cert', validate_certs)
+            self._conopt_verify = validate_certs
         else:
-            self._options.set_option('ca_cert', to_text(ca_cert, errors='surrogate_or_strict'))
+            self._conopt_verify = to_text(ca_cert, errors='surrogate_or_strict')
