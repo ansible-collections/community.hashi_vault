@@ -1,0 +1,28 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_database_connection_read: &defaults
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test read database connection
+      register: db_connection
+      community.hashi_vault.vault_database_connection_read:
+        path: database
+        connection_name: my-postgresql-database
+
+    - assert:
+        that:
+          - db_connection is defined
+          - "'data' in db_connection"
+          - "'raw' in db_connection"
+          - db_connection["data"]["plugin_name"] == 'postgresql-database-plugin'
+          - db_connection["data"]["connection_details"]["username"] == 'postgres'
+          - "'allowed_roles' in db_connection['data']"
+          - "'password_policy' in db_connection['data']"
+          - "'root_credentials_rotate_statements' in db_connection['data']"

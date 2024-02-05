@@ -28,6 +28,15 @@ mmock_container_image: jordimartin/mmock
 mmock_target_name: '{{ mmock_container_name }}'
 mmock_config_path: '{{ output_dir }}/mmock_config'
 
+postgres_container_name: postgres
+postgres_container_image: postgres
+postgres_target_name: '{{ postgres_container_name }}'
+postgres_config_path: '{{ output_dir }}/postgres'
+postgres_sql_port: 5432
+postgres_db_name: hcvault
+postgres_db_user: postgres
+postgres_db_password: postgres
+
 output_dir: '{{ role_path }}/files/.output'
 
 docker_compose_output: '{{ output_dir }}/{{ docker_compose_project_name }}'

@@ -1,0 +1,32 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_database_connection_configure: &defaults
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test database connection configure
+      register: db_connection_configure
+      community.hashi_vault.vault_database_connection_configure:
+        path: database
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable"
+        connection_username: con1
+        connection_password: con1
+
+    - assert:
+        that:
+          - db_connection_configure is defined
+          - "'data' in db_connection_configure"
+          - db_connection_configure["data"]["ok"]
+          - db_connection_configure["data"]["status"] == 'success'
+          - db_connection_configure["data"]["status_code"] in [200, 204]
+          - "'changed' in db_connection_configure"
+          - db_connection_configure["changed"]

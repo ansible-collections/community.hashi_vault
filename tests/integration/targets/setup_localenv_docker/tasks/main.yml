@@ -7,6 +7,7 @@
     - '{{ docker_compose_output }}'
     - '{{ vault_config_output }}'
     - '{{ mmock_config_path }}'
+    - '{{ postgres_config_path }}'
 
 - name: "Create the docker-compose definition"
   template:
@@ -60,11 +61,17 @@
     src: '{{ item }}'
     dest: '{{ mmock_config_path }}/{{ dest_name }}'
 
-- include_tasks: docker.yml
-  when: docker_compose != 'none'
-
 - name: "Template integration_config"
   template:
     src: integration_config.yml.j2
     dest: '{{ output_dir }}/integration_config.yml'
     force: true
+
+- name: "Copy postgres init.sql script"
+  copy:
+    src: files/sql/init.sql
+    dest: "{{ postgres_config_path }}/init.sql"
+    force: true
+
+- include_tasks: docker.yml
+  when: docker_compose != 'none'

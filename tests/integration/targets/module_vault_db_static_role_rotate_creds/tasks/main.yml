@@ -1,0 +1,3 @@
+---
+- import_tasks: module_vault_db_static_role_rotate_creds_setup.yml
+- import_tasks: module_vault_db_static_role_rotate_creds_test.yml

@@ -1,0 +1,24 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    community.hashi_vault.vault_database_roles_list: &defaults
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test list database dynamic roles
+      register: db_roles
+      community.hashi_vault.vault_database_roles_list:
+        path: database
+
+    - assert:
+        that:
+          - db_roles is defined
+          - "'data' in db_roles"
+          - "'raw' in db_roles"
+          - "'keys' in db_roles['data']"
+          - "'readonly' in db_roles['data']['keys']"

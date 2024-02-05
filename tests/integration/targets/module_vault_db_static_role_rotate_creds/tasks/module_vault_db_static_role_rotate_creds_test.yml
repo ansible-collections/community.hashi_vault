@@ -1,0 +1,36 @@
+---
+- name: Var block
+  vars:
+    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+  module_defaults:
+    vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+    community.hashi_vault.vault_database_static_role_rotate_credentials: &defaults
+      url: '{{ vault_test_server_http }}'
+      auth_method: token
+      token: '{{ user_token }}'
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test rotate credential for a static role
+      register: rotate_credentials
+      community.hashi_vault.vault_database_static_role_rotate_credentials:
+        path: database
+        role_name: "{{ role_name_to_rotate }}"
+
+    - assert:
+        that:
+          - rotate_credentials is defined
+          - "'data' in rotate_credentials"
+          - rotate_credentials["data"]["status"] == 'success'
+          - "'changed' in rotate_credentials"
+          - rotate_credentials["changed"]
+
+    - name: Read user
+      vault_ci_read:
+        path: "database/static-creds/{{ role_name_to_rotate }}"
+      register: role_data_after
+
+    - assert:
+        that:
+          - role_data_before.result.data.password != role_data_after.result.data.password
+          - role_data_before.result.data.ttl < role_data_after.result.data.ttl

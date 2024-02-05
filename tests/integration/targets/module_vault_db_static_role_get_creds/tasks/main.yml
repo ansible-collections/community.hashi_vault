@@ -1,0 +1,3 @@
+---
+- import_tasks: module_vault_database_static_role_get_credentials_setup.yml
+- import_tasks: module_vault_database_static_role_get_credentials_test.yml

@@ -1,0 +1,3 @@
+---
+- import_tasks: module_vault_database_static_roles_list_setup.yml
+- import_tasks: module_vault_database_static_roles_list_test.yml
