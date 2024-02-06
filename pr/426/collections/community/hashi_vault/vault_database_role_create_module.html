@@ -578,7 +578,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">vault_database_role_create</span></code> triggers the creation of a static role <a class="reference external" href="https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role">https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vault_database_role_create</span></code> triggers the creation of a static role</p></li>
+<li><p><a class="reference external" href="https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role">https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role</a></p></li>
 <li><p>The <em>data</em> option is not treated as secret and may be logged. Use the <code class="docutils literal notranslate"><span class="pre">no_log</span></code> keyword if <em>data</em> contains sensitive values.</p></li>
 <li><p>This module always reports <code class="docutils literal notranslate"><span class="pre">changed</span></code> status because it cannot guarantee idempotence.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">changed_when</span></code> to control that in cases where the operation is known to not change state.</p></li>
