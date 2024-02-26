@@ -1,0 +1,36 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+  block:
+    - name: Create a test non-root token
+      vault_ci_token_create:
+        policies: [policy-database-all]
+      register: user_token_cmd
+
+    - name: Set facts
+      ansible.builtin.set_fact:
+        db_user: usr_to_rotate
+        db_password: SuperSecret
+
+    - name: Create a new user in PostgreSQL
+      become: true
+      become_user: postgres
+      ansible.builtin.shell: 'psql -c "CREATE USER {{ db_user }} WITH PASSWORD ''{{ db_password }}'' SUPERUSER;"'
+      delegate_to: postgres
+      connection: community.docker.docker
+      changed_when: true
+
+    - name: Create the Database Connection
+      vault_ci_write:
+        path: "/{{ vault_database_path }}/config/{{ db_user }}"
+        data:
+          plugin_name: "{{ vault_database_plugin_name }}"
+          connection_url: "{{ vault_database_connection_url }}"
+          allowed_roles: '*'
+          username: "{{ db_user }}"
+          password: "{{ db_password }}"

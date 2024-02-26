@@ -1,0 +1,4 @@
+---
+- import_tasks: module_vault_db_rotate_root_creds_setup.yml
+- import_tasks: module_vault_db_rotate_root_creds_test.yml
+- import_tasks: module_vault_db_rotate_root_creds_cleanup.yml

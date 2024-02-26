@@ -1,0 +1,24 @@
+---
+
+- name: get all the runnning containers with webserver label
+  docker_host_info:
+    containers: true
+    verbose_output: true
+    containers_filters:
+    images_filters:
+      name: postgres
+  register: running_container
+
+- name: add container to inventory
+  ansible.builtin.add_host:
+    name: postgres
+    ansible_connection: community.docker.docker
+  changed_when: false
+
+- name: Drop user in PostgreSQL
+  become: true
+  become_user: postgres
+  ansible.builtin.shell: 'psql -c "DROP USER {{ db_user }};"'
+  delegate_to: postgres
+  connection: community.docker.docker
+  changed_when: true
