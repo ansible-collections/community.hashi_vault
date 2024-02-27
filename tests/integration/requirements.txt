@@ -1,4 +1,4 @@
 hvac
 urllib3
 azure-identity
-docker
+psycopg[binary,pool]

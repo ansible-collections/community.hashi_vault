@@ -1,2 +1,2 @@
-# `setup_vault_configure_engine_pki`
-Performs configuration of the PKI engine in Vault.
+# `setup_vault_configure_database`
+Performs configuration of the database engine in Vault.

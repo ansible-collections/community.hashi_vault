@@ -11,6 +11,21 @@
       token_validate: true
       timeout: 5
   block:
+    - name: Login before root credential rotation
+      community.postgresql.postgresql_ping:
+        db: "{{ vault_postgres_db }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+      register: login_result_before
+
+    - assert:
+        that:
+          - login_result_before is defined
+          - login_result_before.is_available
+          - login_result_before.conn_err_msg | length == 0
+
     - name: Test rotate root credentials
       register: rotate_credentials
       community.hashi_vault.vault_database_rotate_root_credentials:
@@ -25,12 +40,16 @@
           - "'changed' in rotate_credentials"
           - rotate_credentials["changed"]
 
-    # - name: Read user
-    #   vault_ci_read:
-    #     path: "database/static-creds/{{ role_name_to_rotate }}"
-    #   register: role_data_after
+    - community.postgresql.postgresql_ping:
+        db: "{{ vault_postgres_db }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+      register: login_result_after
 
-    # - assert:
-    #     that:
-    #       - role_data_before.result.data.password != role_data_after.result.data.password
-    #       - role_data_before.result.data.ttl < role_data_after.result.data.ttl
+    - assert:
+        that:
+          - login_result_after is defined
+          - not login_result_after.is_available
+          - login_result_after.conn_err_msg | length > 0

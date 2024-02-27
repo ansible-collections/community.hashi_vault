@@ -7,3 +7,8 @@ integration_config:
   vault_proxy_server: 'http://{{ proxy_target_name }}:{{ proxy_port }}'
   vault_cert_content: "{{ lookup('file', vault_cert_file) }}"
   vault_mmock_server_http: 'http://{{ mmock_target_name }}:{{ mmock_server_port }}'
+  vault_postgres_host: '{{ postgres_container_name }}'
+  vault_postgres_port: '{{ postgres_sql_port }}'
+  vault_postgres_db: '{{ postgres_db_name }}'
+  vault_postgres_user: '{{ postgres_db_user }}'
+  vault_postgres_password: '{{ postgres_db_password }}'
