@@ -11,26 +11,46 @@
       token_validate: true
       timeout: 5
   block:
-    - name: Test rotate credential for a static role
-      register: rotate_credentials
-      community.hashi_vault.vault_database_static_role_rotate_credentials:
-        path: database
-        role_name: "{{ role_name_to_rotate }}"
 
-    - assert:
-        that:
-          - rotate_credentials is defined
-          - "'data' in rotate_credentials"
-          - rotate_credentials["data"]["status"] == 'success'
-          - "'changed' in rotate_credentials"
-          - rotate_credentials["changed"]
+    - name: Test for python >= 3.8
+      when: python_interpreter_minor[1] | int > 7
+      block:
 
-    - name: Read user
-      vault_ci_read:
-        path: "database/static-creds/{{ role_name_to_rotate }}"
-      register: role_data_after
+        - name: Test rotate credential for a static role
+          register: rotate_credentials
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            path: database
+            role_name: "{{ role_name_to_rotate }}"
 
-    - assert:
-        that:
-          - role_data_before.result.data.password != role_data_after.result.data.password
-          - role_data_before.result.data.ttl < role_data_after.result.data.ttl
+        - assert:
+            that:
+              - rotate_credentials is defined
+              - "'data' in rotate_credentials"
+              - rotate_credentials["data"]["status"] == 'success'
+              - "'changed' in rotate_credentials"
+              - rotate_credentials["changed"]
+
+        - name: Read user
+          vault_ci_read:
+            path: "database/static-creds/{{ role_name_to_rotate }}"
+          register: role_data_after
+
+        - assert:
+            that:
+              - role_data_before.result.data.password != role_data_after.result.data.password
+              - role_data_before.result.data.ttl < role_data_after.result.data.ttl
+
+    - name: Test for python < 3.8
+      when: python_interpreter_minor[1] | int <= 7
+      block:
+
+        - name: Test rotate credential for a static role
+          register: rotate_credentials_to_fail
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            path: database
+            role_name: "{{ role_name_to_rotate }}"
+          ignore_errors: true
+
+        - assert:
+            that:
+              - rotate_credentials_to_fail is failed

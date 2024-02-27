@@ -15,6 +15,7 @@ author:
 short_description: Trigger the credential rotation for a static role
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+  - python>=3.8
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
   - Trigger the credential rotation for a static role
@@ -77,6 +78,8 @@ from ansible.module_utils.basic import missing_required_lib
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
 
+import sys
+
 try:
     import hvac
 except ImportError:
@@ -102,6 +105,11 @@ def run_module():
         module.fail_json(
             msg=missing_required_lib('hvac'),
             exception=HVAC_IMPORT_ERROR
+        )
+
+    if sys.version_info.minor <= 7:
+        module.fail_json(
+            msg='python version must be 3.8 or higher',
         )
 
     path = module.params.get('path')
