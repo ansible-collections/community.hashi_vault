@@ -15,7 +15,6 @@
     - name: Set facts
       ansible.builtin.set_fact:
         role_name_to_rotate: role4
-        python_interpreter_minor: "{{ ansible_python_version | split('.') }}"
 
     - name: Read user
       vault_ci_read:
