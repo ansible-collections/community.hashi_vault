@@ -14,7 +14,7 @@ author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Trigger root credential rotation of a Database Connection (identified by its connection_name) in a given path
 requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
+  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html)) >= 2.0.0
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
   - Trigger root credential rotation of a Database Connection (identified by its connection_name) in a given path
@@ -122,6 +122,8 @@ def run_module():
 
     try:
         raw = client.secrets.database.rotate_root_credentials(name=connection_name, mount_point=path)
+    except AttributeError as e:
+        module.fail_json(msg="hvac>=2.0.0 is required", exception=traceback.format_exc())
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:

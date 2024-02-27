@@ -14,8 +14,7 @@ author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Trigger the credential rotation for a static role
 requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
-  - python>=3.8
+  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html)) >= 2.0.0
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
   - Trigger the credential rotation for a static role
@@ -78,8 +77,6 @@ from ansible.module_utils.basic import missing_required_lib
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
 
-import sys
-
 try:
     import hvac
 except ImportError:
@@ -107,11 +104,6 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    if sys.version_info.minor <= 7:
-        module.fail_json(
-            msg='python version must be 3.8 or higher',
-        )
-
     path = module.params.get('path')
     role_name = module.params.get('role_name')
 
@@ -130,6 +122,8 @@ def run_module():
             name=role_name,
             mount_point=path,
         )
+    except AttributeError as e:
+        module.fail_json(msg="hvac>=2.0.0 is required", exception=traceback.format_exc())
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
