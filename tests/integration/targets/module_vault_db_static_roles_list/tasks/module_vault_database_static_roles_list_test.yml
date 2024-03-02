@@ -24,7 +24,7 @@
           - db_static_roles.data == db_static_roles.raw.data
           - "'keys' in db_static_roles['data']"
           - "'roles' in db_static_roles"
-          - db_static_roles.roles == db_static_roles.data.keys
+          - db_static_roles.roles == db_static_roles.data['keys']
           - db_static_roles is not changed
 
     - loop: [1, 2, 3, 4, 5]
@@ -45,7 +45,7 @@
           - db_static_roles.data == db_static_roles.raw.data
           - "'keys' in db_static_roles['data']"
           - "'roles' in db_static_roles"
-          - db_static_roles.roles == db_static_roles.data.keys
+          - db_static_roles.roles == db_static_roles.data['keys']
           - db_static_roles is not changed
 
     - loop: [1, 2, 3, 4, 5]
