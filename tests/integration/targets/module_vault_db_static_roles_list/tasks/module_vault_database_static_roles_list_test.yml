@@ -19,15 +19,18 @@
     - assert:
         that:
           - db_static_roles is defined
-          - "'data' in db_static_roles"
           - "'raw' in db_static_roles"
+          - "'data' in db_static_roles"
+          - db_static_roles.data == db_static_roles.raw.data
           - "'keys' in db_static_roles['data']"
+          - "'roles' in db_static_roles"
+          - db_static_roles.roles == db_static_roles.data.keys
           - db_static_roles is not changed
 
     - loop: [1, 2, 3, 4, 5]
       assert:
         that:
-          - "'role{{item}}' in db_static_roles['data']['keys']"
+          - "'role{{item}}' in db_static_roles.roles"
 
     - name: Test list database static roles (explicit mount)
       register: db_static_roles
@@ -37,12 +40,15 @@
     - assert:
         that:
           - db_static_roles is defined
-          - "'data' in db_static_roles"
           - "'raw' in db_static_roles"
+          - "'data' in db_static_roles"
+          - db_static_roles.data == db_static_roles.raw.data
           - "'keys' in db_static_roles['data']"
+          - "'roles' in db_static_roles"
+          - db_static_roles.roles == db_static_roles.data.keys
           - db_static_roles is not changed
 
     - loop: [1, 2, 3, 4, 5]
       assert:
         that:
-          - "'role{{item}}' in db_static_roles['data']['keys']"
+          - "'role{{item}}' in db_static_roles.roles"

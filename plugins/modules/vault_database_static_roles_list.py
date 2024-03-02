@@ -58,10 +58,28 @@ data:
   type: dict
   sample:
     keys: ["role1", "role2", "role3"]
+roles:
+  description: The list of roles. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  returned: success
+  type: list
+  elements: str
+  sample: ["role1", "role2", "role3"]
 raw:
   description: The raw result of the operation.
   returned: success
   type: dict
+  contains:
+    data:
+      description: The data field of the API response.
+      returned: success
+      type: dict
+      contains:
+        keys:
+          description: The list of role names.
+          returned: success
+          type: list
+          elements: str
+          sample: ["role1", "role2", "role3"]
   sample:
     auth: null
     data:
@@ -71,7 +89,7 @@ raw:
     lease_id: ""
     renewable: false
     request_id: "123456"
-    warnings: null,
+    warnings: null
     wrap_info: null
 """
 
@@ -134,9 +152,11 @@ def run_module():
         )
 
     data = raw['data']
+    roles = data['keys']
 
     module.exit_json(
         data=data,
+        roles=roles,
         raw=raw,
         changed=False
     )
