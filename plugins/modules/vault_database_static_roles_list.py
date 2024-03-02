@@ -128,7 +128,10 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
+    parameters = {}
     engine_mount_point = module.params.get('path', None)
+    if engine_mount_point is not None:
+        parameters['engine_mount_point'] = engine_mount_point
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -141,9 +144,7 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.list_static_roles(
-            mount_point=engine_mount_point,
-        )
+        raw = client.secrets.database.list_static_roles(**parameters)
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
