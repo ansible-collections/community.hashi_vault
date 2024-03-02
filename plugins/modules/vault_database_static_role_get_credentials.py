@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 module: vault_database_static_role_get_credentials
-version_added: 2.6.0
+version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Returns the current credentials based on the named static role

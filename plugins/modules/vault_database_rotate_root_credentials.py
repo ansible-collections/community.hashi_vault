@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 module: vault_database_rotate_root_credentials
-version_added: 2.6.0
+version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Trigger root credential rotation of a Database Connection (identified by its connection_name) in a given path

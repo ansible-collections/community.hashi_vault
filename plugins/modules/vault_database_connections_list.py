@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 module: vault_database_connections_list
-version_added: 2.6.0
+version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Lists all Database Connections in a given path

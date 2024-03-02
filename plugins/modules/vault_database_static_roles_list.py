@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 module: vault_database_static_roles_list
-version_added: 2.6.0
+version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Returns a list of available static roles

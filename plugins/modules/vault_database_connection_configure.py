@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 module: vault_database_connection_configure
-version_added: 2.5.0
+version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
 short_description: Configures a database connection within a database secrets engine
