@@ -17,43 +17,43 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Returns a list of available static roles
-notes:
-  - C(vault_database_static_roles_list) lists all static roles https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#list-static-roles
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
-  - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
-  - Use C(changed_when) to control that in cases where the operation is known to not change state.
-attributes:
-  check_mode:
-    support: partial
-    details:
-      - In check mode, an empty response will be returned and the write will not be performed.
+  - L(Returns a list of available static roles,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#list-static-roles).
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
+  - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""
-- name: List static roles
+- name: List static roles with the default mount point
   community.hashi_vault.vault_database_static_roles_list:
-    path: database
   register: response
 
 - name: Display the result of the operation
   ansible.builtin.debug:
-    msg: "{{ result }}"
+    msg: "{{ response }}"
+
+- name: List static roles with a custom mount point
+  community.hashi_vault.vault_database_static_roles_list:
+    engine_mount_point: db1
+  register: response
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ response }}"
 """
 
 RETURN = r"""
 data:
-  description: The C(data) field of raw result. This can also be accessed via C(raw.data).
+  description: The C(data) field of raw result. This can also be accessed via RV(raw.data).
   returned: success
   type: dict
   sample:
@@ -95,7 +95,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
     )
 
     module = HashiVaultModule(
@@ -109,7 +109,7 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
+    engine_mount_point = module.params.get('path', None)
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -123,13 +123,13 @@ def run_module():
 
     try:
         raw = client.secrets.database.list_static_roles(
-            mount_point=path,
+            mount_point=engine_mount_point,
         )
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 
