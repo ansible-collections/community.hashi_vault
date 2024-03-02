@@ -10,6 +10,25 @@
       token_validate: true
       timeout: 5
   block:
+    - name: Test list database static roles (explicit mount) [check mode]
+      register: db_static_roles
+      check_mode: true
+      community.hashi_vault.vault_database_static_roles_list:
+        engine_mount_point: database
+
+    - assert:
+        that:
+          - db_static_roles is defined
+          - "'data' in db_static_roles"
+          - "'raw' in db_static_roles"
+          - "'keys' in db_static_roles['data']"
+          - db_static_roles is not changed
+
+    - loop: [1, 2, 3, 4, 5]
+      assert:
+        that:
+          - "'role{{item}}' in db_static_roles['data']['keys']"
+
     - name: Test list database static roles (explicit mount)
       register: db_static_roles
       community.hashi_vault.vault_database_static_roles_list:
