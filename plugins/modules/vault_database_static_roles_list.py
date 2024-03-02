@@ -70,7 +70,7 @@ data:
   sample:
     keys: *sample_roles
 roles:
-  description: The list of roles. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  description: The list of roles or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
   returned: success
   type: list
   elements: str
@@ -157,7 +157,7 @@ def run_module():
             exception=traceback.format_exc()
         )
 
-    data = raw['data']
+    data = raw.get('data', {'keys': []})
     roles = data['keys']
 
     module.exit_json(
