@@ -56,14 +56,21 @@ data:
   description: The C(data) field of raw result. This can also be accessed via RV(raw.data).
   returned: success
   type: dict
+  contains: &data_contains
+    keys:
+      description: The list of role names.
+      returned: success
+      type: list
+      elements: str
+      sample: &sample_roles ["role1", "role2", "role3"]
   sample:
-    keys: ["role1", "role2", "role3"]
+    keys: *sample_roles
 roles:
   description: The list of roles. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
   returned: success
   type: list
   elements: str
-  sample: ["role1", "role2", "role3"]
+  sample: *sample_roles
 raw:
   description: The raw result of the operation.
   returned: success
@@ -73,17 +80,11 @@ raw:
       description: The data field of the API response.
       returned: success
       type: dict
-      contains:
-        keys:
-          description: The list of role names.
-          returned: success
-          type: list
-          elements: str
-          sample: ["role1", "role2", "role3"]
+      contains: *data_contains
   sample:
     auth: null
     data:
-      keys: ["role1", "role2", "role3"]
+      keys: *sample_roles
     username: "SomeUser"
     lease_duration": 0
     lease_id: ""
