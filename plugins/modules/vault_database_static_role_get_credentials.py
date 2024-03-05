@@ -12,15 +12,13 @@ module: vault_database_static_role_get_credentials
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Returns the current credentials based on the named static role
+short_description: Returns the current credentials of the O(role_name)
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Returns the current credentials based on the named static role
+  - Returns the L(current credentials based of the named static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#get-static-credentials)
 notes:
-  - C(vault_database_static_role_get_credentials) reads a static role
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#get-static-credentials
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -34,11 +32,12 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
   role_name:
     description: The role name from which the credentials should be retrieved.
     type: str
@@ -46,11 +45,20 @@ options:
 '''
 
 EXAMPLES = r"""
-- name: Returns the current credentials based on the named static role
+- name: Returns the current credentials based on the named static role with the default mount point
   community.hashi_vault.vault_database_static_role_read:
-    path: database
     role_name: SomeRole
-  register: response
+  register: result
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: Returns the current credentials based on the named static role with a custom mount point
+  community.hashi_vault.vault_database_static_role_read:
+    engine_mount_point: db1
+    role_name: SomeRole
+  register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
@@ -123,8 +131,11 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
-    role_name = module.params.get('role_name')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+        parameters['mount_point'] = engine_mount_point
+    parameters["role_name"] = module.params.get('role_name')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -137,15 +148,12 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.get_static_credentials(
-            name=role_name,
-            mount_point=path,
-        )
+        raw = client.secrets.database.get_static_credentials(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 

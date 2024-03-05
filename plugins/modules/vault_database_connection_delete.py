@@ -12,15 +12,13 @@ module: vault_database_connection_delete
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Delete a Database Connection (identified by its connection_name) in a given path
+short_description: Delete a Database Connection, identified by its O(connection_name), in a given path
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Reads
+  - Deletes a L(Database Connection,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#delete-connection) from HashiCorp Vault
 notes:
-  - C(vault_database_connection_delete) deletes a database connection from Hashicorp as described in
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#delete-connection
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 attributes:
@@ -33,22 +31,36 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
   connection_name:
     description: The connection name to be deleted.
     type: str
     required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""
-- name: Delete a Database Connection
+- name: Delete a Database Connection with the default mount point
   community.hashi_vault.vault_database_connection_delete:
     url: https://vault:8201
-    path: database
+    connection_name: SomeName
+    auth_method: userpass
+    username: user
+    password: '{{ passwd }}'
+  register: result
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: Delete a Database Connection with a custom mount point
+  community.hashi_vault.vault_database_connection_delete:
+    url: https://vault:8201
+    engine_mount_point: db1
     connection_name: SomeName
     auth_method: userpass
     username: user
@@ -92,7 +104,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
         connection_name=dict(type='str', required=True),
     )
 
@@ -107,8 +119,11 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
-    connection_name = module.params.get('connection_name')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+        parameters['mount_point'] = engine_mount_point
+    parameters["connection_name"] = module.params.get('connection_name')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -121,19 +136,19 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.delete_connection(name=connection_name, mount_point=path)
+        raw = client.secrets.database.delete_connection(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 
     if raw.status_code not in [200, 204]:
         module.fail_json(
             status='failure',
-            msg="Failed to create connection. Status code: %s" % raw.status_code,
+            msg="Failed to delete database connection. Status code: %s" % raw.status_code,
         )
     module.exit_json(
         data={

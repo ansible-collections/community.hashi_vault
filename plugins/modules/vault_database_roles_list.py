@@ -31,6 +31,7 @@ attributes:
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
+  - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
 options:
@@ -41,10 +42,18 @@ options:
 '''
 
 EXAMPLES = r"""
-- name: List all roles
+- name: List all roles with the default mount point
   community.hashi_vault.vault_database_roles_list:
-    path: database
-  register: response
+  register: result
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: List all roles with a custom mount point
+  community.hashi_vault.vault_database_roles_list:
+    engine_mount_point: db1
+  register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
@@ -56,16 +65,35 @@ data:
   description: The C(data) field of raw result. This can also be accessed via C(raw.data).
   returned: success
   type: dict
+  contains: &data_contains
+    keys:
+      description: The list of dynamic role names.
+      returned: success
+      type: list
+      elements: str
+      sample: &sample_roles ["dyn_role1", "dyn_role2", "dyn_role3"]
   sample:
-    keys: ["role1", "role2", "role3"]
+    keys: *sample_roles
+roles:
+  description: The list of dynamic roles or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  returned: success
+  type: list
+  elements: str
+  sample: *sample_roles
 raw:
   description: The raw result of the operation.
   returned: success
   type: dict
+  contains:
+    data:
+      description: The data field of the API response.
+      returned: success
+      type: dict
+      contains: *data_contains
   sample:
     auth: null
     data:
-      keys: ["role1", "role2", "role3"]
+      keys: *sample_roles
     username: "SomeUser"
     lease_duration": 0
     lease_id: ""
@@ -133,10 +161,12 @@ def run_module():
             exception=traceback.format_exc()
         )
 
-    data = raw['data']
+    data = raw.get('data', {'keys': []})
+    roles = data['keys']
 
     module.exit_json(
         data=data,
+        roles=roles,
         raw=raw,
         changed=False
     )

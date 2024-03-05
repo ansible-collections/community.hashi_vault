@@ -17,10 +17,9 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Delete a role definition (applies to both static and dynamic roles)
+  - L(Delete a role definition,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#delete-a-role)
 notes:
-  - C(vault_database_role_delete) triggers the credential rotation of a static role
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#delete-a-role
+  - Applies to both static and dynamic roles
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -34,11 +33,12 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
   role_name:
     description: The name of the role to rotate credentials for.
     type: str
@@ -46,11 +46,20 @@ options:
 '''
 
 EXAMPLES = r"""
-- name: Delete a Role
+- name: Delete a Role with the default mount point
   community.hashi_vault.vault_database_role_delete:
-    path: database
     role_name: SomeRole
-  register: response
+  register: result
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: Delete a Role with a custom mount point
+  community.hashi_vault.vault_database_role_delete:
+    engine_mount_path: db1
+    role_name: SomeRole
+  register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
@@ -89,7 +98,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
         role_name=dict(type='str', required=True),
     )
 
@@ -104,8 +113,11 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
-    role_name = module.params.get('role_name')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+        parameters['mount_point'] = engine_mount_point
+    parameters["role_name"] = module.params.get('role_name')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -118,22 +130,19 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.delete_role(
-            name=role_name,
-            mount_point=path,
-        )
+        raw = client.secrets.database.delete_role(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 
     if raw.status_code not in [200, 204]:
         module.fail_json(
             status='failure',
-            msg="Failed to create connection. Status code: %s" % raw.status_code,
+            msg="Failed to delete role. Status code: %s" % raw.status_code,
         )
     module.exit_json(
         data={

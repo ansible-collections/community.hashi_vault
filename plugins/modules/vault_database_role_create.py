@@ -34,11 +34,12 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
   connection_name:
     description: The connection name under which the role should be created.
     type: str
@@ -87,14 +88,26 @@ EXAMPLES = r"""
         "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";"
     ]
 
-- name: Create / update Role
+- name: Create / update Role with the default mount point
   community.hashi_vault.vault_database_role_create:
-    path: database
     connection_name: SomeConnection
     role_name: SomeRole
     db_username: '{{ db_username}}'
     creation_statements: '{{ creation_statements }}'
-  register: response
+  register: result
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: Create / update Role with a custom mount point
+  community.hashi_vault.vault_database_role_create:
+    engine_mount_point: db1
+    connection_name: SomeConnection
+    role_name: SomeRole
+    db_username: '{{ db_username}}'
+    creation_statements: '{{ creation_statements }}'
+  register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
@@ -143,7 +156,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
         connection_name=dict(type='str', required=True),
         role_name=dict(type='str', required=True),
         creation_statements=dict(type='list', required=True, elements='str'),
@@ -165,15 +178,28 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
-    connection_name = module.params.get('connection_name')
-    role_name = module.params.get('role_name')
-    creation_statements = module.params.get('creation_statements')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+        parameters['mount_point'] = engine_mount_point
+    parameters["connection_name"] = module.params.get('connection_name')
+    parameters["role_name"] = module.params.get('role_name')
+    parameters["creation_statements"] = module.params.get('creation_statements')
     revocation_statements = module.params.get('revocation_statements')
+    if revocation_statements is not None:
+        parameters["revocation_statements"] = revocation_statements
     rollback_statements = module.params.get('rollback_statements')
+    if rollback_statements is not None:
+        parameters["rollback_statements"] = rollback_statements
     renew_statements = module.params.get('renew_statements')
+    if renew_statements is not None:
+        parameters["renew_statements"] = renew_statements
     default_ttl = module.params.get('default_ttl')
+    if default_ttl is not None:
+        parameters["default_ttl"] = default_ttl
     max_ttl = module.params.get('max_ttl')
+    if max_ttl is not None:
+        parameters["max_ttl"] = max_ttl
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -186,29 +212,19 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.create_role(
-            name=role_name,
-            db_name=connection_name,
-            mount_point=path,
-            creation_statements=creation_statements,
-            revocation_statements=revocation_statements,
-            rollback_statements=rollback_statements,
-            renew_statements=renew_statements,
-            default_ttl=default_ttl,
-            max_ttl=max_ttl,
-        )
+        raw = client.secrets.database.create_role(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 
     if raw.status_code not in [200, 204]:
         module.fail_json(
             status='failure',
-            msg="Failed to create connection. Status code: %s" % raw.status_code,
+            msg="Failed to create role. Status code: %s" % raw.status_code,
         )
     module.exit_json(
         data={

@@ -12,15 +12,13 @@ module: vault_database_connection_read
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Read a Database Connection (identified by its connection_name) in a given path
+short_description: Read a Database Connection, identified by its O(connection_name), in a given path
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Reads
+  - L(Reads a Database Connection,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-configuration) from Hashcorp Vault
 notes:
-  - C(vault_database_connection_read) reads a database connection from Hashicorp as described in
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-configuration
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -32,24 +30,39 @@ attributes:
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
+  - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
   connection_name:
     description: The connection name to be read.
     type: str
     required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""
-- name: Read a Database Connection
+- name: Read a Database Connection with the default mount point
   community.hashi_vault.vault_database_connection_read:
     url: https://vault:8201
-    path: database
+    connection_name: SomeName
+    auth_method: userpass
+    username: user
+    password: '{{ passwd }}'
+  register: result
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: Read a Database Connection with a custom mount point
+  community.hashi_vault.vault_database_connection_read:
+    url: https://vault:8201
+    engine_mount_point: db1
     connection_name: SomeName
     auth_method: userpass
     username: user
@@ -112,7 +125,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
         connection_name=dict(type='str', required=True),
     )
 
@@ -127,8 +140,11 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
-    connection_name = module.params.get('connection_name')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+        parameters['mount_point'] = engine_mount_point
+    parameters["connection_name"] = module.params.get('connection_name')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -141,12 +157,12 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.read_connection(name=connection_name, mount_point=path)
+        raw = client.secrets.database.read_connection(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path." % (path),
+            msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 

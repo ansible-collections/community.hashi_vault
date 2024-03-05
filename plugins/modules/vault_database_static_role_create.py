@@ -17,10 +17,8 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Creates a new or updates an existing static role identified by its role_name
+  - L(Creates a new or updates an existing static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role) identified by its O(role_name)
 notes:
-  - C(vault_database_static_role_create) triggers the creation of a static role
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -34,11 +32,12 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.action_group
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
+  engine_mount_point:
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
   connection_name:
     description: The connection name under which the role should be created.
     type: str
@@ -68,9 +67,21 @@ EXAMPLES = r"""
   ansible.builtin.set_fact:
     rotation_statements = ["ALTER USER \"{{name}}\" WITH PASSWORD '{{password}}';"]
 
-- name: Create / update Static Role
+- name: Create / update Static Role with the default mount point
   community.hashi_vault.vault_database_static_role_create:
-    path: database
+    connection_name: SomeConnection
+    role_name: SomeRole
+    db_username: '{{ db_username}}'
+    rotation_statements: '{{ rotation_statements }}'
+  register: response
+
+- name: Display the result of the operation
+  ansible.builtin.debug:
+    msg: "{{ result }}"
+
+- name: Create / update Static Role with a custom mount point
+  community.hashi_vault.vault_database_static_role_create:
+    engine_mount_point: db1
     connection_name: SomeConnection
     role_name: SomeRole
     db_username: '{{ db_username}}'
@@ -124,7 +135,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
         connection_name=dict(type='str', required=True),
         role_name=dict(type='str', required=True),
         db_username=dict(type='str', required=True),
@@ -143,12 +154,17 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    path = module.params.get('path')
-    connection_name = module.params.get('connection_name')
-    role_name = module.params.get('role_name')
-    db_username = module.params.get('db_username')
-    rotation_statements = module.params.get('rotation_statements')
-    rotation_period = module.params.get('rotation_period')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+        parameters['mount_point'] = engine_mount_point
+    parameters["connection_name"] = module.params.get('connection_name')
+    parameters["role_name"] = module.params.get('role_name')
+    parameters["db_username"] = module.params.get('db_username')
+    parameters["rotation_statements"] = module.params.get('rotation_statements')
+    rotation_period = module.params.get('rotation_period', None)
+    if rotation_period is not None:
+        parameters['rotation_period'] = rotation_period
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -161,19 +177,12 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.create_static_role(
-            name=role_name,
-            db_name=connection_name,
-            mount_point=path,
-            rotation_period=rotation_period,
-            rotation_statements=rotation_statements,
-            username=db_username,
-        )
+        raw = client.secrets.database.create_static_role(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 
