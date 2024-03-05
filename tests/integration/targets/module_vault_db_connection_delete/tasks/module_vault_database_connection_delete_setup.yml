@@ -1,11 +1,11 @@
 ---
 - name: Configuration tasks
   module_defaults:
-    vault_ci_token_create: '{{ vault_plugins_module_defaults_common }}'
-    vault_ci_enable_engine: '{{ vault_plugins_module_defaults_common }}'
-    vault_ci_read: '{{ vault_plugins_module_defaults_common }}'
-    vault_ci_write: '{{ vault_plugins_module_defaults_common }}'
-    vault_ci_policy_put: '{{ vault_plugins_module_defaults_common }}'
+    vault_ci_token_create: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_enable_engine: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_policy_put: "{{ vault_plugins_module_defaults_common }}"
   block:
     - name: Create a test non-root token
       vault_ci_token_create:
@@ -13,11 +13,10 @@
       register: user_token_cmd
 
     - name: Define database connection data
-      set_fact:
+      ansible.builtin.set_fact:
         db_connection_name: test-connection-delete
         db_username: con2
         db_password: con2
-
 
     - name: Create a database connection that can be deleted in the following test
       vault_ci_write:
@@ -25,6 +24,6 @@
         data:
           plugin_name: "{{ vault_database_plugin_name }}"
           connection_url: "{{ vault_database_connection_url }}"
-          allowed_roles: '*'
+          allowed_roles: "*"
           username: "{{ db_username }}"
           password: "{{ db_password }}"

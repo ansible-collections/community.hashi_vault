@@ -1,7 +1,7 @@
 ---
 - name: Var block
   vars:
-    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
     expected_roles:
       - role1
       - role2
@@ -11,9 +11,9 @@
 
   module_defaults:
     community.hashi_vault.vault_database_static_roles_list: &defaults
-      url: '{{ vault_test_server_http }}'
+      url: "{{ vault_test_server_http }}"
       auth_method: token
-      token: '{{ user_token }}'
+      token: "{{ user_token }}"
       token_validate: true
       timeout: 5
   block:
@@ -24,7 +24,8 @@
       community.hashi_vault.vault_database_static_roles_list:
         engine_mount_point: NOT REAL
 
-    - assert: &failure_bad_mount
+    - name: Check
+      ansible.builtin.assert: &failure_bad_mount
         that:
           - db_static_roles is failed
           - db_static_roles.msg is search('Permission Denied')
@@ -41,7 +42,8 @@
       community.hashi_vault.vault_database_static_roles_list:
         engine_mount_point: NOT REAL
 
-    - assert: *failure_bad_mount
+    - name: Check
+      ansible.builtin.assert: *failure_bad_mount
 
     - name: Test list database static roles (explicit mount) [check mode]
       register: db_static_roles
@@ -49,7 +51,8 @@
       community.hashi_vault.vault_database_static_roles_list:
         engine_mount_point: database
 
-    - assert: &success
+    - name: Check
+      ansible.builtin.assert: &success
         that:
           - db_static_roles is defined
           - db_static_roles is not changed
@@ -66,17 +69,20 @@
       community.hashi_vault.vault_database_static_roles_list:
         engine_mount_point: database
 
-    - assert: *success
+    - name: Check
+      ansible.builtin.assert: *success
 
     - name: Test list database static roles (default mount) [check mode]
       register: db_static_roles
       check_mode: true
       community.hashi_vault.vault_database_static_roles_list:
 
-    - assert: *success
+    - name: Check
+      ansible.builtin.assert: *success
 
     - name: Test list database static roles (default mount)
       register: db_static_roles
       community.hashi_vault.vault_database_static_roles_list:
 
-    - assert: *success
+    - name: Check
+      ansible.builtin.assert: *success

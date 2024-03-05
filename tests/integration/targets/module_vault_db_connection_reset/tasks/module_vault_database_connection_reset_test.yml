@@ -1,20 +1,20 @@
 ---
 - name: Var block
   vars:
-    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
   module_defaults:
     community.hashi_vault.vault_database_connection_reset: &defaults
-      url: '{{ vault_test_server_http }}'
+      url: "{{ vault_test_server_http }}"
       auth_method: token
-      token: '{{ user_token }}'
+      token: "{{ user_token }}"
       token_validate: true
       timeout: 5
   block:
     - name: Test read database connection
       register: db_connection_reset
       community.hashi_vault.vault_database_connection_reset:
-        path: database
-        connection_name: '{{ vault_database_connection_name }}'
+        engine_mount_point: database
+        connection_name: "{{ vault_database_connection_name }}"
 
     - assert:
         that:

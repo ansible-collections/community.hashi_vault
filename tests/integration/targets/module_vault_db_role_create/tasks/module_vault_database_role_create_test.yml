@@ -1,19 +1,19 @@
 ---
 - name: Var block
   vars:
-    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
   module_defaults:
     community.hashi_vault.vault_database_role_create: &defaults
-      url: '{{ vault_test_server_http }}'
+      url: "{{ vault_test_server_http }}"
       auth_method: token
-      token: '{{ user_token }}'
+      token: "{{ user_token }}"
       token_validate: true
       timeout: 5
   block:
     - name: Test database create role
       register: db_create_role
       community.hashi_vault.vault_database_role_create:
-        path: database
+        engine_mount_point: database
         connection_name: "{{ vault_database_connection_name }}"
         creation_statements:
           - "{{ vault_database_dynamic_user_sql }}"

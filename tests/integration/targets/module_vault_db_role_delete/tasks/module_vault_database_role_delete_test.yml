@@ -1,20 +1,19 @@
 ---
 - name: Var block
   vars:
-    user_token: '{{ user_token_cmd.result.auth.client_token }}'
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
   module_defaults:
     community.hashi_vault.vault_database_role_delete: &defaults
-      url: '{{ vault_test_server_http }}'
+      url: "{{ vault_test_server_http }}"
       auth_method: token
-      token: '{{ user_token }}'
+      token: "{{ user_token }}"
       token_validate: true
       timeout: 5
   block:
-
     - name: Test database static role delete
       register: db_static_role_delete
       community.hashi_vault.vault_database_role_delete:
-        path: database
+        engine_mount_point: database
         role_name: "{{ static_role_name }}"
 
     - assert:
@@ -28,7 +27,7 @@
     - name: Test database dynamic role delete
       register: db_dynamic_role_delete
       community.hashi_vault.vault_database_role_delete:
-        path: database
+        engine_mount_point: database
         role_name: "{{ dynamic_role_name }}"
 
     - assert:

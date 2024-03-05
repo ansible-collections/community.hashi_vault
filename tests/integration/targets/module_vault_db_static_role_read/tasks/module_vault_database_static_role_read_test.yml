@@ -25,7 +25,7 @@
     - name: Test read static role (default mount)
       register: db_static_role_read
       community.hashi_vault.vault_database_static_role_read:
-        path: database
+        engine_mount_point: database
         role_name: role2
 
     - assert:
