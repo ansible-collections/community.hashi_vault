@@ -296,12 +296,16 @@ class ModuleDocFragment(object):
       cert_auth_public_key:
         env:
           - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PUBLIC_KEY
+        vars:
+          - name: ansible_hashi_vault_cert_auth_public_key
         ini:
           - section: hashi_vault_collection
             key: cert_auth_public_key
       cert_auth_private_key:
         env:
           - name: ANSIBLE_HASHI_VAULT_CERT_AUTH_PRIVATE_KEY
+        vars:
+          - name: ansible_hashi_vault_cert_auth_private_key
         ini:
           - section: hashi_vault_collection
             key: cert_auth_private_key
