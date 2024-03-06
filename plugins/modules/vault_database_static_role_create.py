@@ -12,12 +12,12 @@ module: vault_database_static_role_create
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Create or update a static role definition
+short_description: Create or update a static role
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - L(Creates a new or updates an existing static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role) identified by its O(role_name)
+  - L(Creates a new or updates an existing static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role)
 notes:
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
@@ -35,6 +35,7 @@ extends_documentation_fragment:
   - community.hashi_vault.engine_mount
 options:
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -69,6 +70,10 @@ EXAMPLES = r"""
 
 - name: Create / update Static Role with the default mount point
   community.hashi_vault.vault_database_static_role_create:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     connection_name: SomeConnection
     role_name: SomeRole
     db_username: '{{ db_username}}'
@@ -81,6 +86,10 @@ EXAMPLES = r"""
 
 - name: Create / update Static Role with a custom mount point
   community.hashi_vault.vault_database_static_role_create:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
     connection_name: SomeConnection
     role_name: SomeRole
@@ -154,52 +163,57 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    parameters = {}
-    engine_mount_point = module.params.get('engine_mount_point', None)
-    if engine_mount_point is not None:
-        parameters['mount_point'] = engine_mount_point
-    parameters["connection_name"] = module.params.get('connection_name')
-    parameters["role_name"] = module.params.get('role_name')
-    parameters["db_username"] = module.params.get('db_username')
-    parameters["rotation_statements"] = module.params.get('rotation_statements')
-    rotation_period = module.params.get('rotation_period', None)
-    if rotation_period is not None:
-        parameters['rotation_period'] = rotation_period
+    if module.check_mode == False:
+      parameters = {}
+      engine_mount_point = module.params.get('engine_mount_point', None)
+      if engine_mount_point is not None:
+          parameters['mount_point'] = engine_mount_point
+      parameters["connection_name"] = module.params.get('connection_name')
+      parameters["role_name"] = module.params.get('role_name')
+      parameters["db_username"] = module.params.get('db_username')
+      parameters["rotation_statements"] = module.params.get('rotation_statements')
+      rotation_period = module.params.get('rotation_period', None)
+      if rotation_period is not None:
+          parameters['rotation_period'] = rotation_period
 
-    module.connection_options.process_connection_options()
-    client_args = module.connection_options.get_hvac_connection_options()
-    client = module.helper.get_vault_client(**client_args)
+      module.connection_options.process_connection_options()
+      client_args = module.connection_options.get_hvac_connection_options()
+      client = module.helper.get_vault_client(**client_args)
 
-    try:
-        module.authenticator.validate()
-        module.authenticator.authenticate(client)
-    except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+      try:
+          module.authenticator.validate()
+          module.authenticator.authenticate(client)
+      except (NotImplementedError, HashiVaultValueError) as e:
+          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        raw = client.secrets.database.create_static_role(**parameters)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
-        module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
-            exception=traceback.format_exc()
-        )
+      try:
+          raw = client.secrets.database.create_static_role(**parameters)
+      except hvac.exceptions.Forbidden as e:
+          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
+      except hvac.exceptions.InvalidPath as e:
+          module.fail_json(
+              msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
+              exception=traceback.format_exc()
+          )
 
-    # this is required due to a different API response in vault 1.14.9 vs. later versions
-    if raw:
-        from requests.models import Response
-        if isinstance(raw, Response):
-            raw_res = raw.text
-        else:
-            raw_res = raw
+      # this is required due to a different API response in vault 1.14.9 vs. later versions
+      if raw:
+          from requests.models import Response
+          if isinstance(raw, Response):
+              raw_res = raw.text
+          else:
+              raw_res = raw
+
+      module.exit_json(
+          data={
+              'status': 'success',
+          },
+          raw=raw_res,
+          changed=True
+      )
 
     module.exit_json(
-        data={
-            'status': 'success',
-        },
-        raw=raw_res,
-        changed=True
+        data={}
     )
 
 

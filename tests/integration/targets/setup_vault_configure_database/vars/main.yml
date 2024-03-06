@@ -16,12 +16,12 @@ vault_database_dynamic_user_sql: |
   GRANT ro TO {{ "{{name}}" }};
 
 vault_base_policy_db: |
-  path "{{ vault_database_path }}/*" {
+  path "{{ vault_database_engine_mount_point }}/*" {
     capabilities = ["read", "list"]
   }
 
 vault_policy_db_all: |
   {{ vault_base_policy_db }}
-  path "{{ vault_database_path }}/*" {
+  path "{{ vault_database_engine_mount_point }}/*" {
     capabilities = ["create", "update", "patch", "delete"]
   }

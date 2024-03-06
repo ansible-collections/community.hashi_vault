@@ -10,6 +10,25 @@
       token_validate: true
       timeout: 5
   block:
+    - name: Test database connection configure (explicit mount - invalid) [check mode]
+      register: db_connection_configure
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: NOT REAL
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable"
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (explicit mount - invalid) [check mode]
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_connection_configure is failed
+          - db_connection_configure.msg is search('Permission Denied')
+
     - name: Test database connection configure
       register: db_connection_configure
       community.hashi_vault.vault_database_connection_configure:

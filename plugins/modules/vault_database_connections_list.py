@@ -12,7 +12,7 @@ module: vault_database_connections_list
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Lists all Database Connections for a given O(engine_mount_point)
+short_description: Returns a list of available connections
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
@@ -22,11 +22,6 @@ notes:
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
-attributes:
-  check_mode:
-    support: partial
-    details:
-      - In check mode, an empty response will be returned and the write will not be performed.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
@@ -36,6 +31,7 @@ extends_documentation_fragment:
   - community.hashi_vault.engine_mount
 options:
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -46,7 +42,7 @@ EXAMPLES = r"""
   community.hashi_vault.vault_database_connections_list:
     url: https://vault:8201
     auth_method: userpass
-    username: user
+    username: '{{ user }}'
     password: '{{ passwd }}'
   register: result
 
@@ -57,10 +53,10 @@ EXAMPLES = r"""
 - name: List Database Connections with a custom mount point
   community.hashi_vault.vault_database_connections_list:
     url: https://vault:8201
-    engine_mount_point: db1
     auth_method: userpass
-    username: user
+    username: '{{ user }}'
     password: '{{ passwd }}'
+    engine_mount_point: db1
   register: result
 
 - name: Display the result of the operation

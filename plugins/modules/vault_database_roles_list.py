@@ -23,11 +23,6 @@ notes:
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
-attributes:
-  check_mode:
-    support: partial
-    details:
-      - In check mode, an empty response will be returned and the write will not be performed.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
@@ -35,15 +30,20 @@ extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
+  engine_mount_point:
+    default: database
+    description:
+      - Specify the mount point used by the database engine.
+      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""
 - name: List all roles with the default mount point
   community.hashi_vault.vault_database_roles_list:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
   register: result
 
 - name: Display the result of the operation
@@ -52,6 +52,10 @@ EXAMPLES = r"""
 
 - name: List all roles with a custom mount point
   community.hashi_vault.vault_database_roles_list:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
   register: result
 
@@ -123,7 +127,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
     )
 
     module = HashiVaultModule(
@@ -136,8 +140,10 @@ def run_module():
             msg=missing_required_lib('hvac'),
             exception=HVAC_IMPORT_ERROR
         )
-
-    path = module.params.get('path')
+    parameters = {}
+    engine_mount_point = module.params.get('engine_mount_point', None)
+    if engine_mount_point is not None:
+      parameters['mount_point'] = engine_mount_point
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -150,14 +156,12 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.list_roles(
-            mount_point=path,
-        )
+        raw = client.secrets.database.list_roles(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
+        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (path),
+            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
             exception=traceback.format_exc()
         )
 

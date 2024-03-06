@@ -12,21 +12,21 @@ module: vault_database_connection_configure
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Configures a database connection within a database secrets engine
+short_description: Configures the database engine
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Creates a L(new database connection for a database secrets engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#configuration), identified by its O(path) in HashiCorp Vault.
+  - Creates a L(new database connection for a database secrets engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#configuration), identified by its O(engine_mount_point) in HashiCorp Vault.
 notes:
-  - C(vault_database_connection_configure) configures or updates a database connection in a given I(path)
+  - The database needs to be created and available to connect before you can configure the database secrets engine using the above configure method.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 attributes:
   check_mode:
     support: partial
     details:
-      - In check mode, an empty response will be returned and the write will not be performed.
+      - In check mode, an empty response will be returned and the create / update will not be performed.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
@@ -60,6 +60,7 @@ options:
     type: str
     required: True
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -69,13 +70,13 @@ EXAMPLES = r"""
 - name: Create a new Database Connection with the default mount point
   community.hashi_vault.vault_database_connection_configure:
     url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     connection_name: MyName
     connection_url: postgresql://{{'{{username}}'}}:{{'{{password}}'}}@postgres:5432/postgres?sslmode=disable
     connection_username: SomeUser
     connection_password: SomePass
-    auth_method: userpass
-    username: user
-    password: '{{ passwd }}'
   register: result
 
 - name: Display the result of the operation
@@ -86,14 +87,14 @@ EXAMPLES = r"""
 - name: Create a new Database Connection with a custom mount point
   community.hashi_vault.vault_database_connection_configure:
     url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
     connection_name: MyName
     connection_url: postgresql://{{'{{username}}'}}:{{'{{password}}'}}@postgres:5432/postgres?sslmode=disable
     connection_username: SomeUser
     connection_password: SomePass
-    auth_method: userpass
-    username: user
-    password: '{{ passwd }}'
   register: result
 
 - name: Display the result of the operation
@@ -152,49 +153,55 @@ def run_module():
             msg=missing_required_lib('hvac'),
             exception=HVAC_IMPORT_ERROR
         )
-    parameters = {}
-    engine_mount_point = module.params.get('engine_mount_point', None)
-    if engine_mount_point is not None:
-        parameters['mount_point'] = engine_mount_point
-    parameters["plugin_name"] = module.params.get('plugin_name')
-    parameters["allowed_roles"] = module.params.get('allowed_roles')
-    parameters["connection_url"] = module.params.get('connection_url')
-    parameters["connection_name"] = module.params.get('connection_name')
-    parameters["connection_username"] = module.params.get('connection_username')
-    parameters["connection_password"] = module.params.get('connection_password')
 
-    module.connection_options.process_connection_options()
-    client_args = module.connection_options.get_hvac_connection_options()
-    client = module.helper.get_vault_client(**client_args)
+    if module.check_mode == False:
+      parameters = {}
+      engine_mount_point = module.params.get('engine_mount_point', None)
+      if engine_mount_point is not None:
+          parameters['mount_point'] = engine_mount_point
+      parameters["plugin_name"] = module.params.get('plugin_name')
+      parameters["allowed_roles"] = module.params.get('allowed_roles')
+      parameters["connection_url"] = module.params.get('connection_url')
+      parameters["connection_name"] = module.params.get('connection_name')
+      parameters["connection_username"] = module.params.get('connection_username')
+      parameters["connection_password"] = module.params.get('connection_password')
 
-    try:
-        module.authenticator.validate()
-        module.authenticator.authenticate(client)
-    except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+      module.connection_options.process_connection_options()
+      client_args = module.connection_options.get_hvac_connection_options()
+      client = module.helper.get_vault_client(**client_args)
 
-    try:
-        raw = client.secrets.database.configure(**parameters)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
-        module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
-            exception=traceback.format_exc()
-        )
+      try:
+          module.authenticator.validate()
+          module.authenticator.authenticate(client)
+      except (NotImplementedError, HashiVaultValueError) as e:
+          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    if raw.status_code not in [200, 204]:
-        module.fail_json(
-            status='failure',
-            msg="Failed to create connection. Status code: %s" % raw.status_code,
-        )
+      try:
+          raw = client.secrets.database.configure(**parameters)
+      except hvac.exceptions.Forbidden as e:
+          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
+      except hvac.exceptions.InvalidPath as e:
+          module.fail_json(
+              msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
+              exception=traceback.format_exc()
+          )
+
+      if raw.status_code not in [200, 204]:
+          module.fail_json(
+              status='failure',
+              msg="Failed to create connection. Status code: %s" % raw.status_code,
+          )
+      module.exit_json(
+          data={
+              'status': 'success',
+              'status_code': raw.status_code,
+              'ok': raw.ok,
+          },
+          changed=True
+      )
+    
     module.exit_json(
-        data={
-            'status': 'success',
-            'status_code': raw.status_code,
-            'ok': raw.ok,
-        },
-        changed=True
+        data={}
     )
 
 

@@ -12,14 +12,13 @@ module: vault_database_static_role_read
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Read a static role definition
+short_description: Queries a static role definition
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Reads an existing static role identified by its O(role_name)
+  - L(Queries a static role definition,L(reads a static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-static-role)) identified by its O(role_name)
 notes:
-  - C(vault_database_static_role_read) L(reads a static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-static-role)
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -40,6 +39,7 @@ options:
     type: str
     required: True
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -48,8 +48,12 @@ options:
 EXAMPLES = r"""
 - name: Read Static Role with a default mount point
   community.hashi_vault.vault_database_static_role_read:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     role_name: SomeRole
-  register: response
+  register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
@@ -57,9 +61,13 @@ EXAMPLES = r"""
 
 - name: Read Static Role with a custom moint point
   community.hashi_vault.vault_database_static_role_read:
-    role_name: SomeRole
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
-  register: response
+    role_name: SomeRole
+  register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:

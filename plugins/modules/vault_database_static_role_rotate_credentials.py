@@ -17,10 +17,10 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html)) >= 2.0.0
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Trigger the credential rotation for a static role
+  - This endpoint is used to L(rotate the Static Role credentials,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#rotate-static-role-credentials) stored for a given role name.
+  - While Static Roles are rotated automatically by Vault at configured rotation periods,
+  - users can use this endpoint to manually trigger a rotation to change the stored password and reset the TTL of the Static Role's password.
 notes:
-  - C(vault_database_static_role_rotate_credentials) triggers the credential rotation of a static role
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#rotate-static-role-credentials
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -37,6 +37,7 @@ extends_documentation_fragment:
   - community.hashi_vault.engine_mount
 options:
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -49,6 +50,10 @@ options:
 EXAMPLES = r"""
 - name: Rotate credentials of a static role with the default mount point
   community.hashi_vault.vault_database_static_role_rotate_credentials:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     role_name: SomeRole
   register: result
 
@@ -58,6 +63,10 @@ EXAMPLES = r"""
 
 - name: Rotate credentials of a static role with a custom mount point
   community.hashi_vault.vault_database_static_role_rotate_credentials:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
     role_name: SomeRole
   register: result
@@ -113,47 +122,51 @@ def run_module():
             msg=missing_required_lib('hvac'),
             exception=HVAC_IMPORT_ERROR
         )
+    if module.check_mode == False:
+      parameters = {}
+      engine_mount_point = module.params.get('engine_mount_point', None)
+      if engine_mount_point is not None:
+          parameters['mount_point'] = engine_mount_point
+      parameters["role_name"] = module.params.get('role_name')
 
-    parameters = {}
-    engine_mount_point = module.params.get('engine_mount_point', None)
-    if engine_mount_point is not None:
-        parameters['mount_point'] = engine_mount_point
-    parameters["role_name"] = module.params.get('role_name')
+      module.connection_options.process_connection_options()
+      client_args = module.connection_options.get_hvac_connection_options()
+      client = module.helper.get_vault_client(**client_args)
 
-    module.connection_options.process_connection_options()
-    client_args = module.connection_options.get_hvac_connection_options()
-    client = module.helper.get_vault_client(**client_args)
+      try:
+          module.authenticator.validate()
+          module.authenticator.authenticate(client)
+      except (NotImplementedError, HashiVaultValueError) as e:
+          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        module.authenticator.validate()
-        module.authenticator.authenticate(client)
-    except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+      try:
+          raw = client.secrets.database.rotate_static_role_credentials(**parameters)
+      except AttributeError as e:
+          module.fail_json(msg="hvac>=2.0.0 is required", exception=traceback.format_exc())
+      except hvac.exceptions.Forbidden as e:
+          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
+      except hvac.exceptions.InvalidPath as e:
+          module.fail_json(
+              msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
+              exception=traceback.format_exc()
+          )
 
-    try:
-        raw = client.secrets.database.rotate_static_role_credentials(**parameters)
-    except AttributeError as e:
-        module.fail_json(msg="hvac>=2.0.0 is required", exception=traceback.format_exc())
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
-        module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
-            exception=traceback.format_exc()
-        )
+      if raw.status_code not in [200, 204]:
+          module.fail_json(
+              status='failure',
+              msg="Failed to create connection. Status code: %s" % raw.status_code,
+          )
+      module.exit_json(
+          data={
+              'status': 'success',
+              'status_code': raw.status_code,
+              'ok': raw.ok,
+          },
+          changed=True
+      )
 
-    if raw.status_code not in [200, 204]:
-        module.fail_json(
-            status='failure',
-            msg="Failed to create connection. Status code: %s" % raw.status_code,
-        )
     module.exit_json(
-        data={
-            'status': 'success',
-            'status_code': raw.status_code,
-            'ok': raw.ok,
-        },
-        changed=True
+        data={}
     )
 
 

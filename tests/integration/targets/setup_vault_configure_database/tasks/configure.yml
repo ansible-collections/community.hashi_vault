@@ -5,17 +5,17 @@
 
 - name: Create a database connection
   vault_ci_write:
-    path: "/{{ vault_database_path }}/config/{{ vault_database_connection_name }}"
+    path: "/{{ vault_database_engine_mount_point }}/config/{{ vault_database_connection_name }}"
     data:
       plugin_name: "{{ vault_database_plugin_name }}"
       connection_url: "{{ vault_database_connection_url }}"
-      allowed_roles: '*'
+      allowed_roles: "*"
       username: "{{ vault_database_connection_user }}"
       password: "{{ vault_database_connection_password }}"
 
 - name: Create some static roles
   vault_ci_write:
-    path: "{{ vault_database_path }}/static-roles/role{{ item }}"
+    path: "{{ vault_database_engine_mount_point }}/static-roles/role{{ item }}"
     data:
       db_name: "{{ vault_database_connection_name }}"
       username: "role{{ item }}"
@@ -24,7 +24,7 @@
 
 - name: Create a readonly dynamic role
   vault_ci_write:
-    path: "{{ vault_database_path }}/roles/readonly"
+    path: "{{ vault_database_engine_mount_point }}/roles/readonly"
     data:
       db_name: "{{ vault_database_connection_name }}"
       creation_statements: "{{ vault_database_dynamic_user_sql }}"
@@ -43,6 +43,6 @@
 
 - name: Write Canary
   vault_ci_write:
-    path: '{{ vault_configure_engine_database_canary.path }}'
+    path: "{{ vault_configure_engine_database_canary.path }}"
     data:
-      value: '{{ vault_configure_engine_database_canary.value }}'
+      value: "{{ vault_configure_engine_database_canary.value }}"

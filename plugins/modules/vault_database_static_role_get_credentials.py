@@ -12,29 +12,26 @@ module: vault_database_static_role_get_credentials
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Returns the current credentials of the O(role_name)
+short_description: Returns the current credentials based on the named static role
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Returns the L(current credentials based of the named static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#get-static-credentials)
+  - Returns the L(current credentials based of the named static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#get-static-credentials) identified by its O(role_name)
 notes:
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
-attributes:
-  check_mode:
-    support: partial
-    details:
-      - In check mode, an empty response will be returned and the write will not be performed.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
+  - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
 options:
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -47,6 +44,10 @@ options:
 EXAMPLES = r"""
 - name: Returns the current credentials based on the named static role with the default mount point
   community.hashi_vault.vault_database_static_role_read:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     role_name: SomeRole
   register: result
 
@@ -56,6 +57,10 @@ EXAMPLES = r"""
 
 - name: Returns the current credentials based on the named static role with a custom mount point
   community.hashi_vault.vault_database_static_role_read:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
     role_name: SomeRole
   register: result

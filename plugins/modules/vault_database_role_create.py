@@ -17,11 +17,8 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Creates or updates a (dynamic) role definition
+  - L(Creates or updates a dynamic role definition,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role)
 notes:
-  - C(vault_database_role_create) triggers the creation of a static role
-  - https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 attributes:
@@ -37,6 +34,7 @@ extends_documentation_fragment:
   - community.hashi_vault.engine_mount
 options:
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -90,6 +88,10 @@ EXAMPLES = r"""
 
 - name: Create / update Role with the default mount point
   community.hashi_vault.vault_database_role_create:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     connection_name: SomeConnection
     role_name: SomeRole
     db_username: '{{ db_username}}'
@@ -102,6 +104,10 @@ EXAMPLES = r"""
 
 - name: Create / update Role with a custom mount point
   community.hashi_vault.vault_database_role_create:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
     connection_name: SomeConnection
     role_name: SomeRole
@@ -178,61 +184,66 @@ def run_module():
             exception=HVAC_IMPORT_ERROR
         )
 
-    parameters = {}
-    engine_mount_point = module.params.get('engine_mount_point', None)
-    if engine_mount_point is not None:
-        parameters['mount_point'] = engine_mount_point
-    parameters["connection_name"] = module.params.get('connection_name')
-    parameters["role_name"] = module.params.get('role_name')
-    parameters["creation_statements"] = module.params.get('creation_statements')
-    revocation_statements = module.params.get('revocation_statements')
-    if revocation_statements is not None:
-        parameters["revocation_statements"] = revocation_statements
-    rollback_statements = module.params.get('rollback_statements')
-    if rollback_statements is not None:
-        parameters["rollback_statements"] = rollback_statements
-    renew_statements = module.params.get('renew_statements')
-    if renew_statements is not None:
-        parameters["renew_statements"] = renew_statements
-    default_ttl = module.params.get('default_ttl')
-    if default_ttl is not None:
-        parameters["default_ttl"] = default_ttl
-    max_ttl = module.params.get('max_ttl')
-    if max_ttl is not None:
-        parameters["max_ttl"] = max_ttl
+    if module.check_mode == False:
+      parameters = {}
+      engine_mount_point = module.params.get('engine_mount_point', None)
+      if engine_mount_point is not None:
+          parameters['mount_point'] = engine_mount_point
+      parameters["connection_name"] = module.params.get('connection_name')
+      parameters["role_name"] = module.params.get('role_name')
+      parameters["creation_statements"] = module.params.get('creation_statements')
+      revocation_statements = module.params.get('revocation_statements')
+      if revocation_statements is not None:
+          parameters["revocation_statements"] = revocation_statements
+      rollback_statements = module.params.get('rollback_statements')
+      if rollback_statements is not None:
+          parameters["rollback_statements"] = rollback_statements
+      renew_statements = module.params.get('renew_statements')
+      if renew_statements is not None:
+          parameters["renew_statements"] = renew_statements
+      default_ttl = module.params.get('default_ttl')
+      if default_ttl is not None:
+          parameters["default_ttl"] = default_ttl
+      max_ttl = module.params.get('max_ttl')
+      if max_ttl is not None:
+          parameters["max_ttl"] = max_ttl
 
-    module.connection_options.process_connection_options()
-    client_args = module.connection_options.get_hvac_connection_options()
-    client = module.helper.get_vault_client(**client_args)
+      module.connection_options.process_connection_options()
+      client_args = module.connection_options.get_hvac_connection_options()
+      client = module.helper.get_vault_client(**client_args)
 
-    try:
-        module.authenticator.validate()
-        module.authenticator.authenticate(client)
-    except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+      try:
+          module.authenticator.validate()
+          module.authenticator.authenticate(client)
+      except (NotImplementedError, HashiVaultValueError) as e:
+          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-    try:
-        raw = client.secrets.database.create_role(**parameters)
-    except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
-        module.fail_json(
-            msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
-            exception=traceback.format_exc()
-        )
+      try:
+          raw = client.secrets.database.create_role(**parameters)
+      except hvac.exceptions.Forbidden as e:
+          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
+      except hvac.exceptions.InvalidPath as e:
+          module.fail_json(
+              msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
+              exception=traceback.format_exc()
+          )
 
-    if raw.status_code not in [200, 204]:
-        module.fail_json(
-            status='failure',
-            msg="Failed to create role. Status code: %s" % raw.status_code,
-        )
+      if raw.status_code not in [200, 204]:
+          module.fail_json(
+              status='failure',
+              msg="Failed to create role. Status code: %s" % raw.status_code,
+          )
+      module.exit_json(
+          data={
+              'status': 'success',
+              'status_code': raw.status_code,
+              'ok': raw.ok,
+          },
+          changed=True
+      )
+
     module.exit_json(
-        data={
-            'status': 'success',
-            'status_code': raw.status_code,
-            'ok': raw.ok,
-        },
-        changed=True
+        data={}
     )
 
 

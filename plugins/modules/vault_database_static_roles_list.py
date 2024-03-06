@@ -31,6 +31,7 @@ notes:
   - Instead, use RV(roles) to access the list of roles, or use the syntax C(data["keys"]) or C(raw.data["keys"]) to access the list via dict member.
 options:
   engine_mount_point:
+    default: database
     description:
       - Specify the mount point used by the database engine.
       - Defaults to the default used by C(hvac).
@@ -39,6 +40,10 @@ options:
 EXAMPLES = r"""
 - name: List static roles with the default mount point
   community.hashi_vault.vault_database_static_roles_list:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
   register: response
 
 - name: Display the result of the operation
@@ -47,6 +52,10 @@ EXAMPLES = r"""
 
 - name: List static roles with a custom mount point
   community.hashi_vault.vault_database_static_roles_list:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
     engine_mount_point: db1
   register: response
 
