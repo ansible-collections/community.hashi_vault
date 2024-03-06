@@ -124,7 +124,7 @@ def run_module():
       engine_mount_point = module.params.get('engine_mount_point', None)
       if engine_mount_point is not None:
           parameters['mount_point'] = engine_mount_point
-      parameters["connection_name"] = module.params.get('connection_name')
+      parameters["name"] = module.params.get('connection_name')
 
       module.connection_options.process_connection_options()
       client_args = module.connection_options.get_hvac_connection_options()
@@ -139,10 +139,10 @@ def run_module():
       try:
           raw = client.secrets.database.reset_connection(**parameters)
       except hvac.exceptions.Forbidden as e:
-          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
+          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
       except hvac.exceptions.InvalidPath as e:
           module.fail_json(
-              msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
+              msg="Invalid or missing path ['%s'/reset/'%s']." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
 

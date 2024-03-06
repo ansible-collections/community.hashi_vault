@@ -190,7 +190,7 @@ def run_module():
       if engine_mount_point is not None:
           parameters['mount_point'] = engine_mount_point
       parameters["connection_name"] = module.params.get('connection_name')
-      parameters["role_name"] = module.params.get('role_name')
+      parameters["name"] = module.params.get('role_name')
       parameters["creation_statements"] = module.params.get('creation_statements')
       revocation_statements = module.params.get('revocation_statements')
       if revocation_statements is not None:
@@ -221,10 +221,10 @@ def run_module():
       try:
           raw = client.secrets.database.create_role(**parameters)
       except hvac.exceptions.Forbidden as e:
-          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
+          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
       except hvac.exceptions.InvalidPath as e:
           module.fail_json(
-              msg="Invalid or missing path ['%s']. Check the path." % (engine_mount_point),
+              msg="Invalid or missing path ['%s'/roles/'%s']." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
 
