@@ -121,7 +121,7 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        path=dict(type='str', required=True),
+        engine_mount_point=dict(type='str', required=False),
         role_name=dict(type='str', required=True),
     )
 
@@ -140,7 +140,7 @@ def run_module():
     engine_mount_point = module.params.get('engine_mount_point', None)
     if engine_mount_point is not None:
         parameters['mount_point'] = engine_mount_point
-    parameters["role_name"] = module.params.get('role_name')
+    parameters["name"] = module.params.get('role_name')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
