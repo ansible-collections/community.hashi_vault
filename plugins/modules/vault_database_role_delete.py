@@ -26,7 +26,7 @@ attributes:
   check_mode:
     support: partial
     details:
-      - In check mode, an empty response will be returned and the write will not be performed.
+      - In check mode, a sample response will be returned, but the deletion will not be performed in Hashicorp Vault.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
@@ -163,7 +163,12 @@ def run_module():
       )
 
     module.exit_json(
-        data={}
+      data={
+          'status': 'success',
+          'status_code': '204',
+          'ok': True,
+      },
+      changed=True
     )
 
 

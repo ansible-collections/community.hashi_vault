@@ -6,6 +6,10 @@
     vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
     vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
     vault_ci_policy_put: "{{ vault_plugins_module_defaults_common }}"
+  vars:
+    connection_names: ["test-connection-delete-1", "test-connection-delete-2"]
+    usernames: ["con2", "con2"]
+    passwords: ["con2", "con2"]
   block:
     - name: Create a test non-root token
       vault_ci_token_create:
@@ -14,16 +18,19 @@
 
     - name: Define database connection data
       ansible.builtin.set_fact:
-        db_connection_name: test-connection-delete
-        db_username: con2
-        db_password: con2
+        db_sample_data: "{{ db_sample_data | default([]) + [ {'connection_name': item.0, 'username': item.1, 'password': item.2 } ] }}"
+      with_together:
+        - "{{ connection_names }}"
+        - "{{ usernames }}"
+        - "{{ passwords }}"
 
-    - name: Create a database connection that can be deleted in the following test
+    - name: Create database connections that can be deleted in the following test
       vault_ci_write:
-        path: "{{ vault_database_path }}/config/{{ db_connection_name }}"
+        path: "database/config/{{ item.connection_name }}"
         data:
           plugin_name: "{{ vault_database_plugin_name }}"
           connection_url: "{{ vault_database_connection_url }}"
           allowed_roles: "*"
-          username: "{{ db_username }}"
-          password: "{{ db_password }}"
+          username: "{{ item.username }}"
+          password: "{{ item.password }}"
+      loop: "{{ db_sample_data }}"

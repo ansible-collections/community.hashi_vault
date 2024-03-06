@@ -10,14 +10,15 @@
       token_validate: true
       timeout: 5
   block:
-    - name: Test database connection configure
+    - name: Test database connection delete (explicit mount, connection_name) [check mode]
       register: db_connection_delete
+      check_mode: true
       community.hashi_vault.vault_database_connection_delete:
         engine_mount_point: database
-        connection_name: test-delete-connection
+        connection_name: test-delete-connection-1
 
-    - name: Check
-      ansible.builtin.assert:
+    - name: Check (explicit mount) [check mode]
+      ansible.builtin.assert: &success
         that:
           - db_connection_delete is defined
           - "'data' in db_connection_delete"
@@ -26,3 +27,64 @@
           - db_connection_delete["data"]["status_code"] in [200, 204]
           - "'changed' in db_connection_delete"
           - db_connection_delete["changed"]
+
+    - name: Test database connection delete (explicit mount - invalid, connection_name)
+      register: db_connection_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_delete:
+        engine_mount_point: NOT REAL
+        connection_name: test-connection-delete-1
+
+    - name: Check (explicit mount - invalid)
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_connection_delete is failed
+          - db_connection_delete.msg is search('Permission Denied')
+
+    - name: Test database connection delete (explicit mount, connection_name - invalid)
+      register: db_connection_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_delete:
+        engine_mount_point: database
+        connection_name: NOT REAL
+
+    - name: Check (explicit mount, connection_name - invalid)
+      ansible.builtin.assert: &failure_invalid_path
+        that:
+          - db_connection_delete is failed
+          - db_connection_delete.msg is search('Invalid or missing path')
+
+    - name: Test database connection delete (explicit mount)
+      register: db_connection_delete
+      community.hashi_vault.vault_database_connection_delete:
+        engine_mount_point: database
+        connection_name: test-connection-delete-1
+
+    - name: Check (explicit mount)
+      ansible.builtin.assert: *success
+
+    - name: Test database connection delete (default mount, connection_name) [check mode]
+      register: db_connection_delete
+      check_mode: true
+      community.hashi_vault.vault_database_connection_delete:
+        connection_name: test-connection-delete-2
+
+    - name: Check (explicit mount, connection_name) [check mode]
+      ansible.builtin.assert: *success
+
+    - name: Test database connection delete (default mount, connection_name - invalid)
+      register: db_connection_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_delete:
+        connection_name: NOT REAL
+
+    - name: Check (default mount, connection_name - invalid)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test database connection delete (default mount)
+      register: db_connection_delete
+      community.hashi_vault.vault_database_connection_delete:
+        connection_name: test-connection-delete-2
+
+    - name: Check (default mount)
+      ansible.builtin.assert: *success

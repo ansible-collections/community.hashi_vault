@@ -25,7 +25,7 @@ attributes:
   check_mode:
     support: partial
     details:
-      - In check mode, an empty response will be returned and the deletion will not be performed.
+      - In check mode, a sample response will be returned, but the deletion will not be performed in Hashicorp Vault.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
@@ -125,7 +125,7 @@ def run_module():
       engine_mount_point = module.params.get('engine_mount_point', None)
       if engine_mount_point is not None:
           parameters['mount_point'] = engine_mount_point
-      parameters["nameconnection_password"] = module.params.get('connection_name')
+      parameters["name"] = module.params.get('connection_name')
 
       module.connection_options.process_connection_options()
       client_args = module.connection_options.get_hvac_connection_options()
@@ -162,7 +162,12 @@ def run_module():
       )
     
     module.exit_json(
-          data={}
+      data={
+          'status': 'success',
+          'status_code': 204,
+          'ok': True,
+      },
+      changed=True
     )
 
 
