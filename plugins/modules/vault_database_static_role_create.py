@@ -168,9 +168,9 @@ def run_module():
       engine_mount_point = module.params.get('engine_mount_point', None)
       if engine_mount_point is not None:
           parameters['mount_point'] = engine_mount_point
-      parameters["connection_name"] = module.params.get('connection_name')
+      parameters["db_name"] = module.params.get('connection_name')
       parameters["name"] = module.params.get('role_name')
-      parameters["db_username"] = module.params.get('db_username')
+      parameters["username"] = module.params.get('db_username')
       parameters["rotation_statements"] = module.params.get('rotation_statements')
       rotation_period = module.params.get('rotation_period', None)
       if rotation_period is not None:
@@ -193,6 +193,11 @@ def run_module():
       except hvac.exceptions.InvalidPath as e:
           module.fail_json(
               msg="Invalid or missing path ['%s'/static-roles/'%s']." % (engine_mount_point or 'database', parameters["name"]),
+              exception=traceback.format_exc()
+          )
+      except hvac.exceptions.InvalidRequest as e:
+          module.fail_json(
+              msg="Cannot update static account username ['%s'/static-roles/'%s']. Please verify that the user exists on the database." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
 

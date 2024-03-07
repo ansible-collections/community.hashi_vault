@@ -189,8 +189,8 @@ def run_module():
       engine_mount_point = module.params.get('engine_mount_point', None)
       if engine_mount_point is not None:
           parameters['mount_point'] = engine_mount_point
-      parameters["connection_name"] = module.params.get('connection_name')
       parameters["name"] = module.params.get('role_name')
+      parameters["db_name"] = module.params.get('connection_name')
       parameters["creation_statements"] = module.params.get('creation_statements')
       revocation_statements = module.params.get('revocation_statements')
       if revocation_statements is not None:
