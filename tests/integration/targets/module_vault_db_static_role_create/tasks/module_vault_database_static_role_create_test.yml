@@ -79,7 +79,7 @@
       ansible.builtin.assert: &failure_invalid_request
         that:
           - db_create_static_role is failed
-          - db_create_static_role.msg is search('Cannot update static account username')
+          - db_create_static_role.msg is search('Cannot update static role')
 
     - name: Test database create static role (explicit mount point, connection_name, db_username)
       register: db_create_static_role

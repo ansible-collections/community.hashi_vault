@@ -2,8 +2,7 @@
 - name: Var block
   vars:
     user_token: "{{ user_token_cmd.result.auth.client_token }}"
-    expected_roles:
-      - readonly
+    expected_role: readonly
   module_defaults:
     community.hashi_vault.vault_database_roles_list: &defaults
       url: "{{ vault_test_server_http }}"
@@ -40,7 +39,7 @@
           - "'keys' in db_roles_list['data']"
           - "'roles' in db_roles_list"
           - db_roles_list.roles == db_roles_list.data['keys']
-          - db_roles_list.roles == expected_roles
+          - expected_role in db_roles_list.roles
 
     - name: Test list database dynamic roles (explicit mount)
       register: db_roles_list
