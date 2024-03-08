@@ -1,0 +1,126 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_role_read: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test read database role (explicit mount - invalid, role_name) [check mode]
+      register: db_role_read
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_read:
+        engine_mount_point: NOT REAL
+        role_name: readonly
+
+    - name: Check (explicit mount - invalid) [check mode]
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_role_read is failed
+          - db_role_read.msg is search('Permission Denied')
+
+    - name: Test read database role (explicit mount, role_name - invalid) [check mode]
+      register: db_role_read
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_read:
+        engine_mount_point: database
+        role_name: NOT REAL
+
+    - name: Check (explicit mount - invalid) [check mode]
+      ansible.builtin.assert: &failure_invalid_path
+        that:
+          - db_role_read is failed
+          - db_role_read.msg is search('Invalid or missing path')
+
+    - name: Test read database role (explicit mount, role_name) [check mode]
+      register: db_role_read
+      check_mode: true
+      community.hashi_vault.vault_database_role_read:
+        engine_mount_point: database
+        role_name: readonly
+
+    - name: Check (explicit mount, role_name) [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_role_read is defined
+          - "'data' in db_role_read"
+          - "'raw' in db_role_read"
+          - "'creation_statements' in db_role_read['data']"
+          - "'credential_type' in db_role_read['data']"
+          - "'db_name' in db_role_read['data']"
+          - "'default_ttl' in db_role_read['data']"
+          - "'max_ttl' in db_role_read['data']"
+          - "'renew_statements' in db_role_read['data']"
+          - "'revocation_statements' in db_role_read['data']"
+          - "'rollback_statements' in db_role_read['data']"
+
+    - name: Test read database role (explicit mount - invalid, role_name)
+      register: db_role_read
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_read:
+        engine_mount_point: NOT REAL
+        role_name: readonly
+
+    - name: Check (explicit mount - invalid)
+      ansible.builtin.assert: *failure_bad_mount
+
+    - name: Test read database role (explicit mount, role_name - invalid)
+      register: db_role_read
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_read:
+        engine_mount_point: database
+        role_name: NOT REAL
+
+    - name: Check (explicit mount - invalid)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test read database role (explicit mount, role_name)
+      register: db_role_read
+      community.hashi_vault.vault_database_role_read:
+        engine_mount_point: database
+        role_name: readonly
+
+    - name: Check (explicit mount, role_name)
+      ansible.builtin.assert: *success
+
+    - name: Test read database role (default mount, role_name - invalid) [check mode]
+      register: db_role_read
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_read:
+        role_name: NOT REAL
+
+    - name: Check (default mount - invalid) [check mode]
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test read database role (default mount, role_name) [check mode]
+      register: db_role_read
+      check_mode: true
+      community.hashi_vault.vault_database_role_read:
+        role_name: readonly
+
+    - name: Check (default mount, role_name) [check mode]
+      ansible.builtin.assert: *success
+
+    - name: Test read database role (default mount, role_name - invalid)
+      register: db_role_read
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_read:
+        role_name: NOT REAL
+
+    - name: Check (default mount - invalid)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test read database role (default mount, role_name)
+      register: db_role_read
+      community.hashi_vault.vault_database_role_read:
+        role_name: readonly
+
+    - name: Check (default mount, role_name)
+      ansible.builtin.assert: *success

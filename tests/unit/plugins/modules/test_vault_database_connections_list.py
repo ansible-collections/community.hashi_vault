@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2024 Brian Scholer (@briantist)
+# Copyright (c) 2024 Martin Chmielewski (@M4rt1nCh)
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -142,7 +142,7 @@ class TestModuleVaultDatabaseConnectionsList():
         'exc',
         [
             (hvac.exceptions.Forbidden, "", r"^Forbidden: Permission Denied to path \['([^']+)'\]"),
-            (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['([^']+)'/config\]"),
+            (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['([^']+)/config'\]"),
         ]
     )
     @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point']], indirect=True)

@@ -142,7 +142,7 @@ class TestModuleVaultDatabaseStaticRolesList():
         'exc',
         [
             (hvac.exceptions.Forbidden, "", r"^Forbidden: Permission Denied to path \['([^']+)'\]"),
-            (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['([^']+)'\]"),
+            (hvac.exceptions.InvalidPath, "", r"^Invalid or missing path \['([^']+)/static-roles'\]"),
         ]
     )
     @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'engine_mount_point']], indirect=True)

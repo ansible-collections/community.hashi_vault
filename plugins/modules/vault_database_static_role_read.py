@@ -17,7 +17,7 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - L(Queries a static role definition,L(reads a static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-static-role)) identified by its O(role_name)
+  - L(Queries a static role definition,L(reads a static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-static-role) identified by its O(role_name)
 notes:
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
@@ -30,10 +30,6 @@ extends_documentation_fragment:
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
 options:
-  path:
-    description: Vault path of a database secrets engine.
-    type: str
-    required: True
   role_name:
     description: The role name to be read from Hashicorp Vault.
     type: str
@@ -168,7 +164,7 @@ def run_module():
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s'/static-roles/'%s']." % (engine_mount_point or 'database', parameters["name"]),
+            msg="Invalid or missing path ['%s/static-roles/%s']." % (engine_mount_point or 'database', parameters["name"]),
             exception=traceback.format_exc()
         )
 

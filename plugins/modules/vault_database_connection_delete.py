@@ -143,7 +143,7 @@ def run_module():
           module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
       except hvac.exceptions.InvalidPath as e:
           module.fail_json(
-              msg="Invalid or missing path ['%s'/config/'%s']." % (engine_mount_point or 'database', parameters["name"]),
+              msg="Invalid or missing path ['%s/config/%s']." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
 

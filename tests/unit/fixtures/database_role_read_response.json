@@ -1,0 +1,22 @@
+{
+    "auth": null,
+    "data": {
+        "creation_statements": [
+            "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
+            "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";"
+        ],
+        "credential_type": "password",
+        "db_name": "SomeConnection",
+        "default_ttl": 3600,
+        "max_ttl": 86400,
+        "renew_statements": [],
+        "revocation_statements": [],
+        "rollback_statements": []
+    },
+    "lease_duration": 0,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "91909ec0-cd89-489c-a7cf-2a82d2258b4d",
+    "warnings": null,
+    "wrap_info": null
+}

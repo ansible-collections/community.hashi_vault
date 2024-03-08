@@ -1,0 +1,18 @@
+{
+    "auth": null,
+    "data": {
+        "credential_type": "password",
+        "db_name": "SomeConnection",
+        "last_vault_rotation": "2024-01-01T09:00:00 +01:00",
+        "rotation_period": 86400,
+        "rotation_statements": [
+        "ALTER USER \"{{name}}\" WITH PASSWORD '{{password}}';"
+        ]
+    },
+    "lease_duration": 0,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "91909ec0-cd89-489c-a7cf-2a82d2258b4d",
+    "warnings": null,
+    "wrap_info": null
+}

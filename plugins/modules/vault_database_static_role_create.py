@@ -192,12 +192,12 @@ def run_module():
           module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
       except hvac.exceptions.InvalidPath as e:
           module.fail_json(
-              msg="Invalid or missing path ['%s'/static-roles/'%s']." % (engine_mount_point or 'database', parameters["name"]),
+              msg="Invalid or missing path ['%s/static-roles/%s']." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
       except hvac.exceptions.InvalidRequest as e:
           module.fail_json(
-              msg="Cannot update static role ['%s'/static-roles/'%s']. Please verify that the user exists on the database." % (engine_mount_point or 'database', parameters["name"]),
+              msg="Cannot update static role ['%s/static-roles/%s']. Please verify that the user exists on the database." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
 

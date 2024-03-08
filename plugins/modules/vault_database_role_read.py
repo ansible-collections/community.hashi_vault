@@ -8,18 +8,17 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
-module: vault_database_roles_list
+module: vault_database_role_read
 version_added: 6.2.0
 author:
   - Martin Chmielewski (@M4rt1nCh)
-short_description: Returns a list of available (dynamic) roles
+short_description: Queries a dynamic role definition
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Returns a list of available (dynamic) roles
+  - L(Queries a role definition,L(reads a static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-a-role) identified by its O(role_name)
 notes:
-  - C(vault_database_roles_list) lists all dynamic roles
   - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -29,7 +28,12 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
+  - community.hashi_vault.engine_mount
 options:
+  role_name:
+    description: The role name to be read from Hashicorp Vault.
+    type: str
+    required: True
   engine_mount_point:
     default: database
     description:
@@ -38,30 +42,33 @@ options:
 '''
 
 EXAMPLES = r"""
-- name: List all roles with the default mount point
-  community.hashi_vault.vault_database_roles_list:
+- name: Read Role with a default mount point
+  community.hashi_vault.vault_database_role_read:
     url: https://vault:8201
     auth_method: userpass
     username: '{{ user }}'
     password: '{{ passwd }}'
+    role_name: SomeRole
   register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
     msg: "{{ result }}"
 
-- name: List all roles with a custom mount point
-  community.hashi_vault.vault_database_roles_list:
+- name: Read Static Role with a custom moint point
+  community.hashi_vault.vault_database_role_read:
     url: https://vault:8201
     auth_method: userpass
     username: '{{ user }}'
     password: '{{ passwd }}'
     engine_mount_point: db1
+    role_name: SomeRole
   register: result
 
 - name: Display the result of the operation
   ansible.builtin.debug:
     msg: "{{ result }}"
+
 """
 
 RETURN = r"""
@@ -69,41 +76,38 @@ data:
   description: The C(data) field of raw result. This can also be accessed via C(raw.data).
   returned: success
   type: dict
-  contains: &data_contains
-    keys:
-      description: The list of dynamic role names.
-      returned: success
-      type: list
-      elements: str
-      sample: &sample_roles ["dyn_role1", "dyn_role2", "dyn_role3"]
   sample:
-    keys: *sample_roles
-roles:
-  description: The list of dynamic roles or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
-  returned: success
-  type: list
-  elements: str
-  sample: *sample_roles
+    creation_statements: [
+      "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
+      "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";"
+    ]
+    credential_type: "password"
+    db_name: "database"
+    default_ttl: 3600
+    max_ttl: 86400
+    renew_statements: []
+    revocation_statements: []
+    rollback_statements: []
 raw:
   description: The raw result of the operation.
   returned: success
   type: dict
-  contains:
-    data:
-      description: The data field of the API response.
-      returned: success
-      type: dict
-      contains: *data_contains
   sample:
     auth: null
     data:
-      keys: *sample_roles
+      credential_type: "password"
+      db_name: "SomeConnection"
+      last_vault_rotation": "2024-01-01T09:00:00 +01:00"
+      rotation_period": 86400
+      rotation_statements": [
+        "ALTER USER \"{{name}}\" WITH PASSWORD '{{password}}';"
+      ]
     username: "SomeUser"
     lease_duration": 0
     lease_id: ""
     renewable: false
     request_id: "123456"
-    warnings: null,
+    warnings: null
     wrap_info: null
 """
 
@@ -128,6 +132,7 @@ else:
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
         engine_mount_point=dict(type='str', required=False),
+        role_name=dict(type='str', required=True),
     )
 
     module = HashiVaultModule(
@@ -140,10 +145,12 @@ def run_module():
             msg=missing_required_lib('hvac'),
             exception=HVAC_IMPORT_ERROR
         )
+
     parameters = {}
     engine_mount_point = module.params.get('engine_mount_point', None)
     if engine_mount_point is not None:
-      parameters['mount_point'] = engine_mount_point
+        parameters['mount_point'] = engine_mount_point
+    parameters['name'] = module.params.get('role_name')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -156,21 +163,19 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.list_roles(**parameters)
+        raw = client.secrets.database.read_role(**parameters)
     except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s/roles']." % (engine_mount_point or 'database'),
+            msg="Invalid or missing path ['%s/roles/%s']." % (engine_mount_point or 'database', parameters["name"]),
             exception=traceback.format_exc()
         )
 
-    data = raw.get('data', {'keys': []})
-    roles = data['keys']
+    data = raw['data']
 
     module.exit_json(
         data=data,
-        roles=roles,
         raw=raw,
         changed=False
     )
