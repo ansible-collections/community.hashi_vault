@@ -1,5 +1,7 @@
 {
-    "status": "success",
-    "status_code": 204,
-    "ok": true
+    "data": {
+        "status": "success",
+        "status_code": 204,
+        "ok": true
+    }
 }

@@ -75,7 +75,7 @@ data:
   description: The C(data) field of raw result. This can also be accessed via C(raw.data).
   returned: success
   type: dict
-  sample:
+  sample: &sample
     last_vault_rotation": "2024-01-01T09:00:00+01:00"
     password": "Th3_$3cr3t_P@ss!"
     rotation_period": 86400
@@ -87,12 +87,7 @@ raw:
   type: dict
   sample:
     auth: null,
-    data:
-      last_vault_rotation": "2024-01-01T09:00:00+01:00"
-      password": "Th3_$3cr3t_P@ss!"
-      rotation_period": 86400
-      ttl": 123456
-      username: "SomeUser"
+    data: *sample
     lease_duration: 0
     lease_id: ""
     renewable: false
@@ -158,7 +153,7 @@ def run_module():
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point, exception=traceback.format_exc())
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s']" % (engine_mount_point),
+            msg="Invalid or missing path ['%s/static-creds/%s']" % (engine_mount_point or 'database', parameters["name"]),
             exception=traceback.format_exc()
         )
 

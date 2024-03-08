@@ -74,6 +74,7 @@ EXAMPLES = r"""
     username: '{{ user }}'
     password: '{{ passwd }}'
     connection_name: MyName
+    plugin_name: postgresql-database-plugin
     connection_url: postgresql://{{'{{username}}'}}:{{'{{password}}'}}@postgres:5432/postgres?sslmode=disable
     connection_username: SomeUser
     connection_password: SomePass
@@ -92,6 +93,7 @@ EXAMPLES = r"""
     password: '{{ passwd }}'
     engine_mount_point: db1
     connection_name: MyName
+    plugin_name: postgresql-database-plugin
     connection_url: postgresql://{{'{{username}}'}}:{{'{{password}}'}}@postgres:5432/postgres?sslmode=disable
     connection_username: SomeUser
     connection_password: SomePass
