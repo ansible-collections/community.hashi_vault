@@ -4,10 +4,11 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: vault_database_connections_list
 version_added: 6.2.0
 author:
@@ -29,7 +30,7 @@ extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
-'''
+"""
 
 EXAMPLES = r"""
 - name: List Database Connections with the default mount point
@@ -59,32 +60,45 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-raw:
-  description: The raw result of the operation.
+data:
+  description: The C(data) field of raw result. This can also be accessed via RV(raw.data).
   returned: success
   type: dict
+  contains: &data_contains
+    keys:
+      description: The list of database connections.
+      returned: success
+      type: list
+      elements: str
+      sample: &sample_connections ["role1", "role2", "role3"]
   sample:
-    auth: null
-    data: &sample_connections
-      keys: [con1, con2, con3]
-    lease_duration: 0
-    lease_id: ""
-    renewable: false
-    request_id: "12345678"
-    warnings: null
-    wrap_info: null
+    keys: *sample_connections
 connections:
   description: The list of database connections or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
   returned: success
   type: list
   elements: str
   sample: *sample_connections
-data:
-  description: The C(data) field of raw result. This can also be accessed via C(raw.data).
+raw:
+  description: The raw result of the operation.
   returned: success
   type: dict
+  contains:
+    data:
+      description: The data field of the API response.
+      returned: success
+      type: dict
+      contains: *data_contains
   sample:
-    keys: [con1, con2, con3]
+    auth: null
+    data:
+      keys: *sample_connections
+    lease_duration": 0
+    lease_id: ""
+    renewable: false
+    request_id: "123456"
+    warnings: null
+    wrap_info: null
 """
 
 import traceback
@@ -107,24 +121,18 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', required=False),
+        engine_mount_point=dict(type="str", required=False),
     )
 
-    module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
-    )
+    module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
     if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
-        )
+        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
 
     parameters = {}
-    engine_mount_point = module.params.get('engine_mount_point', None)
+    engine_mount_point = module.params.get("engine_mount_point", None)
     if engine_mount_point is not None:
-        parameters['mount_point'] = engine_mount_point
+        parameters["mount_point"] = engine_mount_point
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -139,18 +147,23 @@ def run_module():
     try:
         raw = client.secrets.database.list_connections(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
+        module.fail_json(
+            msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+            or "database",
+            exception=traceback.format_exc(),
+        )
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s/config']." % (engine_mount_point or 'database'),
-            exception=traceback.format_exc()
+            msg="Invalid or missing path ['%s/config']."
+            % (engine_mount_point or "database"),
+            exception=traceback.format_exc(),
         )
 
-    data = raw.get('data', {'keys': []})
-    connections = data['keys']
+    data = raw.get("data", {"keys": []})
+    connections = data["keys"]
     module.exit_json(
         raw=raw,
-        connections = connections,
+        connections=connections,
         data=data,
         changed=False,
     )
@@ -160,5 +173,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

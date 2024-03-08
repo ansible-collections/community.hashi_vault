@@ -4,10 +4,11 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: vault_database_connection_configure
 version_added: 6.2.0
 author:
@@ -17,7 +18,8 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Creates a L(new database connection for a database secrets engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#configuration), identified by its O(engine_mount_point) in HashiCorp Vault.
+  - Creates a L(new database connection for a database secrets engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#configuration),
+  - identified by its O(engine_mount_point) in HashiCorp Vault.
 notes:
   - The database needs to be created and available to connect before you can configure the database secrets engine using the above configure method.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
@@ -59,7 +61,7 @@ options:
     description: Password to connect to the database
     type: str
     required: True
-'''
+"""
 
 EXAMPLES = r"""
 - name: Create a new Database Connection with the default mount point
@@ -131,83 +133,83 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', required=False),
-        plugin_name=dict(type='str', required=True),
-        allowed_roles=dict(type='list', required=True, elements='str'),
-        connection_name=dict(type='str', required=True),
-        connection_url=dict(type='str', required=True),
-        connection_username=dict(type='str', required=True),
-        connection_password=dict(type='str', required=True, no_log=True),
+        engine_mount_point=dict(type="str", required=False),
+        plugin_name=dict(type="str", required=True),
+        allowed_roles=dict(type="list", required=True, elements="str"),
+        connection_name=dict(type="str", required=True),
+        connection_url=dict(type="str", required=True),
+        connection_username=dict(type="str", required=True),
+        connection_password=dict(type="str", required=True, no_log=True),
     )
 
-    module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
-    )
+    module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
     if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
+        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
+
+    if module.check_mode is False:
+        parameters = {}
+        engine_mount_point = module.params.get("engine_mount_point", None)
+        if engine_mount_point is not None:
+            parameters["mount_point"] = engine_mount_point
+        parameters["plugin_name"] = module.params.get("plugin_name")
+        parameters["allowed_roles"] = module.params.get("allowed_roles")
+        parameters["connection_url"] = module.params.get("connection_url")
+        parameters["name"] = module.params.get("connection_name")
+        parameters["username"] = module.params.get("connection_username")
+        parameters["password"] = module.params.get("connection_password")
+
+        module.connection_options.process_connection_options()
+        client_args = module.connection_options.get_hvac_connection_options()
+        client = module.helper.get_vault_client(**client_args)
+
+        try:
+            module.authenticator.validate()
+            module.authenticator.authenticate(client)
+        except (NotImplementedError, HashiVaultValueError) as e:
+            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
+        try:
+            raw = client.secrets.database.configure(**parameters)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(
+                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+                or "database",
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidPath as e:
+            module.fail_json(
+                msg="Invalid or missing path ['%s/config/%s']."
+                % (engine_mount_point or "database", parameters["name"]),
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidRequest as e:
+            module.fail_json(
+                msg="Error creating database connection ['%s/config/%s']. Please analyze the traceback for further details."
+                % (engine_mount_point or "database", parameters["name"]),
+                exception=traceback.format_exc(),
+            )
+        if raw.status_code not in [200, 204]:
+            module.fail_json(
+                status="failure",
+                msg="Failed to create connection. Status code: %s" % raw.status_code,
+            )
+        module.exit_json(
+            data={
+                "status": "success",
+                "status_code": raw.status_code,
+                "ok": raw.ok,
+            },
+            changed=True,
         )
 
-    if module.check_mode == False:
-      parameters = {}
-      engine_mount_point = module.params.get('engine_mount_point', None)
-      if engine_mount_point is not None:
-          parameters['mount_point'] = engine_mount_point
-      parameters["plugin_name"] = module.params.get('plugin_name')
-      parameters["allowed_roles"] = module.params.get('allowed_roles')
-      parameters["connection_url"] = module.params.get('connection_url')
-      parameters["name"] = module.params.get('connection_name')
-      parameters["username"] = module.params.get('connection_username')
-      parameters["password"] = module.params.get('connection_password')
-
-      module.connection_options.process_connection_options()
-      client_args = module.connection_options.get_hvac_connection_options()
-      client = module.helper.get_vault_client(**client_args)
-
-      try:
-          module.authenticator.validate()
-          module.authenticator.authenticate(client)
-      except (NotImplementedError, HashiVaultValueError) as e:
-          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
-      try:
-          raw = client.secrets.database.configure(**parameters)
-      except hvac.exceptions.Forbidden as e:
-          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
-      except hvac.exceptions.InvalidPath as e:
-          module.fail_json(
-              msg="Invalid or missing path ['%s/config/%s']." % (engine_mount_point or 'database', parameters["name"]),
-              exception=traceback.format_exc()
-          )
-      except hvac.exceptions.InvalidRequest as e:
-          module.fail_json(
-              msg="Error creating database connection ['%s/config/%s']. Please analyze the traceback for further details." % (engine_mount_point or 'database', parameters["name"]),
-              exception=traceback.format_exc()
-          )
-      if raw.status_code not in [200, 204]:
-          module.fail_json(
-              status='failure',
-              msg="Failed to create connection. Status code: %s" % raw.status_code,
-          )
-      module.exit_json(
-          data={
-              'status': 'success',
-              'status_code': raw.status_code,
-              'ok': raw.ok,
-          },
-          changed=True
-      )
-    
     module.exit_json(
-      data={
-          'status': 'success',
-          'status_code': 204,
-          'ok': True,
-      },
-      changed=True
+        data={
+            "status": "success",
+            "status_code": 204,
+            "ok": True,
+        },
+        changed=True,
     )
 
 
@@ -215,5 +217,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -4,10 +4,11 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: vault_database_static_role_create
 version_added: 6.2.0
 author:
@@ -56,7 +57,7 @@ options:
     type: int
     required: False
     default: 86400
-'''
+"""
 
 EXAMPLES = r"""
 - name: Generate rotation statement
@@ -139,86 +140,87 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', required=False),
-        connection_name=dict(type='str', required=True),
-        role_name=dict(type='str', required=True),
-        db_username=dict(type='str', required=True),
-        rotation_statements=dict(type='list', required=True, elements='str'),
-        rotation_period=dict(type='int', required=False, default=86400),
+        engine_mount_point=dict(type="str", required=False),
+        connection_name=dict(type="str", required=True),
+        role_name=dict(type="str", required=True),
+        db_username=dict(type="str", required=True),
+        rotation_statements=dict(type="list", required=True, elements="str"),
+        rotation_period=dict(type="int", required=False, default=86400),
     )
 
-    module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
-    )
+    module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
     if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
+        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
+
+    if module.check_mode is False:
+        parameters = {}
+        engine_mount_point = module.params.get("engine_mount_point", None)
+        if engine_mount_point is not None:
+            parameters["mount_point"] = engine_mount_point
+        parameters["db_name"] = module.params.get("connection_name")
+        parameters["name"] = module.params.get("role_name")
+        parameters["username"] = module.params.get("db_username")
+        parameters["rotation_statements"] = module.params.get("rotation_statements")
+        rotation_period = module.params.get("rotation_period", None)
+        if rotation_period is not None:
+            parameters["rotation_period"] = rotation_period
+
+        module.connection_options.process_connection_options()
+        client_args = module.connection_options.get_hvac_connection_options()
+        client = module.helper.get_vault_client(**client_args)
+
+        try:
+            module.authenticator.validate()
+            module.authenticator.authenticate(client)
+        except (NotImplementedError, HashiVaultValueError) as e:
+            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
+        try:
+            raw = client.secrets.database.create_static_role(**parameters)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(
+                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+                or "database",
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidPath as e:
+            module.fail_json(
+                msg="Invalid or missing path ['%s/static-roles/%s']."
+                % (engine_mount_point or "database", parameters["name"]),
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidRequest as e:
+            module.fail_json(
+                msg="Cannot update static role ['%s/static-roles/%s']. Please verify that the user exists on the database."
+                % (engine_mount_point or "database", parameters["name"]),
+                exception=traceback.format_exc(),
+            )
+
+        # this is required due to a different API response in vault 1.14.9 vs. later versions
+        if raw:
+            from requests.models import Response
+
+            if isinstance(raw, Response):
+                raw_res = raw.text
+            else:
+                raw_res = raw
+
+        module.exit_json(
+            data={
+                "status": "success",
+            },
+            raw=raw_res,
+            changed=True,
         )
 
-    if module.check_mode == False:
-      parameters = {}
-      engine_mount_point = module.params.get('engine_mount_point', None)
-      if engine_mount_point is not None:
-          parameters['mount_point'] = engine_mount_point
-      parameters["db_name"] = module.params.get('connection_name')
-      parameters["name"] = module.params.get('role_name')
-      parameters["username"] = module.params.get('db_username')
-      parameters["rotation_statements"] = module.params.get('rotation_statements')
-      rotation_period = module.params.get('rotation_period', None)
-      if rotation_period is not None:
-          parameters['rotation_period'] = rotation_period
-
-      module.connection_options.process_connection_options()
-      client_args = module.connection_options.get_hvac_connection_options()
-      client = module.helper.get_vault_client(**client_args)
-
-      try:
-          module.authenticator.validate()
-          module.authenticator.authenticate(client)
-      except (NotImplementedError, HashiVaultValueError) as e:
-          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
-      try:
-          raw = client.secrets.database.create_static_role(**parameters)
-      except hvac.exceptions.Forbidden as e:
-          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
-      except hvac.exceptions.InvalidPath as e:
-          module.fail_json(
-              msg="Invalid or missing path ['%s/static-roles/%s']." % (engine_mount_point or 'database', parameters["name"]),
-              exception=traceback.format_exc()
-          )
-      except hvac.exceptions.InvalidRequest as e:
-          module.fail_json(
-              msg="Cannot update static role ['%s/static-roles/%s']. Please verify that the user exists on the database." % (engine_mount_point or 'database', parameters["name"]),
-              exception=traceback.format_exc()
-          )
-
-      # this is required due to a different API response in vault 1.14.9 vs. later versions
-      if raw:
-          from requests.models import Response
-          if isinstance(raw, Response):
-              raw_res = raw.text
-          else:
-              raw_res = raw
-
-      module.exit_json(
-          data={
-              'status': 'success',
-          },
-          raw=raw_res,
-          changed=True
-      )
-
     module.exit_json(
-      data={
-          'status': 'success',
-          'status_code': '204',
-          'ok': True,
-      },
-      changed=True
+        data={
+            "status": "success",
+            "status_code": "204",
+            "ok": True,
+        },
+        changed=True,
     )
 
 
@@ -226,5 +228,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

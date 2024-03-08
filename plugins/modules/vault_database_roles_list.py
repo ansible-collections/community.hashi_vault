@@ -4,10 +4,11 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: vault_database_roles_list
 version_added: 6.2.0
 author:
@@ -29,7 +30,8 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
-'''
+  - community.hashi_vault.engine_mount
+"""
 
 EXAMPLES = r"""
 - name: List all roles with the default mount point
@@ -121,23 +123,17 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', required=False),
+        engine_mount_point=dict(type="str", required=False),
     )
 
-    module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
-    )
+    module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
     if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
-        )
+        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
     parameters = {}
-    engine_mount_point = module.params.get('engine_mount_point', None)
+    engine_mount_point = module.params.get("engine_mount_point", None)
     if engine_mount_point is not None:
-      parameters['mount_point'] = engine_mount_point
+        parameters["mount_point"] = engine_mount_point
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
@@ -152,27 +148,27 @@ def run_module():
     try:
         raw = client.secrets.database.list_roles(**parameters)
     except hvac.exceptions.Forbidden as e:
-        module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
+        module.fail_json(
+            msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+            or "database",
+            exception=traceback.format_exc(),
+        )
     except hvac.exceptions.InvalidPath as e:
         module.fail_json(
-            msg="Invalid or missing path ['%s/roles']." % (engine_mount_point or 'database'),
-            exception=traceback.format_exc()
+            msg="Invalid or missing path ['%s/roles']."
+            % (engine_mount_point or "database"),
+            exception=traceback.format_exc(),
         )
 
-    data = raw.get('data', {'keys': []})
-    roles = data['keys']
+    data = raw.get("data", {"keys": []})
+    roles = data["keys"]
 
-    module.exit_json(
-        data=data,
-        roles=roles,
-        raw=raw,
-        changed=False
-    )
+    module.exit_json(data=data, roles=roles, raw=raw, changed=False)
 
 
 def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -4,10 +4,11 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: vault_database_role_delete
 version_added: 6.2.0
 author:
@@ -38,7 +39,7 @@ options:
     description: The name of the role to rotate credentials for.
     type: str
     required: True
-'''
+"""
 
 EXAMPLES = r"""
 - name: Delete a Role with the default mount point
@@ -101,69 +102,68 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', required=False),
-        role_name=dict(type='str', required=True),
+        engine_mount_point=dict(type="str", required=False),
+        role_name=dict(type="str", required=True),
     )
 
-    module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
-    )
+    module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
     if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
+        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
+
+    if module.check_mode is False:
+        parameters = {}
+        engine_mount_point = module.params.get("engine_mount_point", None)
+        if engine_mount_point is not None:
+            parameters["mount_point"] = engine_mount_point
+        parameters["name"] = module.params.get("role_name")
+
+        module.connection_options.process_connection_options()
+        client_args = module.connection_options.get_hvac_connection_options()
+        client = module.helper.get_vault_client(**client_args)
+
+        try:
+            module.authenticator.validate()
+            module.authenticator.authenticate(client)
+        except (NotImplementedError, HashiVaultValueError) as e:
+            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
+        try:
+            raw = client.secrets.database.delete_role(**parameters)
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(
+                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+                or "database",
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidPath as e:
+            module.fail_json(
+                msg="Invalid or missing path ['%s/roles/%s']."
+                % (engine_mount_point or "database", parameters["name"]),
+                exception=traceback.format_exc(),
+            )
+
+        if raw.status_code not in [200, 204]:
+            module.fail_json(
+                status="failure",
+                msg="Failed to delete role. Status code: %s" % raw.status_code,
+            )
+        module.exit_json(
+            data={
+                "status": "success",
+                "status_code": raw.status_code,
+                "ok": raw.ok,
+            },
+            changed=True,
         )
 
-    if module.check_mode == False:
-      parameters = {}
-      engine_mount_point = module.params.get('engine_mount_point', None)
-      if engine_mount_point is not None:
-          parameters['mount_point'] = engine_mount_point
-      parameters["name"] = module.params.get('role_name')
-
-      module.connection_options.process_connection_options()
-      client_args = module.connection_options.get_hvac_connection_options()
-      client = module.helper.get_vault_client(**client_args)
-
-      try:
-          module.authenticator.validate()
-          module.authenticator.authenticate(client)
-      except (NotImplementedError, HashiVaultValueError) as e:
-          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
-      try:
-          raw = client.secrets.database.delete_role(**parameters)
-      except hvac.exceptions.Forbidden as e:
-          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
-      except hvac.exceptions.InvalidPath as e:
-          module.fail_json(
-              msg="Invalid or missing path ['%s/roles/%s']." % (engine_mount_point or 'database', parameters["name"]),
-              exception=traceback.format_exc()
-          )
-
-      if raw.status_code not in [200, 204]:
-          module.fail_json(
-              status='failure',
-              msg="Failed to delete role. Status code: %s" % raw.status_code,
-          )
-      module.exit_json(
-          data={
-              'status': 'success',
-              'status_code': raw.status_code,
-              'ok': raw.ok,
-          },
-          changed=True
-      )
-
     module.exit_json(
-      data={
-          'status': 'success',
-          'status_code': '204',
-          'ok': True,
-      },
-      changed=True
+        data={
+            "status": "success",
+            "status_code": "204",
+            "ok": True,
+        },
+        changed=True,
     )
 
 
@@ -171,5 +171,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

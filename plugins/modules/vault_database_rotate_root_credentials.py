@@ -4,10 +4,11 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: vault_database_rotate_root_credentials
 version_added: 6.2.0
 author:
@@ -17,7 +18,8 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html)) >= 2.0.0
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Trigger L(root credential rotation,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#rotate-root-credentials) of a Database Connection identified by its O(connection_name)
+  - Trigger L(root credential rotation,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#rotate-root-credentials)
+  - of a Database Connection identified by its O(connection_name)
 notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -37,7 +39,7 @@ options:
     description: The connection name where the root credential rotation should be triggered.
     type: str
     required: True
-'''
+"""
 
 EXAMPLES = r"""
 - name: Trigger root credentiaL rotation with the default mount point
@@ -100,71 +102,72 @@ else:
 
 def run_module():
     argspec = HashiVaultModule.generate_argspec(
-        engine_mount_point=dict(type='str', required=False),
-        connection_name=dict(type='str', required=True),
+        engine_mount_point=dict(type="str", required=False),
+        connection_name=dict(type="str", required=True),
     )
 
-    module = HashiVaultModule(
-        argument_spec=argspec,
-        supports_check_mode=True
-    )
+    module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
     if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
+        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
+
+    if module.check_mode is False:
+        parameters = {}
+        engine_mount_point = module.params.get("engine_mount_point", None)
+        if engine_mount_point is not None:
+            parameters["mount_point"] = engine_mount_point
+        parameters["name"] = module.params.get("connection_name")
+
+        module.connection_options.process_connection_options()
+        client_args = module.connection_options.get_hvac_connection_options()
+        client = module.helper.get_vault_client(**client_args)
+
+        try:
+            module.authenticator.validate()
+            module.authenticator.authenticate(client)
+        except (NotImplementedError, HashiVaultValueError) as e:
+            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
+        try:
+            raw = client.secrets.database.rotate_root_credentials(**parameters)
+        except AttributeError as e:
+            module.fail_json(
+                msg="hvac>=2.0.0 is required", exception=traceback.format_exc()
+            )
+        except hvac.exceptions.Forbidden as e:
+            module.fail_json(
+                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+                or "database",
+                exception=traceback.format_exc(),
+            )
+        except hvac.exceptions.InvalidPath as e:
+            module.fail_json(
+                msg="Invalid or missing path ['%s/rotate-root/%s']"
+                % (engine_mount_point or "database", parameters["name"]),
+                exception=traceback.format_exc(),
+            )
+
+        if raw.status_code not in [200, 204]:
+            module.fail_json(
+                status="failure",
+                msg="Failed to create connection. Status code: %s" % raw.status_code,
+            )
+        module.exit_json(
+            data={
+                "status": "success",
+                "status_code": raw.status_code,
+                "ok": raw.ok,
+            },
+            changed=True,
         )
 
-    if module.check_mode == False:
-      parameters = {}
-      engine_mount_point = module.params.get('engine_mount_point', None)
-      if engine_mount_point is not None:
-          parameters['mount_point'] = engine_mount_point
-      parameters["name"] = module.params.get('connection_name')
-
-      module.connection_options.process_connection_options()
-      client_args = module.connection_options.get_hvac_connection_options()
-      client = module.helper.get_vault_client(**client_args)
-
-      try:
-          module.authenticator.validate()
-          module.authenticator.authenticate(client)
-      except (NotImplementedError, HashiVaultValueError) as e:
-          module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
-      try:
-          raw = client.secrets.database.rotate_root_credentials(**parameters)
-      except AttributeError as e:
-          module.fail_json(msg="hvac>=2.0.0 is required", exception=traceback.format_exc())
-      except hvac.exceptions.Forbidden as e:
-          module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point or 'database', exception=traceback.format_exc())
-      except hvac.exceptions.InvalidPath as e:
-          module.fail_json(
-              msg="Invalid or missing path ['%s/rotate-root/%s']" % (engine_mount_point or 'database', parameters["name"]),
-              exception=traceback.format_exc()
-          )
-
-      if raw.status_code not in [200, 204]:
-          module.fail_json(
-              status='failure',
-              msg="Failed to create connection. Status code: %s" % raw.status_code,
-          )
-      module.exit_json(
-          data={
-              'status': 'success',
-              'status_code': raw.status_code,
-              'ok': raw.ok,
-          },
-          changed=True
-      )
-    
     module.exit_json(
-      data={
-          'status': 'success',
-          'status_code': 204,
-          'ok': True,
-      },
-      changed=True
+        data={
+            "status": "success",
+            "status_code": 204,
+            "ok": True,
+        },
+        changed=True,
     )
 
 
@@ -172,5 +175,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
