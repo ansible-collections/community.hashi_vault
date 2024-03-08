@@ -24,7 +24,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="community.hashi_vault.vault_database_role_delete module – Delete a role definition" href="vault_database_role_delete_module.html" />
-    <link rel="prev" title="community.hashi_vault.vault_database_connections_list module – Lists all Database Connections in a given path" href="vault_database_connections_list_module.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+    <link rel="prev" title="community.hashi_vault.vault_database_connections_list module – Returns a list of available connections" href="vault_database_connections_list_module.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
 
 
 
@@ -154,7 +154,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <section id="synopsis">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Creates or updates a (dynamic) role definition</p></li>
+<li><p><a class="reference external" href="https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role">Creates or updates a dynamic role definition</a></p></li>
 </ul>
 </section>
 <section id="requirements">
@@ -324,13 +324,20 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-engine_mount_point"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-engine-mount-point"><strong>engine_mount_point</strong></p>
+<a class="ansibleOptionLink" href="#parameter-engine_mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The path where the secret backend is mounted.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-jwt"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-jwt"><strong>jwt</strong></p>
 <a class="ansibleOptionLink" href="#parameter-jwt" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The JSON Web Token (JWT) to use for JWT authentication to Vault.</p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-max_ttl"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-max-ttl"><strong>max_ttl</strong></p>
 <a class="ansibleOptionLink" href="#parameter-max_ttl" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 </div></td>
@@ -338,7 +345,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">86400</span></code></p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-mount_point"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-mount-point"><strong>mount_point</strong></p>
 <a class="ansibleOptionLink" href="#parameter-mount_point" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -347,7 +354,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>Does not apply to token authentication.</p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-namespace"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-namespace"><strong>namespace</strong></p>
 <a class="ansibleOptionLink" href="#parameter-namespace" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -356,18 +363,11 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <p>If environment variable <code class="docutils literal notranslate"><span class="pre">VAULT_NAMESPACE</span></code> is set, its value will be used last among all ways to specify <em>namespace</em>.</p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-password"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-password"><strong>password</strong></p>
 <a class="ansibleOptionLink" href="#parameter-password" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Authentication password.</p>
-</div></td>
-</tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-path"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-parameter-path"><strong>path</strong></p>
-<a class="ansibleOptionLink" href="#parameter-path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
-</div></td>
-<td><div class="ansible-option-cell"><p>Vault path of a database secrets engine.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -565,7 +565,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="ansibleOptionAnchor" id="attribute-check_mode"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-vault-database-role-create-module-attribute-check-mode"><strong>check_mode</strong></p>
 <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a></div></td>
 <td><div class="ansible-option-cell"><p><span class="ansible-attribute-support-label">Support: </span><span class="ansible-attribute-support-partial">partial</span></p>
-<p>In check mode, an empty response will be returned and the write will not be performed.</p>
+<p>In check mode, a sample response will be returned, but the role creation will not be performed in Hashicorp Vault.</p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Can run in <code class="docutils literal notranslate"><span class="pre">check_mode</span></code> and return changed status prediction without modifying target.</p>
 </div></td>
@@ -578,9 +578,6 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">vault_database_role_create</span></code> triggers the creation of a static role</p></li>
-<li><p><a class="reference external" href="https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role">https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role</a></p></li>
-<li><p>The <em>data</em> option is not treated as secret and may be logged. Use the <code class="docutils literal notranslate"><span class="pre">no_log</span></code> keyword if <em>data</em> contains sensitive values.</p></li>
 <li><p>This module always reports <code class="docutils literal notranslate"><span class="pre">changed</span></code> status because it cannot guarantee idempotence.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">changed_when</span></code> to control that in cases where the operation is known to not change state.</p></li>
 </ul>
@@ -595,14 +592,34 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">&quot;GRANT SELECT ON ALL TABLES IN SCHEMA public TO \&quot;</span><span class="cp">{{</span><span class="nv">name</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">\&quot;;&quot;</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">]</span>
 
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create / update Role</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create / update Role with the default mount point</span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_database_role_create</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
+<span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span>
 <span class="w">    </span><span class="nt">connection_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeConnection</span>
 <span class="w">    </span><span class="nt">role_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeRole</span>
 <span class="w">    </span><span class="nt">db_username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">db_username</span><span class="cp">}}</span><span class="s">&#39;</span>
 <span class="w">    </span><span class="nt">creation_statements</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">creation_statements</span> <span class="cp">}}</span><span class="s">&#39;</span>
-<span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">response</span>
+<span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the result of the operation</span>
+<span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">result</span> <span class="cp">}}</span><span class="s">&quot;</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create / update Role with a custom mount point</span>
+<span class="w">  </span><span class="nt">community.hashi_vault.vault_database_role_create</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
+<span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db1</span>
+<span class="w">    </span><span class="nt">connection_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeConnection</span>
+<span class="w">    </span><span class="nt">role_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeRole</span>
+<span class="w">    </span><span class="nt">db_username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">db_username</span><span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">creation_statements</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">creation_statements</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the result of the operation</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
@@ -663,7 +680,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
           
 
 <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="vault_database_connections_list_module.html" class="btn btn-neutral float-left" title="community.hashi_vault.vault_database_connections_list module – Lists all Database Connections in a given path" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="vault_database_connections_list_module.html" class="btn btn-neutral float-left" title="community.hashi_vault.vault_database_connections_list module – Returns a list of available connections" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="vault_database_role_delete_module.html" class="btn btn-neutral float-right" title="community.hashi_vault.vault_database_role_delete module – Delete a role definition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
