@@ -29,12 +29,6 @@ notes:
   - This API returns a member named C(keys).
   - In Ansible, accessing RV(data.keys) or RV(raw.data.keys) will not work because the dict object contains a method named C(keys).
   - Instead, use RV(roles) to access the list of roles, or use the syntax C(data["keys"]) or C(raw.data["keys"]) to access the list via dict member.
-options:
-  engine_mount_point:
-    default: database
-    description:
-      - Specify the mount point used by the database engine.
-      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""

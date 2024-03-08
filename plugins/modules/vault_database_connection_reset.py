@@ -32,11 +32,6 @@ extends_documentation_fragment:
   - community.hashi_vault.connection
   - community.hashi_vault.auth
 options:
-  engine_mount_point:
-    default: database
-    description:
-      - Specify the mount point used by the database engine.
-      - Defaults to the default used by C(hvac).
   connection_name:
     description: The connection name to be resetted.
     type: str

@@ -29,12 +29,6 @@ extends_documentation_fragment:
   - community.hashi_vault.attributes.check_mode_read_only
   - community.hashi_vault.connection
   - community.hashi_vault.auth
-options:
-  engine_mount_point:
-    default: database
-    description:
-      - Specify the mount point used by the database engine.
-      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""

@@ -59,11 +59,6 @@ options:
     description: Password to connect to the database
     type: str
     required: True
-  engine_mount_point:
-    default: database
-    description:
-      - Specify the mount point used by the database engine.
-      - Defaults to the default used by C(hvac).
 '''
 
 EXAMPLES = r"""

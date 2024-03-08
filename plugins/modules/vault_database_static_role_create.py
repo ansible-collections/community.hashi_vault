@@ -34,11 +34,6 @@ extends_documentation_fragment:
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
 options:
-  engine_mount_point:
-    default: database
-    description:
-      - Specify the mount point used by the database engine.
-      - Defaults to the default used by C(hvac).
   connection_name:
     description: The connection name under which the role should be created.
     type: str
