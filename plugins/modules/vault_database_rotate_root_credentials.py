@@ -166,7 +166,7 @@ def run_module():
     module.exit_json(
       data={
           'status': 'success',
-          'status_code': '204',
+          'status_code': 204,
           'ok': True,
       },
       changed=True

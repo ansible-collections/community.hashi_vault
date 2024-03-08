@@ -197,7 +197,7 @@ def run_module():
           )
       except hvac.exceptions.InvalidRequest as e:
           module.fail_json(
-              msg="Cannot update static account username ['%s'/static-roles/'%s']. Please verify that the user exists on the database." % (engine_mount_point or 'database', parameters["name"]),
+              msg="Cannot update static role ['%s'/static-roles/'%s']. Please verify that the user exists on the database." % (engine_mount_point or 'database', parameters["name"]),
               exception=traceback.format_exc()
           )
 
