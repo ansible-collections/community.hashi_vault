@@ -44,6 +44,7 @@
           - db_connections is defined
           - "'data' in db_connections"
           - "'raw' in db_connections"
+          - "'connections' in db_connections"
           - "'keys' in db_connections['data']"
           - "'my-postgresql-database' in db_connections['data']['keys']"
 

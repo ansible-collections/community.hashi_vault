@@ -2,15 +2,15 @@
     "auth": null,
     "data": {
         "keys": [
-            "role1",
-            "role2",
-            "role3"
+            "dyn_role1",
+            "dyn_role2",
+            "dyn_role3"
         ]
     },
     "roles": [
-        "role1",
-        "role2",
-        "role3"
+        "dyn_role1",
+        "dyn_role2",
+        "dyn_role3"
     ],
     "lease_duration": 0,
     "lease_id": "",

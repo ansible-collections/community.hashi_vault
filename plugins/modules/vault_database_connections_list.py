@@ -71,7 +71,7 @@ raw:
   type: dict
   sample:
     auth: null
-    data:
+    data: &sample_connections
       keys: [con1, con2, con3]
     lease_duration: 0
     lease_id: ""
@@ -79,6 +79,12 @@ raw:
     request_id: "12345678"
     warnings: null
     wrap_info: null
+connections:
+  description: The list of database connections or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  returned: success
+  type: list
+  elements: str
+  sample: *sample_connections
 data:
   description: The C(data) field of raw result. This can also be accessed via C(raw.data).
   returned: success
@@ -146,9 +152,11 @@ def run_module():
             exception=traceback.format_exc()
         )
 
-    data = raw['data']
+    data = raw.get('data', {'keys': []})
+    connections = data['keys']
     module.exit_json(
         raw=raw,
+        connections = connections,
         data=data,
         changed=False,
     )
