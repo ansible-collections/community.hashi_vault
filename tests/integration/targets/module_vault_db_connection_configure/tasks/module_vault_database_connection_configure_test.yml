@@ -8,7 +8,6 @@
       auth_method: token
       token: "{{ user_token }}"
       token_validate: true
-      timeout: 5
   block:
     - name: Test database connection configure [check mode]
       register: db_connection_configure
