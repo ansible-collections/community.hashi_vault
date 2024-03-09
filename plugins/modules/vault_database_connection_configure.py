@@ -190,7 +190,7 @@ def run_module():
                 exception=traceback.format_exc(),
             )
         else:
-            return_data={
+            return_data = {
                 "status": "success",
                 "status_code": raw.status_code,
                 "ok": raw.ok,
