@@ -56,9 +56,9 @@ def _sample_connection():
     }
 
 
-def response_obj():
+def response_obj(status_code: int = 204):
     r = Response()
-    r.status_code = 204
+    r.status_code = status_code
     return r
 
 
@@ -212,3 +212,32 @@ class TestModuleVaultDatabaseConnectionConfigure:
         assert match is not None, "result: %r\ndid not match: %s" % (result, exc[2])
 
         assert opt_engine_mount_point == match.group(1)
+
+    @pytest.mark.parametrize(
+        "patch_ansible_module",
+        [[_combined_options(), "engine_mount_point"]],
+        indirect=True,
+    )
+    @pytest.mark.parametrize("opt_engine_mount_point", ["path/1", "second/path"])
+    def test_vault_database_connection_configure_vault_not_ok(
+        self, vault_client, opt_engine_mount_point, capfd
+    ):
+
+        client = vault_client
+        response = response_obj(418)
+        client.secrets.database.configure.return_value = response
+
+        with pytest.raises(SystemExit) as e:
+            vault_database_connection_configure.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+
+        assert result["failed"]
+        assert "data" in result
+        data = result["data"]
+        assert data["status"] == "failure"
+        assert not data["ok"]
+        assert data["status_code"] == 418
