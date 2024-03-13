@@ -5,6 +5,19 @@ community.hashi_vault Release Notes
 .. contents:: Topics
 
 
+v6.1.0
+======
+
+Release Summary
+---------------
+
+This release addresses some breaking changes in core that were backported.
+
+Major Changes
+-------------
+
+- requirements - the ``requests`` package which is required by ``hvac`` now has a more restrictive range for this collection in certain use cases due to breaking security changes in ``ansible-core`` that were backported (https://github.com/ansible-collections/community.hashi_vault/pull/416).
+
 v6.0.0
 ======
 
