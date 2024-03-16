@@ -145,8 +145,7 @@ def run_module():
     parameters["username"] = module.params.get("db_username")
     parameters["rotation_statements"] = module.params.get("rotation_statements")
     rotation_period = module.params.get("rotation_period", None)
-    if rotation_period is not None:
-        parameters["rotation_period"] = rotation_period
+    parameters["rotation_period"] = rotation_period
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
