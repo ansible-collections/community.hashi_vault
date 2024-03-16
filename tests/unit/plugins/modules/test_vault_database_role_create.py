@@ -124,12 +124,15 @@ class TestModuleVaultDatabaseRoleCreate:
         assert e.value.code == 0, "result: %r" % (result,)
 
         client.secrets.database.create_role.assert_called_once_with(
-            mount_point=patch_ansible_module["engine_mount_point"],
             name=patch_ansible_module["role_name"],
             db_name=patch_ansible_module["connection_name"],
             creation_statements=patch_ansible_module["creation_statements"],
+            revocation_statements=patch_ansible_module.get("revocation_statements"),
+            rollback_statements=patch_ansible_module.get("rollback_statements"),
+            renew_statements=patch_ansible_module.get("renew_statements"),
             default_ttl=patch_ansible_module["default_ttl"],
             max_ttl=patch_ansible_module["max_ttl"],
+            mount_point=patch_ansible_module["engine_mount_point"],
         )
 
         assert result["changed"] is True

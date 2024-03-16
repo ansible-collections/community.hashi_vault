@@ -157,28 +157,19 @@ def run_module():
     if module.check_mode is True:
         module.exit_json(changed=True)
 
-    parameters = {}
+    parameters = {
+        "name": module.params.get("role_name"),
+        "db_name": module.params.get("connection_name"),
+        "creation_statements": module.params.get("creation_statements"),
+        "revocation_statements": module.params.get("revocation_statements"),
+        "rollback_statements": module.params.get("rollback_statements"),
+        "renew_statements": module.params.get("renew_statements"),
+        "default_ttl": module.params.get("default_ttl"),
+        "max_ttl": module.params.get("max_ttl"),
+    }
     engine_mount_point = module.params.get("engine_mount_point", None)
     if engine_mount_point is not None:
         parameters["mount_point"] = engine_mount_point
-    parameters["name"] = module.params.get("role_name")
-    parameters["db_name"] = module.params.get("connection_name")
-    parameters["creation_statements"] = module.params.get("creation_statements")
-    revocation_statements = module.params.get("revocation_statements")
-    if revocation_statements is not None:
-        parameters["revocation_statements"] = revocation_statements
-    rollback_statements = module.params.get("rollback_statements")
-    if rollback_statements is not None:
-        parameters["rollback_statements"] = rollback_statements
-    renew_statements = module.params.get("renew_statements")
-    if renew_statements is not None:
-        parameters["renew_statements"] = renew_statements
-    default_ttl = module.params.get("default_ttl")
-    if default_ttl is not None:
-        parameters["default_ttl"] = default_ttl
-    max_ttl = module.params.get("max_ttl")
-    if max_ttl is not None:
-        parameters["max_ttl"] = max_ttl
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
