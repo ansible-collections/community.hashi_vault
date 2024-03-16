@@ -141,6 +141,22 @@ class TestModuleVaultDatabaseStaticRoleRotateCredentials:
         assert result["msg"] == missing_required_lib("hvac")
 
     @pytest.mark.parametrize(
+        "patch_ansible_module", [_combined_options()], indirect=True
+    )
+    def test_vault_database_static_role_rotate_credentials_old_hvac(self, vault_client, capfd):
+        client = vault_client
+        client.secrets.database.rotate_static_role_credentials.side_effect = AttributeError
+
+        with pytest.raises(SystemExit) as e:
+            vault_database_static_role_rotate_credentials.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert result["msg"] == "hvac>=2.0.0 is required"
+
+    @pytest.mark.parametrize(
         "exc",
         [
             (
