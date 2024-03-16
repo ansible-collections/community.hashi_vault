@@ -116,27 +116,7 @@ EXAMPLES = r"""
     msg: "{{ result }}"
 """
 
-RETURN = r"""
-data:
-  description: The result of the operation.
-  returned: success
-  type: dict
-  sample:
-    status: "success"
-raw:
-  description: The raw result of the operation.
-  returned: success
-  type: dict
-  sample:
-    auth: null
-    data: null
-    lease_duration: 0
-    lease_id: ""
-    renewable: false
-    request_id: "123456"
-    warnings: null
-    wrap_info: null
-"""
+RETURN = r""""""
 
 import traceback
 
@@ -174,77 +154,58 @@ def run_module():
     if not HAS_HVAC:
         module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
 
-    if module.check_mode is False:
-        parameters = {}
-        engine_mount_point = module.params.get("engine_mount_point", None)
-        if engine_mount_point is not None:
-            parameters["mount_point"] = engine_mount_point
-        parameters["name"] = module.params.get("role_name")
-        parameters["db_name"] = module.params.get("connection_name")
-        parameters["creation_statements"] = module.params.get("creation_statements")
-        revocation_statements = module.params.get("revocation_statements")
-        if revocation_statements is not None:
-            parameters["revocation_statements"] = revocation_statements
-        rollback_statements = module.params.get("rollback_statements")
-        if rollback_statements is not None:
-            parameters["rollback_statements"] = rollback_statements
-        renew_statements = module.params.get("renew_statements")
-        if renew_statements is not None:
-            parameters["renew_statements"] = renew_statements
-        default_ttl = module.params.get("default_ttl")
-        if default_ttl is not None:
-            parameters["default_ttl"] = default_ttl
-        max_ttl = module.params.get("max_ttl")
-        if max_ttl is not None:
-            parameters["max_ttl"] = max_ttl
+    if module.check_mode is True:
+        module.exit_json(changed=True)
 
-        module.connection_options.process_connection_options()
-        client_args = module.connection_options.get_hvac_connection_options()
-        client = module.helper.get_vault_client(**client_args)
+    parameters = {}
+    engine_mount_point = module.params.get("engine_mount_point", None)
+    if engine_mount_point is not None:
+        parameters["mount_point"] = engine_mount_point
+    parameters["name"] = module.params.get("role_name")
+    parameters["db_name"] = module.params.get("connection_name")
+    parameters["creation_statements"] = module.params.get("creation_statements")
+    revocation_statements = module.params.get("revocation_statements")
+    if revocation_statements is not None:
+        parameters["revocation_statements"] = revocation_statements
+    rollback_statements = module.params.get("rollback_statements")
+    if rollback_statements is not None:
+        parameters["rollback_statements"] = rollback_statements
+    renew_statements = module.params.get("renew_statements")
+    if renew_statements is not None:
+        parameters["renew_statements"] = renew_statements
+    default_ttl = module.params.get("default_ttl")
+    if default_ttl is not None:
+        parameters["default_ttl"] = default_ttl
+    max_ttl = module.params.get("max_ttl")
+    if max_ttl is not None:
+        parameters["max_ttl"] = max_ttl
 
-        try:
-            module.authenticator.validate()
-            module.authenticator.authenticate(client)
-        except (NotImplementedError, HashiVaultValueError) as e:
-            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+    module.connection_options.process_connection_options()
+    client_args = module.connection_options.get_hvac_connection_options()
+    client = module.helper.get_vault_client(**client_args)
 
-        try:
-            raw = client.secrets.database.create_role(**parameters)
-        except hvac.exceptions.Forbidden as e:
-            module.fail_json(
-                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
-                or "database",
-                exception=traceback.format_exc(),
-            )
-        except hvac.exceptions.InvalidPath as e:
-            module.fail_json(
-                msg="Invalid or missing path ['%s/roles/%s']."
-                % (engine_mount_point or "database", parameters["name"]),
-                exception=traceback.format_exc(),
-            )
+    try:
+        module.authenticator.validate()
+        module.authenticator.authenticate(client)
+    except (NotImplementedError, HashiVaultValueError) as e:
+        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-        if raw.status_code not in [200, 204]:
-            module.fail_json(
-                status="failure",
-                msg="Failed to create role. Status code: %s" % raw.status_code,
-            )
-        module.exit_json(
-            data={
-                "status": "success",
-                "status_code": raw.status_code,
-                "ok": raw.ok,
-            },
-            changed=True,
+    try:
+        client.secrets.database.create_role(**parameters)
+    except hvac.exceptions.Forbidden as e:
+        module.fail_json(
+            msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+            or "database",
+            exception=traceback.format_exc(),
         )
-
-    module.exit_json(
-        data={
-            "status": "success",
-            "status_code": 204,
-            "ok": True,
-        },
-        changed=True,
-    )
+    except hvac.exceptions.InvalidPath as e:
+        module.fail_json(
+            msg="Invalid or missing path ['%s/roles/%s']."
+            % (engine_mount_point or "database", parameters["name"]),
+            exception=traceback.format_exc(),
+        )
+    else:
+        module.exit_json(changed=True)
 
 
 def main():

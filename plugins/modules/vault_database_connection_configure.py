@@ -162,7 +162,7 @@ def run_module():
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
-        raw = client.secrets.database.configure(**parameters)
+        client.secrets.database.configure(**parameters)
     except hvac.exceptions.Forbidden as e:
         module.fail_json(
             msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point

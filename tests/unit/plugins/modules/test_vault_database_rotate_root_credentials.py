@@ -10,7 +10,6 @@ __metaclass__ = type
 import pytest
 import re
 import json
-from requests.models import Response
 
 from ansible.module_utils.basic import missing_required_lib
 
@@ -47,23 +46,12 @@ def _sample_connection():
     return {"connection_name": "foo"}
 
 
-def response_obj():
-    r = Response()
-    r.status_code = 204
-    return r
-
-
 def _combined_options(**kwargs):
     opt = _connection_options()
     opt.update(_sample_options())
     opt.update(_sample_connection())
     opt.update(kwargs)
     return opt
-
-
-@pytest.fixture
-def list_response(fixture_loader):
-    return fixture_loader("database_generic_success_response.json")
 
 
 class TestModuleVaultDatabaseRotateRootCredentials:
@@ -112,11 +100,11 @@ class TestModuleVaultDatabaseRotateRootCredentials:
     @pytest.mark.parametrize(
         "patch_ansible_module", [_combined_options()], indirect=True
     )
-    def test_vault_database_rotate_root_credentials_return_data(
-        self, patch_ansible_module, list_response, vault_client, capfd
+    def test_vault_database_rotate_root_credentials_success(
+        self, patch_ansible_module, empty_response, vault_client, capfd
     ):
         client = vault_client
-        client.secrets.database.rotate_root_credentials.return_value = response_obj()
+        client.secrets.database.rotate_root_credentials.return_value = empty_response
 
         with pytest.raises(SystemExit) as e:
             vault_database_rotate_root_credentials.main()
@@ -131,14 +119,7 @@ class TestModuleVaultDatabaseRotateRootCredentials:
             name=patch_ansible_module["connection_name"],
         )
 
-        raw = list_response.copy()
-        data = raw["data"]
-        assert (
-            result["data"] == data
-        ), "module result did not match expected result:\nexpected: %r\ngot: %r" % (
-            list_response,
-            result,
-        )
+        assert result["changed"] is True
 
     @pytest.mark.parametrize(
         "patch_ansible_module", [_combined_options()], indirect=True

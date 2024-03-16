@@ -12,7 +12,6 @@ import re
 import json
 
 from ansible.module_utils.basic import missing_required_lib
-from requests.models import Response
 
 from ...compat import mock
 from .....plugins.modules import vault_database_role_create
@@ -56,23 +55,12 @@ def _sample_role():
     }
 
 
-def response_obj():
-    r = Response()
-    r.status_code = 204
-    return r
-
-
 def _combined_options(**kwargs):
     opt = _connection_options()
     opt.update(_sample_options())
     opt.update(_sample_role())
     opt.update(kwargs)
     return opt
-
-
-@pytest.fixture
-def list_response(fixture_loader):
-    return fixture_loader("database_generic_success_response.json")
 
 
 class TestModuleVaultDatabaseRoleCreate:
@@ -121,11 +109,11 @@ class TestModuleVaultDatabaseRoleCreate:
     @pytest.mark.parametrize(
         "patch_ansible_module", [_combined_options()], indirect=True
     )
-    def test_vault_database_role_create_return_data(
-        self, patch_ansible_module, list_response, vault_client, capfd
+    def test_vault_database_role_create_success(
+        self, patch_ansible_module, empty_response, vault_client, capfd
     ):
         client = vault_client
-        client.secrets.database.create_role.return_value = response_obj()
+        client.secrets.database.create_role.return_value = empty_response
 
         with pytest.raises(SystemExit) as e:
             vault_database_role_create.main()
@@ -144,14 +132,7 @@ class TestModuleVaultDatabaseRoleCreate:
             max_ttl=patch_ansible_module["max_ttl"],
         )
 
-        raw = list_response.copy()
-        data = raw["data"]
-        assert (
-            result["data"] == data
-        ), "module result did not match expected result:\nexpected: %r\ngot: %r" % (
-            list_response,
-            result,
-        )
+        assert result["changed"] is True
 
     @pytest.mark.parametrize(
         "patch_ansible_module", [_combined_options()], indirect=True

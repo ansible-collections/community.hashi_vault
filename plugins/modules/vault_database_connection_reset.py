@@ -69,17 +69,7 @@ EXAMPLES = r"""
     msg: "{{ result }}"
 """
 
-RETURN = r"""
-data:
-  description: The result of the operation.
-  returned: success
-  type: dict
-  sample:
-    data:
-      ok: true
-      status: "success"
-      status_code: 204
-"""
+RETURN = r""""""
 
 import traceback
 
@@ -110,61 +100,41 @@ def run_module():
     if not HAS_HVAC:
         module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
 
-    if module.check_mode is False:
-        parameters = {}
-        engine_mount_point = module.params.get("engine_mount_point", None)
-        if engine_mount_point is not None:
-            parameters["mount_point"] = engine_mount_point
-        parameters["name"] = module.params.get("connection_name")
+    if module.check_mode is True:
+        module.exit_json(changed=True)
 
-        module.connection_options.process_connection_options()
-        client_args = module.connection_options.get_hvac_connection_options()
-        client = module.helper.get_vault_client(**client_args)
+    parameters = {}
+    engine_mount_point = module.params.get("engine_mount_point", None)
+    if engine_mount_point is not None:
+        parameters["mount_point"] = engine_mount_point
+    parameters["name"] = module.params.get("connection_name")
 
-        try:
-            module.authenticator.validate()
-            module.authenticator.authenticate(client)
-        except (NotImplementedError, HashiVaultValueError) as e:
-            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+    module.connection_options.process_connection_options()
+    client_args = module.connection_options.get_hvac_connection_options()
+    client = module.helper.get_vault_client(**client_args)
 
-        try:
-            raw = client.secrets.database.reset_connection(**parameters)
-        except hvac.exceptions.Forbidden as e:
-            module.fail_json(
-                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
-                or "database",
-                exception=traceback.format_exc(),
-            )
-        except hvac.exceptions.InvalidPath as e:
-            module.fail_json(
-                msg="Invalid or missing path ['%s/reset/%s']."
-                % (engine_mount_point or "database", parameters["name"]),
-                exception=traceback.format_exc(),
-            )
+    try:
+        module.authenticator.validate()
+        module.authenticator.authenticate(client)
+    except (NotImplementedError, HashiVaultValueError) as e:
+        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
-        if raw.status_code not in [200, 204]:
-            module.fail_json(
-                status="failure",
-                msg="Failed to reset database connection. Status code: %s"
-                % raw.status_code,
-            )
-        module.exit_json(
-            data={
-                "status": "success",
-                "status_code": raw.status_code,
-                "ok": raw.ok,
-            },
-            changed=True,
+    try:
+        client.secrets.database.reset_connection(**parameters)
+    except hvac.exceptions.Forbidden as e:
+        module.fail_json(
+            msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+            or "database",
+            exception=traceback.format_exc(),
         )
-
-    module.exit_json(
-        data={
-            "status": "success",
-            "status_code": 204,
-            "ok": True,
-        },
-        changed=True,
-    )
+    except hvac.exceptions.InvalidPath as e:
+        module.fail_json(
+            msg="Invalid or missing path ['%s/reset/%s']."
+            % (engine_mount_point or "database", parameters["name"]),
+            exception=traceback.format_exc(),
+        )
+    else:
+        module.exit_json(changed=True)
 
 
 def main():

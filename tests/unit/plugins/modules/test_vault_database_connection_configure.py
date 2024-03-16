@@ -10,7 +10,6 @@ __metaclass__ = type
 import pytest
 import re
 import json
-from requests.models import Response
 
 from ansible.module_utils.basic import missing_required_lib
 
@@ -54,13 +53,6 @@ def _sample_connection():
         "connection_username": "SomeUser",
         "connection_password": "SomePass",
     }
-
-
-def response_obj(status_code: int = 204, content: bytes = b'{}'):
-    r = Response()
-    r.status_code = status_code
-    r._content = content
-    return r
 
 
 def _combined_options(**kwargs):
@@ -176,12 +168,11 @@ class TestModuleVaultDatabaseConnectionConfigure:
     @pytest.mark.parametrize(
         "patch_ansible_module", [_combined_options()], indirect=True
     )
-    @pytest.mark.parametrize("api_response", [response_obj(), response_obj(200, b'{"warnings": ["abc"]}')])
     def test_vault_database_connection_configure_success(
-        self, patch_ansible_module, api_response, vault_client, capfd
+        self, patch_ansible_module, empty_response, vault_client, capfd
     ):
         client = vault_client
-        client.secrets.database.configure.return_value = api_response
+        client.secrets.database.configure.return_value = empty_response
 
         with pytest.raises(SystemExit) as e:
             vault_database_connection_configure.main()

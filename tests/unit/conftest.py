@@ -78,5 +78,15 @@ def patch_get_vault_client(vault_client):
 def requests_unparseable_response():
     r = mock.MagicMock()
     r.json.side_effect = json.JSONDecodeError
+    return r
 
+
+# https://github.com/hvac/hvac/issues/797
+@pytest.fixture
+def empty_response(requests_unparseable_response):
+    r = requests_unparseable_response
+    r.status_code = 204
+    r._content = b""
+    r.content = b""
+    r.text = ""
     return r

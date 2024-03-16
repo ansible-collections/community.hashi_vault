@@ -23,11 +23,7 @@
     - name: Check [check mode]
       ansible.builtin.assert: &success
         that:
-          - db_create_role is defined
-          - "'data' in db_create_role"
-          - db_create_role["data"]["status"] == 'success'
-          - "'changed' in db_create_role"
-          - db_create_role["changed"]
+          - db_create_role is changed
 
     - name: Test database create role (explicit mount point - invalid, connection_name)
       register: db_create_role
