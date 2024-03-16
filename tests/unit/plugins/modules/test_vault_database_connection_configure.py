@@ -56,9 +56,10 @@ def _sample_connection():
     }
 
 
-def response_obj(status_code: int = 204):
+def response_obj(status_code: int = 204, content: bytes = b'{}'):
     r = Response()
     r.status_code = status_code
+    r._content = content
     return r
 
 
@@ -68,11 +69,6 @@ def _combined_options(**kwargs):
     opt.update(_sample_connection())
     opt.update(kwargs)
     return opt
-
-
-@pytest.fixture
-def list_response(fixture_loader):
-    return fixture_loader("database_generic_success_response.json")
 
 
 class TestModuleVaultDatabaseConnectionConfigure:
@@ -176,3 +172,33 @@ class TestModuleVaultDatabaseConnectionConfigure:
         assert match is not None, "result: %r\ndid not match: %s" % (result, exc[2])
 
         assert opt_engine_mount_point == match.group(1)
+
+    @pytest.mark.parametrize(
+        "patch_ansible_module", [_combined_options()], indirect=True
+    )
+    @pytest.mark.parametrize("api_response", [response_obj(), response_obj(200, b'{"warnings": ["abc"]}')])
+    def test_vault_database_connection_configure_success(
+        self, patch_ansible_module, api_response, vault_client, capfd
+    ):
+        client = vault_client
+        client.secrets.database.configure.return_value = api_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_database_connection_configure.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code == 0, "result: %r" % (result,)
+
+        client.secrets.database.configure.assert_called_once_with(
+            mount_point=patch_ansible_module["engine_mount_point"],
+            name=patch_ansible_module["connection_name"],
+            plugin_name=patch_ansible_module["plugin_name"],
+            allowed_roles=patch_ansible_module["allowed_roles"],
+            connection_url=patch_ansible_module["connection_url"],
+            username=patch_ansible_module["connection_username"],
+            password=patch_ansible_module["connection_password"],
+        )
+
+        assert result["changed"] is True
