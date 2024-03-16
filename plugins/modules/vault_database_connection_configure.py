@@ -137,51 +137,52 @@ def run_module():
     if not HAS_HVAC:
         module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
 
-    if module.check_mode is False:
-        parameters = {}
-        engine_mount_point = module.params.get("engine_mount_point", None)
-        if engine_mount_point is not None:
-            parameters["mount_point"] = engine_mount_point
-        parameters["plugin_name"] = module.params.get("plugin_name")
-        parameters["allowed_roles"] = module.params.get("allowed_roles")
-        parameters["connection_url"] = module.params.get("connection_url")
-        parameters["name"] = module.params.get("connection_name")
-        parameters["username"] = module.params.get("connection_username")
-        parameters["password"] = module.params.get("connection_password")
-
-        module.connection_options.process_connection_options()
-        client_args = module.connection_options.get_hvac_connection_options()
-        client = module.helper.get_vault_client(**client_args)
-
-        try:
-            module.authenticator.validate()
-            module.authenticator.authenticate(client)
-        except (NotImplementedError, HashiVaultValueError) as e:
-            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
-        try:
-            raw = client.secrets.database.configure(**parameters)
-        except hvac.exceptions.Forbidden as e:
-            module.fail_json(
-                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
-                or "database",
-                exception=traceback.format_exc(),
-            )
-        except hvac.exceptions.InvalidPath as e:
-            module.fail_json(
-                msg="Invalid or missing path ['%s/config/%s']."
-                % (engine_mount_point or "database", parameters["name"]),
-                exception=traceback.format_exc(),
-            )
-        except hvac.exceptions.InvalidRequest as e:
-            module.fail_json(
-                msg="Error creating database connection ['%s/config/%s']. Please analyze the traceback for further details."
-                % (engine_mount_point or "database", parameters["name"]),
-                exception=traceback.format_exc(),
-            )
+    if module.check_mode is True:
         module.exit_json(changed=True)
 
-    module.exit_json(changed=True)
+    parameters = {}
+    engine_mount_point = module.params.get("engine_mount_point", None)
+    if engine_mount_point is not None:
+        parameters["mount_point"] = engine_mount_point
+    parameters["plugin_name"] = module.params.get("plugin_name")
+    parameters["allowed_roles"] = module.params.get("allowed_roles")
+    parameters["connection_url"] = module.params.get("connection_url")
+    parameters["name"] = module.params.get("connection_name")
+    parameters["username"] = module.params.get("connection_username")
+    parameters["password"] = module.params.get("connection_password")
+
+    module.connection_options.process_connection_options()
+    client_args = module.connection_options.get_hvac_connection_options()
+    client = module.helper.get_vault_client(**client_args)
+
+    try:
+        module.authenticator.validate()
+        module.authenticator.authenticate(client)
+    except (NotImplementedError, HashiVaultValueError) as e:
+        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
+    try:
+        raw = client.secrets.database.configure(**parameters)
+    except hvac.exceptions.Forbidden as e:
+        module.fail_json(
+            msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
+            or "database",
+            exception=traceback.format_exc(),
+        )
+    except hvac.exceptions.InvalidPath as e:
+        module.fail_json(
+            msg="Invalid or missing path ['%s/config/%s']."
+            % (engine_mount_point or "database", parameters["name"]),
+            exception=traceback.format_exc(),
+        )
+    except hvac.exceptions.InvalidRequest as e:
+        module.fail_json(
+            msg="Error creating database connection ['%s/config/%s']. Please analyze the traceback for further details."
+            % (engine_mount_point or "database", parameters["name"]),
+            exception=traceback.format_exc(),
+        )
+    else:
+        module.exit_json(changed=True)
 
 
 def main():
