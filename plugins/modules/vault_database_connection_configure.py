@@ -101,17 +101,7 @@ EXAMPLES = r"""
     msg: "{{ result }}"
 """
 
-RETURN = r"""
-data:
-  description: The raw result of the operation.
-  returned: always
-  type: dict
-  sample:
-    data:
-      ok: true
-      status: "success"
-      status_code: 204
-"""
+RETURN = r""""""
 
 import traceback
 
@@ -189,31 +179,9 @@ def run_module():
                 % (engine_mount_point or "database", parameters["name"]),
                 exception=traceback.format_exc(),
             )
-        else:
-            return_data = {
-                "status": "success",
-                "status_code": raw.status_code,
-                "ok": raw.ok,
-            }
-        if raw.status_code not in [200, 204]:
-            return_data["status"] = "failure"
-            module.fail_json(
-                data=return_data,
-                msg="Failed to create connection. Status code: %s" % raw.status_code,
-            )
-        module.exit_json(
-            data=return_data,
-            changed=True,
-        )
+        module.exit_json(changed=True)
 
-    module.exit_json(
-        data={
-            "status": "success",
-            "status_code": 204,
-            "ok": True,
-        },
-        changed=True,
-    )
+    module.exit_json(changed=True)
 
 
 def main():

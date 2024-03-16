@@ -121,42 +121,6 @@ class TestModuleVaultDatabaseConnectionConfigure:
     @pytest.mark.parametrize(
         "patch_ansible_module", [_combined_options()], indirect=True
     )
-    def test_vault_database_connection_configure_return_data(
-        self, patch_ansible_module, list_response, vault_client, capfd
-    ):
-        client = vault_client
-        client.secrets.database.configure.return_value = response_obj()
-
-        with pytest.raises(SystemExit) as e:
-            vault_database_connection_configure.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code == 0, "result: %r" % (result,)
-
-        client.secrets.database.configure.assert_called_once_with(
-            mount_point=patch_ansible_module["engine_mount_point"],
-            name=patch_ansible_module["connection_name"],
-            plugin_name=patch_ansible_module["plugin_name"],
-            allowed_roles=patch_ansible_module["allowed_roles"],
-            connection_url=patch_ansible_module["connection_url"],
-            username=patch_ansible_module["connection_username"],
-            password=patch_ansible_module["connection_password"],
-        )
-
-        raw = list_response.copy()
-        data = raw["data"]
-        assert (
-            result["data"] == data
-        ), "module result did not match expected result:\nexpected: %r\ngot: %r" % (
-            list_response,
-            result,
-        )
-
-    @pytest.mark.parametrize(
-        "patch_ansible_module", [_combined_options()], indirect=True
-    )
     def test_vault_database_connection_configure_no_hvac(self, capfd):
         with mock.patch.multiple(
             vault_database_connection_configure,
@@ -212,32 +176,3 @@ class TestModuleVaultDatabaseConnectionConfigure:
         assert match is not None, "result: %r\ndid not match: %s" % (result, exc[2])
 
         assert opt_engine_mount_point == match.group(1)
-
-    @pytest.mark.parametrize(
-        "patch_ansible_module",
-        [[_combined_options(), "engine_mount_point"]],
-        indirect=True,
-    )
-    @pytest.mark.parametrize("opt_engine_mount_point", ["path/1", "second/path"])
-    def test_vault_database_connection_configure_vault_not_ok(
-        self, vault_client, opt_engine_mount_point, capfd
-    ):
-
-        client = vault_client
-        response = response_obj(418)
-        client.secrets.database.configure.return_value = response
-
-        with pytest.raises(SystemExit) as e:
-            vault_database_connection_configure.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-
-        assert result["failed"]
-        assert "data" in result
-        data = result["data"]
-        assert data["status"] == "failure"
-        assert not data["ok"]
-        assert data["status_code"] == 418
