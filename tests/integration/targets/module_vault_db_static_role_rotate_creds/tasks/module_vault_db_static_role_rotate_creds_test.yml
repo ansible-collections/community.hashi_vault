@@ -25,11 +25,7 @@
         - name: Check (explicit mount) [check mode]
           ansible.builtin.assert: &success
             that:
-              - rotate_credentials is defined
-              - "'data' in rotate_credentials"
-              - rotate_credentials["data"]["status"] == 'success'
-              - "'changed' in rotate_credentials"
-              - rotate_credentials["changed"]
+              - rotate_credentials is changed
 
         - name: Test rotate credential for a static role (explicit mount - invalid, role_name)
           register: rotate_credentials

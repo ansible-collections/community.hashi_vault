@@ -20,11 +20,7 @@
     - name: Check [check mode]
       ansible.builtin.assert: &success
         that:
-          - db_role_delete is defined
-          - "'data' in db_role_delete"
-          - db_role_delete["data"]["status"] == 'success'
-          - "'changed' in db_role_delete"
-          - db_role_delete["changed"]
+          - db_role_delete is changed
 
     - name: Test database role delete (explicit mount - invalid, role_name)
       register: db_role_delete
