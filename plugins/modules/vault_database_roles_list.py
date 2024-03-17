@@ -18,12 +18,11 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Returns a list of available (dynamic) roles
+  - Returns a list of available (dynamic) roles.
 notes:
-  - C(vault_database_roles_list) lists all dynamic roles
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
-  - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
-  - Use C(changed_when) to control that in cases where the operation is known to not change state.
+  - This API returns a member named C(keys).
+  - In Ansible, accessing RV(data.keys) or RV(raw.data.keys) will not work because the dict object contains a method named C(keys).
+  - Instead, use RV(roles) to access the list of roles, or use the syntax C(data["keys"]) or C(raw.data["keys"]) to access the list via dict member.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
   - community.hashi_vault.attributes.action_group
@@ -62,7 +61,7 @@ EXAMPLES = r"""
 
 RETURN = r"""
 data:
-  description: The C(data) field of raw result. This can also be accessed via C(raw.data).
+  description: The C(data) field of raw result. This can also be accessed via RV(raw.data).
   returned: success
   type: dict
   contains: &data_contains
@@ -99,7 +98,7 @@ raw:
     lease_id: ""
     renewable: false
     request_id: "123456"
-    warnings: null,
+    warnings: null
     wrap_info: null
 """
 

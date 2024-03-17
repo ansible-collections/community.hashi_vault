@@ -18,9 +18,8 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - L(List Database Connections,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#list-connections)
+  - L(List Database Connections,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#list-connections).
 notes:
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 extends_documentation_fragment:

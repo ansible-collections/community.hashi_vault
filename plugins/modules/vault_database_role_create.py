@@ -18,7 +18,7 @@ requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - L(Creates or updates a dynamic role definition,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role)
+  - L(Creates or updates a dynamic role definition,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role).
 notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.

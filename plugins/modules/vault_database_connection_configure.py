@@ -19,7 +19,7 @@ requirements:
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
   - Creates a L(new database connection for a database secrets engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#configuration),
-  - identified by its O(engine_mount_point) in HashiCorp Vault.
+    identified by its O(engine_mount_point) in HashiCorp Vault.
 notes:
   - The database needs to be created and available to connect before you can configure the database secrets engine using the above configure method.
   - This module always reports C(changed) status because it cannot guarantee idempotence.

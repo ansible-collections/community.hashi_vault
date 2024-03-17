@@ -19,9 +19,8 @@ requirements:
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
   - L(Reads a Database Connection,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-configuration),
-  - identified by its O(connection_name) from Hashcorp Vault
+    identified by its O(connection_name) from Hashcorp Vault.
 notes:
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 extends_documentation_fragment:
@@ -67,26 +66,11 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-raw:
-  description: The raw result of the operation
+data: &data
+  description: The C(data) field of the RV(raw) result. This can also be accessed via RV(raw.data).
   returned: success
   type: dict
-  sample:
-    auth: null,
-    data:
-      allowed_roles: []
-      connection_details:
-        connection_url: "postgresql://{{username}}:{{password}}@postgres:5432/postgres?sslmode=disable"
-        username: "UserName"
-      password_policy": ""
-      plugin_name": "postgresql-database-plugin"
-      plugin_version": ""
-      root_credentials_rotate_statements": []
-data:
-  description: The C(data) field of raw result. This can also be accessed via C(raw.data).
-  returned: success
-  type: dict
-  sample:
+  sample: &data_sample
     allowed_roles: []
     connection_details:
       connection_url: "postgresql://{{username}}:{{password}}@postgres:5432/postgres?sslmode=disable"
@@ -95,6 +79,15 @@ data:
     plugin_name": "postgresql-database-plugin"
     plugin_version": ""
     root_credentials_rotate_statements": []
+raw:
+  description: The raw result of the operation
+  returned: success
+  type: dict
+  contains:
+    data: *data
+  sample:
+    auth: null,
+    data: *data_sample
 """
 
 import traceback

@@ -23,7 +23,6 @@ description:
   - stored for a given role name. While Static Roles are rotated automatically by Vault at configured rotation periods,
   - users can use this endpoint to manually trigger a rotation to change the stored password and reset the TTL of the Static Role's password.
 notes:
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 attributes:

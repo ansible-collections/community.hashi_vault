@@ -21,7 +21,6 @@ description:
   - L(Queries a static role definition,L(reads a static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#read-static-role),
   - identified by its O(role_name)
 notes:
-  - The I(data) option is not treated as secret and may be logged. Use the C(no_log) keyword if I(data) contains sensitive values.
   - This module always reports C(changed) as False as it is a read operation that doesn't modify data.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 extends_documentation_fragment:
@@ -69,11 +68,11 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-data:
-  description: The C(data) field of raw result. This can also be accessed via C(raw.data).
+data: &data
+  description: The C(data) field of raw result. This can also be accessed via RV(raw.data).
   returned: success
   type: dict
-  sample:
+  sample: &data_sample
     credential_type: "password"
     db_name: "SomeConnection"
     last_vault_rotation": "2024-01-01T09:00:00 +01:00"
@@ -85,16 +84,11 @@ raw:
   description: The raw result of the operation.
   returned: success
   type: dict
+  contains:
+    data: *data
   sample:
     auth: null
-    data:
-      credential_type: "password"
-      db_name: "SomeConnection"
-      last_vault_rotation": "2024-01-01T09:00:00 +01:00"
-      rotation_period": 86400
-      rotation_statements": [
-        "ALTER USER \"{{name}}\" WITH PASSWORD '{{password}}';"
-      ]
+    data: *data_sample
     username: "SomeUser"
     lease_duration": 0
     lease_id: ""
