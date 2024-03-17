@@ -22,7 +22,7 @@ class HashiVaultValueError(ValueError):
 
 
 class HashiVaultHVACError(ImportError):
-    '''Use in commoncode to signal HVAC is missing.'''
+    '''Use in common code to signal HVAC is missing.'''
     def __init__(self, error, msg):
         super().__init__(error)
         self.msg = msg
