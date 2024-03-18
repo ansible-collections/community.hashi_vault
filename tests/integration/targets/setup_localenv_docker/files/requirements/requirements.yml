@@ -4,5 +4,3 @@ collections:
   - community.docker
   # community.crypto is not required the certificate and key files specified already exist
   - community.crypto
-  # community.postgresql is required for the database secrets engine integration testing
-  - community.postgresql
