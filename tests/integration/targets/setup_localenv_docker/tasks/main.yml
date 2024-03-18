@@ -61,9 +61,6 @@
     src: '{{ item }}'
     dest: '{{ mmock_config_path }}/{{ dest_name }}'
 
-- include_tasks: docker.yml
-  when: docker_compose != 'none'
-
 - name: "Template integration_config"
   template:
     src: integration_config.yml.j2
