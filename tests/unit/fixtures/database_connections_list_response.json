@@ -1,0 +1,21 @@
+{
+    "auth": null,
+    "data": {
+        "keys": [
+            "con1",
+            "con2",
+            "con3"
+        ]
+    },
+    "connections": [
+        "con1",
+        "con2",
+        "con3"
+    ],
+    "lease_duration": 0,
+    "lease_id": "",
+    "renewable": false,
+    "request_id": "91909ec0-cd89-489c-a7cf-2a82d2258b4d",
+    "warnings": null,
+    "wrap_info": null
+}

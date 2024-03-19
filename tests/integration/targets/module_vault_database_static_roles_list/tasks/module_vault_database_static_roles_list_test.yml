@@ -1,0 +1,91 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+    expected_roles:
+      - role1
+      - role2
+      - role3
+      - role4
+      - role5
+
+  module_defaults:
+    community.hashi_vault.vault_database_static_roles_list: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test list database static roles (explicit mount - invalid) [check mode]
+      register: db_static_roles
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_static_roles_list:
+        engine_mount_point: NOT REAL
+
+    - name: Check (explicit mount - invalid) [check mode]
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_static_roles is failed
+          - db_static_roles.msg is search('Permission Denied')
+
+    - name: Test list database static roles (explicit mount) [check mode]
+      register: db_static_roles
+      check_mode: true
+      community.hashi_vault.vault_database_static_roles_list:
+        engine_mount_point: database
+
+    - name: Check (explicit mount) [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_static_roles is defined
+          - db_static_roles is not changed
+          - "'raw' in db_static_roles"
+          - "'data' in db_static_roles"
+          - db_static_roles.data == db_static_roles.raw.data
+          - "'keys' in db_static_roles['data']"
+          - "'roles' in db_static_roles"
+          - db_static_roles.roles == db_static_roles.data['keys']
+          - db_static_roles.roles == expected_roles
+
+    - name: Test list database static roles (explicit mount - invalid)
+      register: db_static_roles
+      ignore_errors: true
+      community.hashi_vault.vault_database_static_roles_list:
+        engine_mount_point: NOT REAL
+
+    - name: Check
+      ansible.builtin.assert: *failure_bad_mount
+
+    - name: Test list database static roles (explicit mount) [check mode]
+      register: db_static_roles
+      check_mode: true
+      community.hashi_vault.vault_database_static_roles_list:
+        engine_mount_point: database
+
+    - name: Check (explicit mount) [check mode]
+      ansible.builtin.assert: *success
+
+    - name: Test list database static roles (explicit mount)
+      register: db_static_roles
+      community.hashi_vault.vault_database_static_roles_list:
+        engine_mount_point: database
+
+    - name: Check (explicit mount)
+      ansible.builtin.assert: *success
+
+    - name: Test list database static roles (default mount) [check mode]
+      register: db_static_roles
+      check_mode: true
+      community.hashi_vault.vault_database_static_roles_list:
+
+    - name: Check (default mount) [check mode]
+      ansible.builtin.assert: *success
+
+    - name: Test list database static roles (default mount)
+      register: db_static_roles
+      community.hashi_vault.vault_database_static_roles_list:
+
+    - name: Check (default mount)
+      ansible.builtin.assert: *success

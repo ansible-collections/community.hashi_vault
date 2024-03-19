@@ -30,3 +30,14 @@ services:
     command: >-
       -console-port {{ mmock_console_port }}
       -server-port {{ mmock_server_port }}
+  postgres:
+    image: '{{ postgres_container_image }}'
+    container_name: '{{ postgres_container_name }}'
+    environment:
+      POSTGRES_DB: '{{ postgres_db_name }}'
+      POSTGRES_PASSWORD: '{{ postgres_db_password }}'
+      POSTGRES_USER: '{{ postgres_db_user }}'
+    ports:
+      - '{{ postgres_sql_port }}:{{ postgres_sql_port }}'
+    volumes:
+      - '{{ postgres_config_path}}/init.sql:/docker-entrypoint-initdb.d/init.sql'

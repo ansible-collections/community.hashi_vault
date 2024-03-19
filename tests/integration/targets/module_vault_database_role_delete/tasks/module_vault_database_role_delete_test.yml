@@ -1,0 +1,75 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_role_delete: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test database static role delete [check mode]
+      register: db_role_delete
+      check_mode: true
+      community.hashi_vault.vault_database_role_delete:
+        engine_mount_point: DOES NOT MATTER
+        role_name: DOES NOT MATTER
+
+    - name: Check [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_role_delete is changed
+
+    - name: Test database role delete (explicit mount - invalid, role_name)
+      register: db_role_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_delete:
+        engine_mount_point: NOT REAL
+        role_name: "{{ static_role_name }}"
+
+    - name: Check (explicit mount - invalid, role_name)
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_role_delete is failed
+          - db_role_delete.msg is search('Permission Denied')
+
+    - name: Test database role delete (explicit mount, role_name - invalid)
+      register: db_role_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_delete:
+        engine_mount_point: database
+        role_name: NOT REAL
+
+    - name: Check (explicit mount - invalid, role_name)
+      ansible.builtin.assert: &failure_invalid_path
+        that:
+          - db_role_delete is failed
+          - db_role_delete.msg is search('Invalid or missing path')
+
+    - name: Test database role delete (explicit mount, role_name)
+      register: db_role_delete
+      community.hashi_vault.vault_database_role_delete:
+        engine_mount_point: database
+        role_name: "{{ static_role_name }}"
+
+    - name: Check (explicit mount, role_name)
+      ansible.builtin.assert: *success
+
+    - name: Test database role delete (default mount, role_name - invalid)
+      register: db_role_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_delete:
+        role_name: NOT REAL
+
+    - name: Check (explicit mount - invalid, role_name)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test database role delete (default mount, role_name)
+      register: db_role_delete
+      community.hashi_vault.vault_database_role_delete:
+        role_name: "{{ dynamic_role_name }}"
+
+    - name: Check (default mount, role_name)
+      ansible.builtin.assert: *success

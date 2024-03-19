@@ -1,0 +1,12 @@
+---
+- name: Drop users in PostgreSQL
+  community.postgresql.postgresql_user:
+    db: "{{ vault_postgres_db }}"
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    login_user: "{{ vault_postgres_user }}"
+    login_password: "{{ vault_postgres_password }}"
+    port: "{{ vault_postgres_port }}"
+    login_host: "{{ vault_postgres_host }}"
+    state: absent
+  loop: "{{ users_to_create }}"

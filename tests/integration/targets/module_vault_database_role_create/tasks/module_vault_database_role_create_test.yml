@@ -1,0 +1,92 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_role_create: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test database create role [check mode]
+      register: db_create_role
+      check_mode: true
+      community.hashi_vault.vault_database_role_create:
+        engine_mount_point: Does Not Matter
+        connection_name: Does Not Matter
+        creation_statements:
+          - Does Not Matter
+        role_name: Does Not Matter
+
+    - name: Check [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_create_role is changed
+
+    - name: Test database create role (explicit mount point - invalid, connection_name)
+      register: db_create_role
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_create:
+        engine_mount_point: NOT REAL
+        connection_name: "{{ vault_database_connection_name }}"
+        creation_statements:
+          - "{{ vault_database_dynamic_user_sql }}"
+        role_name: dynamic_role_read
+
+    - name: Check (explicit mount point - invalid, connection_name)
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_create_role is failed
+          - db_create_role.msg is search('Permission Denied')
+
+    - name: Test database create role (explicit mount point, connection_name - invalid)
+      register: db_create_role
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_create:
+        engine_mount_point: database
+        connection_name: nonono
+        creation_statements:
+          - "{{ vault_database_dynamic_user_sql }}"
+        role_name: dynamic_role_read_invalid_1
+
+    # Note that this statement will be successful and a dynamic role will be added, although the connection name is not existing
+    - name: Check (explicit mount point, connection_name - invalid)
+      ansible.builtin.assert: *success
+
+    - name: Test database create role (explicit mount point, connection_name)
+      register: db_create_role
+      community.hashi_vault.vault_database_role_create:
+        engine_mount_point: database
+        connection_name: "{{ vault_database_connection_name }}"
+        creation_statements:
+          - "{{ vault_database_dynamic_user_sql }}"
+        role_name: dynamic_role_read_1
+
+    - name: Check (explicit mount point)
+      ansible.builtin.assert: *success
+
+    - name: Test database create role (default mount point, connection_name - invalid)
+      register: db_create_role
+      ignore_errors: true
+      community.hashi_vault.vault_database_role_create:
+        connection_name: NOT REAL
+        creation_statements:
+          - "{{ vault_database_dynamic_user_sql }}"
+        role_name: dynamic_role_read_invalid_2
+
+    # Note that this statement will be successful and a dynamic role will be added, although the connection name is not existing
+    - name: Check (default mount point, connection_name - invalid)
+      ansible.builtin.assert: *success
+
+    - name: Test database create role (default mount point, connection_name)
+      register: db_create_role
+      community.hashi_vault.vault_database_role_create:
+        connection_name: "{{ vault_database_connection_name }}"
+        creation_statements:
+          - "{{ vault_database_dynamic_user_sql }}"
+        role_name: dynamic_role_read_2
+
+    - name: Check (explicit mount point)
+      ansible.builtin.assert: *success

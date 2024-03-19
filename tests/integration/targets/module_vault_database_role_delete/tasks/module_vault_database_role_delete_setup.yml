@@ -1,0 +1,34 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_enable_engine: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_policy_put: "{{ vault_plugins_module_defaults_common }}"
+  block:
+    - name: Create a test non-root token
+      vault_ci_token_create:
+        policies: [policy-database-all]
+      register: user_token_cmd
+
+    - name: Set roles to be deleted
+      ansible.builtin.set_fact:
+        static_role_name: role5
+        dynamic_role_name: dynamic_role
+
+    - name: Create a static role
+      vault_ci_write:
+        path: "database/static-roles/{{ static_role_name }}"
+        data:
+          db_name: "{{ vault_database_connection_name }}"
+          username: "{{ static_role_name }}"
+
+    - name: Create a readonly dynamic role
+      vault_ci_write:
+        path: "database/roles/{{ dynamic_role_name }}"
+        data:
+          db_name: "{{ vault_database_connection_name }}"
+          creation_statements: "{{ vault_database_dynamic_user_sql }}"
+          default_ttl: 1h
+          max_ttl: 24h

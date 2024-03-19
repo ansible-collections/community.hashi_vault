@@ -272,6 +272,11 @@ jobs:
       - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      - name: Install community.postgresql
+        uses: ./.github/actions/collection-via-git
+        with:
+          collection: community.postgresql
+
       - name: Pull Ansible test images
         timeout-minutes: 5
         continue-on-error: true
@@ -368,6 +373,11 @@ jobs:
         uses: ./.github/actions/collection-via-git
         with:
           collection: community.docker
+
+      - name: Install community.postgresql
+        uses: ./.github/actions/collection-via-git
+        with:
+          collection: community.postgresql
 
       - name: Pull Ansible test images
         timeout-minutes: 5
