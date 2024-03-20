@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This release contains a dozen+ new modules for working with Vault's database secrets engine and some new ``vars`` entries for specifying public and private keys in ``cert`` auth.
