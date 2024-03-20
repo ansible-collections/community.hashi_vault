@@ -27,3 +27,4 @@ sections:
   - Known Issues
 title: community.hashi_vault
 trivial_section_name: trivial
+output_formats: [rst, md]

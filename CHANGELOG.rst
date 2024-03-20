@@ -1,9 +1,40 @@
-===================================
-community.hashi_vault Release Notes
-===================================
+====================================
+community.hashi\_vault Release Notes
+====================================
 
 .. contents:: Topics
 
+v6.2.0
+======
+
+Release Summary
+---------------
+
+This release contains a dozen+ new modules for working with Vault's database secrets engine and some new ``vars`` entries for specifying public and private keys in ``cert`` auth.
+
+Minor Changes
+-------------
+
+- cert auth - add option to set the ``cert_auth_public_key`` and ``cert_auth_private_key`` parameters using the variables ``ansible_hashi_vault_cert_auth_public_key`` and ``ansible_hashi_vault_cert_auth_private_key`` (https://github.com/ansible-collections/community.hashi_vault/issues/428).
+
+New Modules
+-----------
+
+- vault_database_connection_configure - Configures the database engine
+- vault_database_connection_delete - Delete a Database Connection
+- vault_database_connection_read - Returns the configuration settings for a O(connection_name)
+- vault_database_connection_reset - Closes a O(connection_name) and its underlying plugin and restarts it with the configuration stored
+- vault_database_connections_list - Returns a list of available connections
+- vault_database_role_create - Creates or updates a (dynamic) role definition
+- vault_database_role_delete - Delete a role definition
+- vault_database_role_read - Queries a dynamic role definition
+- vault_database_roles_list - Returns a list of available (dynamic) roles
+- vault_database_rotate_root_credentials - Rotates the root credentials stored for the database connection. This user must have permissions to update its own password.
+- vault_database_static_role_create - Create or update a static role
+- vault_database_static_role_get_credentials - Returns the current credentials based on the named static role
+- vault_database_static_role_read - Queries a static role definition
+- vault_database_static_role_rotate_credentials - Trigger the credential rotation for a static role
+- vault_database_static_roles_list - Returns a list of available static roles
 
 v6.1.0
 ======
@@ -660,4 +691,3 @@ Release Summary
 ---------------
 
 Our first release matches the ``hashi_vault`` lookup functionality provided by ``community.general`` version ``1.3.0``.
-
