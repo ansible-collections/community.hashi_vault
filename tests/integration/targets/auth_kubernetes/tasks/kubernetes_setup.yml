@@ -1,0 +1,32 @@
+- name: "Setup block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+  block:
+    - name: "Enable the Kubernetes auth method"
+      vault_ci_enable_auth:
+        method_type: kubernetes
+        path: "{{ omit if is_default_path else this_path }}"
+        config:
+          default_lease_ttl: 60m
+
+    - name: "Configure the Kubernetes auth method"
+      vars:
+        # jwt_public_key: '{{ lookup("file", "jwt_public.pem") }}'
+        # kubernetes_host: 'https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT'
+      vault_ci_write:
+        path: "auth/{{ this_path }}/config"
+        data:
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+
+    - name: "Create a named role"
+      vault_ci_write:
+        path: "auth/{{ this_path }}/role/test-role"
+        data:
+          # in docs, this is token_policies (changed in Vault 1.2)
+          # use 'policies' to support older versions
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          role_type: kubernetes
+          user_claim: sub
+          bound_audiences: test
