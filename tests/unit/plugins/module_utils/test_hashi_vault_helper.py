@@ -75,14 +75,11 @@ class TestHashiVaultHelper(object):
 
     def test_hashi_vault_helper_fails_when_hvac_not_available(self, hvac_fail_import_hook):
         with pytest.raises(HashiVaultHVACError) as hvac_import:
-            client = HashiVaultHelper()
+            HashiVaultHelper()
         assert hvac_import.value.error == "test case module import failure"
 
     def test_hashi_vault_helper_uses_loaded_hvac(self, hvac_success_import_hook):
-        try:
-            client = HashiVaultHelper()
-        except HashiVaultHVACError:
-            pytest.fail("did not expect the hvac error")
+        client = HashiVaultHelper()
         assert hasattr(client, 'hvac')
 
     def test_get_vault_client_without_logout_explicit_token(self, hashi_vault_helper, vault_token):
