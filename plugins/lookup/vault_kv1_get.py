@@ -165,22 +165,9 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 display = Display()
 
-try:
-    import hvac
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         ret = []
 
         self.set_options(direct=kwargs, var_options=variables)
@@ -202,9 +189,9 @@ class LookupModule(HashiVaultLookupBase):
         for term in terms:
             try:
                 raw = client.secrets.kv.v1.read_secret(path=term, mount_point=engine_mount_point)
-            except hvac.exceptions.Forbidden as e:
+            except self.helper.hvac.exceptions.Forbidden as e:
                 raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
-            except hvac.exceptions.InvalidPath as e:
+            except self.helper.hvac.exceptions.InvalidPath as e:
                 if 'Invalid path for a versioned K/V secrets engine' in str(e):
                     msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
                 else:

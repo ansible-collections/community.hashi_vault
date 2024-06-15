@@ -44,11 +44,6 @@ class TestVaultKv1GetLookup(object):
     def test_vault_kv1_get_is_lookup_base(self, vault_kv1_get_lookup):
         assert issubclass(type(vault_kv1_get_lookup), HashiVaultLookupBase)
 
-    def test_vault_kv1_get_no_hvac(self, vault_kv1_get_lookup, minimal_vars):
-        with mock.patch.object(vault_kv1_get, 'HVAC_IMPORT_ERROR', new=ImportError()):
-            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
-                vault_kv1_get_lookup.run(terms='fake', variables=minimal_vars)
-
     @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_kv1_get_authentication_error(self, vault_kv1_get_lookup, minimal_vars, authenticator, exc):
         authenticator.authenticate.side_effect = exc
