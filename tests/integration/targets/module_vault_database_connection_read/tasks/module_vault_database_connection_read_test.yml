@@ -1,0 +1,134 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_connection_read: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test read database connection (explicit mount - invalid, connection_name) [check mode]
+      register: db_connection
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: NOT REAL
+        connection_name: my-postgresql-database
+
+    - name: Check (explicit mount - invalid, connection_name) [check mode]
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_connection is failed
+          - db_connection.msg is search('Permission Denied')
+
+    - name: Test read database connection (explicit mount, connection_name - invalid) [check mode]
+      register: db_connection
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: database
+        connection_name: NOT_REAL
+
+    - name: Check (explicit mount, connection_name - invalid) [check mode]
+      ansible.builtin.assert: &failure_invalid_path
+        that:
+          - db_connection is failed
+          - db_connection.msg is search('Invalid or missing path')
+
+    - name: Test read database connection (explicit mount, connection_name) [check mode]
+      register: db_connection
+      check_mode: true
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: database
+        connection_name: my-postgresql-database
+
+    - name: Check (explicit mount) [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_connection is defined
+          - "'data' in db_connection"
+          - "'raw' in db_connection"
+          - db_connection["data"]["plugin_name"] == 'postgresql-database-plugin'
+          - db_connection["data"]["connection_details"]["username"] == 'postgres'
+          - "'allowed_roles' in db_connection['data']"
+          - "'password_policy' in db_connection['data']"
+          - "'root_credentials_rotate_statements' in db_connection['data']"
+
+    - name: Test read database connection (explicit mount, connection_name invalid) [check mode]
+      register: db_connection
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: database
+        connection_name: NOT REAL
+
+    - name: Check (explicit mount, connection_name invalid) [check mode]
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test read database connection (explicit mount, connection_name)
+      register: db_connection
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: database
+        connection_name: my-postgresql-database
+
+    - name: Check (explicit mount, connection_name)
+      ansible.builtin.assert: *success
+
+    - name: Test read database connection (explicit mount - invalid, connection_name)
+      register: db_connection
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: NOT REAL
+        connection_name: my-postgresql-database
+
+    - name: Check (explicit mount - invalid, connection_name)
+      ansible.builtin.assert: *failure_bad_mount
+
+    - name: Test read database connection (explicit mount, connection_name - invalid)
+      register: db_connection
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        engine_mount_point: database
+        connection_name: NOT REAL
+
+    - name: Check (explicit mount, connection_name - invalid)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test read database connection (default mount) [check mode]
+      register: db_connection
+      check_mode: true
+      community.hashi_vault.vault_database_connection_read:
+        connection_name: my-postgresql-database
+
+    - name: Check (default mount) [check mode]
+      ansible.builtin.assert: *success
+
+    - name: Test read database connection (default mount, connection_name - invalid) [check mode]
+      register: db_connection
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        connection_name: NOT REAL
+
+    - name: Check (default mount, connection_name - invalid) [check mode]
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test read database connection (default mount, connection_name)
+      register: db_connection
+      community.hashi_vault.vault_database_connection_read:
+        connection_name: my-postgresql-database
+
+    - name: Check (76default mount, connection_name)
+      ansible.builtin.assert: *success
+
+    - name: Test read database connection (default mount, connection_name - invalid)
+      register: db_connection
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_read:
+        connection_name: NOT REAL
+
+    - name: Check (default mount, connection_name - invalid)
+      ansible.builtin.assert: *failure_invalid_path

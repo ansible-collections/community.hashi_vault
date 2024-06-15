@@ -1,0 +1,120 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    community.hashi_vault.vault_database_static_role_rotate_credentials:
+      &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test for python >= 3.8
+      when: python_interpreter_minor[1] | int > 7
+      block:
+        - name: Test rotate credential for a static role (explicit mount) [check mode]
+          register: rotate_credentials
+          check_mode: true
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            engine_mount_point: database
+            role_name: "{{ roles_to_rotate[0] }}"
+
+        - name: Check (explicit mount) [check mode]
+          ansible.builtin.assert: &success
+            that:
+              - rotate_credentials is changed
+
+        - name: Test rotate credential for a static role (explicit mount - invalid, role_name)
+          register: rotate_credentials
+          ignore_errors: true
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            engine_mount_point: NOT REAL
+            role_name: "{{ roles_to_rotate[0] }}"
+
+        - name: Check (explicit mount - invalid, role_name)
+          ansible.builtin.assert: &failure_bad_mount
+            that:
+              - rotate_credentials is failed
+              - rotate_credentials.msg is search('Permission Denied')
+
+        - name: Test rotate credential for a static role (explicit mount, role_name - invalid)
+          register: rotate_credentials
+          ignore_errors: true
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            engine_mount_point: database
+            role_name: NOT REAL
+
+        - name: Check (explicit mount, role_name - invalid)
+          ansible.builtin.assert: &failure_invalid_path
+            that:
+              - rotate_credentials is failed
+              - rotate_credentials.msg is search('Invalid or missing path')
+
+        - name: Test rotate credential for a static role (explicit mount, role_name)
+          register: rotate_credentials
+          ignore_errors: true
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            engine_mount_point: database
+            role_name: "{{ roles_to_rotate[0] }}"
+
+        - name: Check (explicit mount, role_name)
+          ansible.builtin.assert: *success
+
+        - name: Read user
+          vault_ci_read:
+            path: "database/static-creds/{{ roles_to_rotate[0] }}"
+          register: role_data_after
+
+        - name: Check that passwords were rotated for "{{ roles_data_before[0] }}"
+          ansible.builtin.assert:
+            that:
+              - roles_data_before.results[0].result.data.password != role_data_after.result.data.password
+              - roles_data_before.results[0].result.data.ttl < role_data_after.result.data.ttl
+
+        - name: Test rotate credential for a static role (default mount, role_name - invalid)
+          register: rotate_credentials
+          ignore_errors: true
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            role_name: NOT REAL
+
+        - name: Check (default mount, role_name - invalid)
+          ansible.builtin.assert: *failure_invalid_path
+
+        - name: Test rotate credential for a static role (default mount, role_name)
+          register: rotate_credentials
+          ignore_errors: true
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            engine_mount_point: database
+            role_name: "{{ roles_to_rotate[1] }}"
+
+        - name: Check (explicit mount, role_name)
+          ansible.builtin.assert: *success
+
+        - name: Read user
+          vault_ci_read:
+            path: "database/static-creds/{{ roles_to_rotate[1] }}"
+          register: role_data_after
+
+        - name: Check
+          ansible.builtin.assert:
+            that:
+              - roles_data_before.results[1].result.data.password != role_data_after.result.data.password
+              - roles_data_before.results[1].result.data.ttl < role_data_after.result.data.ttl
+
+    - name: Test for python < 3.8
+      when: python_interpreter_minor[1] | int <= 7
+      block:
+        - name: Test rotate credential for a static role [python < 3.8]
+          register: rotate_credentials
+          community.hashi_vault.vault_database_static_role_rotate_credentials:
+            engine_mount_point: database
+            role_name: "{{ role_name_to_rotate }}"
+          ignore_errors: true
+
+        - name: Check python < 3.8
+          ansible.builtin.assert:
+            that:
+              - rotate_credentials is failed

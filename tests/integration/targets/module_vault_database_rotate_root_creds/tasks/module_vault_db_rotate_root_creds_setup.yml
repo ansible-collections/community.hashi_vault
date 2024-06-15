@@ -1,0 +1,46 @@
+---
+- name: Configuration tasks
+  vars:
+    users_to_create:
+      - { "username": "usr_to_rotate1", "password": "SuperSecret" }
+      - { "username": "usr_to_rotate2", "password": "SuperSecret" }
+  module_defaults:
+    vault_ci_token_create: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_enable_engine: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_policy_put: "{{ vault_plugins_module_defaults_common }}"
+  block:
+    - name: Create a test non-root token
+      vault_ci_token_create:
+        policies: [policy-database-all]
+      register: user_token_cmd
+
+    - name: Set facts
+      ansible.builtin.set_fact:
+        users_to_create:
+          - { "username": "usr_to_rotate1", "password": "SuperSecret" }
+          - { "username": "usr_to_rotate2", "password": "SuperSecret" }
+
+    - name: Create a new user in PostgreSQL
+      community.postgresql.postgresql_user:
+        db: "{{ vault_postgres_db }}"
+        name: "{{ item.username }}"
+        password: "{{ item.password }}"
+        login_user: "{{ vault_postgres_user }}"
+        login_password: "{{ vault_postgres_password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+        role_attr_flags: SUPERUSER
+      loop: "{{ users_to_create }}"
+
+    - name: Create the Database Connection
+      vault_ci_write:
+        path: "database/config/{{ item.username }}"
+        data:
+          plugin_name: "{{ vault_database_plugin_name }}"
+          connection_url: "{{ vault_database_connection_url }}"
+          allowed_roles: "*"
+          username: "{{ item.username }}"
+          password: "{{ item.password }}"
+      loop: "{{ users_to_create }}"

@@ -704,3 +704,64 @@ releases:
     - 416-core-changes.yml
     - 6.1.0.yml
     release_date: '2024-01-02'
+  6.2.0:
+    changes:
+      minor_changes:
+      - cert auth - add option to set the ``cert_auth_public_key`` and ``cert_auth_private_key``
+        parameters using the variables ``ansible_hashi_vault_cert_auth_public_key``
+        and ``ansible_hashi_vault_cert_auth_private_key`` (https://github.com/ansible-collections/community.hashi_vault/issues/428).
+      release_summary: This release contains a dozen+ new modules for working with
+        Vault's database secrets engine and some new ``vars`` entries for specifying
+        public and private keys in ``cert`` auth.
+    fragments:
+    - 429-add-cert-auth-variables.yml
+    - 6.2.0.yml
+    modules:
+    - description: Configures the database engine
+      name: vault_database_connection_configure
+      namespace: ''
+    - description: Delete a Database Connection
+      name: vault_database_connection_delete
+      namespace: ''
+    - description: Returns the configuration settings for a O(connection_name)
+      name: vault_database_connection_read
+      namespace: ''
+    - description: Closes a O(connection_name) and its underlying plugin and restarts
+        it with the configuration stored
+      name: vault_database_connection_reset
+      namespace: ''
+    - description: Returns a list of available connections
+      name: vault_database_connections_list
+      namespace: ''
+    - description: Creates or updates a (dynamic) role definition
+      name: vault_database_role_create
+      namespace: ''
+    - description: Delete a role definition
+      name: vault_database_role_delete
+      namespace: ''
+    - description: Queries a dynamic role definition
+      name: vault_database_role_read
+      namespace: ''
+    - description: Returns a list of available (dynamic) roles
+      name: vault_database_roles_list
+      namespace: ''
+    - description: Rotates the root credentials stored for the database connection.
+        This user must have permissions to update its own password.
+      name: vault_database_rotate_root_credentials
+      namespace: ''
+    - description: Create or update a static role
+      name: vault_database_static_role_create
+      namespace: ''
+    - description: Returns the current credentials based on the named static role
+      name: vault_database_static_role_get_credentials
+      namespace: ''
+    - description: Queries a static role definition
+      name: vault_database_static_role_read
+      namespace: ''
+    - description: Trigger the credential rotation for a static role
+      name: vault_database_static_role_rotate_credentials
+      namespace: ''
+    - description: Returns a list of available static roles
+      name: vault_database_static_roles_list
+      namespace: ''
+    release_date: '2024-03-19'

@@ -1,0 +1,27 @@
+---
+vault_configure_engine_database_canary:
+  path: cubbyhole/configure_engine_database
+  value: complete # value does not matter
+
+vault_database_engine_mount_point: database
+vault_database_connection_name: my-postgresql-database
+vault_database_db_name: hcvault
+vault_database_connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/{{ vault_database_db_name }}?sslmode=disable"
+vault_database_plugin_name: postgresql-database-plugin
+vault_database_connection_user: postgres
+vault_database_connection_password: postgres
+
+vault_database_dynamic_user_sql: |
+  CREATE ROLE {{ "{{name}}" }} WITH LOGIN PASSWORD {{ '{{password}}' }} VALID UNTIL {{ '{{expiration}}' }} INHERIT;
+  GRANT ro TO {{ "{{name}}" }};
+
+vault_base_policy_db: |
+  path "{{ vault_database_engine_mount_point }}/*" {
+    capabilities = ["read", "list"]
+  }
+
+vault_policy_db_all: |
+  {{ vault_base_policy_db }}
+  path "{{ vault_database_engine_mount_point }}/*" {
+    capabilities = ["create", "update", "patch", "delete"]
+  }

@@ -1,0 +1,132 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    community.hashi_vault.vault_database_rotate_root_credentials: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test rotate root credentials [check mode]
+      register: rotate_credentials
+      check_mode: true
+      community.hashi_vault.vault_database_rotate_root_credentials:
+        engine_mount_point: DOES NOT MATTER
+        connection_name: DOES NOT MATTER
+
+    - name: Check [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - rotate_credentials is changed
+
+    - name: Test rotate root credentials (explicit mount - invalid, connection_name)
+      register: rotate_credentials
+      ignore_errors: true
+      community.hashi_vault.vault_database_rotate_root_credentials:
+        engine_mount_point: NOT REAL
+        connection_name: "{{ users_to_create[0].username }}"
+
+    - name: Check (explicit mount - invalid, connection_name)
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - rotate_credentials is failed
+          - rotate_credentials.msg is search('Permission Denied')
+
+    - name: Test rotate root credentials (explicit mount, connection_name - invalid)
+      register: rotate_credentials
+      ignore_errors: true
+      community.hashi_vault.vault_database_rotate_root_credentials:
+        engine_mount_point: database
+        connection_name: NOT REAL
+
+    - name: Check (explicit mount, connection_name - invalid)
+      ansible.builtin.assert: &failure_invalid_path
+        that:
+          - rotate_credentials is failed
+          - rotate_credentials.msg is search('Invalid or missing path')
+
+    - name: Login before root credential rotation with user {{ users_to_create[0].username }}
+      community.postgresql.postgresql_ping:
+        db: "{{ vault_postgres_db }}"
+        login_user: "{{ users_to_create[0].username }}"
+        login_password: "{{ users_to_create[0].password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+      register: login_result_before
+
+    - name: Check db login before root credential rotation
+      ansible.builtin.assert: &login_before
+        that:
+          - login_result_before is defined
+          - login_result_before.is_available
+          - login_result_before.conn_err_msg | length == 0
+
+    - name: Test rotate root credentials (explicit_mount, connection_name)
+      register: rotate_credentials
+      community.hashi_vault.vault_database_rotate_root_credentials:
+        engine_mount_point: database
+        connection_name: "{{ users_to_create[0].username }}"
+
+    - name: Check (explicit_mount, connection_name)
+      ansible.builtin.assert: *success
+
+    - name: Try to login with the old password for user {{ users_to_create[0].username }}
+      community.postgresql.postgresql_ping:
+        db: "{{ vault_postgres_db }}"
+        login_user: "{{ users_to_create[0].username }}"
+        login_password: "{{ users_to_create[0].password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+      register: login_result_after
+
+    - name: Ensure that password was rotated
+      ansible.builtin.assert: &login_failed
+        that:
+          - login_result_after is defined
+          - not login_result_after.is_available
+          - login_result_after.conn_err_msg | length > 0
+
+    - name: Test rotate root credentials (default mount, connection_name - invalid)
+      register: rotate_credentials
+      ignore_errors: true
+      community.hashi_vault.vault_database_rotate_root_credentials:
+        connection_name: NOT REAL
+
+    - name: Check (explicit mount, connection_name - invalid)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Login before root credential rotation with user {{ users_to_create[1].username }}
+      community.postgresql.postgresql_ping:
+        db: "{{ vault_postgres_db }}"
+        login_user: "{{ users_to_create[1].username }}"
+        login_password: "{{ users_to_create[1].password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+      register: login_result_before
+
+    - name: Check db login before root credential rotation
+      ansible.builtin.assert: *login_before
+
+    - name: Test rotate root credentials (default, connection_name)
+      register: rotate_credentials
+      community.hashi_vault.vault_database_rotate_root_credentials:
+        connection_name: "{{ users_to_create[1].username }}"
+
+    - name: Check (explicit_mount, connection_name)
+      ansible.builtin.assert: *success
+
+    - name: Try to login with the old password for user {{ users_to_create[1].username }}
+      community.postgresql.postgresql_ping:
+        db: "{{ vault_postgres_db }}"
+        login_user: "{{ users_to_create[1].username }}"
+        login_password: "{{ users_to_create[1].password }}"
+        port: "{{ vault_postgres_port }}"
+        login_host: "{{ vault_postgres_host }}"
+      register: login_result_after
+
+    - name: Ensure that password was rotated
+      ansible.builtin.assert: *login_failed
