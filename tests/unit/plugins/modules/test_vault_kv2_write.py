@@ -10,11 +10,9 @@ __metaclass__ = type
 import json
 
 import pytest
-from ansible.module_utils.basic import missing_required_lib
 
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 from .....plugins.modules import vault_kv2_write
-from ...compat import mock
 
 hvac = pytest.importorskip("hvac")
 

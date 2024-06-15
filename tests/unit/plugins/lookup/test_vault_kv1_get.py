@@ -17,9 +17,6 @@ from ...compat import mock
 from .....plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
-from .....plugins.lookup import vault_kv1_get
-
-
 hvac = pytest.importorskip('hvac')
 
 

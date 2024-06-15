@@ -10,9 +10,6 @@ import pytest
 import re
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
-from ...compat import mock
 from .....plugins.modules import vault_kv2_delete
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
