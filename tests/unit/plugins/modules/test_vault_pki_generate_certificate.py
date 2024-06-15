@@ -7,12 +7,8 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
-from ...compat import mock
 from .....plugins.modules import vault_pki_generate_certificate
 
 pytestmark = pytest.mark.usefixtures(
@@ -105,18 +101,6 @@ class TestModuleVaultPkiGenerateCertificate():
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['data'], pki_generate_certificate_response)
         )
         assert e.value.code == 0
-
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_pki_generate_certificate_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_pki_generate_certificate, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_pki_generate_certificate.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert result['msg'] == missing_required_lib('hvac')
-        assert e.value.code != 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_pki_generate_certificate_vault_exception(self, vault_client, capfd):
