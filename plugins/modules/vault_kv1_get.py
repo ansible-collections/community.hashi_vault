@@ -127,19 +127,9 @@ metadata:
 import traceback
 
 from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
 
 
 def run_module():
@@ -152,12 +142,6 @@ def run_module():
         argument_spec=argspec,
         supports_check_mode=True
     )
-
-    if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
-        )
 
     engine_mount_point = module.params.get('engine_mount_point')
     path = module.params.get('path')
@@ -174,9 +158,9 @@ def run_module():
 
     try:
         raw = client.secrets.kv.v1.read_secret(path=path, mount_point=engine_mount_point)
-    except hvac.exceptions.Forbidden as e:
+    except module.helper.hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
+    except module.helper.hvac.exceptions.InvalidPath as e:
         if 'Invalid path for a versioned K/V secrets engine' in to_native(e):
             msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
         else:

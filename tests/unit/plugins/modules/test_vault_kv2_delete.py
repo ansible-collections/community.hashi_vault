@@ -126,18 +126,6 @@ class TestModuleVaultKv2Delete():
         module_warn.assert_called_once_with(
             'Vault returned status code 200 and an unparsable body.')
 
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_kv2_delete_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_kv2_delete, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_kv2_delete.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == missing_required_lib('hvac')
-
     @pytest.mark.parametrize(
         'exc',
         [

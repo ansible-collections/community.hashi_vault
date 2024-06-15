@@ -157,22 +157,8 @@ raw:
 import traceback
 
 from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
-from ..module_utils._hashi_vault_common import (
-    HashiVaultValueError,
-)
-from ..module_utils._hashi_vault_module import (
-    HashiVaultModule,
-)
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
+from ..module_utils._hashi_vault_module import HashiVaultModule
+from ..module_utils._hashi_vault_common import HashiVaultValueError
 
 
 def run_module():
@@ -188,12 +174,6 @@ def run_module():
         argument_spec=argspec,
         supports_check_mode=True,
     )
-
-    if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib("hvac"),
-            exception=HVAC_IMPORT_ERROR,
-        )
 
     mount_point = module.params.get("engine_mount_point")
     path = module.params.get("path")
@@ -221,14 +201,14 @@ def run_module():
                     msg="Vault response did not contain data: %s" % response
                 )
             current_data = response["data"]["data"]
-        except hvac.exceptions.InvalidPath:
+        except module.helper.hvac.exceptions.InvalidPath:
             current_data = {}
-        except hvac.exceptions.Forbidden:
+        except module.helper.hvac.exceptions.Forbidden:
             module.fail_json(
                 msg="Permission denied reading %s" % path,
                 exception=traceback.format_exc(),
             )
-        except hvac.exceptions.VaultError:
+        except module.helper.hvac.exceptions.VaultError:
             module.fail_json(
                 msg="VaultError reading %s" % path,
                 exception=traceback.format_exc(),
@@ -249,17 +229,17 @@ def run_module():
 
         try:
             raw = client.secrets.kv.v2.create_or_update_secret(**args)
-        except hvac.exceptions.InvalidRequest:
+        except module.helper.hvac.exceptions.InvalidRequest:
             module.fail_json(
                 msg="InvalidRequest writing to '%s'" % path,
                 exception=traceback.format_exc(),
             )
-        except hvac.exceptions.InvalidPath:
+        except module.helper.hvac.exceptions.InvalidPath:
             module.fail_json(
                 msg="InvalidPath writing to '%s'" % path,
                 exception=traceback.format_exc(),
             )
-        except hvac.exceptions.Forbidden:
+        except module.helper.hvac.exceptions.Forbidden:
             module.fail_json(
                 msg="Permission denied writing to '%s'" % path,
                 exception=traceback.format_exc(),

@@ -111,18 +111,6 @@ class TestModuleVaultKv1Get():
                 "module result did not match expected result:\nmodule: %r\nkey: %s\nexpected: %r" % (result[k], k, v)
             )
 
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_kv1_get_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_kv1_get, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_kv1_get.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == missing_required_lib('hvac')
-
     @pytest.mark.parametrize(
         'exc',
         [
