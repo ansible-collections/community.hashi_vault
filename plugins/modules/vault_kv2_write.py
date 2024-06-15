@@ -184,6 +184,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac_exceptions()
 
     try:
         module.authenticator.validate()
@@ -201,14 +202,14 @@ def run_module():
                     msg="Vault response did not contain data: %s" % response
                 )
             current_data = response["data"]["data"]
-        except module.helper.hvac.exceptions.InvalidPath:
+        except hvac_exceptions.InvalidPath:
             current_data = {}
-        except module.helper.hvac.exceptions.Forbidden:
+        except hvac_exceptions.Forbidden:
             module.fail_json(
                 msg="Permission denied reading %s" % path,
                 exception=traceback.format_exc(),
             )
-        except module.helper.hvac.exceptions.VaultError:
+        except hvac_exceptions.VaultError:
             module.fail_json(
                 msg="VaultError reading %s" % path,
                 exception=traceback.format_exc(),
@@ -229,17 +230,17 @@ def run_module():
 
         try:
             raw = client.secrets.kv.v2.create_or_update_secret(**args)
-        except module.helper.hvac.exceptions.InvalidRequest:
+        except hvac_exceptions.InvalidRequest:
             module.fail_json(
                 msg="InvalidRequest writing to '%s'" % path,
                 exception=traceback.format_exc(),
             )
-        except module.helper.hvac.exceptions.InvalidPath:
+        except hvac_exceptions.InvalidPath:
             module.fail_json(
                 msg="InvalidPath writing to '%s'" % path,
                 exception=traceback.format_exc(),
             )
-        except module.helper.hvac.exceptions.Forbidden:
+        except hvac_exceptions.Forbidden:
             module.fail_json(
                 msg="Permission denied writing to '%s'" % path,
                 exception=traceback.format_exc(),

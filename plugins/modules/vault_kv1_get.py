@@ -149,6 +149,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac_exceptions()
 
     try:
         module.authenticator.validate()
@@ -158,9 +159,9 @@ def run_module():
 
     try:
         raw = client.secrets.kv.v1.read_secret(path=path, mount_point=engine_mount_point)
-    except module.helper.hvac.exceptions.Forbidden as e:
+    except hvac_exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
-    except module.helper.hvac.exceptions.InvalidPath as e:
+    except hvac_exceptions.InvalidPath as e:
         if 'Invalid path for a versioned K/V secrets engine' in to_native(e):
             msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
         else:

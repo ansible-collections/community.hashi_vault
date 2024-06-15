@@ -115,6 +115,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac_exceptions()
 
     try:
         module.authenticator.validate()
@@ -134,7 +135,7 @@ def run_module():
             response = client.secrets.kv.v2.delete_secret_versions(
                 path=path, versions=versions, mount_point=engine_mount_point)
 
-    except module.helper.hvac.exceptions.Forbidden as e:
+    except hvac_exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
 
     # https://github.com/hvac/hvac/issues/797
