@@ -12,6 +12,7 @@ import sys
 import subprocess
 import re
 import getopt
+import time
 from pathlib import Path
 
 
@@ -85,7 +86,21 @@ def main(argv):
         print('::group::Flag: %s%s' % (flag, logextra))
 
         print('Executing: %r' % cmd)
-        subprocess.run(cmd, stderr=subprocess.STDOUT, check=True)
+
+        max_attempt = 5
+        for attempt in range(1, max_attempt + 1):
+            try:
+                result = subprocess.run(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE, check=True, text=True)
+            except subprocess.CalledProcessError:
+                match = re.search(r'Error: There was an error fetching the storage URL during POST: 429.*?time to availability: (?P<tta>\d+)s', result.stdout)
+                if not match:
+                    raise
+
+                tta = int(match.group('tta')) + 10
+                print(f"::warning title=Codecov upload issue::Codecov tokenless upload from fork failed. Waiting {tta} seconds to try again [attempt {attempt} of {max_attempt}].")
+                time.sleep(tta)
+            else:
+                break
 
         print('::endgroup::')
 
