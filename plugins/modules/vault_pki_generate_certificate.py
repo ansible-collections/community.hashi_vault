@@ -235,7 +235,7 @@ def run_module():
 
     role_name = module.params.get('role_name')
     common_name = module.params.get('common_name')
-    engine_mount_point = module.params.get('engine_mount_point') or DEFAULT_MOUNT_POINT
+    engine_mount_point = module.params.get('engine_mount_point')
 
     extra_params = {
         'alt_names': ','.join(module.params.get('alt_names')),
@@ -252,6 +252,10 @@ def run_module():
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
     hvac_exceptions = module.helper.get_hvac_exceptions()
+
+    if engine_mount_point is None:
+        from hvac.api.secrets_engines.pki import DEFAULT_MOUNT_POINT
+        engine_mount_point = DEFAULT_MOUNT_POINT
 
     try:
         module.authenticator.validate()
