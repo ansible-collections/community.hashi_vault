@@ -390,11 +390,6 @@ jobs:
       - name: localenv_docker - setup
         run: |
           pwd
-          pip install --upgrade pip setuptools build wheel
-          pip install "Cython<3.0" "pyyaml<6" --no-build-isolation
-          # ^ https://github.com/yaml/pyyaml/issues/601
-          # ^ https://github.com/docker/compose/issues/10836
-          pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
           ./setup.sh
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
