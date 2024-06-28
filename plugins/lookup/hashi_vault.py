@@ -145,6 +145,12 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
 
+#GCP auth
+
+- name: Authenticate with GCP
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='gcp', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
+
 # Disabling Token Validation
 # Use this when your token does not have the lookup-self capability. Usually this is applied to all tokens via the default policy.
 # However you can choose to create tokens without applying the default policy, or you can modify your default policy not to include it.

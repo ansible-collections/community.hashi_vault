@@ -28,6 +28,7 @@ class ModuleDocFragment(object):
           - azure
           - jwt
           - cert
+          - gcp
           - none
         default: token
         type: str
