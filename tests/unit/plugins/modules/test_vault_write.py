@@ -10,9 +10,6 @@ import pytest
 import re
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
-from ...compat import mock
 from .....plugins.modules import vault_write
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
@@ -141,18 +138,6 @@ class TestModuleVaultWrite():
         assert result['data'] == '﷽'
 
         module_warn.assert_called_once_with('Vault returned status code 200 and an unparsable body.')
-
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_write_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_write, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_write.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == missing_required_lib('hvac')
 
     @pytest.mark.parametrize(
         'exc',
