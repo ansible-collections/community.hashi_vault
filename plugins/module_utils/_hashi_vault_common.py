@@ -15,6 +15,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import os
+import traceback
 
 
 class HashiVaultValueError(ValueError):
@@ -37,6 +38,25 @@ class HashiVaultHelper():
         except ImportError as e:
             from ansible.module_utils.basic import missing_required_lib
             raise HashiVaultHVACError(error=str(e), msg=missing_required_lib('hvac'))
+
+    def hvac_exception_wrapper(self, func, module, *args, **kwargs):
+        '''Decorator that catches all exceptions.'''
+        result = None
+        engine_mount_point = module.params.get("engine_mount_point", None) or "database"
+        try:
+            result = func(*args, **kwargs)
+        except self.hvac.exceptions.Forbidden:
+            module.fail_json(
+                msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point,
+                exception=traceback.format_exc(),
+            )
+        except self.hvac.exceptions.InvalidPath:
+            module.fail_json(
+                msg="Invalid or missing path ['%s/roles']." % engine_mount_point,
+                exception=traceback.format_exc(),
+            )
+
+        return result
 
     def get_hvac_exceptions(self):
         return self.hvac.exceptions
