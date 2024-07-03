@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2024 Michael Woodham (woodham@google.com)
-# Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
-# SPDX-License-Identifier: BSD-2-Clause
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 '''Python versions supported: >=3.6'''
 
@@ -28,16 +28,19 @@ class HashiVaultAuthMethodGcp(HashiVaultAuthMethodBase):
 
     def validate(self):
         self.validate_by_required_fields('role_id', 'jwt')
+        params = self._options.get_filled_options(*self.OPTIONS).copy()
 
-    def authenticate(self, client, use_token=True):
-        params = self._options.get_filled_options(*self.OPTIONS)
         params['role'] = params.pop('role_id')
 
-        if 'mount_point' in params:
-            params['path'] = params.pop('mount_point')
+        self._auth_gcp_login_params = params
+
+
+    def authenticate(self, client, use_token=True):
+        params = self._options.get_filled_options(*self.OPTIONS).copy()
+        params['role'] = params.pop('role_id')
 
         try:
-            response = client.auth.gcp.login(**params)
+            response = client.auth.gcp.login(**params, use_token=use_token)
         except (NotImplementedError, AttributeError):
             raise NotImplementedError("GCP authentication requires HVAC version 0.7.1 or higher.")
 
