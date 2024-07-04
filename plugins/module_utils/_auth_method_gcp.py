@@ -20,7 +20,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 class HashiVaultAuthMethodGcp(HashiVaultAuthMethodBase):
     '''HashiVault option group class for auth: gcp'''
 
-    NAME = 'jwt'
+    NAME = 'gcp'
     OPTIONS = ['jwt', 'role_id', 'mount_point']
 
     def __init__(self, option_adapter, warning_callback, deprecate_callback):
@@ -33,7 +33,6 @@ class HashiVaultAuthMethodGcp(HashiVaultAuthMethodBase):
         params['role'] = params.pop('role_id')
 
         self._auth_gcp_login_params = params
-
 
     def authenticate(self, client, use_token=True):
         params = self._options.get_filled_options(*self.OPTIONS).copy()

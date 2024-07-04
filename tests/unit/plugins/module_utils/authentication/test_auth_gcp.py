@@ -58,11 +58,11 @@ class TestAuthGcp(object):
 
     def test_auth_gcp_validate_role_id(self, auth_gcp, adapter):
         adapter.set_options(role_id=None)
-        with pytest.raises(HashiVaultValueError, match=r'^role_id is required for gcp authentication\.$'):
+        with pytest.raises(HashiVaultValueError, match=r'^Authentication method gcp requires options .*? to be set, but these are missing:'):
             auth_gcp.validate()
 
-    def test_auth_gcp_validate_direct(self, auth_gcp, adapter, gcp, role_id):
-        adapter.set_option('gcp', gcp)
+    def test_auth_gcp_validate_direct(self, auth_gcp, adapter, jwt, role_id):
+        adapter.set_option('jwt', jwt)
         adapter.set_option('role_id', role_id)
 
         auth_gcp.validate()
@@ -92,9 +92,12 @@ class TestAuthGcp(object):
             'role': role_id,
         }
 
-        with mock.patch.object(client.auth.gcp, 'gcp_login', return_value=gcp_login_response) as gcp_login:
+        if mount_point:
+            expected_login_params['mount_point'] = mount_point
+
+        with mock.patch.object(client.auth.gcp, 'login', return_value=gcp_login_response) as gcp_login:
             response = auth_gcp.authenticate(client, use_token=use_token)
-            gcp_login.assert_called_once_with(**expected_login_params)
+            gcp_login.assert_called_once_with(**expected_login_params, use_token=mock.ANY)
 
         assert response['auth']['client_token'] == gcp_login_response['auth']['client_token']
         assert (client.token == gcp_login_response['auth']['client_token']) is use_token
