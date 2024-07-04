@@ -28,14 +28,9 @@ class HashiVaultAuthMethodGcp(HashiVaultAuthMethodBase):
 
     def validate(self):
         self.validate_by_required_fields('role_id', 'jwt')
-        params = self._options.get_filled_options(*self.OPTIONS).copy()
-
-        params['role'] = params.pop('role_id')
-
-        self._auth_gcp_login_params = params
 
     def authenticate(self, client, use_token=True):
-        params = self._options.get_filled_options(*self.OPTIONS).copy()
+        params = self._options.get_filled_options(*self.OPTIONS)
         params['role'] = params.pop('role_id')
 
         try:
