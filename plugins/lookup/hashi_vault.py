@@ -244,18 +244,9 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 display = Display()
 
-HAS_HVAC = False
-try:
-    import hvac
-    HAS_HVAC = True
-except ImportError:
-    HAS_HVAC = False
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if not HAS_HVAC:
-            raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
 
         ret = []
 
@@ -314,10 +305,11 @@ class LookupModule(HashiVaultLookupBase):
         field = self._secret_field
         secret = self.get_option('secret')
         return_as = self.get_option('return_format')
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         try:
             data = self.client.read(secret)
-        except hvac.exceptions.Forbidden:
+        except hvac_exceptions.Forbidden:
             raise AnsibleError("Forbidden: Permission Denied to secret '%s'." % secret)
 
         if data is None:
