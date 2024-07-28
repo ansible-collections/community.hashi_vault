@@ -190,7 +190,7 @@ class LookupModule(HashiVaultLookupBase):
         self.connection_options.process_connection_options()
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
-        hvac_exceptions = self.helper.get_hvac_exceptions()
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         version = self._options_adapter.get_option_default('version')
         engine_mount_point = self._options_adapter.get_option('engine_mount_point')

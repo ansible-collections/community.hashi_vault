@@ -251,7 +251,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
-    hvac_exceptions = module.helper.get_hvac_exceptions()
+    hvac_exceptions = module.helper.get_hvac().exceptions
 
     if engine_mount_point is None:
         from hvac.api.secrets_engines.pki import DEFAULT_MOUNT_POINT

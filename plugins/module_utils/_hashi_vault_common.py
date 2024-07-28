@@ -38,8 +38,8 @@ class HashiVaultHelper():
             from ansible.module_utils.basic import missing_required_lib
             raise HashiVaultHVACError(error=str(e), msg=missing_required_lib('hvac'))
 
-    def get_hvac_exceptions(self):
-        return self.hvac.exceptions
+    def get_hvac(self):
+        return self.hvac
 
     def get_vault_client(
         self,
