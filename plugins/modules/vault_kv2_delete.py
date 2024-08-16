@@ -162,7 +162,7 @@ def run_module():
         # and delete specific versions.
         if module.check_mode:
             response = {}
-        elif not versions:
+        elif not versions and not destroy:
             response = client.secrets.kv.v2.delete_latest_version_of_secret(
                 path=path, mount_point=engine_mount_point)
         elif versions and destroy:
