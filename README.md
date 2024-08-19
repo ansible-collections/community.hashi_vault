@@ -7,7 +7,7 @@
 ## Communication
 
 * Join the Ansible forum:
-  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others.
+  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others. Please add appropriate tags if you start new discussions, for example the `hashi-vault` tag. 
   * [Posts tagged with 'hashi-vault'](https://forum.ansible.com/tag/hashi-vault): subscribe to participate in the technology related conversations.
   * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
   * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
