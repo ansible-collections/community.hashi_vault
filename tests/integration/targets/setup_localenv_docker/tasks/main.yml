@@ -9,7 +9,7 @@
     - '{{ mmock_config_path }}'
     - '{{ postgres_config_path }}'
 
-- name: "Create the docker-compose definition"
+- name: "Create the docker compose definition"
   template:
     src: docker-compose.yml.j2
     dest: '{{ docker_compose_file }}'
