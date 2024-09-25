@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="2.14.0" name="antsibull-docs" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>community.hashi_vault.vault_login_token filter – Extracts the Vault token from a login or token creation &mdash; Ansible collections  documentation</title>
@@ -134,6 +135,8 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This filter plugin is part of the <a class="reference external" href="https://galaxy.ansible.com/community/hashi_vault">community.hashi_vault collection</a> (version 6.3.0-dev0).</p>
+<p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
+To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
 <p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">community.hashi_vault</span></code>.</p>
 <p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">community.hashi_vault.vault_login_token</span></code>.</p>
 </div>
@@ -158,7 +161,7 @@
 <section id="input">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">Input</a><a class="headerlink" href="#input" title="Link to this heading"></a></h2>
 <p>This describes the input of the filter, the value before <code class="docutils literal notranslate"><span class="pre">|</span> <span class="pre">community.hashi_vault.vault_login_token</span></code>.</p>
-<table class="ansible-option-table docutils align-default" style="width: 100%">
+<table class="longtable ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
 <th class="head"><p>Comments</p></th>
@@ -179,7 +182,7 @@
 <h2><a class="toc-backref" href="#id3" role="doc-backlink">Keyword parameters</a><a class="headerlink" href="#keyword-parameters" title="Link to this heading"></a></h2>
 <p>This describes keyword parameters of the filter. These are the values <code class="docutils literal notranslate"><span class="pre">key1=value1</span></code>, <code class="docutils literal notranslate"><span class="pre">key2=value2</span></code> and so on in the following
 example: <code class="docutils literal notranslate"><span class="pre">input</span> <span class="pre">|</span> <span class="pre">community.hashi_vault.vault_login_token(key1=value1,</span> <span class="pre">key2=value2,</span> <span class="pre">...)</span></code></p>
-<table class="ansible-option-table docutils align-default" style="width: 100%">
+<table class="longtable ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
 <th class="head"><p>Comments</p></th>
@@ -193,7 +196,7 @@ example: <code class="docutils literal notranslate"><span class="pre">input</spa
 <td><div class="ansible-option-cell"><p>If this field exists in the input dictionary, then the value of that field is used as the <em>_input</em> value.</p>
 <p>The default value deals with the difference between the output of lookup plugins, and does not need to be changed in most cases.</p>
 <p>See the examples or the Filter guide for more information.</p>
-<p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;login&quot;</span></code></p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;login&quot;</span></code></p>
 </div></td>
 </tr>
 </tbody>
@@ -280,7 +283,7 @@ example: <code class="docutils literal notranslate"><span class="pre">input</spa
 </section>
 <section id="return-value">
 <h2><a class="toc-backref" href="#id7" role="doc-backlink">Return Value</a><a class="headerlink" href="#return-value" title="Link to this heading"></a></h2>
-<table class="ansible-option-table docutils align-default" style="width: 100%">
+<table class="longtable ansible-option-table docutils align-default" style="width: 100%">
 <thead>
 <tr class="row-odd"><th class="head"><p>Key</p></th>
 <th class="head"><p>Description</p></th>
@@ -292,8 +295,8 @@ example: <code class="docutils literal notranslate"><span class="pre">input</spa
 <a class="ansibleOptionLink" href="#return-_value" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The token value.</p>
-<p class="ansible-option-line"><span class="ansible-option-returned-bold">Returned:</span> always</p>
-<p class="ansible-option-line ansible-option-sample"><span class="ansible-option-sample-bold">Sample:</span> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">&quot;s.nnrpog4i5gjizr6b8g1inwj3&quot;</span></code></p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> always</p>
+<p class="ansible-option-line ansible-option-sample"><strong class="ansible-option-sample-bold">Sample:</strong> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">&quot;s.nnrpog4i5gjizr6b8g1inwj3&quot;</span></code></p>
 </div></td>
 </tr>
 </tbody>
@@ -310,12 +313,13 @@ example: <code class="docutils literal notranslate"><span class="pre">input</spa
 </section>
 <section id="collection-links">
 <h3>Collection links<a class="headerlink" href="#collection-links" title="Link to this heading"></a></h3>
-<p class="ansible-links">
-  <a href="https://github.com/ansible-collections/community.hashi_vault/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-  <a href="https://github.com/ansible-collections/community.hashi_vault" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  <a href="https://github.com/ansible-collections/community.hashi_vault/discussions" aria-role="button" target="_blank" rel="noopener external">Discussion, Q&amp;A, troubleshooting</a>
-  <a href="./#communication-for-community-hashi_vault" aria-role="button" target="_blank">Communication</a>
-</p></section>
+<ul class="ansible-links">
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/ansible-collections/community.hashi_vault/issues" rel="noopener external" target="_blank">Issue Tracker</a></span></li>
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/ansible-collections/community.hashi_vault" rel="noopener external" target="_blank">Repository (Sources)</a></span></li>
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/ansible-collections/community.hashi_vault/discussions" rel="noopener external" target="_blank">Discussion, Q&amp;A, troubleshooting</a></span></li>
+<li><span><a class="reference internal" href="index.html#communication-for-community-hashi-vault"><span class="std std-ref">Communication</span></a></span></li>
+</ul>
+</section>
 </section>
 </section>
 
