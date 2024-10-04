@@ -14,11 +14,7 @@ __metaclass__ = type
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
-    HashiVaultHelper,
-    HashiVaultHVACError,
-    HashiVaultOptionAdapter,
-)
+from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultHelper, HashiVaultHVACError, HashiVaultOptionAdapter
 from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
 from ansible_collections.community.hashi_vault.plugins.module_utils._authenticator import HashiVaultAuthenticator
 
