@@ -9,13 +9,35 @@ __metaclass__ = type
 import pytest
 import json
 
+from ...compat import mock
+
 from .....plugins.modules import vault_pki_generate_certificate
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from .....plugins.module_utils._authenticator import HashiVaultAuthenticator
+
 
 pytestmark = pytest.mark.usefixtures(
     'patch_ansible_module',
     'patch_authenticator',
     'patch_get_vault_client',
 )
+
+
+@pytest.fixture
+def failed_authenticator():
+    authenticator = HashiVaultAuthenticator
+    authenticator.validate = mock.Mock(side_effect=HashiVaultValueError("Authentication failed"))
+    authenticator.authenticate = mock.Mock(wraps=lambda client: 'throwaway')
+
+    return authenticator
+
+
+@pytest.fixture
+def patch_failed_authenticator(failed_authenticator):
+    with mock.patch(
+            'ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultAuthenticator',
+            new=failed_authenticator):
+        yield
 
 
 def _connection_options():
@@ -113,3 +135,27 @@ class TestModuleVaultPkiGenerateCertificate():
             vault_pki_generate_certificate.main()
 
         assert e.value.code != 0
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_pki_generate_certificate_authenticator_exception(self, pki_generate_certificate_response, patch_failed_authenticator, vault_client, capfd):
+        client = vault_client
+        client.secrets.pki.generate_certificate.return_value = pki_generate_certificate_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_pki_generate_certificate.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert 'msg' in result, "'msg' not found in module output"
+        assert 'exception' in result, "'exception' not found in module output"
+
+        assert result['msg'] == 'Authentication failed', (
+            f"Expected msg to be 'Authentication failed', got '{result['msg']}'"
+        )
+
+        assert 'Traceback' in result['exception'], (
+            "Expected 'exception' to contain 'Traceback', but it does not."
+        )
+
+        assert e.value.code != 0, "Expected non-zero exit code when authentication fails"
