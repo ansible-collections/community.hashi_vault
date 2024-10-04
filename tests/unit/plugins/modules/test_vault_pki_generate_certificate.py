@@ -27,7 +27,7 @@ pytestmark = pytest.mark.usefixtures(
 def failed_authenticator():
     authenticator = HashiVaultAuthenticator
     authenticator.validate = mock.Mock(side_effect=HashiVaultValueError("Authentication failed"))
-    authenticator.authenticate = mock.Mock(wraps=lambda client: 'throwaway')
+    authenticator.authenticate = mock.Mock()
 
     return authenticator
 
