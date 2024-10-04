@@ -92,29 +92,14 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
-from ansible.module_utils.six import raise_from
-
 from ...plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ...plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
-try:
-    import hvac  # pylint: disable=unused-import
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         self.set_options(direct=kwargs, var_options=variables)
         # TODO: remove process_deprecations() if backported fix is available (see method definition)
         self.process_deprecations()
