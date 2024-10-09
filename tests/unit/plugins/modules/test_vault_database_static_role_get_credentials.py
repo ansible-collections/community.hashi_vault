@@ -11,9 +11,6 @@ import pytest
 import re
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
-from ...compat import mock
 from .....plugins.modules import vault_database_static_role_get_credentials
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
@@ -141,25 +138,6 @@ class TestModuleVaultDatabaseStaticRoleGetCredentials:
             list_response,
             result,
         )
-
-    @pytest.mark.parametrize(
-        "patch_ansible_module", [_combined_options()], indirect=True
-    )
-    def test_vault_database_static_role_get_credentials_no_hvac(self, capfd):
-        with mock.patch.multiple(
-            vault_database_static_role_get_credentials,
-            HAS_HVAC=False,
-            HVAC_IMPORT_ERROR=None,
-            create=True,
-        ):
-            with pytest.raises(SystemExit) as e:
-                vault_database_static_role_get_credentials.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result["msg"] == missing_required_lib("hvac")
 
     @pytest.mark.parametrize(
         "exc",

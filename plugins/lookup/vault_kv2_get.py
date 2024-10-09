@@ -178,22 +178,9 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 display = Display()
 
-try:
-    import hvac
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         ret = []
 
         self.set_options(direct=kwargs, var_options=variables)
@@ -203,6 +190,7 @@ class LookupModule(HashiVaultLookupBase):
         self.connection_options.process_connection_options()
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         version = self._options_adapter.get_option_default('version')
         engine_mount_point = self._options_adapter.get_option('engine_mount_point')
@@ -216,9 +204,9 @@ class LookupModule(HashiVaultLookupBase):
         for term in terms:
             try:
                 raw = client.secrets.kv.v2.read_secret_version(path=term, version=version, mount_point=engine_mount_point)
-            except hvac.exceptions.Forbidden as e:
+            except hvac_exceptions.Forbidden as e:
                 raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
-            except hvac.exceptions.InvalidPath as e:
+            except hvac_exceptions.InvalidPath as e:
                 raise_from(
                     AnsibleError("Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (term, version or 'latest')),
                     e

@@ -106,19 +106,9 @@ RETURN = r""""""
 import traceback
 
 from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
 
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
 
 
 def run_module():
@@ -133,9 +123,6 @@ def run_module():
     )
 
     module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
-
-    if not HAS_HVAC:
-        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
 
     if module.check_mode is True:
         module.exit_json(changed=True)
@@ -154,6 +141,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac().exceptions
 
     try:
         module.authenticator.validate()
@@ -163,19 +151,19 @@ def run_module():
 
     try:
         client.secrets.database.configure(**parameters)
-    except hvac.exceptions.Forbidden as e:
+    except hvac_exceptions.Forbidden as e:
         module.fail_json(
             msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
             or "database",
             exception=traceback.format_exc(),
         )
-    except hvac.exceptions.InvalidPath as e:
+    except hvac_exceptions.InvalidPath as e:
         module.fail_json(
             msg="Invalid or missing path ['%s/config/%s']."
             % (engine_mount_point or "database", parameters["name"]),
             exception=traceback.format_exc(),
         )
-    except hvac.exceptions.InvalidRequest as e:
+    except hvac_exceptions.InvalidRequest as e:
         module.fail_json(
             msg="Error creating database connection ['%s/config/%s']. Please analyze the traceback for further details."
             % (engine_mount_point or "database", parameters["name"]),

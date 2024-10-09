@@ -17,22 +17,29 @@ __metaclass__ = type
 import os
 
 
-HAS_HVAC = False
-try:
-    import hvac
-    HAS_HVAC = True
-except ImportError:
-    HAS_HVAC = False
-
-
 class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
 
+class HashiVaultHVACError(ImportError):
+    '''Use in common code to signal HVAC is missing.'''
+    def __init__(self, error, msg):
+        super().__init__(error)
+        self.msg = msg
+        self.error = error
+
+
 class HashiVaultHelper():
     def __init__(self):
-        # TODO move hvac checking here?
-        pass
+        try:
+            import hvac
+            self.hvac = hvac
+        except ImportError as e:
+            from ansible.module_utils.basic import missing_required_lib
+            raise HashiVaultHVACError(error=str(e), msg=missing_required_lib('hvac'))
+
+    def get_hvac(self):
+        return self.hvac
 
     def get_vault_client(
         self,
@@ -50,7 +57,7 @@ class HashiVaultHelper():
         :type hashi_vault_revoke_on_logout: bool
         '''
 
-        client = hvac.Client(**kwargs)
+        client = self.hvac.Client(**kwargs)
 
         # logout to prevent accidental use of inferred tokens
         # https://github.com/ansible-collections/community.hashi_vault/issues/13

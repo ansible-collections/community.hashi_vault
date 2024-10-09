@@ -16,7 +16,8 @@ from ...compat import mock
 from .....plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
-from .....plugins.lookup import vault_write
+# needs to be a relative import otherwise it breaks test_vault_write_unparseable_response.
+from .....plugins.lookup import vault_write  # pylint: disable=unused-import
 
 
 hvac = pytest.importorskip('hvac')
@@ -42,11 +43,6 @@ class TestVaultWriteLookup(object):
 
     def test_vault_write_is_lookup_base(self, vault_write_lookup):
         assert issubclass(type(vault_write_lookup), HashiVaultLookupBase)
-
-    def test_vault_write_no_hvac(self, vault_write_lookup, minimal_vars):
-        with mock.patch.object(vault_write, 'HVAC_IMPORT_ERROR', new=ImportError()):
-            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
-                vault_write_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_write_authentication_error(self, vault_write_lookup, minimal_vars, authenticator, exc):

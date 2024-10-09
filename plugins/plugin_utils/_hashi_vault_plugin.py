@@ -18,6 +18,7 @@ from ansible.utils.display import Display
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultHelper,
+    HashiVaultHVACError,
     HashiVaultOptionAdapter,
 )
 
@@ -32,7 +33,12 @@ class HashiVaultPlugin(AnsiblePlugin):
     def __init__(self):
         super(HashiVaultPlugin, self).__init__()
 
-        self.helper = HashiVaultHelper()
+        try:
+            self.helper = HashiVaultHelper()
+        except HashiVaultHVACError as exc:
+            from ansible.errors import AnsibleError
+            raise AnsibleError(exc.msg)
+
         self._options_adapter = HashiVaultOptionAdapter.from_ansible_plugin(self)
         self.connection_options = HashiVaultConnectionOptions(self._options_adapter, self._generate_retry_callback)
         self.authenticator = HashiVaultAuthenticator(self._options_adapter, display.warning, display.deprecated)
