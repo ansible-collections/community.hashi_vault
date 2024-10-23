@@ -142,19 +142,9 @@ metadata:
 import traceback
 
 from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
 
 
 def run_module():
@@ -169,12 +159,6 @@ def run_module():
         supports_check_mode=True
     )
 
-    if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
-        )
-
     engine_mount_point = module.params.get('engine_mount_point')
     path = module.params.get('path')
     version = module.params.get('version')
@@ -182,6 +166,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac().exceptions
 
     try:
         module.authenticator.validate()
@@ -191,9 +176,9 @@ def run_module():
 
     try:
         raw = client.secrets.kv.v2.read_secret_version(path=path, version=version, mount_point=engine_mount_point)
-    except hvac.exceptions.Forbidden as e:
+    except hvac_exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath as e:
+    except hvac_exceptions.InvalidPath as e:
         module.fail_json(
             msg="Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (path, version or 'latest'),
             exception=traceback.format_exc()

@@ -108,19 +108,9 @@ data:
 import traceback
 
 from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
 
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
 
 
 def run_module():
@@ -135,12 +125,6 @@ def run_module():
         supports_check_mode=True
     )
 
-    if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
-        )
-
     path = module.params.get('path')
     data = module.params.get('data')
     wrap_ttl = module.params.get('wrap_ttl')
@@ -148,6 +132,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac().exceptions
 
     try:
         module.authenticator.validate()
@@ -169,11 +154,11 @@ def run_module():
                     module.fail_json("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2")
                 else:
                     response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
-    except hvac.exceptions.Forbidden:
+    except hvac_exceptions.Forbidden:
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath:
+    except hvac_exceptions.InvalidPath:
         module.fail_json(msg="The path '%s' doesn't seem to exist." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InternalServerError as e:
+    except hvac_exceptions.InternalServerError as e:
         module.fail_json(msg="Internal Server Error: %s" % to_native(e), exception=traceback.format_exc())
 
     # https://github.com/hvac/hvac/issues/797
