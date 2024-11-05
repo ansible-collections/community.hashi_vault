@@ -7,13 +7,18 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import builtins
+import hvac
+import requests_unixsocket
 import os
 import pytest
 import sys
 
+from contextlib import contextmanager
+
 from .....tests.unit.compat import mock
 from .....plugins.module_utils._hashi_vault_common import (
     HashiVaultHVACError,
+    MissingLibraryError,
     HashiVaultHelper,
 )
 
@@ -27,13 +32,12 @@ def hashi_vault_helper():
 def hashi_vault_hvac_error():
     return HashiVaultHVACError(error='test error', msg='message')
 
-
-@pytest.fixture
-def hvac_fail_import_hook():
+@contextmanager
+def _fail_import_hook(import_name):
     original_import = builtins.__import__
 
     def _mock(name: str, *args, **kwargs):
-        if name == 'hvac':
+        if name == import_name:
             raise ImportError('test case module import failure')
 
         return original_import(name, *args, **kwargs)
@@ -42,6 +46,18 @@ def hvac_fail_import_hook():
         yield
 
     builtins.__import__ = original_import
+
+
+@pytest.fixture
+def hvac_fail_import_hook():
+    with _fail_import_hook('hvac'):
+        yield
+
+
+@pytest.fixture
+def requests_unixsocket_fail_import_hook():
+    with _fail_import_hook('requests_unixsocket'):
+        yield
 
 
 @pytest.fixture
@@ -96,3 +112,14 @@ class TestHashiVaultHelper(object):
         client = hashi_vault_helper.get_vault_client(hashi_vault_logout_inferred_token=True)
 
         assert client.token is None
+
+    def test_get_vault_client_with_unix_socket(self, hashi_vault_helper):
+        client = hashi_vault_helper.get_vault_client(url='unix:///var/run/vault-agent.sock')
+
+        assert isinstance(client.session, requests_unixsocket.Session)
+
+    def test_get_vault_client_with_unix_socket_fails_when_requests_unixsocket_not_available(self, requests_unixsocket_fail_import_hook):
+        with pytest.raises(MissingLibraryError) as hvac_import:
+            helper = HashiVaultHelper()
+            helper.get_vault_client(url='unix:///var/run/vault-agent.sock')
+        assert hvac_import.value.error == "test case module import failure"
