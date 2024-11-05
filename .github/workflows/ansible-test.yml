@@ -21,7 +21,7 @@ env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
   ANSIBLE_FORCE_COLOR: true
-  ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
+  ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
 
 jobs:
 
