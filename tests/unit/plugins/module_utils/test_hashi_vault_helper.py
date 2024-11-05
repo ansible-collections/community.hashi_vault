@@ -7,7 +7,6 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import builtins
-import hvac
 import requests_unixsocket
 import os
 import pytest
@@ -31,6 +30,7 @@ def hashi_vault_helper():
 @pytest.fixture
 def hashi_vault_hvac_error():
     return HashiVaultHVACError(error='test error', msg='message')
+
 
 @contextmanager
 def _fail_import_hook(import_name):

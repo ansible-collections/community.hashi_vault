@@ -95,3 +95,10 @@
               - result is failed
               - result.msg is search('(?:Cannot|Unable to) connect to proxy')
               - result.retries == 2
+
+    - name: Unix socket connection
+      when: vault_run_unix_socket_tests | bool
+      block:
+        - name: Set the Unix socket connection address
+          set_fact:
+            ansible_hashi_vault_addr: '{{ vault_test_server_unix }}'
