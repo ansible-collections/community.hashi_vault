@@ -21,12 +21,16 @@ class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
 
-class HashiVaultHVACError(ImportError):
-    '''Use in common code to signal HVAC is missing.'''
+class MissingLibraryError(ImportError):
+    '''Use in common code to signal missing library.'''
     def __init__(self, error, msg):
         super().__init__(error)
         self.msg = msg
         self.error = error
+
+
+class HashiVaultHVACError(MissingLibraryError):
+    '''Use in common code to signal HVAC is missing.'''
 
 
 class HashiVaultHelper():
@@ -56,6 +60,20 @@ class HashiVaultHelper():
         :param hashi_vault_revoke_on_logout: if True revokes any current token on logout. Only used if a logout is performed. Not recommended.
         :type hashi_vault_revoke_on_logout: bool
         '''
+
+        url = kwargs.get('url') or os.environ.get('VAULT_ADDR')
+        if url and url.startswith('unix://'):
+            try:
+                import requests_unixsocket
+            except ImportError as e:
+                from ansible.module_utils.basic import missing_required_lib
+                raise MissingLibraryError(error=str(e), msg=missing_required_lib('requests_unixsocket'))
+            socket_path = (url
+                           .replace('unix://', '')
+                           .replace('/', '%2F'))
+            socket_url = 'http+unix://{}'.format(socket_path)
+            kwargs['url'] = socket_url
+            kwargs['session'] = requests_unixsocket.Session()
 
         client = self.hvac.Client(**kwargs)
 
