@@ -71,7 +71,7 @@ class HashiVaultHelper():
             socket_path = (url
                            .replace('unix://', '')
                            .replace('/', '%2F'))
-            socket_url = 'http+unix://{}'.format(socket_path)
+            socket_url = f"http+unix://{socket_path}"
             kwargs['url'] = socket_url
             kwargs['session'] = requests_unixsocket.Session()
 
