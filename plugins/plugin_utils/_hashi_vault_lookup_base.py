@@ -26,26 +26,3 @@ class HashiVaultLookupBase(HashiVaultPlugin, LookupBase):
     def __init__(self, loader=None, templar=None, **kwargs):
         HashiVaultPlugin.__init__(self)
         LookupBase.__init__(self, loader=loader, templar=templar, **kwargs)
-
-    def parse_kev_term(self, term, plugin_name, first_unqualified=None):
-        '''parses a term string into a dictionary'''
-        param_dict = {}
-
-        for i, param in enumerate(term.split()):
-            try:
-                key, value = param.split('=', 1)
-            except ValueError:
-                if i == 0 and first_unqualified is not None:
-                    # allow first item to be specified as value only and assign to assumed option name
-                    key = first_unqualified
-                    value = param
-                else:
-                    raise AnsibleError("%s lookup plugin needs key=value pairs, but received %s" % (plugin_name, term))
-
-            if key in param_dict:
-                msg = "Duplicate key '%s' in the term string '%s'." % (key, term)
-                raise AnsibleOptionsError(msg)
-
-            param_dict[key] = value
-
-        return param_dict
