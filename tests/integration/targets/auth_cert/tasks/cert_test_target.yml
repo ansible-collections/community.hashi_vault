@@ -37,4 +37,5 @@
         fail_msg: "An invalid cert somehow did not cause a failure."
         that:
           - response.inner is failed
-          - response.msg is search('invalid certificate or no client certificate supplied')
+          - response.msg is search('invalid certificate or no client certificate supplied') or
+            response.msg is search('failed to match all constraints for this login certificate')

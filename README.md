@@ -3,6 +3,19 @@
 [![CI](https://github.com/ansible-collections/community.hashi_vault/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.hashi_vault/actions) [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.hashi_vault)](https://codecov.io/gh/ansible-collections/community.hashi_vault)
 
 <!-- Describe the collection and why a user would want to use it. What does the collection do? -->
+
+## Communication
+
+* Join the Ansible forum:
+  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others. Please add appropriate tags if you start new discussions, for example the `hashi-vault` tag. 
+  * [Posts tagged with 'hashi-vault'](https://forum.ansible.com/tag/hashi-vault): subscribe to participate in the technology related conversations.
+  * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
+  * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
+
+* The Ansible [Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn): used to announce releases and important changes.
+
+For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
+
 ## Collection Documentation
 
 Browsing the [**latest** collection documentation](https://docs.ansible.com/ansible/latest/collections/community/hashi_vault) will show docs for the _latest version released in the Ansible package_ not the latest version of the collection released on Galaxy.

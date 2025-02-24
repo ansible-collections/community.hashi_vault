@@ -84,29 +84,14 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
-from ansible.module_utils.six import raise_from
-
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
-try:
-    import hvac
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         ret = []
 
         self.set_options(direct=kwargs, var_options=variables)
@@ -116,6 +101,7 @@ class LookupModule(HashiVaultLookupBase):
         self.connection_options.process_connection_options()
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         try:
             self.authenticator.validate()
@@ -126,7 +112,7 @@ class LookupModule(HashiVaultLookupBase):
         for term in terms:
             try:
                 data = client.read(term)
-            except hvac.exceptions.Forbidden:
+            except hvac_exceptions.Forbidden:
                 raise AnsibleError("Forbidden: Permission Denied to path '%s'." % term)
 
             if data is None:

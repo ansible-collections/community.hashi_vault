@@ -16,8 +16,6 @@ from ...compat import mock
 from .....plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
-from .....plugins.lookup import vault_read
-
 
 hvac = pytest.importorskip('hvac')
 
@@ -42,11 +40,6 @@ class TestVaultReadLookup(object):
 
     def test_vault_read_is_lookup_base(self, vault_read_lookup):
         assert issubclass(type(vault_read_lookup), HashiVaultLookupBase)
-
-    def test_vault_read_no_hvac(self, vault_read_lookup, minimal_vars):
-        with mock.patch.object(vault_read, 'HVAC_IMPORT_ERROR', new=ImportError()):
-            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
-                vault_read_lookup.run(terms='fake', variables=minimal_vars)
 
     @pytest.mark.parametrize('exc', [HashiVaultValueError('throwaway msg'), NotImplementedError('throwaway msg')])
     def test_vault_read_authentication_error(self, vault_read_lookup, minimal_vars, authenticator, exc):
