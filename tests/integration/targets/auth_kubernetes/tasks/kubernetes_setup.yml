@@ -1,6 +1,16 @@
 - name: "Setup block"
   vars:
     is_default_path: "{{ this_path == default_path }}"
+    jwt_public_key: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArIansgZKnb2NnOFe6+g3
+      v8kzMySJrBNxfzEq8nn3qtXsL4pl2bvrM8or3F6iNPv2p5GHGJat0HANgLBvxGlv
+      u2KYN8Jnjqf8zX5sqmvaK1L5aFZD7p9OKxu7JTCUzjykKGqmDXlitXXxkoDlCUr6
+      m7kR5Hn/VnmRWlyiIWQL8iY2pxYKGl7CvXEmW1vqEJvvOH2P0PxBS8fHFuEX3k+N
+      vEMJlDqN9MRi4EYh7P7R7qMVKSpOUl6K4TEYMsV3D0sHaIGDq+iw8Ev0fO2CglV5
+      uDAgo0WZlxcl6VqLDQIV20JJGHdHBxGFZl5GqzbM5yNEr2hUqT1h8fKHdF6L0xRu
+      eQIDAQAB
+      -----END PUBLIC KEY-----
   block:
     - name: "Enable the Kubernetes auth method"
       vault_ci_enable_auth:
@@ -10,23 +20,28 @@
           default_lease_ttl: 60m
 
     - name: "Configure the Kubernetes auth method"
-      vars:
-        # jwt_public_key: '{{ lookup("file", "jwt_public.pem") }}'
-        # kubernetes_host: 'https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT'
       vault_ci_write:
         path: "auth/{{ this_path }}/config"
         data:
-          # in docs, this is token_policies (changed in Vault 1.2)
-          # use 'policies' to support older versions
-          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
+          kubernetes_host: "https://kubernetes.default.svc"
+          kubernetes_ca_cert: |
+            -----BEGIN CERTIFICATE-----
+            MIIDBjCCAe4CAQAwDQYJKoZIhvcNAQEFBQAwEzERMA8GA1UEAwwIdGVzdC5jb20w
+            MIIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            -----END CERTIFICATE-----
+          jwt_validation_pubkeys: |
+            {{ jwt_public_key }}
+          issuer: "https://kubernetes.default.svc.cluster.local"
 
     - name: "Create a named role"
       vault_ci_write:
         path: "auth/{{ this_path }}/role/test-role"
         data:
+          bound_service_account_names: "*"
+          bound_service_account_namespaces: "*"
           # in docs, this is token_policies (changed in Vault 1.2)
           # use 'policies' to support older versions
-          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }},approle-policy"
-          role_type: kubernetes
-          user_claim: sub
-          bound_audiences: test
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }}"
+          ttl: 60m

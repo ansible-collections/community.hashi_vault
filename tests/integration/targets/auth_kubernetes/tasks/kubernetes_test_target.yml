@@ -1,15 +1,15 @@
 - name: "Test block"
   vars:
     is_default_path: "{{ this_path == default_path }}"
-	  service_account_token: '{{ lookup("file", "service_account_token.jwt") }}'
-    service_account_token_invalid: '{{ lookup("file", "service_account_token_invalid.jwt") }}'
+    kubernetes_token: '{{ lookup("file", "service_account_token.jwt") }}'
+    kubernetes_token_invalid: '{{ lookup("file", "service_account_token_invalid.jwt") }}'
   module_defaults:
     vault_test_auth:
       url: '{{ ansible_hashi_vault_url }}'
       auth_method: '{{ ansible_hashi_vault_auth_method }}'
       role_id: test-role
       mount_point: '{{ omit if is_default_path else this_path }}'
-      service_account_token:  '{{ service_account_token }}'
+      kubernetes_token: '{{ kubernetes_token }}'
   block:
     # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
     # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
@@ -29,7 +29,7 @@
     - name: Failure expected when erroneous credentials are used
       register: response
       vault_test_auth:
-        service_account_token: '{{ service_account_token_invalid }}'
+        kubernetes_token: '{{ kubernetes_token_invalid }}'
         want_exception: yes
 
     - assert:

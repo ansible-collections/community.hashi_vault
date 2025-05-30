@@ -1,14 +1,14 @@
 - name: "Test block"
   vars:
-    service_account_token: '{{ lookup("file", "service_account_token.jwt") }}'
-    service_account_token_invalid: '{{ lookup("file", "service_account_token_invalid.jwt") }}'
+    kubernetes_token: '{{ lookup("file", "service_account_token.jwt") }}'
+    kubernetes_token_invalid: '{{ lookup("file", "service_account_token_invalid.jwt") }}'
     is_default_path: "{{ this_path == default_path }}"
     kwargs_common:
       role_id: test-role
     kwargs_mount: "{{ {} if is_default_path else {'mount_point': this_path} }}"
-    kwargs_service_account_token:
-      service_account_token: "{{ service_account_token }}"
-    kwargs: "{{ kwargs_common | combine(kwargs_mount) | combine(kwargs_service_account_token) }}"
+    kwargs_kubernetes_token:
+      kubernetes_token: "{{ kubernetes_token }}"
+    kwargs: "{{ kwargs_common | combine(kwargs_mount) | combine(kwargs_kubernetes_token) }}"
   block:
     # the purpose of this test is to catch when the plugin accepts mount_point but does not pass it into hvac
     # we set the policy of the default mount to deny access to this secret and so we expect failure when the mount
@@ -27,10 +27,9 @@
 
     - name: Failure expected when erroneous credentials are used
       vars:
-        kwargs_:
-          service_account_token: "{{ service_account_token_invalid }}"
+        kwargs_invalid: "{{ kwargs_common | combine(kwargs_mount) | combine({'kubernetes_token': kubernetes_token_invalid}) }}"
       set_fact:
-        response: "{{ lookup('vault_test_auth', want_exception=true, **kwargs) }}"
+        response: "{{ lookup('vault_test_auth', want_exception=true, **kwargs_invalid) }}"
 
     - assert:
         fail_msg: "An invalid JWT somehow did not cause a failure."
