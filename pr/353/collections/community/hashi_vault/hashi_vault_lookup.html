@@ -201,14 +201,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 </ul>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">auth_method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">token</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">auth_method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">token</span>
 </pre></div>
@@ -247,14 +240,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <td><div class="ansible-option-cell"><p>If specified, sets the value to use for the <code class="docutils literal notranslate"><span class="pre">X-Vault-AWS-IAM-Server-ID</span></code> header as part of <code class="docutils literal notranslate"><span class="pre">GetCallerIdentity</span></code> request.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">aws_iam_server_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">aws_iam_server_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -391,15 +377,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>If not specified by any other means, the <code class="docutils literal notranslate"><span class="pre">VAULT_CACERT</span></code> environment variable will be used.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">ca_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p><em class="ansible-option-versionadded">added in community.hashi_vault 1.2.0</em></p>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">ca_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -471,7 +449,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-kubernetes_token"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-parameter-kubernetes-token"><strong>kubernetes_token</strong></p>
 <a class="ansibleOptionLink" href="#parameter-kubernetes_token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><em class="ansible-option-versionadded">added in community.hashi_vault 2.5.0</em></p>
+<p><em class="ansible-option-versionadded">added in community.hashi_vault 6.3.0</em></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The Kubernetes Token (JWT) to use for Kubernetes authentication to Vault.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
@@ -484,7 +462,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-kubernetes_token_path"></div><p class="ansible-option-title" id="ansible-collections-community-hashi-vault-hashi-vault-lookup-parameter-kubernetes-token-path"><strong>kubernetes_token_path</strong></p>
 <a class="ansibleOptionLink" href="#parameter-kubernetes_token_path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-<p><em class="ansible-option-versionadded">added in community.hashi_vault 2.5.0</em></p>
+<p><em class="ansible-option-versionadded">added in community.hashi_vault 6.3.0</em></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>If no kubernetes_token is specified, will try to read the token from this path.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/var/run/secrets/kubernetes.io/serviceaccount/token&quot;</span></code></p>
@@ -535,15 +513,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>If environment variable <code class="docutils literal notranslate"><span class="pre">VAULT_NAMESPACE</span></code> is set, its value will be used last among all ways to specify <em>namespace</em>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p><em class="ansible-option-versionadded">added in community.hashi_vault 0.2.0</em></p>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -589,14 +559,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>If not specified, <a class="reference external" href="https://requests.readthedocs.io/en/master/user/advanced/#proxies">environment variables from the Requests library</a> are used.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">proxies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">proxies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -636,14 +599,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>For detailed information on retries, see the collection User Guide.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">retries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">retries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -669,14 +625,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 </ul>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">retry_action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">warn</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">retry_action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">warn</span>
 </pre></div>
@@ -715,14 +664,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>For <code class="docutils literal notranslate"><span class="pre">azure</span></code> auth, <em>role_id</em> is required.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">role_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">role_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -770,14 +712,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>If not set, then the <code class="docutils literal notranslate"><span class="pre">hvac</span></code> library’s default is used.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -815,14 +750,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;.vault-token&quot;</span></code></p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">token_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.vault-token</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">token_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.vault-token</span>
 </pre></div>
@@ -845,14 +773,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <td><div class="ansible-option-cell"><p>If no token is specified, will try to read the <em>token_file</em> from this path.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">token_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">token_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
@@ -882,14 +803,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 </ul>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">token_validate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">token_validate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
 </pre></div>
@@ -912,14 +826,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p>If <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code> is also not defined then an error will be raised.</p>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
 <ul>
-<li><p>INI entries:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[lookup_hashi_vault]</span>
-<span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
-</pre></div>
-</div>
-<p>Removed in: version 3.0.0</p>
-<p>Why: collection-wide config section</p>
-<p>Alternative: use section [hashi_vault_collection]</p>
+<li><p>INI entry:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[hashi_vault_collection]</span>
 <span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">VALUE</span>
 </pre></div>
