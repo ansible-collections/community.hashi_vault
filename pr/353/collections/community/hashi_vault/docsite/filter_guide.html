@@ -1,23 +1,24 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Filter guide &mdash; Ansible collections  documentation</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/ansible.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/antsibull-minimal.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/rtd-ethical-ads.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../../_static/images/Ansible-Mark-RGB_Black.png"/>
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=41de9001" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/ansible.css?v=c5b67dd2" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/antsibull-minimal.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/rtd-ethical-ads.css?v=289b023e" />
+
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/images/Ansible-Mark-RGB_Black.png"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=7f41d439"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="User guide" href="user_guide.html" />
@@ -32,11 +33,9 @@
 
 <div class="DocSite-globalNav ansibleNav">
   <ul>
-    <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
-    <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
-    <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
-    <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
     <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
   </ul>
 </div>
 
@@ -127,7 +126,7 @@
            <div itemprop="articleBody">
              
   <section id="filter-guide">
-<span id="ansible-collections-community-hashi-vault-docsite-filter-guide"></span><h1><a class="toc-backref" href="#id1" role="doc-backlink">Filter guide</a><a class="headerlink" href="#filter-guide" title="Permalink to this heading"></a></h1>
+<span id="ansible-collections-community-hashi-vault-docsite-filter-guide"></span><h1><a class="toc-backref" href="#id1" role="doc-backlink">Filter guide</a><a class="headerlink" href="#filter-guide" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Filter Plugins are now included with other <a class="reference internal" href="../index.html#plugins-in-community-hashi-vault"><span class="std std-ref">plugin documentation</span></a>.</p>
@@ -143,9 +142,9 @@
 </ul>
 </nav>
 <section id="vault-login-token-filter">
-<span id="ansible-collections-community-hashi-vault-docsite-filter-guide-vault-login-token"></span><h2><a class="toc-backref" href="#id2" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">vault_login_token</span></code> filter</a><a class="headerlink" href="#vault-login-token-filter" title="Permalink to this heading"></a></h2>
+<span id="ansible-collections-community-hashi-vault-docsite-filter-guide-vault-login-token"></span><h2><a class="toc-backref" href="#id2" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">vault_login_token</span></code> filter</a><a class="headerlink" href="#vault-login-token-filter" title="Link to this heading"></a></h2>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.2.0.</span></p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">vault_login_token</span></code> filter extracts the token value from the structure returned by a Vault token creation operation, such as those returned by the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_login</span></code> <a class="reference internal" href="../vault_login_module.html#ansible-collections-community-hashi-vault-vault-login-module"><span class="std std-ref">module</span></a> or <a class="reference internal" href="../vault_login_lookup.html#ansible-collections-community-hashi-vault-vault-login-lookup"><span class="std std-ref">lookup plugin</span></a>, or the <code class="docutils literal notranslate"><span class="pre">community.hashi_vault.vault_token_create</span></code> <a class="reference internal" href="../vault_token_create_module.html#ansible-collections-community-hashi-vault-vault-token-create-module"><span class="std std-ref">module</span></a> or <a class="reference internal" href="../vault_token_create_lookup.html#ansible-collections-community-hashi-vault-vault-token-create-lookup"><span class="std std-ref">lookup plugin</span></a>.</p>
 <p>The filter takes an optional parameter <code class="docutils literal notranslate"><span class="pre">optional_field</span></code> with defaults to <code class="docutils literal notranslate"><span class="pre">login</span></code>. If this field exists in the input dictionary, then the value of that field is taken the be the login response, rather than the input dictionary itself.</p>
@@ -215,12 +214,12 @@
 </pre></div>
 </div>
 <p>Which produces:</p>
-<div class="highlight-ansible-output notranslate"><div class="highlight"><pre><span></span><span class="w">TASK [Perform a login with a lookup and display the token]  ********************************</span>
+<div class="highlight-ansible-output notranslate"><div class="highlight"><pre><span></span>TASK [Perform a login with a lookup and display the token]  ********************************
 <span class="k">ok</span><span class="p">:</span> <span class="p">[</span><span class="nv">localhost</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span>
     <span class="nt">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span>
 <span class="p">}</span>
 
-<span class="w">TASK [Perform a login with a module]  *****************************************************</span>
+TASK [Perform a login with a module]  *****************************************************
 <span class="k">ok</span><span class="p">:</span> <span class="p">[</span><span class="nv">localhost</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span><span class="nt">&quot;changed&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;auth&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;accessor&quot;</span><span class="p">:</span> <span class="s">&quot;mQewzgKRx5Yui1h1eMemJlMu&quot;</span><span class="p">,</span>
 <span class="nt">&quot;client_token&quot;</span><span class="p">:</span> <span class="s">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span><span class="p">,</span> <span class="nt">&quot;entity_id&quot;</span><span class="p">:</span> <span class="s">&quot;8a74ffd3-f71b-8ebe-7942-610428051ea9&quot;</span><span class="p">,</span>
 <span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span> <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;testuser&quot;</span><span class="p">},</span> <span class="nt">&quot;orphan&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nt">&quot;policies&quot;</span><span class="p">:</span>
@@ -228,9 +227,9 @@
 <span class="s">&quot;default&quot;</span><span class="p">,</span> <span class="s">&quot;userpass-policy&quot;</span><span class="p">],</span> <span class="nt">&quot;token_type&quot;</span><span class="p">:</span> <span class="s">&quot;service&quot;</span><span class="p">},</span> <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;lease_duration&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
 <span class="nt">&quot;lease_id&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nt">&quot;renewable&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nt">&quot;request_id&quot;</span><span class="p">:</span> <span class="s">&quot;511e8fba-83f0-4b7e-95ea-770aa19c1957&quot;</span><span class="p">,</span>
 <span class="nt">&quot;warnings&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;wrap_info&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">}}</span>
-<span class="w">}</span>
+}
 
-<span class="w">TASK [Display the token]  *****************************************************************</span>
+TASK [Display the token]  *****************************************************************
 <span class="k">ok</span><span class="p">:</span> <span class="p">[</span><span class="nv">localhost</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span>
     <span class="nt">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;s.drgLxu6ZtttSVn5Zkoy0huMR&quot;</span>
 <span class="p">}</span>
