@@ -1,0 +1,10 @@
+---
+- name: Get python minor version
+  ansible.builtin.set_fact:
+    python_interpreter_minor: "{{ ansible_python_version | split('.') }}"
+
+- when: python_interpreter_minor[1] | int > 6
+  block:
+    - import_tasks: module_vault_db_rotate_root_creds_setup.yml
+    - import_tasks: module_vault_db_rotate_root_creds_test.yml
+    - import_tasks: module_vault_db_rotate_root_creds_cleanup.yml

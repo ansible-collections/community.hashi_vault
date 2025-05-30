@@ -1,0 +1,72 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_connections_list: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+  block:
+    - name: Test list database connections (explicit mount - invalid) [check mode]
+      register: db_connections
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connections_list:
+        engine_mount_point: NOT REAL
+
+    - name: Check (explicit mount - invalid) [check mode]
+      ansible.builtin.assert: &failure_bad_mount
+        that:
+          - db_connections is failed
+          - db_connections.msg is search('Permission Denied')
+
+    - name: Test list database connections (explicit mount - invalid)
+      register: db_connections
+      ignore_errors: true
+      community.hashi_vault.vault_database_connections_list:
+        engine_mount_point: NOT REAL
+
+    - name: Check (explicit mount - invalid) [check mode]
+      ansible.builtin.assert: *failure_bad_mount
+
+    - name: Test list database connections (explicit mount) [check mode]
+      register: db_connections
+      check_mode: true
+      community.hashi_vault.vault_database_connections_list:
+        engine_mount_point: database
+
+    - name: Check (explicit mount) [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_connections is defined
+          - "'data' in db_connections"
+          - "'raw' in db_connections"
+          - "'connections' in db_connections"
+          - "'keys' in db_connections['data']"
+          - "'my-postgresql-database' in db_connections['data']['keys']"
+
+    - name: Test list database connections (explicit mount)
+      register: db_connections
+      community.hashi_vault.vault_database_connections_list:
+        engine_mount_point: database
+
+    - name: Check (explicit mount)
+      ansible.builtin.assert: *success
+
+    - name: Test list database connections (default mount) [check mode]
+      check_mode: true
+      register: db_connections
+      community.hashi_vault.vault_database_connections_list:
+
+    - name: Check (default mount) [check mode]
+      ansible.builtin.assert: *success
+
+    - name: Test list database connections (default mount)
+      register: db_connections
+      community.hashi_vault.vault_database_connections_list:
+
+    - name: Check (default mount)
+      ansible.builtin.assert: *success

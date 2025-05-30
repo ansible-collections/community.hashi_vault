@@ -1,0 +1,23 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_enable_engine: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_policy_put: "{{ vault_plugins_module_defaults_common }}"
+  block:
+    - name: Create a test non-root token
+      vault_ci_token_create:
+        policies: [policy-database-all]
+      register: user_token_cmd
+
+    - name: Set roles data
+      ansible.builtin.set_fact:
+        roles_to_rotate: ["role4", "role5"]
+
+    - name: Read users
+      vault_ci_read:
+        path: "database/static-creds/{{ item }}"
+      register: roles_data_before
+      loop: "{{ roles_to_rotate }}"

@@ -1,0 +1,192 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_connection_configure: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+  block:
+    - name: Test database connection configure [check mode]
+      register: db_connection_configure
+      check_mode: true
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: DOES NOT MATTER
+        connection_name: DOES NOT MATTER
+        plugin_name: DOES NOT MATTER
+        allowed_roles: DOES NOT MATTER
+        connection_url: DOES NOT MATTER
+        connection_username: DOES NOT MATTER
+        connection_password: DOES NOT MATTER
+
+    - name: Check [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_connection_configure is changed
+
+    - name: Test database connection configure (explicit mount - invalid, plugin_name, connection_url, connection_user, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: NOT REAL
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable"
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (explicit mount - invalid, plugin_name, connection_url, connection_user, connection_password)
+      ansible.builtin.assert: &failure_invalid_mount
+        that:
+          - db_connection_configure is failed
+          - db_connection_configure.msg is search('Permission Denied')
+
+    - name: Test database connection configure (explicit mount, plugin_name - invalid, connection_url, connection_user, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: database
+        connection_name: con1-postgres
+        plugin_name: NOT REAL
+        allowed_roles: "*"
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable"
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (explicit mount, plugin_name - invalid, connection_url, connection_user, connection_password)
+      ansible.builtin.assert: &failure_invalid_request
+        that:
+          - db_connection_configure is failed
+          - db_connection_configure.msg is search('Error creating database connection')
+
+    - name: Test database connection configure (explicit mount, plugin_name, connection_url - invalid, connection_user, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: database
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@NOT_REAL:5432/hcvault?sslmode=disable
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (explicit mount, plugin_name, connection_url - invalid, connection_user, connection_password)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (explicit mount, plugin_name, connection_url, connection_user - invalid, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: database
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable
+        connection_username: NOT REAL
+        connection_password: con1
+
+    - name: Check (explicit mount, plugin_name, connection_url, connection_user - invalid, connection_password)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (explicit mount, plugin_name, connection_url, connection_user, connection_password  - invalid)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: database
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable
+        connection_username: con1
+        connection_password: NOT REAL
+
+    - name: Check (explicit mount, plugin_name, connection_url, connection_user, connection_password)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (explicit mount, plugin_name, connection_url, connection_user, connection_password  - invalid)
+      register: db_connection_configure
+      community.hashi_vault.vault_database_connection_configure:
+        engine_mount_point: database
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (explicit mount, plugin_name, connection_url, connection_user, connection_password)
+      ansible.builtin.assert: *success
+
+    - name: Test database connection configure (default mount, plugin_name - invalid, connection_url, connection_user, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        connection_name: con1-postgres
+        plugin_name: NOT REAL
+        allowed_roles: "*"
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable"
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (default mount, plugin_name - invalid, connection_url, connection_user, connection_password)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (default mount, plugin_name, connection_url - invalid, connection_user, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@NOT_REAL:5432/hcvault?sslmode=disable
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (default mount, plugin_name, connection_url - invalid, connection_user, connection_password)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (default mount, plugin_name, connection_url, connection_user - invalid, connection_password)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable
+        connection_username: NOT REAL
+        connection_password: con1
+
+    - name: Check (default mount, plugin_name, connection_url, connection_user - invalid, connection_password)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (default mount, plugin_name, connection_url, connection_user, connection_password  - invalid)
+      register: db_connection_configure
+      ignore_errors: true
+      community.hashi_vault.vault_database_connection_configure:
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable
+        connection_username: con1
+        connection_password: NOT REAL
+
+    - name: Check (default mount, plugin_name, connection_url, connection_user, connection_password - invalid)
+      ansible.builtin.assert: *failure_invalid_request
+
+    - name: Test database connection configure (default mount, plugin_name, connection_url, connection_user, connection_password  - invalid)
+      register: db_connection_configure
+      community.hashi_vault.vault_database_connection_configure:
+        connection_name: con1-postgres
+        plugin_name: postgresql-database-plugin
+        allowed_roles: "*"
+        connection_url: postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@postgres:5432/hcvault?sslmode=disable
+        connection_username: con1
+        connection_password: con1
+
+    - name: Check (default mount, plugin_name, connection_url, connection_user, connection_password)
+      ansible.builtin.assert: *success

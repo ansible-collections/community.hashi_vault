@@ -2,6 +2,8 @@ name: CI
 on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
+    branches-ignore:
+      - 'dependabot/**'
     paths-ignore:
       - 'docs/**'
       - '.github/workflows/_shared-*'
@@ -19,7 +21,7 @@ env:
   NAMESPACE: community
   COLLECTION_NAME: hashi_vault
   ANSIBLE_FORCE_COLOR: true
-  ANSIBLE_COLLECTIONS_PATHS: ${{ github.workspace }}
+  ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
 
 jobs:
 
@@ -31,16 +33,18 @@ jobs:
     name: Sanity (Ⓐ${{ matrix.ansible }})
     runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
         runner:
           - ubuntu-latest
         test_container:
           - default
         ansible:
-          - stable-2.11
-          - stable-2.12
-          - stable-2.13
           - stable-2.14
+          - stable-2.15
+          - stable-2.16
+          - stable-2.17
+          - stable-2.18
           - devel
     steps:
 
@@ -54,22 +58,23 @@ jobs:
             TEST_INVOCATION="sanity --docker ${{ matrix.test_container }} -v --color ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          show-progress: false
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.9
+          python-version: '3.11'
 
       # Install the head of the given branch (devel, stable-2.14)
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
@@ -94,7 +99,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -106,18 +111,18 @@ jobs:
     runs-on: ${{ matrix.runner }}
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
-      # As soon as the first unit test fails, cancel the others to free up the CI queue
-      fail-fast: true
+      fail-fast: false
       matrix:
         runner:
           - ubuntu-latest
         test_container:
           - default
         ansible:
-          - stable-2.11
-          - stable-2.12
-          - stable-2.13
           - stable-2.14
+          - stable-2.15
+          - stable-2.16
+          - stable-2.17
+          - stable-2.18
           - devel
 
     steps:
@@ -129,21 +134,22 @@ jobs:
             TEST_INVOCATION="units --color --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          show-progress: false
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.9
+          python-version: '3.11'
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Pull Ansible test images
@@ -166,7 +172,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -180,7 +186,7 @@ jobs:
 
   integration:
     runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}+V[-${{ matrix.vault_minus }}])
     strategy:
       fail-fast: false
       matrix:
@@ -188,11 +194,15 @@ jobs:
           - ubuntu-latest
         test_container:
           - default
+        vault_minus:
+          - 0
+          - 1
         ansible:
-          - stable-2.11
-          - stable-2.12
-          - stable-2.13
           - stable-2.14
+          - stable-2.15
+          - stable-2.16
+          - stable-2.17
+          - stable-2.18
           - devel
         python:
           - '3.6'
@@ -200,15 +210,62 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10'
+          - '3.11'
+          - '3.12'
+          - '3.13'
         exclude:
-          - ansible: 'stable-2.11'
-            python: '3.10'
+          # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
+          # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
           - ansible: 'devel'
             python: '3.6'
           - ansible: 'devel'
             python: '3.7'
           - ansible: 'devel'
             python: '3.8'
+          - ansible: 'devel'
+            python: '3.9'
+          - ansible: 'stable-2.18'
+            python: '3.6'
+          - ansible: 'stable-2.18'
+            python: '3.7'
+          - ansible: 'stable-2.18'
+            python: '3.8'
+          - ansible: 'stable-2.18'
+            python: '3.9'
+          - ansible: 'stable-2.17'
+            python: '3.13'
+          - ansible: 'stable-2.17'
+            python: '3.6'
+          - ansible: 'stable-2.17'
+            python: '3.7'
+          - ansible: 'stable-2.17'
+            python: '3.8'
+          - ansible: 'stable-2.17'
+            python: '3.9'
+          - ansible: 'stable-2.16'
+            python: '3.13'
+          - ansible: 'stable-2.16'
+            python: '3.6'
+          - ansible: 'stable-2.16'
+            python: '3.7'
+          - ansible: 'stable-2.16'
+            python: '3.8'
+          - ansible: 'stable-2.16'
+            python: '3.9'
+          - ansible: 'stable-2.15'
+            python: '3.13'
+          - ansible: 'stable-2.15'
+            python: '3.6'
+          - ansible: 'stable-2.15'
+            python: '3.7'
+          - ansible: 'stable-2.15'
+            python: '3.12'
+          - ansible: 'stable-2.15'
+            python: '3.8'
+          - ansible: 'stable-2.14'
+            python: '3.13'
+          - ansible: 'stable-2.14'
+            python: '3.12'
 
     steps:
       - name: Initialize env vars
@@ -221,28 +278,35 @@ jobs:
             TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }} --docker-network hashi_vault_default"
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          show-progress: false
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: '3.11'
 
       - name: Get Vault versions
         id: vault_versions
         uses: ./.github/actions/docker-image-versions
         with:
+          image: hashicorp/vault
           num_major_versions: 1
           num_minor_versions: 2
           num_micro_versions: 1
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Install community.postgresql
+        uses: ./.github/actions/collection-via-git
+        with:
+          collection: community.postgresql
 
       - name: Pull Ansible test images
         timeout-minutes: 5
@@ -252,23 +316,10 @@ jobs:
           working-directory: ${{ env.COLLECTION_PATH }}
           ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
-      - name: Set Vault Version (older)
+      - name: Set Vault Version
         uses: briantist/ezenv@v1
         with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[1] }}
-
-      - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
-        run: ./setup.sh -e vault_version=${VAULT_VERSION}
-        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
-
-      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test ${{ env.TEST_INVOCATION }}
-        working-directory: ${{ env.COLLECTION_PATH }}
-
-      - name: Set Vault Version (newer)
-        uses: briantist/ezenv@v1
-        with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[0] }}
+          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[matrix.vault_minus] }}
 
       - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
         run: ./setup.sh -e vault_version=${VAULT_VERSION}
@@ -286,9 +337,9 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=vault_minus_${{ matrix.vault_minus }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
           if-no-files-found: error
           retention-days: 1
@@ -300,14 +351,22 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.14
+          - stable-2.18
           - devel
+        delete_canaries:
+          - true
+          - false
         python:
-          - 3.9
+          - '3.12'
         runner:
           - ubuntu-latest
         test_container:
           - default
+        exclude:
+          - ansible: devel
+            delete_canaries: false
+          - ansible: stable-2.18
+            delete_canaries: true
 
     steps:
       - name: Initialize env vars
@@ -320,19 +379,20 @@ jobs:
             DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --controller docker:${{ matrix.test_container }},python=${{ matrix.python }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          show-progress: false
           path: ${{ env.COLLECTION_PATH }}
 
       - name: Link to .github  # easier access to local actions
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Install community.crypto
@@ -345,6 +405,11 @@ jobs:
         with:
           collection: community.docker
 
+      - name: Install community.postgresql
+        uses: ./.github/actions/collection-via-git
+        with:
+          collection: community.postgresql
+
       - name: Pull Ansible test images
         timeout-minutes: 5
         continue-on-error: true
@@ -356,7 +421,6 @@ jobs:
       - name: localenv_docker - setup
         run: |
           pwd
-          pip install -r files/requirements/requirements.txt -c files/requirements/constraints.txt
           ./setup.sh
         working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
@@ -365,13 +429,9 @@ jobs:
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
         working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Run integration again (ensure tests do not break against still-running containers)
-        run: |
-          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
-        working-directory: ${{ env.COLLECTION_PATH }}
-
       #TODO add capability in the Ansible side once vault_list and vault_delete exist
-      - name: Run a third time, but delete Vault's cubbyhole contents first
+      - name: Delete Vault's cubbyhole contents (ensure test setup is idempotent)
+        if: matrix.delete_canaries
         working-directory: ${{ env.COLLECTION_PATH }}
         env:
           VAULT_TOKEN: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
@@ -380,8 +440,11 @@ jobs:
           echo 'vault list cubbyhole \
           | tail -n +3 \
           | xargs -I{} -n 1 vault delete cubbyhole/{}' \
-          | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i vault sh
+          | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i hashicorp/vault sh
 
+      - name: Run integration again (ensure tests do not break against still-running containers)
+        working-directory: ${{ env.COLLECTION_PATH }}
+        run: |
           ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
 
         # ansible-test support producing code coverage data
@@ -392,7 +455,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage=${{ github.job }}=${{ matrix.runner }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -412,30 +475,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ./cov
-
-      # Before Ansible 2.12, units always used a "target" of "units", and we don't want a flag of "target_units".
-      # After 2.12, target can be "controller" or "module_utils" and we'll preserve them for now.
-      # If we decide that those targets are not helpful, we can simplify processing by removing this run block
-      # and just having two ansible-codecov calls, one for units (that excludes target) and one for integration.
-      # That change would also make integration processing faster because we can hardcode the integration flag as an additional flag.
-      - name: Move Ansible pre-2.12 units
-        run: |
-          mkdir ./cov-units-pre2.12
-          mv ./cov/coverage=units=ansible_stable-2.11=data ./cov-units-pre2.12
-
-      - name: Upload Ansible pre-2.12 unit coverage reports to Codecov
-        uses: ./.github/actions/ansible-codecov
-        with:
-          directory: ./cov-units-pre2.12
-          additional-flags: units
-          file-flag-pattern: coverage=units=units={env_%}.xml
-          directory-flag-pattern: =ansible_{ansible-%}=
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage reports to Codecov

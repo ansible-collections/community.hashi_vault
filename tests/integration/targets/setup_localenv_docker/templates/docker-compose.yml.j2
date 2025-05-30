@@ -1,9 +1,8 @@
 # {{ ansible_managed }}
 ---
-version: '3'
 services:
   vault:
-    image: 'vault:{{ vault_version }}'
+    image: '{{ vault_container_image }}:{{ vault_version }}'
     container_name: '{{ vault_container_name }}'
     ports:
       - '{{ vault_port_http }}:{{ vault_port_http }}'
@@ -14,13 +13,13 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: '{{ vault_dev_root_token_id }}'
       SKIP_CHOWN: 1
   tinyproxy:
-    image: 'monokal/tinyproxy'
+    image: '{{ proxy_container_image }}'
     container_name: '{{ proxy_container_name }}'
     ports:
       - '{{ proxy_port }}:{{ proxy_port }}'
     command: ANY
   mmock:
-    image: jordimartin/mmock
+    image: '{{ mmock_container_image }}'
     container_name: '{{ mmock_container_name }}'
     ports:
       - '{{ mmock_server_port }}:{{ mmock_server_port }}'
@@ -30,3 +29,14 @@ services:
     command: >-
       -console-port {{ mmock_console_port }}
       -server-port {{ mmock_server_port }}
+  postgres:
+    image: '{{ postgres_container_image }}'
+    container_name: '{{ postgres_container_name }}'
+    environment:
+      POSTGRES_DB: '{{ postgres_db_name }}'
+      POSTGRES_PASSWORD: '{{ postgres_db_password }}'
+      POSTGRES_USER: '{{ postgres_db_user }}'
+    ports:
+      - '{{ postgres_sql_port }}:{{ postgres_sql_port }}'
+    volumes:
+      - '{{ postgres_config_path}}/init.sql:/docker-entrypoint-initdb.d/init.sql'

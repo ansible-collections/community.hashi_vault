@@ -92,21 +92,20 @@
           - test_inexistent.msg is search("doesn't seem to exist")
         fail_msg: "Expected failure but got success or wrong failure message."
 
-    # TODO: v5.0.0 - uncomment below: https://github.com/ansible-collections/community.hashi_vault/pull/350
-    # - name: Failure expected when duplicate terms are used in the term string
-    #   vars:
-    #     duplicate_terms: >-
-    #       {{
-    #         lookup('community.hashi_vault.hashi_vault',
-    #         vault_kv2_api_path ~ '/secrets secret=' ~ vault_kv2_api_path ~ '/secret2',
-    #         **kwargs)
-    #       }}
-    #   ansible.builtin.debug:
-    #     msg: 'Failure is expected ({{ duplicate_terms }})'
-    #   register: test_duplicate
-    #   ignore_errors: true
+    - name: Failure expected when duplicate terms are used in the term string
+      vars:
+        duplicate_terms: >-
+          {{
+            lookup('community.hashi_vault.hashi_vault',
+            vault_kv2_api_path ~ '/secrets secret=' ~ vault_kv2_api_path ~ '/secret2',
+            **kwargs)
+          }}
+      ansible.builtin.debug:
+        msg: 'Failure is expected ({{ duplicate_terms }})'
+      register: test_duplicate
+      ignore_errors: true
 
-    # - assert:
-    #     that:
-    #       - test_duplicate is failed
-    #       - test_duplicate.msg is search("^Duplicate key 'secret' in term string")
+    - assert:
+        that:
+          - test_duplicate is failed
+          - test_duplicate.msg is search("Duplicate key 'secret' in the term string")

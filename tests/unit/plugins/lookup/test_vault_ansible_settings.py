@@ -41,6 +41,8 @@ def patch_config_manager(sample_options):
     config = mock.Mock(wraps=C)
     config.get_configuration_definitions.return_value = sample_options.copy()
     config.get_config_value_and_origin = mock.Mock(wraps=_config_value_and_origin)
+    config.WARNINGS = set()
+    config.DEPRECATED = list()
 
     with mock.patch('ansible.constants.config', config):
         yield config

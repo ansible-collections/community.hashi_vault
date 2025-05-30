@@ -29,7 +29,7 @@ DOCUMENTATION = """
       it may be more useful to set I(changed_when=false) if you are doing idempotency checks against the target system.
     - In check mode, this module will not create a token, and will instead return a basic structure with an empty token.
       However, this may not be useful if the token is required for follow on tasks.
-      It may be better to use this module with I(check_mode=no) in order to have a valid token that can be used.
+      It may be better to use this module with I(check_mode=false) in order to have a valid token that can be used.
   extends_documentation_fragment:
     - community.hashi_vault.connection
     - community.hashi_vault.connection.plugins
@@ -100,19 +100,10 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
-from ansible.module_utils.six import raise_from
-
 from ...plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ...plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
-
-try:
-    import hvac  # pylint: disable=unused-import
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
 
 
 class LookupModule(HashiVaultLookupBase):
@@ -141,12 +132,6 @@ class LookupModule(HashiVaultLookupBase):
     }
 
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         self.set_options(direct=kwargs, var_options=variables)
         # TODO: remove process_deprecations() if backported fix is available (see method definition)
         self.process_deprecations()

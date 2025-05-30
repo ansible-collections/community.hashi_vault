@@ -8,10 +8,11 @@ __metaclass__ = type
 
 import pytest
 
-from ansible.errors import AnsibleError
+from re import escape as re_escape
+
+from ansible.errors import AnsibleError, AnsibleOptionsError
 from ansible.plugins.lookup import LookupBase
 
-from ....compat import mock
 from ......plugins.plugin_utils._hashi_vault_plugin import HashiVaultPlugin
 from ......plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
@@ -72,7 +73,6 @@ class TestHashiVaultLookupBase(object):
         with pytest.raises(TypeError):
             parsed = hashi_vault_lookup_module.parse_kev_term('key1=value1', first_unqualified='fake')
 
-    # TODO: v5.0.0 - should raise not warn: https://github.com/ansible-collections/community.hashi_vault/pull/350
     @pytest.mark.parametrize('term', [
         'one secret=two a=1 b=2',
         'a=1 secret=one b=2 secret=two',
@@ -80,10 +80,10 @@ class TestHashiVaultLookupBase(object):
     ])
     def test_parse_kev_term_duplicate_option(self, term, hashi_vault_lookup_module):
         dup_key = 'secret'
-        removed_in = '5.0.0'
-        expected_template = "Duplicate key '%s' in the term string '%s'.\nIn version %s of the collection, this will raise an exception."
-        expected_msg = expected_template % (dup_key, term, removed_in)
+        expected_template = "Duplicate key '%s' in the term string '%s'."
+        expected_msg = expected_template % (dup_key, term)
+        expected_re = re_escape(expected_msg)
+        expected_match = "^%s$" % (expected_re,)
 
-        with mock.patch('ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base.display') as display:
+        with pytest.raises(AnsibleOptionsError, match=expected_match):
             hashi_vault_lookup_module.parse_kev_term(term, plugin_name='fake', first_unqualified=dup_key)
-            display.deprecated.assert_called_once_with(expected_msg, removed_in)

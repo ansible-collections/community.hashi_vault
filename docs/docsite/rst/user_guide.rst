@@ -29,19 +29,18 @@ The content in ``community.hashi_vault`` requires the `hvac <https://hvac.readth
 ``hvac`` version specifics
 --------------------------
 
-In general, we recommend using the latest version of ``hvac`` that is supported for your given Python version because that is what we test against. Where possible we will try to list version-specific restrictions here, but this list may not be exhaustive.
+In general, we recommend using the latest version of ``hvac`` that is supported for your given Python version because that is what we test against.
 
-* ``hvac`` 0.7.0+ (for Azure auth and namespace support)
-* ``hvac`` 0.9.6+ (to avoid most deprecation warnings)
-* ``hvac`` 0.10.5+ (for JWT auth)
-* ``hvac`` 0.10.6+ (to avoid deprecation warning for AppRole)
-* ``hvac`` 0.10.12+ (for cert auth)
+As of ``community.hashi_vault`` version ``5.0.0`` we are setting a minimum supported version of ``hvac``.
+
+**The current required minimum** ``hvac`` **version is** ``1.2.1``.
 
 Other requirements
 ------------------
 
 * ``boto3`` (only if loading credentials from a boto session, for example using an AWS profile or IAM role credentials)
 * ``azure-identity`` (only if using a service principal or managed identity)
+* ``requests`` — with ``requests>=2.28,<2.29``, setting certain options (``token``, ``namespace``) to values that come from lookups will raise an exception, do to Ansible's marking of the values as "unsafe" for templating. We recommend using ``requests>=2.29``, which won't work with Python 3.6.
 
 Retrying failed requests
 ========================

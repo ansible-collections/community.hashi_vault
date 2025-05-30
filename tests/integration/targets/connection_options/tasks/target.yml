@@ -2,7 +2,7 @@
 - name: Connection Tests
   module_defaults:
     assert:
-      quiet: yes
+      quiet: true
   vars:
     assert_cmd: &assert
       assert:
@@ -30,14 +30,14 @@
         - name: test HTTP with wrong proxy
           register: result
           vault_test_connection:
-            want_exception: yes
+            want_exception: true
             proxies: http://127.0.0.1:4567
             retries: 2
 
         - assert:
             that:
               - result.inner is failed
-              - result.msg is search('Cannot connect to proxy')
+              - result.msg is search('(?:Cannot|Unable to) connect to proxy')
               - result.retries == 2
 
     - name: HTTPS connection
@@ -57,7 +57,7 @@
         - name: test HTTPS with cert validation
           register: result
           vault_test_connection:
-            want_args: yes
+            want_args: true
 
         - <<: *assert
 
@@ -72,13 +72,13 @@
         - name: test HTTPS with wrong proxy & cert validation
           register: result
           vault_test_connection:
-            want_exception: yes
-            validate_certs: yes
+            want_exception: true
+            validate_certs: true
             proxies: http://127.0.0.1:4567
             retries: 2
 
         - assert:
             that:
               - result.inner is failed
-              - result.msg is search('Cannot connect to proxy')
+              - result.msg is search('(?:Cannot|Unable to) connect to proxy')
               - result.retries == 2

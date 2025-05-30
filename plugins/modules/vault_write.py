@@ -46,7 +46,9 @@ DOCUMENTATION = """
       type: str
       required: True
     data:
-      description: A dictionary to be serialized to JSON and then sent as the request body.
+      description:
+        - A dictionary to be serialized to JSON and then sent as the request body.
+        - If the dictionary contains keys named C(path) or C(wrap_ttl), the call will fail with C(hvac<1.2).
       type: dict
       required: false
       default: {}
@@ -106,19 +108,9 @@ data:
 import traceback
 
 from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
 
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
+from ..module_utils._hashi_vault_module import HashiVaultModule
+from ..module_utils._hashi_vault_common import HashiVaultValueError
 
 
 def run_module():
@@ -133,12 +125,6 @@ def run_module():
         supports_check_mode=True
     )
 
-    if not HAS_HVAC:
-        module.fail_json(
-            msg=missing_required_lib('hvac'),
-            exception=HVAC_IMPORT_ERROR
-        )
-
     path = module.params.get('path')
     data = module.params.get('data')
     wrap_ttl = module.params.get('wrap_ttl')
@@ -146,6 +132,7 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac().exceptions
 
     try:
         module.authenticator.validate()
@@ -157,12 +144,21 @@ def run_module():
         if module.check_mode:
             response = {}
         else:
-            response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
-    except hvac.exceptions.Forbidden:
+            try:
+                # TODO: write_data will eventually turn back into write
+                # see: https://github.com/hvac/hvac/issues/1034
+                response = client.write_data(path=path, wrap_ttl=wrap_ttl, data=data)
+            except AttributeError:
+                # https://github.com/ansible-collections/community.hashi_vault/issues/389
+                if "path" in data or "wrap_ttl" in data:
+                    module.fail_json("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2")
+                else:
+                    response = client.write(path=path, wrap_ttl=wrap_ttl, **data)
+    except hvac_exceptions.Forbidden:
         module.fail_json(msg="Forbidden: Permission Denied to path '%s'." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InvalidPath:
+    except hvac_exceptions.InvalidPath:
         module.fail_json(msg="The path '%s' doesn't seem to exist." % path, exception=traceback.format_exc())
-    except hvac.exceptions.InternalServerError as e:
+    except hvac_exceptions.InternalServerError as e:
         module.fail_json(msg="Internal Server Error: %s" % to_native(e), exception=traceback.format_exc())
 
     # https://github.com/hvac/hvac/issues/797

@@ -32,7 +32,7 @@
       register: response
       vault_test_auth:
         role_id: fail-me-role
-        want_exception: yes
+        want_exception: true
 
     - assert:
         fail_msg: "An invalid request somehow did not cause a failure."
@@ -43,7 +43,7 @@
     - name: Failure expected when role_id is not given
       register: response
       vault_test_auth:
-        want_exception: yes
+        want_exception: true
 
     - assert:
         fail_msg: |

@@ -101,7 +101,7 @@ class TestHashiVaultConnectionOptions(object):
         with mock.patch.dict(os.environ, envpatch):
             connection_options._boolean_or_cacert()
 
-        assert predefined_options['ca_cert'] == expected
+        assert connection_options._conopt_verify == expected
 
     # _process_option_proxies
     # proxies can be specified as a dictionary where key is protocol/scheme
@@ -134,7 +134,7 @@ class TestHashiVaultConnectionOptions(object):
     # can be specified as a positive int or a dict
     # (or any string that can be interpreted as one of those)
 
-    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.0])
+    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.1])
     def test_process_option_retries_invalid(self, connection_options, predefined_options, adapter, opt_retries):
         adapter.set_option('retries', opt_retries)
 
@@ -248,7 +248,7 @@ class TestHashiVaultConnectionOptions(object):
 
         # these should always be returned
         assert 'url' in opts and opts['url'] == predefined_options['url']
-        assert 'verify' in opts and opts['verify'] == predefined_options['ca_cert']
+        assert 'verify' in opts and opts['verify'] == connection_options._conopt_verify
 
         # these are optional
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']

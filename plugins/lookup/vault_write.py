@@ -18,6 +18,7 @@ DOCUMENTATION = """
     - Performs a generic write operation against a given path in HashiCorp Vault, returning any output.
   seealso:
     - module: community.hashi_vault.vault_write
+    - module: community.hashi_vault.vault_kv2_write
     - ref: community.hashi_vault.vault_read lookup <ansible_collections.community.hashi_vault.vault_read_lookup>
       description: The official documentation for the C(community.hashi_vault.vault_read) lookup plugin.
     - module: community.hashi_vault.vault_read
@@ -42,7 +43,9 @@ DOCUMENTATION = """
       type: str
       required: true
     data:
-      description: A dictionary to be serialized to JSON and then sent as the request body.
+      description:
+        - A dictionary to be serialized to JSON and then sent as the request body.
+        - If the dictionary contains keys named C(path) or C(wrap_ttl), the call will fail with C(hvac<1.2).
       type: dict
       required: false
       default: {}
@@ -121,27 +124,14 @@ from ansible.utils.display import Display
 
 from ansible.module_utils.six import raise_from
 
-from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
-from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from ..plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
+from ..module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
-
-try:
-    import hvac
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
 
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         ret = []
 
         self.set_options(direct=kwargs, var_options=variables)
@@ -151,6 +141,7 @@ class LookupModule(HashiVaultLookupBase):
         self.connection_options.process_connection_options()
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         data = self._options_adapter.get_option('data')
         wrap_ttl = self._options_adapter.get_option_default('wrap_ttl')
@@ -163,12 +154,21 @@ class LookupModule(HashiVaultLookupBase):
 
         for term in terms:
             try:
-                response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
-            except hvac.exceptions.Forbidden as e:
+                try:
+                    # TODO: write_data will eventually turn back into write
+                    # see: https://github.com/hvac/hvac/issues/1034
+                    response = client.write_data(path=term, wrap_ttl=wrap_ttl, data=data)
+                except AttributeError as e:
+                    # https://github.com/ansible-collections/community.hashi_vault/issues/389
+                    if "path" in data or "wrap_ttl" in data:
+                        raise_from(AnsibleError("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2"), e)
+                    else:
+                        response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
+            except hvac_exceptions.Forbidden as e:
                 raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
-            except hvac.exceptions.InvalidPath as e:
+            except hvac_exceptions.InvalidPath as e:
                 raise_from(AnsibleError("The path '%s' doesn't seem to exist." % term), e)
-            except hvac.exceptions.InternalServerError as e:
+            except hvac_exceptions.InternalServerError as e:
                 raise_from(AnsibleError("Internal Server Error: %s" % str(e)), e)
 
             # https://github.com/hvac/hvac/issues/797

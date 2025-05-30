@@ -81,7 +81,7 @@ class HashiVaultAuthMethodToken(HashiVaultAuthMethodBase):
             raise HashiVaultValueError("No Vault Token specified or discovered.")
 
     def authenticate(self, client, use_token=True, lookup_self=False):
-        token = self._stringify(self._options.get_option('token'))
+        token = self._options.get_option('token')
         validate = self._options.get_option_default('token_validate')
 
         response = None

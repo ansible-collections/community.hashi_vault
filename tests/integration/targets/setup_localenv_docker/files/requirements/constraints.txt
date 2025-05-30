@@ -1,2 +1,0 @@
-docker >= 5.0.0 ; python_version >= '3.6'
-docker < 5.0.0 ; python_version == '2.7'

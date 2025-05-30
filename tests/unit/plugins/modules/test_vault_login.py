@@ -9,9 +9,6 @@ __metaclass__ = type
 import pytest
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
-from ...compat import mock
 from .....plugins.modules import vault_login
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
@@ -119,15 +116,3 @@ class TestModuleVaultLogin():
         else:
             authenticator.authenticate.assert_called_once_with(vault_client)
             assert result['login'] == token_lookup_full_response, "expected: %r\ngot: %r" % (token_lookup_full_response, result['login'])
-
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_login_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_login, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_login.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == missing_required_lib('hvac')

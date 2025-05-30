@@ -1,0 +1,48 @@
+---
+- name: Create database secrets engine
+  vault_ci_enable_engine:
+    backend_type: database
+
+- name: Create a database connection
+  vault_ci_write:
+    path: "/{{ vault_database_engine_mount_point }}/config/{{ vault_database_connection_name }}"
+    data:
+      plugin_name: "{{ vault_database_plugin_name }}"
+      connection_url: "{{ vault_database_connection_url }}"
+      allowed_roles: "*"
+      username: "{{ vault_database_connection_user }}"
+      password: "{{ vault_database_connection_password }}"
+
+- name: Create some static roles
+  vault_ci_write:
+    path: "{{ vault_database_engine_mount_point }}/static-roles/role{{ item }}"
+    data:
+      db_name: "{{ vault_database_connection_name }}"
+      username: "role{{ item }}"
+      rotation_period: 24h
+  loop: [1, 2, 3, 4, 5]
+
+- name: Create a readonly dynamic role
+  vault_ci_write:
+    path: "{{ vault_database_engine_mount_point }}/roles/readonly"
+    data:
+      db_name: "{{ vault_database_connection_name }}"
+      creation_statements: "{{ vault_database_dynamic_user_sql }}"
+      default_ttl: 1h
+      max_ttl: 24h
+
+- name: Create a database base policy
+  vault_ci_policy_put:
+    name: base-policy-database
+    policy: "{{ vault_base_policy_db }}"
+
+- name: Create a database all policy
+  vault_ci_policy_put:
+    name: policy-database-all
+    policy: "{{ vault_policy_db_all }}"
+
+- name: Write Canary
+  vault_ci_write:
+    path: "{{ vault_configure_engine_database_canary.path }}"
+    data:
+      value: "{{ vault_configure_engine_database_canary.value }}"

@@ -10,9 +10,6 @@ import pytest
 import re
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
-from ...compat import mock
 from .....plugins.modules import vault_write
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
@@ -88,7 +85,7 @@ class TestModuleVaultWrite():
     @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data', 'wrap_ttl']], indirect=True)
     def test_vault_write_return_data(self, patch_ansible_module, approle_secret_id_write_response, vault_client, opt_wrap_ttl, opt_data, capfd):
         client = vault_client
-        client.write.return_value = approle_secret_id_write_response
+        client.write_data.return_value = approle_secret_id_write_response
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -98,7 +95,7 @@ class TestModuleVaultWrite():
 
         assert e.value.code == 0, "result: %r" % (result,)
 
-        client.write.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=opt_wrap_ttl, **opt_data)
+        client.write_data.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=opt_wrap_ttl, data=opt_data)
 
         assert result['data'] == approle_secret_id_write_response, (
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['data'], approle_secret_id_write_response)
@@ -110,7 +107,7 @@ class TestModuleVaultWrite():
 
         requests_unparseable_response.status_code = 204
 
-        client.write.return_value = requests_unparseable_response
+        client.write_data.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -129,7 +126,7 @@ class TestModuleVaultWrite():
         requests_unparseable_response.status_code = 200
         requests_unparseable_response.content = '﷽'
 
-        client.write.return_value = requests_unparseable_response
+        client.write_data.return_value = requests_unparseable_response
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -141,18 +138,6 @@ class TestModuleVaultWrite():
         assert result['data'] == '﷽'
 
         module_warn.assert_called_once_with('Vault returned status code 200 and an unparsable body.')
-
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_write_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_write, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_write.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result['msg'] == missing_required_lib('hvac')
 
     @pytest.mark.parametrize(
         'exc',
@@ -166,7 +151,7 @@ class TestModuleVaultWrite():
     def test_vault_write_vault_exception(self, vault_client, exc, capfd):
 
         client = vault_client
-        client.write.side_effect = exc[0]
+        client.write_data.side_effect = exc[0]
 
         with pytest.raises(SystemExit) as e:
             vault_write.main()
@@ -176,3 +161,51 @@ class TestModuleVaultWrite():
 
         assert e.value.code != 0, "result: %r" % (result,)
         assert re.search(exc[1], result['msg']) is not None
+
+    @pytest.mark.parametrize(
+        'opt_data',
+        [
+            {"path": 'path_value'},
+            {"wrap_ttl": 'wrap_ttl_value'},
+            {"path": 'data_value', "wrap_ttl": 'write_ttl_value'},
+        ],
+    )
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data']], indirect=True)
+    def test_vault_write_data_fallback_bad_params(self, vault_client, opt_data, capfd):
+        client = vault_client
+        client.mock_add_spec(['write'])
+
+        with pytest.raises(SystemExit) as e:
+            vault_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code != 0, "result: %r" % (result,)
+        assert re.search(r"To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1\.2", result['msg']) is not None
+
+        client.write.assert_not_called()
+
+    @pytest.mark.parametrize(
+        'opt_data',
+        [
+            {"item1": 'item1_value'},
+            {"item2": 'item2_value'},
+            {"item1": 'item1_value', "item2": 'item2_value'},
+        ],
+    )
+    @pytest.mark.parametrize('patch_ansible_module', [[_combined_options(), 'data']], indirect=True)
+    def test_vault_write_data_fallback_write(self, vault_client, opt_data, patch_ansible_module, approle_secret_id_write_response, capfd):
+        client = vault_client
+        client.mock_add_spec(['write'])
+        client.write.return_value = approle_secret_id_write_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_write.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert e.value.code == 0, "result: %r" % (result,)
+
+        client.write.assert_called_once_with(path=patch_ansible_module['path'], wrap_ttl=None, **opt_data)

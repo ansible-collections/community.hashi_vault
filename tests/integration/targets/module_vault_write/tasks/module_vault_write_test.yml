@@ -20,6 +20,9 @@
         data:
           a: 1
           b: two
+          # https://github.com/ansible-collections/community.hashi_vault/issues/389
+          path: path_value
+          wrap_ttl: wrap_ttl_value
 
     - assert:
         that:
@@ -42,6 +45,9 @@
         data:
           a: 1
           b: two
+          # https://github.com/ansible-collections/community.hashi_vault/issues/389
+          path: path_value
+          wrap_ttl: wrap_ttl_value
 
     - assert:
         that:
@@ -57,7 +63,13 @@
         that:
           - "'result' in result"
           - "'data' in result.result"
-          - "result.result.data == {'a': 1, 'b': 'two'}"
+          - >
+            result.result.data == {
+              'a': 1,
+              'b': 'two',
+              'path': 'path_value',
+              'wrap_ttl': 'wrap_ttl_value',
+            }
 
     - name: Write data to an endpoint that returns data and test wrapping
       register: result

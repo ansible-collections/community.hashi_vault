@@ -1,0 +1,3 @@
+---
+- import_tasks: setup.yml
+- import_tasks: test.yml

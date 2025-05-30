@@ -619,3 +619,149 @@ releases:
         name: vault_list
         namespace: null
     release_date: '2023-01-18'
+  4.2.0:
+    changes:
+      bugfixes:
+      - hashi_vault lookup - a term string with duplicate options would silently use
+        the last value. The lookup now shows a warning on option duplication (https://github.com/ansible-collections/community.hashi_vault/issues/349).
+      deprecated_features:
+      - hashi_vault lookup - in ``v5.0.0`` duplicate term string options will raise
+        an exception instead of showing a warning (https://github.com/ansible-collections/community.hashi_vault/issues/356).
+      release_summary: This release contains a new module for KVv2 writes, and a new
+        warning for duplicated term string options in the ``hashi_vault`` lookup.
+    fragments:
+    - 350-raise-error-on-option-duplication-in-term-string.yml
+    - 4.2.0.yml
+    modules:
+    - description: Perform a write operation against a KVv2 secret in HashiCorp Vault
+      name: vault_kv2_write
+      namespace: ''
+    release_date: '2023-03-26'
+  4.2.1:
+    changes:
+      release_summary: This patch version updates the documentation for the ``vault_kv2_write``
+        module. There are no functional changes.
+    fragments:
+    - 4.2.1.yml
+    release_date: '2023-04-27'
+  5.0.0:
+    changes:
+      breaking_changes:
+      - Support for ``ansible-core`` 2.11 and 2.12 has been removed (https://github.com/ansible-collections/community.hashi_vault/issues/340).
+      - The minimum version of ``hvac`` for ``community.hashi_vault`` is now ``1.1.0``
+        (https://github.com/ansible-collections/community.hashi_vault/issues/324).
+      - hashi_vault lookup - duplicate option entries in the term string now raises
+        an exception instead of a warning (https://github.com/ansible-collections/community.hashi_vault/issues/356).
+      release_summary: This version makes some relatively minor but technically breaking
+        changes. Support for ``ansible-core`` versions ``2.11`` and ``2.12`` have
+        been dropped, and there is now a minimum supported version of ``hvac`` which
+        will be updated over time. A warning in the ``hashi_vault`` lookup on duplicate
+        option specifications in the term string has been changed to a fatal error.
+    fragments:
+    - 324-minimum-hvac-version.yml
+    - 340-drop-core-211-212.yml
+    - 356-duplicate-term-options.yml
+    - 5.0.0.yml
+    release_date: '2023-05-11'
+  5.0.1:
+    changes:
+      bugfixes:
+      - vault_write - the ``vault_write`` lookup and module were not able to write
+        data containing keys named ``path`` or ``wrap_ttl`` due to a bug in the ``hvac``
+        library. These plugins have now been updated to take advantage of fixes in
+        ``hvac>=1.2`` to address this (https://github.com/ansible-collections/community.hashi_vault/issues/389).
+      release_summary: This release fixes a bug in ``vault_write`` ahead of the collection's
+        next major release.
+    fragments:
+    - 381-localenv_docker.yml
+    - 404-vault_write-spicy-keys.yml
+    - 5.0.1.yml
+    release_date: '2023-11-05'
+  6.0.0:
+    changes:
+      breaking_changes:
+      - The minimum required version of ``hvac`` is now ``1.2.1`` (https://docs.ansible.com/ansible/devel/collections/community/hashi_vault/docsite/user_guide.html#hvac-version-specifics).
+      release_summary: This major version of the collection has no functional changes
+        from the previous version, however the minimum versions of ``hvac`` and ``ansible-core``
+        have been raised. While the collection may still work with those earlier versions,
+        future changes will not test against them.
+      removed_features:
+      - The minimum supported version of ``ansible-core`` is now ``2.14``, support
+        for ``2.13`` has been dropped (https://github.com/ansible-collections/community.hashi_vault/pull/403).
+    fragments:
+    - 403-core-vault-python.yml
+    - 6.0.0.yml
+    release_date: '2023-11-05'
+  6.1.0:
+    changes:
+      major_changes:
+      - requirements - the ``requests`` package which is required by ``hvac`` now
+        has a more restrictive range for this collection in certain use cases due
+        to breaking security changes in ``ansible-core`` that were backported (https://github.com/ansible-collections/community.hashi_vault/pull/416).
+      release_summary: This release addresses some breaking changes in core that were
+        backported.
+    fragments:
+    - 416-core-changes.yml
+    - 6.1.0.yml
+    release_date: '2024-01-02'
+  6.2.0:
+    changes:
+      minor_changes:
+      - cert auth - add option to set the ``cert_auth_public_key`` and ``cert_auth_private_key``
+        parameters using the variables ``ansible_hashi_vault_cert_auth_public_key``
+        and ``ansible_hashi_vault_cert_auth_private_key`` (https://github.com/ansible-collections/community.hashi_vault/issues/428).
+      release_summary: This release contains a dozen+ new modules for working with
+        Vault's database secrets engine and some new ``vars`` entries for specifying
+        public and private keys in ``cert`` auth.
+    fragments:
+    - 429-add-cert-auth-variables.yml
+    - 6.2.0.yml
+    modules:
+    - description: Configures the database engine
+      name: vault_database_connection_configure
+      namespace: ''
+    - description: Delete a Database Connection
+      name: vault_database_connection_delete
+      namespace: ''
+    - description: Returns the configuration settings for a O(connection_name)
+      name: vault_database_connection_read
+      namespace: ''
+    - description: Closes a O(connection_name) and its underlying plugin and restarts
+        it with the configuration stored
+      name: vault_database_connection_reset
+      namespace: ''
+    - description: Returns a list of available connections
+      name: vault_database_connections_list
+      namespace: ''
+    - description: Creates or updates a (dynamic) role definition
+      name: vault_database_role_create
+      namespace: ''
+    - description: Delete a role definition
+      name: vault_database_role_delete
+      namespace: ''
+    - description: Queries a dynamic role definition
+      name: vault_database_role_read
+      namespace: ''
+    - description: Returns a list of available (dynamic) roles
+      name: vault_database_roles_list
+      namespace: ''
+    - description: Rotates the root credentials stored for the database connection.
+        This user must have permissions to update its own password.
+      name: vault_database_rotate_root_credentials
+      namespace: ''
+    - description: Create or update a static role
+      name: vault_database_static_role_create
+      namespace: ''
+    - description: Returns the current credentials based on the named static role
+      name: vault_database_static_role_get_credentials
+      namespace: ''
+    - description: Queries a static role definition
+      name: vault_database_static_role_read
+      namespace: ''
+    - description: Trigger the credential rotation for a static role
+      name: vault_database_static_role_rotate_credentials
+      namespace: ''
+    - description: Returns a list of available static roles
+      name: vault_database_static_roles_list
+      namespace: ''
+    release_date: '2024-03-19'

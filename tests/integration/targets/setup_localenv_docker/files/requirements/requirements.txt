@@ -1,3 +1,0 @@
-docker
-docker-compose
-six  # https://github.com/ansible-collections/community.docker/issues/171
