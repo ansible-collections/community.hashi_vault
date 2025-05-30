@@ -4,3 +4,7 @@ ansible_hashi_vault_auth_method: kubernetes
 
 auth_paths:
   - kubernetes
+
+vault_kubernetes_canary:
+  path: cubbyhole/configure_kubernetes
+  value: complete  # value does not matter
