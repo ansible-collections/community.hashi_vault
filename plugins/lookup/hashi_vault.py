@@ -49,6 +49,13 @@ DOCUMENTATION = """
     secret:
       description: Vault path to the secret being requested in the format C(path[:field]).
       required: True
+    secret_field:
+      description:
+        - Field within the secret being requested.
+        - This is set automatically when using the C(secret:field) syntax.
+        - Use of this option is discouraged in favor of the C(:field) syntax.
+      required: False
+      version_added: 6.3.0
     return_format:
       description:
         - Controls how multiple key/value pairs in a path are treated on return.
