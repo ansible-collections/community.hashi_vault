@@ -117,9 +117,18 @@ class TestHashiVaultOptionAdapter(object):
 
         for mark in request.node.own_markers:
             if mark.name == 'option_adapter_raise_on_missing':
-                from ansible.errors import AnsibleError
-                with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting: {option}.*?was not defined in configuration"):
-                    adapter.set_option(option, value)
+                try:
+                    # https://github.com/ansible/ansible/commit/35750ed3218e7bce68b21f473cecb0a3b9d60321#diff-25bf290f4a4aeb2a7adceda321671603c1023a7585b8634afea0e37d3064628eL671
+                    # 2.19 added a dedicated error for this
+                    from ansible.errors import AnsibleUndefinedConfigEntry
+                except ImportError:
+                    # pre-2.19
+                    from ansible.errors import AnsibleError
+                    with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting: {option}.*?was not defined in configuration"):
+                        adapter.set_option(option, value)
+                else:
+                    with pytest.raises(AnsibleUndefinedConfigEntry):
+                        adapter.set_option(option, value)
                 break
         else:
             adapter.set_option(option, value)
@@ -141,9 +150,18 @@ class TestHashiVaultOptionAdapter(object):
     def test_set_option_default_missing(self, request, adapter, option, default, expected, sample_dict):
         for mark in request.node.own_markers:
             if mark.name == 'option_adapter_raise_on_missing':
-                from ansible.errors import AnsibleError
-                with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting: {option}.*?was not defined in configuration"):
-                    adapter.set_option_default(option, default)
+                try:
+                    # https://github.com/ansible/ansible/commit/35750ed3218e7bce68b21f473cecb0a3b9d60321#diff-25bf290f4a4aeb2a7adceda321671603c1023a7585b8634afea0e37d3064628eL671
+                    # 2.19 added a dedicated error for this
+                    from ansible.errors import AnsibleUndefinedConfigEntry
+                except ImportError:
+                    # pre-2.19
+                    from ansible.errors import AnsibleError
+                    with pytest.raises(AnsibleError, match=rf"^Requested entry.*?setting: {option}.*?was not defined in configuration"):
+                        adapter.set_option(option, default)
+                else:
+                    with pytest.raises(AnsibleUndefinedConfigEntry):
+                        adapter.set_option(option, default)
                 break
         else:
             value = adapter.set_option_default(option, default)
@@ -158,9 +176,18 @@ class TestHashiVaultOptionAdapter(object):
 
         for mark in request.node.own_markers:
             if mark.name == 'option_adapter_raise_on_missing':
-                from ansible.errors import AnsibleError
-                with pytest.raises(AnsibleError, match=r"^Requested entry.*?setting:.*?was not defined in configuration"):
-                    adapter.set_options(**update)
+                try:
+                    # https://github.com/ansible/ansible/commit/35750ed3218e7bce68b21f473cecb0a3b9d60321#diff-25bf290f4a4aeb2a7adceda321671603c1023a7585b8634afea0e37d3064628eL671
+                    # 2.19 added a dedicated error for this
+                    from ansible.errors import AnsibleUndefinedConfigEntry
+                except ImportError:
+                    # pre-2.19
+                    from ansible.errors import AnsibleError
+                    with pytest.raises(AnsibleError, match=r"^Requested entry.*?setting:.*?was not defined in configuration"):
+                        adapter.set_options(**update)
+                else:
+                    with pytest.raises(AnsibleUndefinedConfigEntry):
+                        adapter.set_options(**update)
                 break
         else:
             adapter.set_options(**update)
