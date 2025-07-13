@@ -60,7 +60,9 @@
       ansible.builtin.assert: &failure_invalid_connection
         that:
           - db_create_static_role is failed
-          - 'db_create_static_role.msg is search("failed to find entry for connection with name: \"NOT REAL\"")'
+          - >-
+            db_create_static_role.msg is search("failed to find entry for connection with name: \"NOT REAL\"")
+            or db_create_static_role.module_stderr is search("failed to find entry for connection with name: \"NOT REAL\"")
 
     - name: Test database create static role  (explicit mount point, connection_name, db_username - invalid)
       register: db_create_static_role
