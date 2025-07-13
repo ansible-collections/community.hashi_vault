@@ -56,9 +56,11 @@
         db_username: role3
         role_name: role3
 
-    # Note that this statement will be successful and a dynamic role will be added, although the connection name is not existing
     - name: Check (explicit mount point, connection_name - invalid)
-      ansible.builtin.assert: *success
+      ansible.builtin.assert: &failure_invalid_connection
+        that:
+          - db_create_static_role is failed
+          - 'db_create_static_role.msg is search("failed to find entry for connection with name: \"NOT REAL\"")'
 
     - name: Test database create static role  (explicit mount point, connection_name, db_username - invalid)
       register: db_create_static_role
@@ -100,9 +102,8 @@
         db_username: role3
         role_name: role3
 
-    # Note that this statement will be successful and a dynamic role will be added, although the connection name is not existing
     - name: Check (default mount point, connection_name - invalid, db_username)
-      ansible.builtin.assert: *success
+      ansible.builtin.assert: *failure_invalid_connection
 
     - name: Test database create static role (default mount point, connection_name, db_username - invalid)
       register: db_create_static_role
