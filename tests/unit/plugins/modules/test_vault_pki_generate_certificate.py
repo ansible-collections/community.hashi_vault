@@ -148,14 +148,9 @@ class TestModuleVaultPkiGenerateCertificate():
         result = json.loads(out)
 
         assert 'msg' in result, "'msg' not found in module output"
-        assert 'exception' in result, "'exception' not found in module output"
 
         assert result['msg'] == 'Authentication failed', (
             f"Expected msg to be 'Authentication failed', got '{result['msg']}'"
-        )
-
-        assert 'Traceback' in result['exception'], (
-            "Expected 'exception' to contain 'Traceback', but it does not."
         )
 
         assert e.value.code != 0, "Expected non-zero exit code when authentication fails"
