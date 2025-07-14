@@ -40,11 +40,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.14
-          - stable-2.15
-          - stable-2.16
-          - stable-2.17
-          - stable-2.18
+          - stable-2.19
           - devel
     steps:
 
