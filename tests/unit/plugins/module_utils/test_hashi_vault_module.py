@@ -54,13 +54,22 @@ def set_module_args(args):
             yield
 
 
-class TestHashiVaultModule:
+MODULE_ARGS_LIST = [
+    {},
+    {
+        '_ansible_remote_tmp': '/tmp',
+        '_ansible_keep_remote_files': True,
+    },
+]
 
-    def test_init_success(self, generate_argspec):
+
+class TestHashiVaultModule:
+    @pytest.mark.parametrize('module_args', MODULE_ARGS_LIST)
+    def test_init_success(self, generate_argspec, module_args):
         """Test successful initialization of HashiVaultModule."""
         with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.AnsibleModule') as mock_ansible_module:
             with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultHelper') as mock_helper:
-                with set_module_args({}):
+                with set_module_args(module_args):
                     module = HashiVaultModule(argument_spec=generate_argspec)
 
                     # Check if HashiVaultHelper was initialized
@@ -72,14 +81,15 @@ class TestHashiVaultModule:
                     assert module.connection_options is not None
                     assert module.authenticator is not None
 
-    def test_init_hvac_error(self, generate_argspec):
+    @pytest.mark.parametrize('module_args', MODULE_ARGS_LIST)
+    def test_init_hvac_error(self, generate_argspec, module_args):
         """Test that HashiVaultHVACError triggers a call to fail_json."""
         with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultModule.fail_json',
                         wraps=fail_json) as mock_ansible_fail:
 
             with mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultHelper',
                             side_effect=HashiVaultHVACError("Error occurred", "error_trace")) as mock_helper:
-                with set_module_args({}):
+                with set_module_args(module_args):
                     with pytest.raises(AnsibleFailJson) as exc_info:
                         # Initialize the module, which should trigger fail_json
                         module = HashiVaultModule(argument_spec=generate_argspec)
