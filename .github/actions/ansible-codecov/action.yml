@@ -62,7 +62,8 @@ runs:
             # gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
             # shasum -a 256 -c codecov.SHA256SUM
 
-            gh release --repo codecov/codecov-cli --clobber --pattern codecov_linux --output codecov
+            gh release --repo codecov/codecov-cli download --pattern codecov_linux
+            mv codecov_linux codecov
             chmod +x codecov
 
             ./codecov --version
