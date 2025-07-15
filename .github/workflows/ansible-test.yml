@@ -483,6 +483,8 @@ jobs:
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage reports to Codecov
         uses: ./.github/actions/ansible-codecov
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           directory: ./cov
           directory-flag-pattern: =ansible_{ansible-%}=
