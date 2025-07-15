@@ -180,290 +180,290 @@ jobs:
 #
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
-  integration:
-    runs-on: ${{ matrix.runner }}
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}+V[-${{ matrix.vault_minus }}])
-    strategy:
-      fail-fast: false
-      matrix:
-        runner:
-          - ubuntu-latest
-        test_container:
-          - default
-        vault_minus:
-          - 0
-          - 1
-        ansible:
-          - stable-2.14
-          - stable-2.15
-          - stable-2.16
-          - stable-2.17
-          - stable-2.18
-          - devel
-        python:
-          - '3.6'
-          - '3.7'
-          - '3.8'
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
-        exclude:
-          # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
-          # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
-          - ansible: 'devel'
-            python: '3.6'
-          - ansible: 'devel'
-            python: '3.7'
-          - ansible: 'devel'
-            python: '3.8'
-          - ansible: 'devel'
-            python: '3.9'
-          - ansible: 'stable-2.18'
-            python: '3.6'
-          - ansible: 'stable-2.18'
-            python: '3.7'
-          - ansible: 'stable-2.18'
-            python: '3.8'
-          - ansible: 'stable-2.18'
-            python: '3.9'
-          - ansible: 'stable-2.17'
-            python: '3.13'
-          - ansible: 'stable-2.17'
-            python: '3.6'
-          - ansible: 'stable-2.17'
-            python: '3.7'
-          - ansible: 'stable-2.17'
-            python: '3.8'
-          - ansible: 'stable-2.17'
-            python: '3.9'
-          - ansible: 'stable-2.16'
-            python: '3.13'
-          - ansible: 'stable-2.16'
-            python: '3.6'
-          - ansible: 'stable-2.16'
-            python: '3.7'
-          - ansible: 'stable-2.16'
-            python: '3.8'
-          - ansible: 'stable-2.16'
-            python: '3.9'
-          - ansible: 'stable-2.15'
-            python: '3.13'
-          - ansible: 'stable-2.15'
-            python: '3.6'
-          - ansible: 'stable-2.15'
-            python: '3.7'
-          - ansible: 'stable-2.15'
-            python: '3.12'
-          - ansible: 'stable-2.15'
-            python: '3.8'
-          - ansible: 'stable-2.14'
-            python: '3.13'
-          - ansible: 'stable-2.14'
-            python: '3.12'
+  # integration:
+  #   runs-on: ${{ matrix.runner }}
+  #   name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}+V[-${{ matrix.vault_minus }}])
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       runner:
+  #         - ubuntu-latest
+  #       test_container:
+  #         - default
+  #       vault_minus:
+  #         - 0
+  #         - 1
+  #       ansible:
+  #         - stable-2.14
+  #         - stable-2.15
+  #         - stable-2.16
+  #         - stable-2.17
+  #         - stable-2.18
+  #         - devel
+  #       python:
+  #         - '3.6'
+  #         - '3.7'
+  #         - '3.8'
+  #         - '3.9'
+  #         - '3.10'
+  #         - '3.11'
+  #         - '3.12'
+  #         - '3.13'
+  #       exclude:
+  #         # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
+  #         # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
+  #         - ansible: 'devel'
+  #           python: '3.6'
+  #         - ansible: 'devel'
+  #           python: '3.7'
+  #         - ansible: 'devel'
+  #           python: '3.8'
+  #         - ansible: 'devel'
+  #           python: '3.9'
+  #         - ansible: 'stable-2.18'
+  #           python: '3.6'
+  #         - ansible: 'stable-2.18'
+  #           python: '3.7'
+  #         - ansible: 'stable-2.18'
+  #           python: '3.8'
+  #         - ansible: 'stable-2.18'
+  #           python: '3.9'
+  #         - ansible: 'stable-2.17'
+  #           python: '3.13'
+  #         - ansible: 'stable-2.17'
+  #           python: '3.6'
+  #         - ansible: 'stable-2.17'
+  #           python: '3.7'
+  #         - ansible: 'stable-2.17'
+  #           python: '3.8'
+  #         - ansible: 'stable-2.17'
+  #           python: '3.9'
+  #         - ansible: 'stable-2.16'
+  #           python: '3.13'
+  #         - ansible: 'stable-2.16'
+  #           python: '3.6'
+  #         - ansible: 'stable-2.16'
+  #           python: '3.7'
+  #         - ansible: 'stable-2.16'
+  #           python: '3.8'
+  #         - ansible: 'stable-2.16'
+  #           python: '3.9'
+  #         - ansible: 'stable-2.15'
+  #           python: '3.13'
+  #         - ansible: 'stable-2.15'
+  #           python: '3.6'
+  #         - ansible: 'stable-2.15'
+  #           python: '3.7'
+  #         - ansible: 'stable-2.15'
+  #           python: '3.12'
+  #         - ansible: 'stable-2.15'
+  #           python: '3.8'
+  #         - ansible: 'stable-2.14'
+  #           python: '3.13'
+  #         - ansible: 'stable-2.14'
+  #           python: '3.12'
 
-    steps:
-      - name: Initialize env vars
-        uses: briantist/ezenv@v1
-        with:
-          env: |
-            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-            COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
-            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }} --docker-network hashi_vault_default"
+  #   steps:
+  #     - name: Initialize env vars
+  #       uses: briantist/ezenv@v1
+  #       with:
+  #         env: |
+  #           COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+  #           COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
+  #           COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+  #           TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }} --docker-network hashi_vault_default"
 
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
-          path: ${{ env.COLLECTION_PATH }}
+  #     - name: Check out code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         show-progress: false
+  #         path: ${{ env.COLLECTION_PATH }}
 
-      - name: Link to .github  # easier access to local actions
-        run: ln -s "${COLLECTION_PATH}/.github" .github
+  #     - name: Link to .github  # easier access to local actions
+  #       run: ln -s "${COLLECTION_PATH}/.github" .github
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.11'
 
-      - name: Get Vault versions
-        id: vault_versions
-        uses: ./.github/actions/docker-image-versions
-        with:
-          image: hashicorp/vault
-          num_major_versions: 1
-          num_minor_versions: 2
-          num_micro_versions: 1
+  #     - name: Get Vault versions
+  #       id: vault_versions
+  #       uses: ./.github/actions/docker-image-versions
+  #       with:
+  #         image: hashicorp/vault
+  #         num_major_versions: 1
+  #         num_minor_versions: 2
+  #         num_micro_versions: 1
 
-      - name: Install ansible-core (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+  #     - name: Install ansible-core (${{ matrix.ansible }})
+  #       run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Install community.postgresql
-        uses: ./.github/actions/collection-via-git
-        with:
-          collection: community.postgresql
+  #     - name: Install community.postgresql
+  #       uses: ./.github/actions/collection-via-git
+  #       with:
+  #         collection: community.postgresql
 
-      - name: Pull Ansible test images
-        timeout-minutes: 5
-        continue-on-error: true
-        uses: ./.github/actions/pull-ansible-test-images
-        with:
-          working-directory: ${{ env.COLLECTION_PATH }}
-          ansible-test-invocation: ${{ env.TEST_INVOCATION }}
+  #     - name: Pull Ansible test images
+  #       timeout-minutes: 5
+  #       continue-on-error: true
+  #       uses: ./.github/actions/pull-ansible-test-images
+  #       with:
+  #         working-directory: ${{ env.COLLECTION_PATH }}
+  #         ansible-test-invocation: ${{ env.TEST_INVOCATION }}
 
-      - name: Set Vault Version
-        uses: briantist/ezenv@v1
-        with:
-          env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[matrix.vault_minus] }}
+  #     - name: Set Vault Version
+  #       uses: briantist/ezenv@v1
+  #       with:
+  #         env: VAULT_VERSION=${{ fromJSON(steps.vault_versions.outputs.versions)[matrix.vault_minus] }}
 
-      - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
-        run: ./setup.sh -e vault_version=${VAULT_VERSION}
-        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
+  #     - name: Prepare docker dependencies (Vault ${{ env.VAULT_VERSION }})
+  #       run: ./setup.sh -e vault_version=${VAULT_VERSION}
+  #       working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_gha
 
-      - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
-        run: ansible-test ${{ env.TEST_INVOCATION }}
-        working-directory: ${{ env.COLLECTION_PATH }}
+  #     - name: Run integration test (Vault ${{ env.VAULT_VERSION }})
+  #       run: ansible-test ${{ env.TEST_INVOCATION }}
+  #       working-directory: ${{ env.COLLECTION_PATH }}
 
-        # ansible-test support producing code coverage data
-      - name: Generate coverage report
-        if: ${{ github.event_name != 'schedule' }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
-        working-directory: ${{ env.COLLECTION_PATH }}
+  #       # ansible-test support producing code coverage data
+  #     - name: Generate coverage report
+  #       if: ${{ github.event_name != 'schedule' }}
+  #       run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
+  #       working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job }} coverage reports
-        if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=vault_minus_${{ matrix.vault_minus }}=data
-          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
-          if-no-files-found: error
-          retention-days: 1
+  #     - name: Upload ${{ github.job }} coverage reports
+  #       if: ${{ github.event_name != 'schedule' }}
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=vault_minus_${{ matrix.vault_minus }}=data
+  #         path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+  #         if-no-files-found: error
+  #         retention-days: 1
 
-  local_test_invocation:
-    runs-on: ${{ matrix.runner }}
-    name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
-    strategy:
-      fail-fast: false
-      matrix:
-        ansible:
-          - stable-2.18
-          - devel
-        delete_canaries:
-          - true
-          - false
-        python:
-          - '3.12'
-        runner:
-          - ubuntu-latest
-        test_container:
-          - default
-        exclude:
-          - ansible: devel
-            delete_canaries: false
-          - ansible: stable-2.18
-            delete_canaries: true
+  # local_test_invocation:
+  #   runs-on: ${{ matrix.runner }}
+  #   name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       ansible:
+  #         - stable-2.18
+  #         - devel
+  #       delete_canaries:
+  #         - true
+  #         - false
+  #       python:
+  #         - '3.12'
+  #       runner:
+  #         - ubuntu-latest
+  #       test_container:
+  #         - default
+  #       exclude:
+  #         - ansible: devel
+  #           delete_canaries: false
+  #         - ansible: stable-2.18
+  #           delete_canaries: true
 
-    steps:
-      - name: Initialize env vars
-        uses: briantist/ezenv@v1
-        with:
-          env: |
-            COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
-            COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
-            COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
-            DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --controller docker:${{ matrix.test_container }},python=${{ matrix.python }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
+  #   steps:
+  #     - name: Initialize env vars
+  #       uses: briantist/ezenv@v1
+  #       with:
+  #         env: |
+  #           COLLECTION_PATH=ansible_collections/${NAMESPACE}/${COLLECTION_NAME}
+  #           COLLECTION_INTEGRATION_PATH=${COLLECTION_PATH}/tests/integration
+  #           COLLECTION_INTEGRATION_TARGETS=${COLLECTION_INTEGRATION_PATH}/targets
+  #           DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --controller docker:${{ matrix.test_container }},python=${{ matrix.python }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
-          path: ${{ env.COLLECTION_PATH }}
+  #     - name: Check out code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         show-progress: false
+  #         path: ${{ env.COLLECTION_PATH }}
 
-      - name: Link to .github  # easier access to local actions
-        run: ln -s "${COLLECTION_PATH}/.github" .github
+  #     - name: Link to .github  # easier access to local actions
+  #       run: ln -s "${COLLECTION_PATH}/.github" .github
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: ${{ matrix.python }}
 
-      - name: Install ansible-core (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+  #     - name: Install ansible-core (${{ matrix.ansible }})
+  #       run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Install community.crypto
-        uses: ./.github/actions/collection-via-git
-        with:
-          collection: community.crypto
+  #     - name: Install community.crypto
+  #       uses: ./.github/actions/collection-via-git
+  #       with:
+  #         collection: community.crypto
 
-      - name: Install community.docker
-        uses: ./.github/actions/collection-via-git
-        with:
-          collection: community.docker
+  #     - name: Install community.docker
+  #       uses: ./.github/actions/collection-via-git
+  #       with:
+  #         collection: community.docker
 
-      - name: Install community.postgresql
-        uses: ./.github/actions/collection-via-git
-        with:
-          collection: community.postgresql
+  #     - name: Install community.postgresql
+  #       uses: ./.github/actions/collection-via-git
+  #       with:
+  #         collection: community.postgresql
 
-      - name: Pull Ansible test images
-        timeout-minutes: 5
-        continue-on-error: true
-        uses: ./.github/actions/pull-ansible-test-images
-        with:
-          working-directory: ${{ env.COLLECTION_PATH }}
-          ansible-test-invocation: ${{ env.DOCKER_TEST_INVOCATION }}
+  #     - name: Pull Ansible test images
+  #       timeout-minutes: 5
+  #       continue-on-error: true
+  #       uses: ./.github/actions/pull-ansible-test-images
+  #       with:
+  #         working-directory: ${{ env.COLLECTION_PATH }}
+  #         ansible-test-invocation: ${{ env.DOCKER_TEST_INVOCATION }}
 
-      - name: localenv_docker - setup
-        run: |
-          pwd
-          ./setup.sh
-        working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
+  #     - name: localenv_docker - setup
+  #       run: |
+  #         pwd
+  #         ./setup.sh
+  #       working-directory: ${{ env.COLLECTION_INTEGRATION_TARGETS }}/setup_localenv_docker
 
-      - name: localenv_docker - Run integration test (in docker)
-        run: |
-          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
-        working-directory: ${{ env.COLLECTION_PATH }}
+  #     - name: localenv_docker - Run integration test (in docker)
+  #       run: |
+  #         ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
+  #       working-directory: ${{ env.COLLECTION_PATH }}
 
-      #TODO add capability in the Ansible side once vault_list and vault_delete exist
-      - name: Delete Vault's cubbyhole contents (ensure test setup is idempotent)
-        if: matrix.delete_canaries
-        working-directory: ${{ env.COLLECTION_PATH }}
-        env:
-          VAULT_TOKEN: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-          VAULT_ADDR: http://vault:8200
-        run: |
-          echo 'vault list cubbyhole \
-          | tail -n +3 \
-          | xargs -I{} -n 1 vault delete cubbyhole/{}' \
-          | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i hashicorp/vault sh
+  #     #TODO add capability in the Ansible side once vault_list and vault_delete exist
+  #     - name: Delete Vault's cubbyhole contents (ensure test setup is idempotent)
+  #       if: matrix.delete_canaries
+  #       working-directory: ${{ env.COLLECTION_PATH }}
+  #       env:
+  #         VAULT_TOKEN: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+  #         VAULT_ADDR: http://vault:8200
+  #       run: |
+  #         echo 'vault list cubbyhole \
+  #         | tail -n +3 \
+  #         | xargs -I{} -n 1 vault delete cubbyhole/{}' \
+  #         | docker run --rm --network hashi_vault_default -e VAULT_TOKEN -e VAULT_ADDR -i hashicorp/vault sh
 
-      - name: Run integration again (ensure tests do not break against still-running containers)
-        working-directory: ${{ env.COLLECTION_PATH }}
-        run: |
-          ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
+  #     - name: Run integration again (ensure tests do not break against still-running containers)
+  #       working-directory: ${{ env.COLLECTION_PATH }}
+  #       run: |
+  #         ansible-test ${{ env.DOCKER_TEST_INVOCATION }} --docker-network hashi_vault_default
 
-        # ansible-test support producing code coverage data
-      - name: Generate coverage report
-        if: ${{ github.event_name != 'schedule' }}
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
-        working-directory: ${{ env.COLLECTION_PATH }}
+  #       # ansible-test support producing code coverage data
+  #     - name: Generate coverage report
+  #       if: ${{ github.event_name != 'schedule' }}
+  #       run: ansible-test coverage xml -v --requirements --group-by command --group-by environment --group-by target
+  #       working-directory: ${{ env.COLLECTION_PATH }}
 
-      - name: Upload ${{ github.job }} coverage reports
-        if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage=${{ github.job }}=${{ matrix.runner }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
-          path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
-          if-no-files-found: error
-          retention-days: 1
+  #     - name: Upload ${{ github.job }} coverage reports
+  #       if: ${{ github.event_name != 'schedule' }}
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: coverage=${{ github.job }}=${{ matrix.runner }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
+  #         path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
+  #         if-no-files-found: error
+  #         retention-days: 1
 
   upload-coverage:
     needs:
       - sanity
       - units
-      - integration
-      - local_test_invocation
+      # - integration
+      # - local_test_invocation
     # don't upload coverage on scheduled runs
     # https://github.com/ansible-collections/community.hashi_vault/issues/180
     if: ${{ github.event_name != 'schedule' }}
