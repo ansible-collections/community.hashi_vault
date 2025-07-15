@@ -77,7 +77,7 @@ def main(argv):
     logextra = ' (+%r)' % extra_flags if extra_flags else ''
 
     for flag, files in flags.items():
-        cmd = ['codecov', '-F', flag]
+        cmd = ['codecov', 'upload-coverage', '-F', flag]
         [cmd.extend(['-F', extra]) for extra in extra_flags]
         [cmd.extend(['-f', file]) for file in files]
         if fail_on_error:
