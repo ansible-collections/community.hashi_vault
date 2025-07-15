@@ -108,7 +108,8 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
 
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
-            hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), conopt_verify=self._conopt_verify, **hvopts.pop('retries'))
+            hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), **hvopts.pop('retries'))
+            hvopts['session'].verify = self._conopt_verify
 
         return hvopts
 
@@ -120,7 +121,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         self._process_option_proxies()
         self._process_option_retries()
 
-    def _get_custom_requests_session(self, conopt_verify, **retry_kwargs):
+    def _get_custom_requests_session(self, **retry_kwargs):
         '''returns a requests.Session to pass to hvac (or None)'''
 
         if not HAS_RETRIES:
@@ -159,7 +160,6 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         sess = Session()
         sess.mount("https://", adapter)
         sess.mount("http://", adapter)
-        sess.verify = conopt_verify
 
         return sess
 
