@@ -54,10 +54,26 @@
 
         - <<: *assert
 
+        - name: test HTTPS with no cert validation and retries
+          register: result
+          vault_test_connection:
+            validate_certs: false
+            retries: 2
+
+        - <<: *assert
+
         - name: test HTTPS with cert validation
           register: result
           vault_test_connection:
             want_args: true
+
+        - <<: *assert
+
+        - name: test HTTPS with cert validation and retries
+          register: result
+          vault_test_connection:
+            want_args: true
+            retries: 2
 
         - <<: *assert
 
