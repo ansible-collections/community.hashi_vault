@@ -27,11 +27,11 @@
     # is default, and success when the mount is alternate
     - name: Check auth mount differing result
       vars:
-        kwargs_secret_id: |
+        kwargs_secret_id: |-
           {% if use_secret_id | bool %}
-          {{ {'secret_id': secret_id_cmd.result.data.secret_id} }}
+          {{- {'secret_id': secret_id_cmd.result.data.secret_id} -}}
           {% else %}
-          {{ {} }}
+          {{- {} -}}
           {% endif %}
       set_fact:
         response: "{{ lookup('vault_test_auth', **kwargs) }}"

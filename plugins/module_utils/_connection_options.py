@@ -109,6 +109,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
             hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), **hvopts.pop('retries'))
+            hvopts['session'].verify = self._conopt_verify
 
         return hvopts
 
