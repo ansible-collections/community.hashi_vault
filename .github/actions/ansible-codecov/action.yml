@@ -56,9 +56,9 @@ runs:
             ./codecov --version
         else
             curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
-            curl -Os https://uploader.codecov.io/${{ inputs.codecov-uploader-version }}/linux/codecov
-            curl -Os https://uploader.codecov.io/${{ inputs.codecov-uploader-version }}/linux/codecov.SHA256SUM
-            curl -Os https://uploader.codecov.io/${{ inputs.codecov-uploader-version }}/linux/codecov.SHA256SUM.sig
+            curl -Os https://cli.codecov.io/linux/${{ inputs.codecov-uploader-version }}/codecov
+            curl -Os https://cli.codecov.io/linux/${{ inputs.codecov-uploader-version }}/codecov.SHA256SUM
+            curl -Os https://cli.codecov.io/linux/${{ inputs.codecov-uploader-version }}/codecov.SHA256SUM.sig
             gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
             shasum -a 256 -c codecov.SHA256SUM
             chmod +x codecov
