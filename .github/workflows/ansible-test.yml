@@ -459,8 +459,8 @@ jobs:
   #         retention-days: 1
 
   upload-coverage:
-    # needs:
-      # - sanity
+    needs:
+      - sanity
       # - units
       # - integration
       # - local_test_invocation
@@ -475,10 +475,10 @@ jobs:
         with:
           show-progress: false
 
-      # - name: Download artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     path: ./cov
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./cov
 
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage reports to Codecov

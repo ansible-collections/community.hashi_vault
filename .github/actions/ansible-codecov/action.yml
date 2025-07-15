@@ -55,13 +55,6 @@ runs:
         if command -v codecov ; then
             ./codecov --version
         else
-            # curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
-            # curl -Os https://cli.codecov.io/linux/${{ inputs.codecov-uploader-version }}/codecov
-            # curl -Os https://cli.codecov.io/linux/${{ inputs.codecov-uploader-version }}/codecov.SHA256SUM
-            # curl -Os https://cli.codecov.io/linux/${{ inputs.codecov-uploader-version }}/codecov.SHA256SUM.sig
-            # gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
-            # shasum -a 256 -c codecov.SHA256SUM
-
             gh release --repo codecov/codecov-cli download --pattern codecovcli_linux
             mv codecovcli_linux codecov
             chmod +x codecov
