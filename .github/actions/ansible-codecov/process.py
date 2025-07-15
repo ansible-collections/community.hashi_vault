@@ -94,6 +94,8 @@ def main(argv):
             except subprocess.CalledProcessError as e:
                 match = re.search(r'Error: There was an error fetching the storage URL during POST: 429.*?time to availability: (?P<tta>\d+)s', e.stdout)
                 if not match:
+                    print(f"stdout: {e.stdout}")
+                    print(f"stderr: {e.stderr}")
                     raise
 
                 tta = int(match.group('tta')) + 10
