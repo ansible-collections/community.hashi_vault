@@ -18,8 +18,8 @@ from ...plugins.module_utils._authenticator import HashiVaultAuthenticator
 
 @pytest.fixture(autouse=True)
 def skip_python():
-    if sys.version_info < (3, 6):
-        pytest.skip('Skipping on Python %s. community.hashi_vault supports Python 3.6 and higher.' % sys.version)
+    if sys.version_info < (3, 8):
+        pytest.skip('Skipping on Python %s. community.hashi_vault supports Python 3.8 and higher.' % sys.version)
 
 
 @pytest.fixture
