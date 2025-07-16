@@ -1,3 +1,0 @@
----
-release_summary: |-
-  This release removes support for older versions of ``ansible-core`` and ``python``. It does not contain functional changes that cause the collection to stop working in earlier versions, however we are no longer testing against those so compatibility will not be guaranteed from this version on.
