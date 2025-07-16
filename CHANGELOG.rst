@@ -4,6 +4,25 @@ community.hashi\_vault Release Notes
 
 .. contents:: Topics
 
+v6.2.1
+======
+
+Release Summary
+---------------
+
+A quick bugfix release before the next major version. Please take note of the upcoming deprecation of ``ansible-core`` and ``python`` versions.
+
+Deprecated Features
+-------------------
+
+- ansible-core - support for several ``ansible-core`` versions will be dropped in ``v7.0.0``. The collection will focus on current supported versions of ``ansible-core`` going forward and more agressively drop end-of-life or soon-to-be EOL versions (https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
+- python - support for several ``python`` versions will be dropped in ``v7.0.0``. The collection will focus on ``python`` versions that are supported by the active versions of ``ansible-core`` on the controller side at a minimum, and some subset of target versions (https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
+
+Bugfixes
+--------
+
+- connection_options - the ``validate_certs`` option had no effect if the ``retries`` option was set. Fix now also sets the parameter correctly in the retry request session (https://github.com/ansible-collections/community.hashi_vault/issues/461).
+
 v6.2.0
 ======
 
