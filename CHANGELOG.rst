@@ -4,6 +4,20 @@ community.hashi\_vault Release Notes
 
 .. contents:: Topics
 
+v7.0.0
+======
+
+Release Summary
+---------------
+
+This release removes support for older versions of ``ansible-core`` and ``python``. It does not contain functional changes that cause the collection to stop working in earlier versions, however we are no longer testing against those so compatibility will not be guaranteed from this version on.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- ansible-core - support for all end-of-life versions of ``ansible-core`` has been dropped. The collection is tested with ``ansible-core>=2.17`` (https://github.com/ansible-collections/community.hashi_vault/issues/470).
+- python - support for older versions of Python has been dropped. The collection is tested with all supported controller-side versions and a few lower target-side versions depending on the tests (https://github.com/ansible-collections/community.hashi_vault/issues/470).
+
 v6.2.1
 ======
 
