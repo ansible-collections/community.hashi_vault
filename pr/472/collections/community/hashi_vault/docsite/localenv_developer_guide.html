@@ -1,0 +1,295 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>localenv developer guide &mdash; Ansible collections  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=41de9001" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/ansible.css?v=c5b67dd2" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/antsibull-minimal.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/rtd-ethical-ads.css?v=289b023e" />
+
+  
+    <link rel="shortcut icon" href="../../../../_static/images/Ansible-Mark-RGB_Black.png"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=7f41d439"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="community.hashi_vault.vault_database_connection_configure module – Configures the database engine" href="../vault_database_connection_configure_module.html" />
+    <link rel="prev" title="Contributor guide" href="contributor_guide.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../../../_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Ansible collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Collections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">Collection Index</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Collections in the Community Namespace</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">Community.Hashi_Vault</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#communication">Communication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#changelog">Changelog</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html#guides">Guides</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#plugin-index">Plugin Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_filter.html">Index of all Filter Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_lookup.html">Index of all Lookup Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_module.html">Index of all Modules</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ansible collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Collection Index</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Collections in the Community Namespace</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Community.Hashi_Vault</a></li>
+      <li class="breadcrumb-item active">localenv developer guide</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <section id="localenv-developer-guide">
+<span id="ansible-collections-community-hashi-vault-docsite-localenv-developer-guide"></span><h1>localenv developer guide<a class="headerlink" href="#localenv-developer-guide" title="Link to this heading"></a></h1>
+<p>A “localenv” role in this collection sets up the external dependencies required to run the integration tests. The idea is to provide a pre-packaged way for a contributor to set up their local environment in a consistent, repeatable way.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This guide is a work-in-progress and is <strong>very</strong> light on details. For the time being, it’s best to open an issue in the repository to discuss it if you’re thinking of a new localenv. Looking at <code class="docutils literal notranslate"><span class="pre">setup_localenv_docker</span></code> should also be helpful as it’s the most complete one to date.</p>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#required-external-dependencies" id="id3">Required external dependencies</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hashicorp-vault" id="id4">HashiCorp Vault</a></p></li>
+<li><p><a class="reference internal" href="#proxy-server" id="id5">Proxy server</a></p></li>
+<li><p><a class="reference internal" href="#mmock-server" id="id6">MMock server</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#localenv-role-conventions" id="id7">localenv role conventions</a></p></li>
+</ul>
+</nav>
+<section id="required-external-dependencies">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Required external dependencies</a><a class="headerlink" href="#required-external-dependencies" title="Link to this heading"></a></h2>
+<section id="hashicorp-vault">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">HashiCorp Vault</a><a class="headerlink" href="#hashicorp-vault" title="Link to this heading"></a></h3>
+<p>A Vault server is required for the integration tests. Using <a class="reference external" href="https://www.vaultproject.io/docs/concepts/dev-server">Vault Dev Server Mode</a> is recommended as it’s the easiest and fastest way to get a server started.</p>
+<p>A unencrypted (plain HTTP) listener is <em>required</em> for our purposes as most of the tests will expect to connect that way.</p>
+<p>To run the tests that deal specifically with TLS/HTTPS access, you must start the Vault server with a TLS enabled listener. The TLS address:port, and the CA cert (or the cert itself if self-signed) must be supplied.</p>
+<p>The <strong>root token</strong> of the Vault server is needed, as the integration tests make changes to Vault’s configuration, and expect to have that token available to do so. It’s possible to let Vault generate the token on startup and then retrieve it but it may be easiest to pre-generate one and pass it into Vault, via the <code class="docutils literal notranslate"><span class="pre">-dev-root-token-id</span></code> option or <code class="docutils literal notranslate"><span class="pre">VAULT_DEV_ROOT_TOKEN_ID</span></code> environment variable (see <a class="reference external" href="https://www.vaultproject.io/docs/commands/server#dev-options">Dev Options</a>).</p>
+<section id="relevant-integration-config-yml-variables">
+<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#relevant-integration-config-yml-variables" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>var</p></th>
+<th class="head"><p>example</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vault_test_server_http</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">http://myvault:8200</span></code></p></td>
+<td><p>The full HTTP URL of your Vault test server.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vault_test_server_https</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://myvault:8300</span></code></p></td>
+<td><p>The full HTTPS URL of your Vault test server.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vault_dev_root_token_id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3ee9a1f7-f115-4f7c-90a3-d3c73361bcb5</span></code></p></td>
+<td><p>The root token used to authenticate to Vault.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vault_version</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.7.3</span></code></p></td>
+<td><p>The version of Vault in use (usually this is written by a localenv, so a value set manually is not used anywhere).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vault_cert_content</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-----BEGIN</span> <span class="pre">CERTIFICATE-----&lt;snip&gt;</span></code></p></td>
+<td><p>The public cert of the CA that signed the cert used for Vault’s TLS listener (or the cert itself if self-signed).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="proxy-server">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Proxy server</a><a class="headerlink" href="#proxy-server" title="Link to this heading"></a></h3>
+<p>A proxy server is used to test the proxy connectivity options.</p>
+<p>In theory any proxy supporting http/s targets could be used for this purpose, but <a class="reference external" href="https://github.com/tinyproxy/tinyproxy">tinyproxy</a> is recommended for being, well.. tiny, as well as easy to configure and run, and available in package managers and containers.</p>
+<section id="id1">
+<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>var</p></th>
+<th class="head"><p>example</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vault_proxy_server</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">http://proxy:8080</span></code></p></td>
+<td><p>The full HTTP URL of your proxy server.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="mmock-server">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">MMock server</a><a class="headerlink" href="#mmock-server" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://github.com/jmartin82/mmock">MMock (short for Monster Mock)</a> is an HTTP server designed for mocking HTTP responses. It can also transparently proxy through to a real server. We use it to proxy our test Vault server while intercepting certain API calls to Vault and returning mocked responses.</p>
+<p>This is useful for Vault integrations that are more difficult to set up in our CI environment.</p>
+<p>For example, we use this for testing the <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> auth method, since we don’t have an AWS account we can use and configure and connect to from our GitHub CI.</p>
+<p>For these integration tests, all Vault interactions are directed to MMock rather than directly to Vault, and we pre-configure MMock to respond to the relevant calls in a way that models a real Vault server’s success and failure responses.</p>
+<section id="id2">
+<h4>Relevant <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> variables<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>var</p></th>
+<th class="head"><p>example</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vault_mmock_server_http</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">http://mmock:8900</span></code></p></td>
+<td><p>The full HTTP URL of the MMock server.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="localenv-role-conventions">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">localenv role conventions</a><a class="headerlink" href="#localenv-role-conventions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">files/.output</span></code> to hold generated artifacts.</p></li>
+<li><p>Anything generated should be in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>; conversely anything not in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> should not be overwritten or modified by this process. That is, there should be no changes to git status that arise from this.</p></li>
+<li><p>Consider providing a <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> to avoid having to manually run <code class="docutils literal notranslate"><span class="pre">ansible-</span></code> commands. It should ideally operate correctly regardless of the current working directory.</p></li>
+<li><p>Generate a usable <code class="docutils literal notranslate"><span class="pre">integration_config.yml</span></code> that allows for using the result of the localenv. Generate it within the role output, not outside the role. Copy it to the right location, but do not overwrite an existing one.</p></li>
+<li><p>If the role has external dependencies, try to codify those in file(s) that can be used by the right tool, like <code class="docutils literal notranslate"><span class="pre">requirements.yml</span></code> for <code class="docutils literal notranslate"><span class="pre">ansible-galaxy</span></code>, etc.</p></li>
+<li><p>localenv roles are meant to run <strong>outside</strong> of the <code class="docutils literal notranslate"><span class="pre">ansible-test</span></code> environment, but they can make (re)use of other roles.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contributor_guide.html" class="btn btn-neutral float-left" title="Contributor guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../vault_database_connection_configure_module.html" class="btn btn-neutral float-right" title="community.hashi_vault.vault_database_connection_configure module – Configures the database engine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
