@@ -40,11 +40,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.14
-          - stable-2.15
-          - stable-2.16
-          - stable-2.17
-          - stable-2.18
+          - stable-2.19
           - devel
     steps:
 
@@ -118,11 +114,9 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.14
-          - stable-2.15
-          - stable-2.16
           - stable-2.17
           - stable-2.18
+          - stable-2.19
           - devel
 
     steps:
@@ -147,7 +141,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install ansible-core (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -198,15 +192,11 @@ jobs:
           - 0
           - 1
         ansible:
-          - stable-2.14
-          - stable-2.15
-          - stable-2.16
           - stable-2.17
           - stable-2.18
+          - stable-2.19
           - devel
         python:
-          - '3.6'
-          - '3.7'
           - '3.8'
           - '3.9'
           - '3.10'
@@ -217,17 +207,13 @@ jobs:
           # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
           # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
           - ansible: 'devel'
-            python: '3.6'
-          - ansible: 'devel'
-            python: '3.7'
-          - ansible: 'devel'
             python: '3.8'
           - ansible: 'devel'
             python: '3.9'
-          - ansible: 'stable-2.18'
-            python: '3.6'
-          - ansible: 'stable-2.18'
-            python: '3.7'
+          - ansible: 'stable-2.19'
+            python: '3.8'
+          - ansible: 'stable-2.19'
+            python: '3.9'
           - ansible: 'stable-2.18'
             python: '3.8'
           - ansible: 'stable-2.18'
@@ -235,37 +221,9 @@ jobs:
           - ansible: 'stable-2.17'
             python: '3.13'
           - ansible: 'stable-2.17'
-            python: '3.6'
-          - ansible: 'stable-2.17'
-            python: '3.7'
-          - ansible: 'stable-2.17'
             python: '3.8'
           - ansible: 'stable-2.17'
             python: '3.9'
-          - ansible: 'stable-2.16'
-            python: '3.13'
-          - ansible: 'stable-2.16'
-            python: '3.6'
-          - ansible: 'stable-2.16'
-            python: '3.7'
-          - ansible: 'stable-2.16'
-            python: '3.8'
-          - ansible: 'stable-2.16'
-            python: '3.9'
-          - ansible: 'stable-2.15'
-            python: '3.13'
-          - ansible: 'stable-2.15'
-            python: '3.6'
-          - ansible: 'stable-2.15'
-            python: '3.7'
-          - ansible: 'stable-2.15'
-            python: '3.12'
-          - ansible: 'stable-2.15'
-            python: '3.8'
-          - ansible: 'stable-2.14'
-            python: '3.13'
-          - ansible: 'stable-2.14'
-            python: '3.12'
 
     steps:
       - name: Initialize env vars
@@ -289,7 +247,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Get Vault versions
         id: vault_versions
@@ -351,13 +309,13 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.18
+          - stable-2.19
           - devel
         delete_canaries:
           - true
           - false
         python:
-          - '3.12'
+          - '3.13'
         runner:
           - ubuntu-latest
         test_container:
@@ -365,7 +323,7 @@ jobs:
         exclude:
           - ansible: devel
             delete_canaries: false
-          - ansible: stable-2.18
+          - ansible: stable-2.19
             delete_canaries: true
 
     steps:
@@ -487,6 +445,8 @@ jobs:
       # See the reports at https://codecov.io/gh/ansible-collections/community.hashi_vault
       - name: Upload coverage reports to Codecov
         uses: ./.github/actions/ansible-codecov
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           directory: ./cov
           directory-flag-pattern: =ansible_{ansible-%}=

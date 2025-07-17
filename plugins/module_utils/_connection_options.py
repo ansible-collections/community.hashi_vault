@@ -3,7 +3,7 @@
 # Simplified BSD License (see LICENSES/BSD-2-Clause.txt or https://opensource.org/licenses/BSD-2-Clause)
 # SPDX-License-Identifier: BSD-2-Clause
 
-'''Python versions supported: >=3.6'''
+'''Python versions supported: >=3.8'''
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
@@ -109,6 +109,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
             hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), **hvopts.pop('retries'))
+            hvopts['session'].verify = self._conopt_verify
 
         return hvopts
 

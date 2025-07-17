@@ -4,6 +4,39 @@ community.hashi\_vault Release Notes
 
 .. contents:: Topics
 
+v7.0.0
+======
+
+Release Summary
+---------------
+
+This release removes support for older versions of ``ansible-core`` and ``python``. It does not contain functional changes that cause the collection to stop working in earlier versions, however we are no longer testing against those so compatibility will not be guaranteed from this version on.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- ansible-core - support for all end-of-life versions of ``ansible-core`` has been dropped. The collection is tested with ``ansible-core>=2.17`` (https://github.com/ansible-collections/community.hashi_vault/issues/470).
+- python - support for older versions of Python has been dropped. The collection is tested with all supported controller-side versions and a few lower target-side versions depending on the tests (https://github.com/ansible-collections/community.hashi_vault/issues/470).
+
+v6.2.1
+======
+
+Release Summary
+---------------
+
+A quick bugfix release before the next major version. Please take note of the upcoming deprecation of ``ansible-core`` and ``python`` versions.
+
+Deprecated Features
+-------------------
+
+- ansible-core - support for several ``ansible-core`` versions will be dropped in ``v7.0.0``. The collection will focus on current supported versions of ``ansible-core`` going forward and more agressively drop end-of-life or soon-to-be EOL versions (https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
+- python - support for several ``python`` versions will be dropped in ``v7.0.0``. The collection will focus on ``python`` versions that are supported by the active versions of ``ansible-core`` on the controller side at a minimum, and some subset of target versions (https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
+
+Bugfixes
+--------
+
+- connection_options - the ``validate_certs`` option had no effect if the ``retries`` option was set. Fix now also sets the parameter correctly in the retry request session (https://github.com/ansible-collections/community.hashi_vault/issues/461).
+
 v6.2.0
 ======
 

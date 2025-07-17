@@ -7,7 +7,7 @@
 ## Communication
 
 * Join the Ansible forum:
-  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others. Please add appropriate tags if you start new discussions, for example the `hashi-vault` tag. 
+  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others. Please add appropriate tags if you start new discussions, for example the `hashi-vault` tag.
   * [Posts tagged with 'hashi-vault'](https://forum.ansible.com/tag/hashi-vault): subscribe to participate in the technology related conversations.
   * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
   * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
@@ -53,13 +53,12 @@ See [the CI configuration](https://github.com/ansible-collections/community.hash
 **Python 2.6, 2.7, and 3.5 are not supported in version `2.0.0` or later of the collection.**
 
 Currently we support and test against Python versions:
-* 3.6
-* 3.7
 * 3.8
 * 3.9
 * 3.10
 * 3.11
 * 3.12
+* 3.13
 
 Note that for controller-side plugins, only the Python versions supported by the Ansible controller are supported (for example, you cannot use Python 3.7 with Ansible core 2.12).
 
