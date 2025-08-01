@@ -24,6 +24,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import HashiVaultAuthMethodToken
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_userpass import HashiVaultAuthMethodUserpass
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_gcp import HashiVaultAuthMethodGcp
 
 
 class HashiVaultAuthenticator():
@@ -37,6 +38,7 @@ class HashiVaultAuthenticator():
             'azure',
             'jwt',
             'cert',
+            'gcp',
             'none',
         ]),
         mount_point=dict(type='str'),
@@ -73,6 +75,7 @@ class HashiVaultAuthenticator():
             'azure': HashiVaultAuthMethodAzure(option_adapter, warning_callback, deprecate_callback),
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback, deprecate_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback, deprecate_callback),
+            'gcp': HashiVaultAuthMethodGcp(option_adapter, warning_callback, deprecate_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback, deprecate_callback),
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback, deprecate_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback, deprecate_callback),
