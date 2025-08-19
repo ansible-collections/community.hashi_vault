@@ -54,7 +54,7 @@ jobs:
             TEST_INVOCATION="sanity --docker ${{ matrix.test_container }} -v --color ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           show-progress: false
           path: ${{ env.COLLECTION_PATH }}
@@ -128,7 +128,7 @@ jobs:
             TEST_INVOCATION="units --color --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           show-progress: false
           path: ${{ env.COLLECTION_PATH }}
@@ -236,7 +236,7 @@ jobs:
             TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --python ${{ matrix.python }} --docker ${{ matrix.test_container }} ${{ github.event_name != 'schedule' && '--coverage' || '' }} --docker-network hashi_vault_default"
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           show-progress: false
           path: ${{ env.COLLECTION_PATH }}
@@ -337,7 +337,7 @@ jobs:
             DOCKER_TEST_INVOCATION="integration -v --color --retry-on-error --continue-on-error --controller docker:${{ matrix.test_container }},python=${{ matrix.python }} ${{ github.event_name != 'schedule' && '--coverage' || '' }}"
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           show-progress: false
           path: ${{ env.COLLECTION_PATH }}
@@ -433,7 +433,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           show-progress: false
 
