@@ -27,7 +27,6 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_userpass import HashiVaultAuthMethodUserpass
 
 
-
 class HashiVaultAuthenticator():
     ARGSPEC = dict(
         auth_method=dict(type='str', default='token', choices=[
