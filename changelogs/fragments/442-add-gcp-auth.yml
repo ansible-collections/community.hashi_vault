@@ -1,0 +1,3 @@
+---
+features:
+  - community.hashi_vault collection - add support for ``gcp`` auth method.
