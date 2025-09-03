@@ -109,7 +109,7 @@ flags:
   target_auth_token:
     paths:
       - plugins/module_utils/_auth_method_token.py
-  
+
   target_auth_userpass:
     paths:
       - plugins/module_utils/_auth_method_userpass.py
