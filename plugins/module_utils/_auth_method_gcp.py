@@ -3,7 +3,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-'''Python versions supported: >=3.6'''
+'''Python versions supported: >=3.8'''
 
 # FOR INTERNAL COLLECTION USE ONLY
 # The interfaces in this file are meant for use within the community.hashi_vault collection
@@ -36,7 +36,7 @@ class HashiVaultAuthMethodGcp(HashiVaultAuthMethodBase):
         try:
             response = client.auth.gcp.login(**params, use_token=use_token)
         except (NotImplementedError, AttributeError):
-            raise NotImplementedError("GCP authentication requires HVAC version 0.7.1 or higher.")
+            raise NotImplementedError("GCP authentication requires HVAC version 0.7.0 or higher.")
 
         if use_token:
             client.token = response['auth']['client_token']

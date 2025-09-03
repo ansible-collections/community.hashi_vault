@@ -90,6 +90,10 @@ flags:
     paths:
       - plugins/module_utils/_auth_method_cert.py
 
+  target_auth_gcp:
+    paths:
+      - plugins/module_utils/_auth_method_gcp.py
+
   target_auth_jwt:
     paths:
       - plugins/module_utils/_auth_method_jwt.py
@@ -105,10 +109,6 @@ flags:
   target_auth_token:
     paths:
       - plugins/module_utils/_auth_method_token.py
-  
-  target_auth_gcp:
-    paths:
-      - plugins/module_utils/_auth_method_gcp.py
   
   target_auth_userpass:
     paths:
