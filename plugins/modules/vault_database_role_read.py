@@ -104,7 +104,7 @@ raw:
 
 import traceback
 
-from ansible.module_utils._text import to_native
+from ansible.module_utils.common.text.converters import to_text
 
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
@@ -133,7 +133,7 @@ def run_module():
         module.authenticator.validate()
         module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=to_text(e), exception=traceback.format_exc())
 
     try:
         raw = client.secrets.database.read_role(**parameters)

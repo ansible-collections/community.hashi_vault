@@ -1,0 +1,4 @@
+---
+trivial:
+  - remove compatibility code for Python 2
+  - add ``stable-2.20`` to CI
