@@ -40,7 +40,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.19
+          - stable-2.20
           - devel
     steps:
 
@@ -195,6 +195,7 @@ jobs:
           - stable-2.17
           - stable-2.18
           - stable-2.19
+          - stable-2.20
           - devel
         python:
           - '3.8'
@@ -209,6 +210,10 @@ jobs:
           - ansible: 'devel'
             python: '3.8'
           - ansible: 'devel'
+            python: '3.9'
+          - ansible: 'stable-2.20'
+            python: '3.8'
+          - ansible: 'stable-2.20'
             python: '3.9'
           - ansible: 'stable-2.19'
             python: '3.8'
@@ -309,7 +314,7 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.19
+          - stable-2.20
           - devel
         delete_canaries:
           - true
@@ -323,7 +328,7 @@ jobs:
         exclude:
           - ansible: devel
             delete_canaries: false
-          - ansible: stable-2.19
+          - ansible: stable-2.20
             delete_canaries: true
 
     steps:
