@@ -206,7 +206,7 @@ class LookupModule(HashiVaultLookupBase):
                 raise AnsibleError("Forbidden: Permission Denied to path ['%s']." % term) from e
             except hvac_exceptions.InvalidPath as e:
                 raise (
-                    AnsibleError("Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (term, version or 'latest')),
+                    AnsibleError("Invalid or missing path ['%s'] with secret version '%s'. Check the path or secret version." % (term, version or 'latest'))
                 ) from e
 
             data = raw['data']
