@@ -107,7 +107,7 @@ data:
 
 import traceback
 
-from ansible.module_utils._text import to_native
+from ansible.module_utils.common.text.converters import to_text
 
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
@@ -138,7 +138,7 @@ def run_module():
         module.authenticator.validate()
         module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=to_text(e), exception=traceback.format_exc())
 
     try:
         if module.check_mode:
@@ -159,7 +159,7 @@ def run_module():
     except hvac_exceptions.InvalidPath:
         module.fail_json(msg="The path '%s' doesn't seem to exist." % path, exception=traceback.format_exc())
     except hvac_exceptions.InternalServerError as e:
-        module.fail_json(msg="Internal Server Error: %s" % to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg="Internal Server Error: %s" % to_text(e), exception=traceback.format_exc())
 
     # https://github.com/hvac/hvac/issues/797
     # HVAC returns a raw response object when the body is not JSON.
