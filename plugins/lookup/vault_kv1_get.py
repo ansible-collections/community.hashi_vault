@@ -158,6 +158,8 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
+from ansible.module_utils.six import raise_from
+
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
 
@@ -189,14 +191,14 @@ class LookupModule(HashiVaultLookupBase):
             try:
                 raw = client.secrets.kv.v1.read_secret(path=term, mount_point=engine_mount_point)
             except hvac_exceptions.Forbidden as e:
-                raise AnsibleError("Forbidden: Permission Denied to path ['%s']." % term) from e
+                raise_from(AnsibleError("Forbidden: Permission Denied to path ['%s']." % term), e)
             except hvac_exceptions.InvalidPath as e:
                 if 'Invalid path for a versioned K/V secrets engine' in str(e):
                     msg = "Invalid path for a versioned K/V secrets engine ['%s']. If this is a KV version 2 path, use community.hashi_vault.vault_kv2_get."
                 else:
                     msg = "Invalid or missing path ['%s']."
 
-                raise AnsibleError(msg % (term,)) from e
+                raise_from(AnsibleError(msg % (term,)), e)
 
             metadata = raw.copy()
             data = metadata.pop('data')
