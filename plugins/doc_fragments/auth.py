@@ -20,6 +20,7 @@ class ModuleDocFragment(object):
           - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0) and was removed in C(3.0.0).
           - C(azure) auth method was added in collection version C(3.2.0).
           - C(gcp) auth method was added in collection version C(7.1.0).
+          - C(kubernetes) auth method was added in collection version C(8.0.0).
         choices:
           - token
           - userpass
@@ -30,6 +31,7 @@ class ModuleDocFragment(object):
           - jwt
           - cert
           - gcp
+          - kubernetes
           - none
         default: token
         type: str

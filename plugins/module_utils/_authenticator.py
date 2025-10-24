@@ -40,6 +40,7 @@ class HashiVaultAuthenticator():
             'jwt',
             'cert',
             'gcp',
+            'kubernetes',
             'none',
         ]),
         mount_point=dict(type='str'),

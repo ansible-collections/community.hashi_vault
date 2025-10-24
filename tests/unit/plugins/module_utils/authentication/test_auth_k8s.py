@@ -115,11 +115,10 @@ class TestAuthK8s(object):
         expected_login_params = {
             'role': role_id,
             'jwt': kubernetes_token,
-            'mount_point': None,
             'use_token': use_token,
         }
 
-        def _mock_login(role, jwt, mount_point, use_token):
+        def _mock_login(role, jwt, use_token, mount_point=None):
             if use_token:
                 client.token = k8s_login_response['auth']['client_token']
             return k8s_login_response
@@ -161,11 +160,10 @@ class TestAuthK8s(object):
         expected_login_params = {
             'role': role_id,
             'jwt': kubernetes_token,
-            'mount_point': None,
             'use_token': True,
         }
 
-        def _mock_deprecated_login(role, jwt, mount_point, use_token):
+        def _mock_deprecated_login(role, jwt, use_token, mount_point=None):
             if use_token:
                 client.token = k8s_login_response['auth']['client_token']
             return k8s_login_response
