@@ -10,7 +10,6 @@ import json
 
 import pytest
 
-from ansible.module_utils.six import string_types
 from ansible.module_utils.common.text.converters import to_bytes
 from ansible.module_utils.common._collections_compat import MutableMapping, Sequence
 
@@ -31,7 +30,7 @@ def module_warn():
 @pytest.fixture
 def patch_ansible_module(request, module_warn):
     def _process(param):
-        if isinstance(param, string_types):
+        if isinstance(param, str):
             args = param
             _yield = args
             return (args, _yield)

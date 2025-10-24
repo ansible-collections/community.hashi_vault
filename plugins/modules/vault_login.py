@@ -74,6 +74,21 @@ EXAMPLES = """
     token: '{{ login_data.login.auth.client_token }}'
     path: auth/approle/role/role-name/role-id
   register: approle_id
+
+# GCP auth
+- name: Login with GCP auth
+  community.hashi_vault.vault_login:
+    auth_method: gcp
+    role_id: myroleid
+    jwt: myjwt
+    url: https://vault:8200
+  register: gcp_login
+
+- name: Read a secret using the GCP login token
+  community.hashi_vault.vault_read:
+    url: https://vault:8200
+    token: '{{ gcp_login.login.auth.client_token }}'
+    path: secret/data/foo
 """
 
 RETURN = """
@@ -99,7 +114,7 @@ login:
 
 import traceback
 
-from ansible.module_utils._text import to_native
+from ansible.module_utils.common.text.converters import to_text
 
 from ...plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ...plugins.module_utils._hashi_vault_common import HashiVaultValueError
@@ -149,7 +164,7 @@ def run_module():
         else:
             response = module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=to_text(e), exception=traceback.format_exc())
 
     module.exit_json(changed=changed, login=response)
 

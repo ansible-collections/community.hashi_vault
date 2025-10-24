@@ -40,7 +40,7 @@ jobs:
         test_container:
           - default
         ansible:
-          - stable-2.19
+          - stable-2.20
           - devel
     steps:
 
@@ -63,7 +63,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
@@ -117,6 +117,7 @@ jobs:
           - stable-2.17
           - stable-2.18
           - stable-2.19
+          - stable-2.20
           - devel
 
     steps:
@@ -137,7 +138,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
@@ -195,6 +196,7 @@ jobs:
           - stable-2.17
           - stable-2.18
           - stable-2.19
+          - stable-2.20
           - devel
         python:
           - '3.8'
@@ -209,6 +211,10 @@ jobs:
           - ansible: 'devel'
             python: '3.8'
           - ansible: 'devel'
+            python: '3.9'
+          - ansible: 'stable-2.20'
+            python: '3.8'
+          - ansible: 'stable-2.20'
             python: '3.9'
           - ansible: 'stable-2.19'
             python: '3.8'
@@ -245,7 +251,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -309,7 +315,7 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.19
+          - stable-2.20
           - devel
         delete_canaries:
           - true
@@ -323,7 +329,7 @@ jobs:
         exclude:
           - ansible: devel
             delete_canaries: false
-          - ansible: stable-2.19
+          - ansible: stable-2.20
             delete_canaries: true
 
     steps:
@@ -346,7 +352,7 @@ jobs:
         run: ln -s "${COLLECTION_PATH}/.github" .github
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
 

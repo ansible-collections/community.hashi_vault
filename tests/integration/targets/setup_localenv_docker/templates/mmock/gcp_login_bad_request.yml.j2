@@ -1,0 +1,22 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]'
+# Copyright (c) 2024 Michael Woodham (woodham@google.com)
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+---
+request:
+  method: POST|PUT
+  path: "/v1/auth/gcp*/login"
+  body: '*fail-me-role*'
+control:
+  priority: 11
+response:
+  statusCode: 400
+  headers:
+    Content-Type:
+      - application/json
+  body: >-
+    {
+        "errors": [
+            "unable to log in with GCP auth: /v1/auth/gcp"
+        ]
+    }
