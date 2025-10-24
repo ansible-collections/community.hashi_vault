@@ -65,6 +65,17 @@ EXAMPLES = """
     token: '{{ login_data.auth.client_token }}'
     path: auth/approle/role/role-name/role-id
   register: approle_id
+
+- name: Login with GCP auth
+  set_fact:
+    gcp_login: "{{ lookup('community.hashi_vault.vault_login', auth_method='gcp', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
+
+- name: Read a secret using the GCP login token
+  community.hashi_vault.vault_read:
+    url: https://vault:8200
+    token: '{{ gcp_login.auth.client_token }}'
+    path: secret/data/foo
+
 """
 
 RETURN = """
