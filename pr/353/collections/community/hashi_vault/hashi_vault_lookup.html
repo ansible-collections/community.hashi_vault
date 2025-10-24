@@ -186,6 +186,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <p><code class="docutils literal notranslate"><span class="pre">cert</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">1.4.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">aws_iam_login</span></code> was renamed <code class="docutils literal notranslate"><span class="pre">aws_iam</span></code> in collection version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> and was removed in <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">azure</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">3.2.0</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gcp</span></code> auth method was added in collection version <code class="docutils literal notranslate"><span class="pre">7.1.0</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;token&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
@@ -196,7 +197,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;azure&quot;</span></code></p></li>
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;jwt&quot;</span></code></p></li>
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;cert&quot;</span></code></p></li>
-<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;kubernetes&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;gcp&quot;</span></code></p></li>
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code></p></li>
 </ul>
 <p class="ansible-option-line"><strong class="ansible-option-configuration">Configuration:</strong></p>
@@ -1021,6 +1022,12 @@ For example, an ansible.cfg entry (further up in the list) is overwritten by an 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Authenticate with a JWT</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;secret/hola:val&#39;</span><span class="o">,</span> <span class="nv">auth_method</span><span class="o">=</span><span class="s1">&#39;jwt&#39;</span><span class="o">,</span> <span class="nv">role_id</span><span class="o">=</span><span class="s1">&#39;myroleid&#39;</span><span class="o">,</span> <span class="nv">jwt</span><span class="o">=</span><span class="s1">&#39;myjwt&#39;</span><span class="o">,</span> <span class="nv">url</span><span class="o">=</span><span class="s1">&#39;https://vault:8200&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+
+<span class="c1">#GCP auth</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Authenticate with GCP</span>
+<span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;community.hashi_vault.hashi_vault&#39;</span><span class="o">,</span> <span class="s1">&#39;secret/hola:val&#39;</span><span class="o">,</span> <span class="nv">auth_method</span><span class="o">=</span><span class="s1">&#39;gcp&#39;</span><span class="o">,</span> <span class="nv">role_id</span><span class="o">=</span><span class="s1">&#39;myroleid&#39;</span><span class="o">,</span> <span class="nv">jwt</span><span class="o">=</span><span class="s1">&#39;myjwt&#39;</span><span class="o">,</span> <span class="nv">url</span><span class="o">=</span><span class="s1">&#39;https://vault:8200&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
 
 <span class="c1"># Disabling Token Validation</span>
 <span class="c1"># Use this when your token does not have the lookup-self capability. Usually this is applied to all tokens via the default policy.</span>
