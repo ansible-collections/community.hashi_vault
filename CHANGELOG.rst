@@ -4,6 +4,19 @@ community.hashi\_vault Release Notes
 
 .. contents:: Topics
 
+v7.1.0
+======
+
+Release Summary
+---------------
+
+This release adds support for Google Cloud Platform (GCP) auth, and removes some Python 2 compatibility code. Python 2 has long been unsupported in this collection but if you happened to be using it successfully anyway, that will likely not work after this release.
+
+Minor Changes
+-------------
+
+- community.hashi_vault collection - add support for ``gcp`` auth method (https://github.com/ansible-collections/community.hashi_vault/pull/442).
+
 v7.0.0
 ======
 

@@ -1,3 +1,0 @@
----
-minor_changes:
-  - community.hashi_vault collection - add support for ``gcp`` auth method (https://github.com/ansible-collections/community.hashi_vault/pull/442).
