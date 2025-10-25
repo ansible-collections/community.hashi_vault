@@ -804,3 +804,16 @@ releases:
     - 470-core-python-versions.yml
     - 7.0.0.yml
     release_date: '2025-07-16'
+  7.1.0:
+    changes:
+      minor_changes:
+      - community.hashi_vault collection - add support for ``gcp`` auth method (https://github.com/ansible-collections/community.hashi_vault/pull/442).
+      release_summary: This release adds support for Google Cloud Platform (GCP) auth,
+        and removes some Python 2 compatibility code. Python 2 has long been unsupported
+        in this collection but if you happened to be using it successfully anyway,
+        that will likely not work after this release.
+    fragments:
+    - 442-add-gcp-auth.yml
+    - 481-remove-py2-compat.yml
+    - 7.1.0.yml
+    release_date: '2025-10-25'
