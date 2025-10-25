@@ -21,6 +21,7 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_cert import HashiVaultAuthMethodCert
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_gcp import HashiVaultAuthMethodGcp
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_jwt import HashiVaultAuthMethodJwt
+from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_k8s import HashiVaultAuthMethodKubernetes
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_ldap import HashiVaultAuthMethodLdap
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_none import HashiVaultAuthMethodNone
 from ansible_collections.community.hashi_vault.plugins.module_utils._auth_method_token import HashiVaultAuthMethodToken
@@ -39,6 +40,7 @@ class HashiVaultAuthenticator():
             'jwt',
             'cert',
             'gcp',
+            'kubernetes',
             'none',
         ]),
         mount_point=dict(type='str'),
@@ -51,6 +53,8 @@ class HashiVaultAuthenticator():
         role_id=dict(type='str'),
         secret_id=dict(type='str', no_log=True),
         jwt=dict(type='str', no_log=True),
+        kubernetes_token=dict(type='str', no_log=True),
+        kubernetes_token_path=dict(type='str', default='/var/run/secrets/kubernetes.io/serviceaccount/token', no_log=False),
         aws_profile=dict(type='str', aliases=['boto_profile']),
         aws_access_key=dict(type='str', aliases=['aws_access_key_id'], no_log=False),
         aws_secret_key=dict(type='str', aliases=['aws_secret_access_key'], no_log=True),
@@ -76,6 +80,7 @@ class HashiVaultAuthenticator():
             'cert': HashiVaultAuthMethodCert(option_adapter, warning_callback, deprecate_callback),
             'gcp': HashiVaultAuthMethodGcp(option_adapter, warning_callback, deprecate_callback),
             'jwt': HashiVaultAuthMethodJwt(option_adapter, warning_callback, deprecate_callback),
+            'kubernetes': HashiVaultAuthMethodKubernetes(option_adapter, warning_callback, deprecate_callback),
             'ldap': HashiVaultAuthMethodLdap(option_adapter, warning_callback, deprecate_callback),
             'none': HashiVaultAuthMethodNone(option_adapter, warning_callback, deprecate_callback),
             'token': HashiVaultAuthMethodToken(option_adapter, warning_callback, deprecate_callback),
