@@ -3,13 +3,13 @@
     is_default_path: "{{ this_path == default_path }}"
     jwt_public_key: |
       -----BEGIN PUBLIC KEY-----
-      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArIansgZKnb2NnOFe6+g3
-      v8kzMySJrBNxfzEq8nn3qtXsL4pl2bvrM8or3F6iNPv2p5GHGJat0HANgLBvxGlv
-      u2KYN8Jnjqf8zX5sqmvaK1L5aFZD7p9OKxu7JTCUzjykKGqmDXlitXXxkoDlCUr6
-      m7kR5Hn/VnmRWlyiIWQL8iY2pxYKGl7CvXEmW1vqEJvvOH2P0PxBS8fHFuEX3k+N
-      vEMJlDqN9MRi4EYh7P7R7qMVKSpOUl6K4TEYMsV3D0sHaIGDq+iw8Ev0fO2CglV5
-      uDAgo0WZlxcl6VqLDQIV20JJGHdHBxGFZl5GqzbM5yNEr2hUqT1h8fKHdF6L0xRu
-      eQIDAQAB
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvUJ8sf9bUQtAyESZ73mw
+      LCHjA8cj2ly3GTy5fxsyniUvkl6x+fVOXYqxgDYc9m14iaUXjE2eUIdQOnmRNIAz
+      xIhxKvXMhJVRSnjCcdQZ9FUPyvQ1bcNo6rISOEEroUdQ6ymX6/DKhW/tXPrYPFyK
+      502UF+YhuP+t/OdKT4qbIxHvkDyGorJDlfKDx9wIr88xY4+KFLKSkaCsO6fZvmhw
+      L2pVl5UfJ/mYXZdeJ8b8pJLSnWmKzXwamGNnvJK3Z4DwicL6Z9PS8ryZWMAUswFR
+      menCQdtebBuaKi401N9SlPl/qb3nFW3YVO1NrqGvF9nprdtBNN3++0a1fuMUmPhb
+      1QIDAQAB
       -----END PUBLIC KEY-----
   block:
     - name: "Enable the Kubernetes auth method"
@@ -23,17 +23,11 @@
       vault_ci_write:
         path: "auth/{{ this_path }}/config"
         data:
-          kubernetes_host: "https://kubernetes.default.svc"
-          kubernetes_ca_cert: |
-            -----BEGIN CERTIFICATE-----
-            MIIDBjCCAe4CAQAwDQYJKoZIhvcNAQEFBQAwEzERMA8GA1UEAwwIdGVzdC5jb20w
-            MIIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-            -----END CERTIFICATE-----
-          jwt_validation_pubkeys: |
+          kubernetes_host: "http://mmock:8900"
+          pem_keys: |
             {{ jwt_public_key }}
-          issuer: "https://kubernetes.default.svc.cluster.local"
+          disable_local_ca_jwt: true
+          disable_iss_validation: true
 
     - name: "Create a named role"
       vault_ci_write:
@@ -41,7 +35,6 @@
         data:
           bound_service_account_names: "*"
           bound_service_account_namespaces: "*"
-          # in docs, this is token_policies (changed in Vault 1.2)
-          # use 'policies' to support older versions
           policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }}"
           ttl: 60m
+          audience: "test"
