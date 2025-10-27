@@ -95,7 +95,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -167,7 +167,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -301,7 +301,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage=${{ github.job }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=vault_minus_${{ matrix.vault_minus }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
@@ -419,7 +419,7 @@ jobs:
 
       - name: Upload ${{ github.job }} coverage reports
         if: ${{ github.event_name != 'schedule' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage=${{ github.job }}=${{ matrix.runner }}=ansible_${{ matrix.ansible }}=${{ matrix.python }}=data
           path: ${{ env.COLLECTION_PATH }}/tests/output/reports/
