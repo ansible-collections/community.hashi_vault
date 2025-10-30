@@ -2,154 +2,170 @@
 
 **Topics**
 
-- <a href="#v7-0-0">v7\.0\.0</a>
+- <a href="#v7-1-0">v7\.1\.0</a>
     - <a href="#release-summary">Release Summary</a>
+    - <a href="#minor-changes">Minor Changes</a>
+- <a href="#v7-0-0">v7\.0\.0</a>
+    - <a href="#release-summary-1">Release Summary</a>
     - <a href="#breaking-changes--porting-guide">Breaking Changes / Porting Guide</a>
 - <a href="#v6-2-1">v6\.2\.1</a>
-    - <a href="#release-summary-1">Release Summary</a>
+    - <a href="#release-summary-2">Release Summary</a>
     - <a href="#deprecated-features">Deprecated Features</a>
     - <a href="#bugfixes">Bugfixes</a>
 - <a href="#v6-2-0">v6\.2\.0</a>
-    - <a href="#release-summary-2">Release Summary</a>
-    - <a href="#minor-changes">Minor Changes</a>
+    - <a href="#release-summary-3">Release Summary</a>
+    - <a href="#minor-changes-1">Minor Changes</a>
     - <a href="#new-modules">New Modules</a>
 - <a href="#v6-1-0">v6\.1\.0</a>
-    - <a href="#release-summary-3">Release Summary</a>
+    - <a href="#release-summary-4">Release Summary</a>
     - <a href="#major-changes">Major Changes</a>
 - <a href="#v6-0-0">v6\.0\.0</a>
-    - <a href="#release-summary-4">Release Summary</a>
+    - <a href="#release-summary-5">Release Summary</a>
     - <a href="#breaking-changes--porting-guide-1">Breaking Changes / Porting Guide</a>
     - <a href="#removed-features-previously-deprecated">Removed Features \(previously deprecated\)</a>
 - <a href="#v5-0-1">v5\.0\.1</a>
-    - <a href="#release-summary-5">Release Summary</a>
+    - <a href="#release-summary-6">Release Summary</a>
     - <a href="#bugfixes-1">Bugfixes</a>
 - <a href="#v5-0-0">v5\.0\.0</a>
-    - <a href="#release-summary-6">Release Summary</a>
+    - <a href="#release-summary-7">Release Summary</a>
     - <a href="#breaking-changes--porting-guide-2">Breaking Changes / Porting Guide</a>
 - <a href="#v4-2-1">v4\.2\.1</a>
-    - <a href="#release-summary-7">Release Summary</a>
-- <a href="#v4-2-0">v4\.2\.0</a>
     - <a href="#release-summary-8">Release Summary</a>
+- <a href="#v4-2-0">v4\.2\.0</a>
+    - <a href="#release-summary-9">Release Summary</a>
     - <a href="#deprecated-features-1">Deprecated Features</a>
     - <a href="#bugfixes-2">Bugfixes</a>
     - <a href="#new-modules-1">New Modules</a>
 - <a href="#v4-1-0">v4\.1\.0</a>
-    - <a href="#release-summary-9">Release Summary</a>
+    - <a href="#release-summary-10">Release Summary</a>
     - <a href="#deprecated-features-2">Deprecated Features</a>
     - <a href="#new-plugins">New Plugins</a>
         - <a href="#lookup">Lookup</a>
     - <a href="#new-modules-2">New Modules</a>
 - <a href="#v4-0-0">v4\.0\.0</a>
-    - <a href="#release-summary-10">Release Summary</a>
-    - <a href="#minor-changes-1">Minor Changes</a>
-    - <a href="#breaking-changes--porting-guide-3">Breaking Changes / Porting Guide</a>
-- <a href="#v3-4-0">v3\.4\.0</a>
     - <a href="#release-summary-11">Release Summary</a>
     - <a href="#minor-changes-2">Minor Changes</a>
+    - <a href="#breaking-changes--porting-guide-3">Breaking Changes / Porting Guide</a>
+- <a href="#v3-4-0">v3\.4\.0</a>
+    - <a href="#release-summary-12">Release Summary</a>
+    - <a href="#minor-changes-3">Minor Changes</a>
     - <a href="#bugfixes-3">Bugfixes</a>
     - <a href="#new-modules-3">New Modules</a>
 - <a href="#v3-3-1">v3\.3\.1</a>
-    - <a href="#release-summary-12">Release Summary</a>
-- <a href="#v3-3-0">v3\.3\.0</a>
     - <a href="#release-summary-13">Release Summary</a>
-    - <a href="#minor-changes-3">Minor Changes</a>
-- <a href="#v3-2-0">v3\.2\.0</a>
+- <a href="#v3-3-0">v3\.3\.0</a>
     - <a href="#release-summary-14">Release Summary</a>
     - <a href="#minor-changes-4">Minor Changes</a>
+- <a href="#v3-2-0">v3\.2\.0</a>
+    - <a href="#release-summary-15">Release Summary</a>
+    - <a href="#minor-changes-5">Minor Changes</a>
     - <a href="#bugfixes-4">Bugfixes</a>
 - <a href="#v3-1-0">v3\.1\.0</a>
-    - <a href="#release-summary-15">Release Summary</a>
+    - <a href="#release-summary-16">Release Summary</a>
     - <a href="#deprecated-features-3">Deprecated Features</a>
     - <a href="#bugfixes-5">Bugfixes</a>
 - <a href="#v3-0-0">v3\.0\.0</a>
-    - <a href="#release-summary-16">Release Summary</a>
+    - <a href="#release-summary-17">Release Summary</a>
     - <a href="#deprecated-features-4">Deprecated Features</a>
     - <a href="#removed-features-previously-deprecated-1">Removed Features \(previously deprecated\)</a>
 - <a href="#v2-5-0">v2\.5\.0</a>
-    - <a href="#release-summary-17">Release Summary</a>
-    - <a href="#minor-changes-5">Minor Changes</a>
+    - <a href="#release-summary-18">Release Summary</a>
+    - <a href="#minor-changes-6">Minor Changes</a>
     - <a href="#deprecated-features-5">Deprecated Features</a>
     - <a href="#new-plugins-1">New Plugins</a>
         - <a href="#lookup-1">Lookup</a>
     - <a href="#new-modules-4">New Modules</a>
 - <a href="#v2-4-0">v2\.4\.0</a>
-    - <a href="#release-summary-18">Release Summary</a>
+    - <a href="#release-summary-19">Release Summary</a>
     - <a href="#new-plugins-2">New Plugins</a>
         - <a href="#lookup-2">Lookup</a>
     - <a href="#new-modules-5">New Modules</a>
 - <a href="#v2-3-0">v2\.3\.0</a>
-    - <a href="#release-summary-19">Release Summary</a>
+    - <a href="#release-summary-20">Release Summary</a>
     - <a href="#new-plugins-3">New Plugins</a>
         - <a href="#lookup-3">Lookup</a>
     - <a href="#new-modules-6">New Modules</a>
 - <a href="#v2-2-0">v2\.2\.0</a>
-    - <a href="#release-summary-20">Release Summary</a>
-    - <a href="#minor-changes-6">Minor Changes</a>
+    - <a href="#release-summary-21">Release Summary</a>
+    - <a href="#minor-changes-7">Minor Changes</a>
     - <a href="#new-plugins-4">New Plugins</a>
         - <a href="#filter">Filter</a>
         - <a href="#lookup-4">Lookup</a>
     - <a href="#new-modules-7">New Modules</a>
 - <a href="#v2-1-0">v2\.1\.0</a>
-    - <a href="#release-summary-21">Release Summary</a>
+    - <a href="#release-summary-22">Release Summary</a>
     - <a href="#deprecated-features-6">Deprecated Features</a>
     - <a href="#removed-features-previously-deprecated-2">Removed Features \(previously deprecated\)</a>
 - <a href="#v2-0-0">v2\.0\.0</a>
-    - <a href="#release-summary-22">Release Summary</a>
+    - <a href="#release-summary-23">Release Summary</a>
     - <a href="#breaking-changes--porting-guide-4">Breaking Changes / Porting Guide</a>
     - <a href="#removed-features-previously-deprecated-3">Removed Features \(previously deprecated\)</a>
 - <a href="#v1-5-0">v1\.5\.0</a>
-    - <a href="#release-summary-23">Release Summary</a>
-    - <a href="#minor-changes-7">Minor Changes</a>
-- <a href="#v1-4-1">v1\.4\.1</a>
     - <a href="#release-summary-24">Release Summary</a>
+    - <a href="#minor-changes-8">Minor Changes</a>
+- <a href="#v1-4-1">v1\.4\.1</a>
+    - <a href="#release-summary-25">Release Summary</a>
     - <a href="#bugfixes-6">Bugfixes</a>
 - <a href="#v1-4-0">v1\.4\.0</a>
-    - <a href="#release-summary-25">Release Summary</a>
-    - <a href="#minor-changes-8">Minor Changes</a>
+    - <a href="#release-summary-26">Release Summary</a>
+    - <a href="#minor-changes-9">Minor Changes</a>
     - <a href="#deprecated-features-7">Deprecated Features</a>
     - <a href="#bugfixes-7">Bugfixes</a>
     - <a href="#new-plugins-5">New Plugins</a>
         - <a href="#lookup-5">Lookup</a>
     - <a href="#new-modules-8">New Modules</a>
 - <a href="#v1-3-2">v1\.3\.2</a>
-    - <a href="#release-summary-26">Release Summary</a>
-    - <a href="#minor-changes-9">Minor Changes</a>
+    - <a href="#release-summary-27">Release Summary</a>
+    - <a href="#minor-changes-10">Minor Changes</a>
     - <a href="#deprecated-features-8">Deprecated Features</a>
 - <a href="#v1-3-1">v1\.3\.1</a>
-    - <a href="#release-summary-27">Release Summary</a>
-- <a href="#v1-3-0">v1\.3\.0</a>
     - <a href="#release-summary-28">Release Summary</a>
-    - <a href="#minor-changes-10">Minor Changes</a>
-- <a href="#v1-2-0">v1\.2\.0</a>
+- <a href="#v1-3-0">v1\.3\.0</a>
     - <a href="#release-summary-29">Release Summary</a>
     - <a href="#minor-changes-11">Minor Changes</a>
+- <a href="#v1-2-0">v1\.2\.0</a>
+    - <a href="#release-summary-30">Release Summary</a>
+    - <a href="#minor-changes-12">Minor Changes</a>
     - <a href="#deprecated-features-9">Deprecated Features</a>
 - <a href="#v1-1-3">v1\.1\.3</a>
-    - <a href="#release-summary-30">Release Summary</a>
+    - <a href="#release-summary-31">Release Summary</a>
     - <a href="#bugfixes-8">Bugfixes</a>
 - <a href="#v1-1-2">v1\.1\.2</a>
-    - <a href="#release-summary-31">Release Summary</a>
-- <a href="#v1-1-1">v1\.1\.1</a>
     - <a href="#release-summary-32">Release Summary</a>
+- <a href="#v1-1-1">v1\.1\.1</a>
+    - <a href="#release-summary-33">Release Summary</a>
     - <a href="#bugfixes-9">Bugfixes</a>
 - <a href="#v1-1-0">v1\.1\.0</a>
-    - <a href="#release-summary-33">Release Summary</a>
-    - <a href="#minor-changes-12">Minor Changes</a>
-- <a href="#v1-0-0">v1\.0\.0</a>
     - <a href="#release-summary-34">Release Summary</a>
+    - <a href="#minor-changes-13">Minor Changes</a>
+- <a href="#v1-0-0">v1\.0\.0</a>
+    - <a href="#release-summary-35">Release Summary</a>
     - <a href="#breaking-changes--porting-guide-5">Breaking Changes / Porting Guide</a>
 - <a href="#v0-2-0">v0\.2\.0</a>
-    - <a href="#release-summary-35">Release Summary</a>
-    - <a href="#minor-changes-13">Minor Changes</a>
+    - <a href="#release-summary-36">Release Summary</a>
+    - <a href="#minor-changes-14">Minor Changes</a>
     - <a href="#deprecated-features-10">Deprecated Features</a>
     - <a href="#bugfixes-10">Bugfixes</a>
 - <a href="#v0-1-0">v0\.1\.0</a>
-    - <a href="#release-summary-36">Release Summary</a>
+    - <a href="#release-summary-37">Release Summary</a>
+
+<a id="v7-1-0"></a>
+## v7\.1\.0
+
+<a id="release-summary"></a>
+### Release Summary
+
+This release adds support for Google Cloud Platform \(GCP\) auth\, and removes some Python 2 compatibility code\. Python 2 has long been unsupported in this collection but if you happened to be using it successfully anyway\, that will likely not work after this release\.
+
+<a id="minor-changes"></a>
+### Minor Changes
+
+* community\.hashi\_vault collection \- add support for <code>gcp</code> auth method \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/442](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/442)\)\.
 
 <a id="v7-0-0"></a>
 ## v7\.0\.0
 
-<a id="release-summary"></a>
+<a id="release-summary-1"></a>
 ### Release Summary
 
 This release removes support for older versions of <code>ansible\-core</code> and <code>python</code>\. It does not contain functional changes that cause the collection to stop working in earlier versions\, however we are no longer testing against those so compatibility will not be guaranteed from this version on\.
@@ -163,7 +179,7 @@ This release removes support for older versions of <code>ansible\-core</code> an
 <a id="v6-2-1"></a>
 ## v6\.2\.1
 
-<a id="release-summary-1"></a>
+<a id="release-summary-2"></a>
 ### Release Summary
 
 A quick bugfix release before the next major version\. Please take note of the upcoming deprecation of <code>ansible\-core</code> and <code>python</code> versions\.
@@ -182,12 +198,12 @@ A quick bugfix release before the next major version\. Please take note of the u
 <a id="v6-2-0"></a>
 ## v6\.2\.0
 
-<a id="release-summary-2"></a>
+<a id="release-summary-3"></a>
 ### Release Summary
 
 This release contains a dozen\+ new modules for working with Vault\'s database secrets engine and some new <code>vars</code> entries for specifying public and private keys in <code>cert</code> auth\.
 
-<a id="minor-changes"></a>
+<a id="minor-changes-1"></a>
 ### Minor Changes
 
 * cert auth \- add option to set the <code>cert\_auth\_public\_key</code> and <code>cert\_auth\_private\_key</code> parameters using the variables <code>ansible\_hashi\_vault\_cert\_auth\_public\_key</code> and <code>ansible\_hashi\_vault\_cert\_auth\_private\_key</code> \([https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/428](https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/428)\)\.
@@ -214,7 +230,7 @@ This release contains a dozen\+ new modules for working with Vault\'s database s
 <a id="v6-1-0"></a>
 ## v6\.1\.0
 
-<a id="release-summary-3"></a>
+<a id="release-summary-4"></a>
 ### Release Summary
 
 This release addresses some breaking changes in core that were backported\.
@@ -227,7 +243,7 @@ This release addresses some breaking changes in core that were backported\.
 <a id="v6-0-0"></a>
 ## v6\.0\.0
 
-<a id="release-summary-4"></a>
+<a id="release-summary-5"></a>
 ### Release Summary
 
 This major version of the collection has no functional changes from the previous version\, however the minimum versions of <code>hvac</code> and <code>ansible\-core</code> have been raised\. While the collection may still work with those earlier versions\, future changes will not test against them\.
@@ -245,7 +261,7 @@ This major version of the collection has no functional changes from the previous
 <a id="v5-0-1"></a>
 ## v5\.0\.1
 
-<a id="release-summary-5"></a>
+<a id="release-summary-6"></a>
 ### Release Summary
 
 This release fixes a bug in <code>vault\_write</code> ahead of the collection\'s next major release\.
@@ -258,7 +274,7 @@ This release fixes a bug in <code>vault\_write</code> ahead of the collection\'s
 <a id="v5-0-0"></a>
 ## v5\.0\.0
 
-<a id="release-summary-6"></a>
+<a id="release-summary-7"></a>
 ### Release Summary
 
 This version makes some relatively minor but technically breaking changes\. Support for <code>ansible\-core</code> versions <code>2\.11</code> and <code>2\.12</code> have been dropped\, and there is now a minimum supported version of <code>hvac</code> which will be updated over time\. A warning in the <code>hashi\_vault</code> lookup on duplicate option specifications in the term string has been changed to a fatal error\.
@@ -273,7 +289,7 @@ This version makes some relatively minor but technically breaking changes\. Supp
 <a id="v4-2-1"></a>
 ## v4\.2\.1
 
-<a id="release-summary-7"></a>
+<a id="release-summary-8"></a>
 ### Release Summary
 
 This patch version updates the documentation for the <code>vault\_kv2\_write</code> module\. There are no functional changes\.
@@ -281,7 +297,7 @@ This patch version updates the documentation for the <code>vault\_kv2\_write</co
 <a id="v4-2-0"></a>
 ## v4\.2\.0
 
-<a id="release-summary-8"></a>
+<a id="release-summary-9"></a>
 ### Release Summary
 
 This release contains a new module for KVv2 writes\, and a new warning for duplicated term string options in the <code>hashi\_vault</code> lookup\.
@@ -304,7 +320,7 @@ This release contains a new module for KVv2 writes\, and a new warning for dupli
 <a id="v4-1-0"></a>
 ## v4\.1\.0
 
-<a id="release-summary-9"></a>
+<a id="release-summary-10"></a>
 ### Release Summary
 
 This release brings new generic <code>vault\_list</code> plugins from a new contributor\!
@@ -332,12 +348,12 @@ There are also some deprecation notices for the next major version\, and some up
 <a id="v4-0-0"></a>
 ## v4\.0\.0
 
-<a id="release-summary-10"></a>
+<a id="release-summary-11"></a>
 ### Release Summary
 
 The next major version of the collection includes previously announced breaking changes to some default values\, and improvements to module documentation with attributes that describe the use of action groups and check mode support\.
 
-<a id="minor-changes-1"></a>
+<a id="minor-changes-2"></a>
 ### Minor Changes
 
 * modules \- all modules now document their action group and support for check mode in their attributes documentation \([https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/197](https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/197)\)\.
@@ -351,13 +367,13 @@ The next major version of the collection includes previously announced breaking 
 <a id="v3-4-0"></a>
 ## v3\.4\.0
 
-<a id="release-summary-11"></a>
+<a id="release-summary-12"></a>
 ### Release Summary
 
 This release includes a new module\, fixes \(another\) <code>requests</code> header issue\, and updates some inaccurate documentation\.
 This is the last planned release before v4\.0\.0\.
 
-<a id="minor-changes-2"></a>
+<a id="minor-changes-3"></a>
 ### Minor Changes
 
 * vault\_pki\_generate\_certificate \- the documentation has been updated to match the argspec for the default values of options <code>alt\_names</code>\, <code>ip\_sans</code>\, <code>other\_sans</code>\, and <code>uri\_sans</code> \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/318](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/318)\)\.
@@ -375,7 +391,7 @@ This is the last planned release before v4\.0\.0\.
 <a id="v3-3-1"></a>
 ## v3\.3\.1
 
-<a id="release-summary-12"></a>
+<a id="release-summary-13"></a>
 ### Release Summary
 
 No functional changes in this release\, this provides updated filter documentation for the public docsite\.
@@ -383,13 +399,13 @@ No functional changes in this release\, this provides updated filter documentati
 <a id="v3-3-0"></a>
 ## v3\.3\.0
 
-<a id="release-summary-13"></a>
+<a id="release-summary-14"></a>
 ### Release Summary
 
 With the release of <code>hvac</code> version <code>1\.0\.0</code>\, we needed to update <code>vault\_token\_create</code>\'s support for orphan tokens\.
 The collection\'s changelog is now viewable in the Ansible documentation site\.
 
-<a id="minor-changes-3"></a>
+<a id="minor-changes-4"></a>
 ### Minor Changes
 
 * vault\_token\_create \- creation or orphan tokens uses <code>hvac</code>\'s new v1 method for creating orphans\, or falls back to the v0 method if needed \([https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/301](https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/301)\)\.
@@ -397,12 +413,12 @@ The collection\'s changelog is now viewable in the Ansible documentation site\.
 <a id="v3-2-0"></a>
 ## v3\.2\.0
 
-<a id="release-summary-14"></a>
+<a id="release-summary-15"></a>
 ### Release Summary
 
 This release brings support for the <code>azure</code> auth method\, adds <code>412</code> to the default list of HTTP status codes to be retried\, and fixes a bug that causes failures in token auth with <code>requests\>\=2\.28\.0</code>\.
 
-<a id="minor-changes-4"></a>
+<a id="minor-changes-5"></a>
 ### Minor Changes
 
 * community\.hashi\_vault collection \- add support for <code>azure</code> auth method\, for Azure service principal\, managed identity\, or plain JWT access token \([https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/293](https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/293)\)\.
@@ -417,7 +433,7 @@ This release brings support for the <code>azure</code> auth method\, adds <code>
 <a id="v3-1-0"></a>
 ## v3\.1\.0
 
-<a id="release-summary-15"></a>
+<a id="release-summary-16"></a>
 ### Release Summary
 
 A default value that was set incorrectly will be corrected in <code>4\.0\.0</code>\.
@@ -439,7 +455,7 @@ This version also includes some fixes and improvements to the licensing in the c
 <a id="v3-0-0"></a>
 ## v3\.0\.0
 
-<a id="release-summary-16"></a>
+<a id="release-summary-17"></a>
 ### Release Summary
 
 Version 3\.0\.0 of <code>community\.hashi\_vault</code> drops support for Ansible 2\.9 and ansible\-base 2\.10\.
@@ -460,7 +476,7 @@ Several deprecated features have been removed\. See the changelog for the full l
 <a id="v2-5-0"></a>
 ## v2\.5\.0
 
-<a id="release-summary-17"></a>
+<a id="release-summary-18"></a>
 ### Release Summary
 
 This release finally contains dedicated KV plugins and modules\, and an exciting new lookup to help use plugin values in module calls\.
@@ -468,7 +484,7 @@ With that\, we also have a guide in the collection docsite for migrating away fr
 We are also announcing that the <code>token\_validate</code> option will change its default value in version 4\.0\.0\.
 This is the last planned release before 3\.0\.0\. See the porting guide for breaking changes and removed features in the next version\.
 
-<a id="minor-changes-5"></a>
+<a id="minor-changes-6"></a>
 ### Minor Changes
 
 * vault\_login module \& lookup \- no friendly error message was given when <code>hvac</code> was missing \([https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/257](https\://github\.com/ansible\-collections/community\.hashi\_vault/issues/257)\)\.
@@ -502,7 +518,7 @@ This is the last planned release before 3\.0\.0\. See the porting guide for brea
 <a id="v2-4-0"></a>
 ## v2\.4\.0
 
-<a id="release-summary-18"></a>
+<a id="release-summary-19"></a>
 ### Release Summary
 
 Our first content for writing to Vault is now live\.
@@ -523,7 +539,7 @@ Our first content for writing to Vault is now live\.
 <a id="v2-3-0"></a>
 ## v2\.3\.0
 
-<a id="release-summary-19"></a>
+<a id="release-summary-20"></a>
 ### Release Summary
 
 This release contains new plugins and modules for creating tokens and for generating certificates with Vault\'s PKI secrets engine\.
@@ -545,12 +561,12 @@ This release contains new plugins and modules for creating tokens and for genera
 <a id="v2-2-0"></a>
 ## v2\.2\.0
 
-<a id="release-summary-20"></a>
+<a id="release-summary-21"></a>
 ### Release Summary
 
 This release contains a new lookup/module combo for logging in to Vault\, and includes our first filter plugin\.
 
-<a id="minor-changes-6"></a>
+<a id="minor-changes-7"></a>
 ### Minor Changes
 
 * The Filter guide has been added to the collection\'s docsite\.
@@ -576,7 +592,7 @@ This release contains a new lookup/module combo for logging in to Vault\, and in
 <a id="v2-1-0"></a>
 ## v2\.1\.0
 
-<a id="release-summary-21"></a>
+<a id="release-summary-22"></a>
 ### Release Summary
 
 The most important change in this release is renaming the <code>aws\_iam\_login</code> auth method to <code>aws\_iam</code> and deprecating the old name\. This release also announces the deprecation of Ansible 2\.9 and ansible\-base 2\.10 support in 3\.0\.0\.
@@ -595,7 +611,7 @@ The most important change in this release is renaming the <code>aws\_iam\_login<
 <a id="v2-0-0"></a>
 ## v2\.0\.0
 
-<a id="release-summary-22"></a>
+<a id="release-summary-23"></a>
 ### Release Summary
 
 Version 2\.0\.0 of the collection drops support for Python 2 \& Python 3\.5\, making Python 3\.6 the minimum supported version\.
@@ -615,13 +631,13 @@ Some deprecated features and settings have been removed as well\.
 <a id="v1-5-0"></a>
 ## v1\.5\.0
 
-<a id="release-summary-23"></a>
+<a id="release-summary-24"></a>
 ### Release Summary
 
 This release includes a new action group for use with <code>module\_defaults</code>\, and additional ways of specifying the <code>mount\_point</code> option for plugins\.
 This will be the last <code>1\.x</code> release\.
 
-<a id="minor-changes-7"></a>
+<a id="minor-changes-8"></a>
 ### Minor Changes
 
 * add the <code>community\.hashi\_vault\.vault</code> action group \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/172](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/172)\)\.
@@ -630,7 +646,7 @@ This will be the last <code>1\.x</code> release\.
 <a id="v1-4-1"></a>
 ## v1\.4\.1
 
-<a id="release-summary-24"></a>
+<a id="release-summary-25"></a>
 ### Release Summary
 
 This release contains a bugfix for <code>aws\_iam\_login</code> authentication\.
@@ -643,13 +659,13 @@ This release contains a bugfix for <code>aws\_iam\_login</code> authentication\.
 <a id="v1-4-0"></a>
 ## v1\.4\.0
 
-<a id="release-summary-25"></a>
+<a id="release-summary-26"></a>
 ### Release Summary
 
 This release includes bugfixes\, a new auth method \(<code>cert</code>\)\, and the first new content since the collection\'s formation\, the <code>vault\_read</code> module and lookup plugin\.
 We\'re also announcing the deprecation of the <code>\[lookup\_hashi\_vault\]</code> INI section \(which will continue working up until its removal only for the <code>hashi\_vault</code> lookup\)\, to be replaced by the <code>\[hashi\_vault\_collection\]</code> section that will apply to all plugins in the collection\.
 
-<a id="minor-changes-8"></a>
+<a id="minor-changes-9"></a>
 ### Minor Changes
 
 * community\.hashi\_vault collection \- add cert auth method \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/159](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/159)\)\.
@@ -682,13 +698,13 @@ We\'re also announcing the deprecation of the <code>\[lookup\_hashi\_vault\]</co
 <a id="v1-3-2"></a>
 ## v1\.3\.2
 
-<a id="release-summary-26"></a>
+<a id="release-summary-27"></a>
 ### Release Summary
 
 This release adds requirements detection support for Ansible Execution Environments\. It also updates and adds new guides in our [collection docsite](https\://docs\.ansible\.com/ansible/devel/collections/community/hashi\_vault)\.
 This release also announces the dropping of Python 3\.5 support in version <code>2\.0\.0</code> of the collection\, alongside the previous announcement dropping Python 2\.x in <code>2\.0\.0</code>\.
 
-<a id="minor-changes-9"></a>
+<a id="minor-changes-10"></a>
 ### Minor Changes
 
 * hashi\_vault collection \- add <code>execution\-environment\.yml</code> and a python requirements file to better support <code>ansible\-builder</code> \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/105](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/105)\)\.
@@ -701,7 +717,7 @@ This release also announces the dropping of Python 3\.5 support in version <code
 <a id="v1-3-1"></a>
 ## v1\.3\.1
 
-<a id="release-summary-27"></a>
+<a id="release-summary-28"></a>
 ### Release Summary
 
 This release fixes an error in the documentation\. No functionality is changed so it\'s not necessary to upgrade from <code>1\.3\.0</code>\.
@@ -709,12 +725,12 @@ This release fixes an error in the documentation\. No functionality is changed s
 <a id="v1-3-0"></a>
 ## v1\.3\.0
 
-<a id="release-summary-28"></a>
+<a id="release-summary-29"></a>
 ### Release Summary
 
 This release adds two connection\-based options for controlling timeouts and retrying failed Vault requests\.
 
-<a id="minor-changes-10"></a>
+<a id="minor-changes-11"></a>
 ### Minor Changes
 
 * hashi\_vault lookup \- add <code>retries</code> and <code>retry\_action</code> to enable built\-in retry on failure \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/71](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/71)\)\.
@@ -723,14 +739,14 @@ This release adds two connection\-based options for controlling timeouts and ret
 <a id="v1-2-0"></a>
 ## v1\.2\.0
 
-<a id="release-summary-29"></a>
+<a id="release-summary-30"></a>
 ### Release Summary
 
 This release brings several new ways of accessing options\, like using Ansible vars\, and addng new environment variables and INI config entries\.
 A special <code>none</code> auth type is also added\, for working with certain Vault Agent configurations\.
 This release also announces the deprecation of Python 2 support in version <code>2\.0\.0</code> of the collection\.
 
-<a id="minor-changes-11"></a>
+<a id="minor-changes-12"></a>
 ### Minor Changes
 
 * hashi\_vault lookup \- add <code>ANSIBLE\_HASHI\_VAULT\_CA\_CERT</code> env var \(with <code>VAULT\_CACERT</code> low\-precedence fallback\) for <code>ca\_cert</code> option \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/97](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/97)\)\.
@@ -759,7 +775,7 @@ This release also announces the deprecation of Python 2 support in version <code
 <a id="v1-1-3"></a>
 ## v1\.1\.3
 
-<a id="release-summary-30"></a>
+<a id="release-summary-31"></a>
 ### Release Summary
 
 This release fixes a bug with <code>userpass</code> authentication and <code>hvac</code> versions 0\.9\.6 and higher\.
@@ -772,7 +788,7 @@ This release fixes a bug with <code>userpass</code> authentication and <code>hva
 <a id="v1-1-2"></a>
 ## v1\.1\.2
 
-<a id="release-summary-31"></a>
+<a id="release-summary-32"></a>
 ### Release Summary
 
 This release contains the same functionality as 1\.1\.1\. The only change is to mark some code as internal to the collection\. If you are already using 1\.1\.1 as an end user you do not need to update\.
@@ -780,7 +796,7 @@ This release contains the same functionality as 1\.1\.1\. The only change is to 
 <a id="v1-1-1"></a>
 ## v1\.1\.1
 
-<a id="release-summary-32"></a>
+<a id="release-summary-33"></a>
 ### Release Summary
 
 This bugfix release restores the use of the <code>VAULT\_ADDR</code> environment variable for setting the <code>url</code> option\.
@@ -794,12 +810,12 @@ See the PR linked from the changelog entry for details and workarounds if you ca
 <a id="v1-1-0"></a>
 ## v1\.1\.0
 
-<a id="release-summary-33"></a>
+<a id="release-summary-34"></a>
 ### Release Summary
 
 This release contains a new <code>proxies</code> option for the <code>hashi\_vault</code> lookup\.
 
-<a id="minor-changes-12"></a>
+<a id="minor-changes-13"></a>
 ### Minor Changes
 
 * hashi\_vault \- add <code>proxies</code> option \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/50](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/50)\)\.
@@ -807,7 +823,7 @@ This release contains a new <code>proxies</code> option for the <code>hashi\_vau
 <a id="v1-0-0"></a>
 ## v1\.0\.0
 
-<a id="release-summary-34"></a>
+<a id="release-summary-35"></a>
 ### Release Summary
 
 Our first major release contains a single breaking change that will affect only a small subset of users\. No functionality is removed\. See the details in the changelog to determine if you\'re affected and if so how to transition to remediate\.
@@ -820,13 +836,13 @@ Our first major release contains a single breaking change that will affect only 
 <a id="v0-2-0"></a>
 ## v0\.2\.0
 
-<a id="release-summary-35"></a>
+<a id="release-summary-36"></a>
 ### Release Summary
 
 Several backwards\-compatible bugfixes and enhancements in this release\.
 Some environment variables are deprecated and have standardized replacements\.
 
-<a id="minor-changes-13"></a>
+<a id="minor-changes-14"></a>
 ### Minor Changes
 
 * Add optional <code>aws\_iam\_server\_id</code> parameter as the value for <code>X\-Vault\-AWS\-IAM\-Server\-ID</code> header \([https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/27](https\://github\.com/ansible\-collections/community\.hashi\_vault/pull/27)\)\.
@@ -862,7 +878,7 @@ Some environment variables are deprecated and have standardized replacements\.
 <a id="v0-1-0"></a>
 ## v0\.1\.0
 
-<a id="release-summary-36"></a>
+<a id="release-summary-37"></a>
 ### Release Summary
 
 Our first release matches the <code>hashi\_vault</code> lookup functionality provided by <code>community\.general</code> version <code>1\.3\.0</code>\.

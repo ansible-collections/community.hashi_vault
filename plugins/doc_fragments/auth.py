@@ -20,7 +20,7 @@ class ModuleDocFragment(object):
           - C(aws_iam_login) was renamed C(aws_iam) in collection version C(2.1.0) and was removed in C(3.0.0).
           - C(azure) auth method was added in collection version C(3.2.0).
           - C(gcp) auth method was added in collection version C(7.1.0).
-          - C(kubernetes) auth method was added in collection version C(8.0.0).
+          - C(kubernetes) auth method was added in collection version C(7.2.0).
         choices:
           - token
           - userpass
@@ -82,12 +82,12 @@ class ModuleDocFragment(object):
       kubernetes_token:
         description: The Kubernetes Token (JWT) to use for Kubernetes authentication to Vault.
         type: str
-        version_added: 6.3.0
+        version_added: 7.2.0
       kubernetes_token_path:
         description: If no kubernetes_token is specified, will try to read the token from this path.
         default: '/var/run/secrets/kubernetes.io/serviceaccount/token'
         type: str
-        version_added: 6.3.0
+        version_added: 7.2.0
       aws_profile:
         description: The AWS profile
         type: str
