@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# (c) 2022, Isaac Wagner (@idwagner)
+# (c) 2024, Robin Kloppe
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -8,16 +8,16 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = '''
-module: vault_kv2_delete
+module: vault_kv2_delete_all
 version_added: 3.4.0
 author:
-  - Isaac Wagner (@idwagner)
-short_description: Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store
+  - Robin Kloppe
+short_description: Delete a complete secret from HashiCorp Vault's KV version 2 secret store
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Delete one or more versions of a secret from HashiCorp Vault's KV version 2 secret store.
+  - Delete a complete secret from HashiCorp Vault's KV version 2 secret store.
 notes:
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
@@ -30,7 +30,7 @@ attributes:
 seealso:
   - module: community.hashi_vault.vault_kv2_get
   - module: community.hashi_vault.vault_kv2_write
-  - module: community.hashi_vault.vault_kv2_delete_all
+  - module: community:hashi_vault_vault_kv2_delete
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
@@ -50,33 +50,17 @@ options:
       - For kv2, do not include C(/data/) or C(/metadata/).
     type: str
     required: True
-  versions:
-    description:
-      - One or more versions of the secret to delete.
-      - When omitted, the latest version of the secret is deleted.
-    type: list
-    elements: int
-    required: False
 '''
 
 EXAMPLES = """
-- name: Delete the latest version of the secret/mysecret secret.
-  community.hashi_vault.vault_kv2_delete:
+- name: Delete everything of the secret/mysecret secret.
+  community.hashi_vault.vault_kv2_delete_all:
     url: https://vault:8201
     path: secret/mysecret
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
   register: result
-
-- name: Delete versions 1 and 3 of the secret/mysecret secret.
-  community.hashi_vault.vault_kv2_delete:
-    url: https://vault:8201
-    path: secret/mysecret
-    versions: [1, 3]
-    auth_method: userpass
-    username: user
-    password: '{{ passwd }}'
 """
 
 RETURN = """
@@ -90,10 +74,20 @@ data:
 
 import traceback
 
-from ansible.module_utils.common.text.converters import to_text
+from ansible.module_utils._text import to_native
+from ansible.module_utils.basic import missing_required_lib
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC = False
+    HVAC_IMPORT_ERROR = traceback.format_exc()
+else:
+    HVAC_IMPORT_ERROR = None
+    HAS_HVAC = True
 
 
 def run_module():
@@ -101,7 +95,6 @@ def run_module():
     argspec = HashiVaultModule.generate_argspec(
         engine_mount_point=dict(type='str', default='secret'),
         path=dict(type='str', required=True),
-        versions=dict(type='list', elements='int', required=False)
     )
 
     module = HashiVaultModule(
@@ -109,34 +102,35 @@ def run_module():
         supports_check_mode=True
     )
 
+    if not HAS_HVAC:
+        module.fail_json(
+            msg=missing_required_lib('hvac'),
+            exception=HVAC_IMPORT_ERROR
+        )
+
     engine_mount_point = module.params.get('engine_mount_point')
     path = module.params.get('path')
-    versions = module.params.get('versions')
 
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
-    hvac_exceptions = module.helper.get_hvac().exceptions
 
     try:
         module.authenticator.validate()
         module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_text(e), exception=traceback.format_exc())
+        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
     try:
         # Vault has two separate methods, one for delete latest version,
         # and delete specific versions.
         if module.check_mode:
             response = {}
-        elif not versions:
-            response = client.secrets.kv.v2.delete_latest_version_of_secret(
-                path=path, mount_point=engine_mount_point)
         else:
-            response = client.secrets.kv.v2.delete_secret_versions(
-                path=path, versions=versions, mount_point=engine_mount_point)
+            response = client.secrets.kv.v2.delete_metadata_and_all_versions(
+                path=path, mount_point=engine_mount_point)
 
-    except hvac_exceptions.Forbidden as e:
+    except hvac.exceptions.Forbidden as e:
         module.fail_json(msg="Forbidden: Permission Denied to path ['%s']." % path, exception=traceback.format_exc())
 
     # https://github.com/hvac/hvac/issues/797
