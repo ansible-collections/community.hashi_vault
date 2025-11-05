@@ -49,13 +49,6 @@ DOCUMENTATION = """
     secret:
       description: Vault path to the secret being requested in the format C(path[:field]).
       required: True
-    secret_field:
-      description:
-        - Field within the secret being requested.
-        - This is set automatically when using the C(secret:field) syntax.
-        - Use of this option is discouraged in favor of the C(:field) syntax.
-      required: False
-      version_added: 6.3.0
     return_format:
       description:
         - Controls how multiple key/value pairs in a path are treated on return.
@@ -257,18 +250,9 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 display = Display()
 
-HAS_HVAC = False
-try:
-    import hvac
-    HAS_HVAC = True
-except ImportError:
-    HAS_HVAC = False
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if not HAS_HVAC:
-            raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
 
         ret = []
 
@@ -318,18 +302,20 @@ class LookupModule(HashiVaultLookupBase):
             field = s_f[1]
         else:
             field = None
-        self.set_option('secret_field', field)
+
+        self._secret_field = field
 
     def get(self):
         '''gets a secret. should always return a list'''
 
+        field = self._secret_field
         secret = self.get_option('secret')
-        field = self.get_option('secret_field')
         return_as = self.get_option('return_format')
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         try:
             data = self.client.read(secret)
-        except hvac.exceptions.Forbidden:
+        except hvac_exceptions.Forbidden:
             raise AnsibleError("Forbidden: Permission Denied to secret '%s'." % secret)
 
         if data is None:
