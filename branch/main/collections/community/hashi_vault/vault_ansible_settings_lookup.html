@@ -249,7 +249,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <code class="docutils literal notranslate"><span class="pre">lookup('community.hashi_vault.vault_ansible_settings',</span> <span class="pre">term1,</span> <span class="pre">term2,</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2)</span></code> and <code class="docutils literal notranslate"><span class="pre">query('community.hashi_vault.vault_ansible_settings',</span> <span class="pre">term1,</span> <span class="pre">term2,</span> <span class="pre">key1=value1,</span> <span class="pre">key2=value2)</span></code></p></li>
 <li><p>This collection supports some “low precedence” environment variables that get loaded after all other sources, such as <code class="docutils literal notranslate"><span class="pre">VAULT_ADDR</span></code>.</p></li>
 <li><p>These environment variables <strong>are not supported</strong> with this plugin.</p></li>
-<li><p>If you wish to use them, use the <a class="reference external" href="https://docs.ansible.com/ansible/devel/collections/ansible/builtin/env_lookup.html#ansible-collections-ansible-builtin-env-lookup" title="(in Ansible vdevel)"><span class="xref std std-ref">ansible.builtin.env lookup</span></a> to load them directly when calling a module or setting <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code>.</p></li>
+<li><p>If you wish to use them, use the <a class="reference external" href="https://docs.ansible.com/projects/ansible/devel/collections/ansible/builtin/env_lookup.html#ansible-collections-ansible-builtin-env-lookup" title="(in Ansible vdevel)"><span class="xref std std-ref">ansible.builtin.env lookup</span></a> to load them directly when calling a module or setting <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code>.</p></li>
 <li><p>Similarly, any options that rely on additional processing to fill in their values will not have that done.</p></li>
 <li><p>For example, tokens will not be loaded from the token sink file, auth methods will not have their <code class="docutils literal notranslate"><span class="pre">validate</span></code> methods called.</p></li>
 <li><p>See the examples for workarounds, but consider using Ansible-specific ways of setting these values instead.</p></li>
@@ -261,7 +261,7 @@ examples: <code class="docutils literal notranslate"><span class="pre">lookup('c
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference external" href="https://docs.ansible.com/ansible/devel/playbook_guide/playbooks_module_defaults.html#module-defaults" title="(in Ansible vdevel)"><span class="xref std std-ref">Module defaults</span></a></dt><dd><p>Using the <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code> keyword.</p>
+<dt><a class="reference external" href="https://docs.ansible.com/projects/ansible/devel/playbook_guide/playbooks_module_defaults.html#module-defaults" title="(in Ansible vdevel)"><span class="xref std std-ref">Module defaults</span></a></dt><dd><p>Using the <code class="docutils literal notranslate"><span class="pre">module_defaults</span></code> keyword.</p>
 </dd>
 </dl>
 </div>
