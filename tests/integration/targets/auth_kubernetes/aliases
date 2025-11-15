@@ -1,0 +1,4 @@
+vault/auth/kubernetes
+context/target
+needs/target/setup_vault_configure
+needs/target/setup_vault_test_plugins
