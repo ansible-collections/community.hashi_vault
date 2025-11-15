@@ -1,3 +1,4 @@
 hvac
 urllib3
 azure-identity
+requests_unixsocket
