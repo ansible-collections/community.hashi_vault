@@ -73,7 +73,7 @@ data:
   sample:
     keys: *sample_connections
 connections:
-  description: The list of database connections or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  description: The list of database connections or en empty list. This can also be accessed via RV(data['keys']) or RV(raw.data['keys']).
   returned: success
   type: list
   elements: str

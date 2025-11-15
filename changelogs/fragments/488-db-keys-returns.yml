@@ -1,0 +1,8 @@
+---
+trivial:
+  - database modules - ignored new sanity test since it has no provision for describing the natural keys returned by an upstream API (https://github.com/ansible-collections/community.hashi_vault/pull/488).
+
+bugfixes:
+  - vault_database_connections_list module - tweaked documentation about the ``keys`` field returned from the API (https://github.com/ansible-collections/community.hashi_vault/pull/488).
+  - vault_database_roles_list module - tweaked documentation about the ``keys`` field returned from the API (https://github.com/ansible-collections/community.hashi_vault/pull/488).
+  - vault_database_static_roles_list module - tweaked documentation about the ``keys`` field returned from the API (https://github.com/ansible-collections/community.hashi_vault/pull/488).
