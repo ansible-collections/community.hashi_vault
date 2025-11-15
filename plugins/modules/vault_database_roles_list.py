@@ -21,7 +21,7 @@ description:
   - Returns a list of available (dynamic) roles.
 notes:
   - This API returns a member named C(keys).
-  - In Ansible, accessing RV(data.keys) or RV(raw.data.keys) will not work because the dict object contains a method named C(keys).
+  - In Ansible, accessing RV(data['keys']) or RV(raw.data['keys']) will not work because the dict object contains a method named C(keys).
   - Instead, use RV(roles) to access the list of roles, or use the syntax C(data["keys"]) or C(raw.data["keys"]) to access the list via dict member.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
@@ -74,7 +74,7 @@ data:
   sample:
     keys: *sample_roles
 roles:
-  description: The list of dynamic roles or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  description: The list of dynamic roles or en empty list. This can also be accessed via RV(data['keys']) or RV(raw.data['keys']).
   returned: success
   type: list
   elements: str
