@@ -1,0 +1,4 @@
+plugins/modules/vault_database_connections_list.py validate-modules:bad-return-value-key
+plugins/modules/vault_database_static_roles_list.py validate-modules:bad-return-value-key
+plugins/modules/vault_database_roles_list.py validate-modules:bad-return-value-key
+plugins/modules/vault_database_static_roles_list.py validate-modules:bad-return-value-key
