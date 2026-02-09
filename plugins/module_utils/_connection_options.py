@@ -51,7 +51,7 @@ except ImportError:
 class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     '''HashiVault option group class for connection options'''
 
-    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries', 'retry_action']
+    OPTIONS = ['url', 'proxies', 'ca_cert', 'validate_certs', 'namespace', 'timeout', 'retries', 'retry_action', 'headers']
 
     ARGSPEC = dict(
         url=dict(type='str', default=None),
@@ -62,6 +62,7 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         timeout=dict(type='int'),
         retries=dict(type='raw'),
         retry_action=dict(type='str', choices=['ignore', 'warn'], default='warn'),
+        headers=dict(type='dict', default=None),
     )
 
     _LATE_BINDING_ENV_VAR_OPTIONS = {
@@ -99,17 +100,27 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         '''returns kwargs to be used for constructing an hvac.Client'''
 
         # validate_certs is only used to optionally change the value of ca_cert
+        # headers is handled specially via session
         def _filter(k, v):
-            return v is not None and k not in ('validate_certs', 'ca_cert')
+            return v is not None and k not in ('validate_certs', 'ca_cert', 'headers')
 
         # our transformed ca_cert value will become the verify parameter for the hvac client
         hvopts = self._options.get_filtered_options(_filter, *self.OPTIONS)
         hvopts['verify'] = self._conopt_verify
 
         retry_action = hvopts.pop('retry_action')
+        headers = self._options.get_option('headers')
+
         if 'retries' in hvopts:
             hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), **hvopts.pop('retries'))
             hvopts['session'].verify = self._conopt_verify
+            if headers:
+                hvopts['session'].headers.update(headers)
+        elif headers:
+            # create a session just for custom headers (no retries configured)
+            sess = Session()
+            sess.headers.update(headers)
+            hvopts['session'] = sess
 
         return hvopts
 

@@ -76,6 +76,13 @@ class ModuleDocFragment(object):
           - warn
         default: warn
         version_added: 1.3.0
+      headers:
+        description:
+          - Custom HTTP headers to include in every request to Vault.
+          - Useful for passing authentication headers for proxies or services in front of Vault, such as Cloudflare Access.
+          - 'Example: C({"CF-Access-Client-Id": "your-client-id", "CF-Access-Client-Secret": "your-client-secret"})'
+        type: dict
+        version_added: 6.3.0
     '''
 
     PLUGINS = r'''
@@ -158,4 +165,12 @@ class ModuleDocFragment(object):
               version_added: 1.4.0
           vars:
             - name: ansible_hashi_vault_retry_action
+        headers:
+          env:
+            - name: ANSIBLE_HASHI_VAULT_HEADERS
+          ini:
+            - section: hashi_vault_collection
+              key: headers
+          vars:
+            - name: ansible_hashi_vault_headers
       '''
