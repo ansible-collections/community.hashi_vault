@@ -41,6 +41,7 @@ jobs:
           - default
         ansible:
           - stable-2.20
+          - stable-2.21
           - devel
     steps:
 
@@ -118,6 +119,7 @@ jobs:
           - stable-2.18
           - stable-2.19
           - stable-2.20
+          - stable-2.21
           - devel
 
     steps:
@@ -197,6 +199,7 @@ jobs:
           - stable-2.18
           - stable-2.19
           - stable-2.20
+          - stable-2.21
           - devel
         python:
           - '3.8'
@@ -211,6 +214,10 @@ jobs:
           - ansible: 'devel'
             python: '3.8'
           - ansible: 'devel'
+            python: '3.9'
+          - ansible: 'stable-2.21'
+            python: '3.8'
+          - ansible: 'stable-2.21'
             python: '3.9'
           - ansible: 'stable-2.20'
             python: '3.8'
