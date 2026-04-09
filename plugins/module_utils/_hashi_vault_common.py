@@ -61,21 +61,20 @@ class HashiVaultHelper():
         :type hashi_vault_revoke_on_logout: bool
         '''
 
-        url = kwargs.get('url') or os.environ.get('VAULT_ADDR')
-        if url and url.startswith('unix://'):
+        client = self.hvac.Client(**kwargs)
+
+        # Handle unix socket URLs (from kwargs or VAULT_ADDR env var)
+        if client.url and client.url.startswith('unix://'):
             try:
                 import requests_unixsocket
             except ImportError as e:
                 from ansible.module_utils.basic import missing_required_lib
                 raise MissingLibraryError(error=str(e), msg=missing_required_lib('requests_unixsocket'))
-            socket_path = (url
+            socket_path = (client.url
                            .replace('unix://', '')
                            .replace('/', '%2F'))
-            socket_url = f"http+unix://{socket_path}"
-            kwargs['url'] = socket_url
-            kwargs['session'] = requests_unixsocket.Session()
-
-        client = self.hvac.Client(**kwargs)
+            client.url = "http+unix://{0}".format(socket_path)
+            client.session.mount('http+unix://', requests_unixsocket.UnixAdapter())
 
         # logout to prevent accidental use of inferred tokens
         # https://github.com/ansible-collections/community.hashi_vault/issues/13

@@ -116,7 +116,28 @@ class TestHashiVaultHelper(object):
     def test_get_vault_client_with_unix_socket(self, hashi_vault_helper):
         client = hashi_vault_helper.get_vault_client(url='unix:///var/run/vault-agent.sock')
 
-        assert isinstance(client.session, requests_unixsocket.Session)
+        adapter = client.session.get_adapter('http+unix://')
+        assert isinstance(adapter, requests_unixsocket.UnixAdapter)
+
+    def test_get_vault_client_with_unix_socket_via_env(self, hashi_vault_helper):
+        '''get_vault_client must handle unix socket URLs even when hvac reads VAULT_ADDR directly'''
+        with mock.patch.dict(os.environ, {'VAULT_ADDR': 'unix:///var/run/vault-agent.sock'}):
+            client = hashi_vault_helper.get_vault_client()
+            assert client.url.startswith('http+unix://')
+            adapter = client.session.get_adapter('http+unix://')
+            assert isinstance(adapter, requests_unixsocket.UnixAdapter)
+
+    def test_get_vault_client_with_unix_socket_preserves_existing_session(self, hashi_vault_helper):
+        '''When a session already exists in kwargs (e.g. from retry config), it must not be replaced'''
+        import requests
+        existing_session = requests.Session()
+        client = hashi_vault_helper.get_vault_client(
+            url='unix:///var/run/vault-agent.sock',
+            session=existing_session,
+        )
+        assert client.session is existing_session
+        adapter = client.session.get_adapter('http+unix://')
+        assert isinstance(adapter, requests_unixsocket.UnixAdapter)
 
     def test_get_vault_client_with_unix_socket_fails_when_requests_unixsocket_not_available(self, requests_unixsocket_fail_import_hook):
         with pytest.raises(MissingLibraryError) as hvac_import:
