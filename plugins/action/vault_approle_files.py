@@ -9,7 +9,6 @@ __metaclass__ = type
 import base64
 import os
 import tempfile
-import traceback
 
 from ansible.errors import AnsibleActionFail
 from ansible.plugins.action import ActionBase
@@ -119,6 +118,8 @@ class ActionModule(ActionBase):
             authenticator.authenticate(client)
         except (NotImplementedError, HashiVaultValueError) as e:
             raise AnsibleActionFail(to_text(e))
+        except Exception as e:
+            raise AnsibleActionFail("Vault connection failed: %s" % to_text(e))
 
         # Optional: validate role configuration before touching credentials.
         if role_params is not None:
@@ -143,6 +144,8 @@ class ActionModule(ActionBase):
         # Check whether all credential files exist on the target host.
         def _stat_exists(path):
             r = self._execute_module(module_name='stat', module_args={'path': path}, task_vars=task_vars)
+            if r.get('failed'):
+                raise AnsibleActionFail("Failed to stat '%s': %s" % (path, r.get('msg', '')))
             return r.get('stat', {}).get('exists', False)
 
         def _slurp(path):
@@ -153,17 +156,18 @@ class ActionModule(ActionBase):
 
         def _enforce_file_attrs(paths):
             """Apply mode/owner/group to existing files; returns True if anything changed."""
-            file_args = dict(state='file')
-            if mode is not None:
-                file_args['mode'] = mode
+            base_args = dict(state='file', mode=mode)
             if owner is not None:
-                file_args['owner'] = owner
+                base_args['owner'] = owner
             if group is not None:
-                file_args['group'] = group
+                base_args['group'] = group
             changed = False
             for path in paths:
-                file_args['path'] = path
-                r = self._execute_module(module_name='file', module_args=file_args, task_vars=task_vars)
+                r = self._execute_module(
+                    module_name='file',
+                    module_args=dict(base_args, path=path),
+                    task_vars=task_vars,
+                )
                 if r.get('failed'):
                     raise AnsibleActionFail("Failed to set attributes on '%s': %s" % (path, r.get('msg', '')))
                 if r.get('changed'):
@@ -174,22 +178,23 @@ class ActionModule(ActionBase):
 
         if all_files_exist and not force:
             existing_secret_id = _slurp(secret_id_file)
-            existing_role_id = _slurp(role_id_file)
-            existing_accessor = _slurp(accessor_file)
 
+            lookup_fn = (
+                getattr(client.auth.approle, 'read_secret_id', None)
+                or getattr(client.auth.approle, 'lookup_secret_id', None)
+            )
+            if lookup_fn is None:
+                raise AnsibleActionFail(
+                    "hvac AppRole API has no secret_id lookup method; upgrade hvac."
+                )
             try:
-                try:
-                    client.auth.approle.read_secret_id(
-                        role_name=role_name,
-                        secret_id=existing_secret_id,
-                        mount_point=mount_point,
-                    )
-                except AttributeError:
-                    client.auth.approle.lookup_secret_id(
-                        role_name=role_name,
-                        secret_id=existing_secret_id,
-                        mount_point=mount_point,
-                    )
+                lookup_fn(
+                    role_name=role_name,
+                    secret_id=existing_secret_id,
+                    mount_point=mount_point,
+                )
+                existing_role_id = _slurp(role_id_file)
+                existing_accessor = _slurp(accessor_file)
                 attrs_changed = _enforce_file_attrs([secret_id_file, role_id_file, accessor_file])
                 result['changed'] = attrs_changed
                 result['role_id'] = existing_role_id
@@ -212,7 +217,9 @@ class ActionModule(ActionBase):
 
         try:
             role_id_response = client.auth.approle.read_role_id(role_name=role_name, mount_point=mount_point)
-            role_id = role_id_response['data']['role_id']
+            role_id = (role_id_response or {}).get('data', {}).get('role_id')
+            if not role_id:
+                raise AnsibleActionFail("Vault returned no role_id for role '%s'." % role_name)
         except hvac_exceptions.Forbidden:
             raise AnsibleActionFail("Forbidden: Cannot read role_id for role '%s'." % role_name)
         except hvac_exceptions.InvalidPath:
@@ -220,8 +227,11 @@ class ActionModule(ActionBase):
 
         try:
             secret_id_response = client.auth.approle.generate_secret_id(role_name=role_name, mount_point=mount_point)
-            secret_id = secret_id_response['data']['secret_id']
-            secret_id_accessor = secret_id_response['data']['secret_id_accessor']
+            data = (secret_id_response or {}).get('data', {})
+            secret_id = data.get('secret_id')
+            secret_id_accessor = data.get('secret_id_accessor')
+            if not secret_id:
+                raise AnsibleActionFail("Vault returned no secret_id for role '%s'." % role_name)
         except hvac_exceptions.Forbidden:
             raise AnsibleActionFail("Forbidden: Cannot generate secret_id for role '%s'." % role_name)
         except hvac_exceptions.InvalidPath:
@@ -253,7 +263,10 @@ class ActionModule(ActionBase):
                     os.close(fd)
 
                 remote_tmp = self._connection._shell.join_path(remote_tmp_dir, os.path.basename(local_tmp))
-                self._transfer_file(local_tmp, remote_tmp)
+                try:
+                    self._transfer_file(local_tmp, remote_tmp)
+                except Exception as e:
+                    raise AnsibleActionFail("Failed to transfer credential to target: %s" % to_text(e))
             finally:
                 if local_tmp:
                     try:
