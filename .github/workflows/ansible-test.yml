@@ -461,7 +461,7 @@ jobs:
           show-progress: false
 
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./cov
 
