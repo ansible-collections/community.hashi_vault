@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "client_token": "38fe9691-e623-7238-f618-c94d4e7bc674",
+    "accessor": "78e87a38-84ed-2692-538f-ca8b9f400ab3",
+    "policies": ["default"],
+    "metadata": {
+      "role": "demo",
+      "service_account_name": "myapp",
+      "service_account_namespace": "default",
+      "service_account_secret_name": "myapp-token-pd21c",
+      "service_account_uid": "aa9aa8ff-98d0-11e7-9bb7-0800276d99bf"
+    },
+    "lease_duration": 2764800,
+    "renewable": true
+  }
+}

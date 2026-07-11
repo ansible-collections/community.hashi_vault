@@ -124,6 +124,7 @@ vault_base_policy: |
   }
 
 vault_token_creator_policy: |
+  {{ vault_base_policy }}
   path "auth/token/create" {
     capabilities = ["create", "update"]
   }
@@ -132,6 +133,7 @@ vault_token_creator_policy: |
   }
 
 vault_orphan_creator_policy: |
+  {{ vault_base_policy }}
   path "auth/token/create" {
     capabilities = ["create", "update"]
   }

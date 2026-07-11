@@ -1,0 +1,40 @@
+- name: "Setup block"
+  vars:
+    is_default_path: "{{ this_path == default_path }}"
+    jwt_public_key: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvUJ8sf9bUQtAyESZ73mw
+      LCHjA8cj2ly3GTy5fxsyniUvkl6x+fVOXYqxgDYc9m14iaUXjE2eUIdQOnmRNIAz
+      xIhxKvXMhJVRSnjCcdQZ9FUPyvQ1bcNo6rISOEEroUdQ6ymX6/DKhW/tXPrYPFyK
+      502UF+YhuP+t/OdKT4qbIxHvkDyGorJDlfKDx9wIr88xY4+KFLKSkaCsO6fZvmhw
+      L2pVl5UfJ/mYXZdeJ8b8pJLSnWmKzXwamGNnvJK3Z4DwicL6Z9PS8ryZWMAUswFR
+      menCQdtebBuaKi401N9SlPl/qb3nFW3YVO1NrqGvF9nprdtBNN3++0a1fuMUmPhb
+      1QIDAQAB
+      -----END PUBLIC KEY-----
+  block:
+    - name: "Enable the Kubernetes auth method"
+      vault_ci_enable_auth:
+        method_type: kubernetes
+        path: "{{ omit if is_default_path else this_path }}"
+        config:
+          default_lease_ttl: 60m
+
+    - name: "Configure the Kubernetes auth method"
+      vault_ci_write:
+        path: "auth/{{ this_path }}/config"
+        data:
+          kubernetes_host: "http://mmock:8900"
+          pem_keys: |
+            {{ jwt_public_key }}
+          disable_local_ca_jwt: true
+          disable_iss_validation: true
+
+    - name: "Create a named role"
+      vault_ci_write:
+        path: "auth/{{ this_path }}/role/test-role"
+        data:
+          bound_service_account_names: "*"
+          bound_service_account_namespaces: "*"
+          policies: "{{ 'test-policy' if is_default_path else 'alt-policy' }}"
+          ttl: 60m
+          audience: "test"
