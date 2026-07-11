@@ -40,6 +40,13 @@ extends_documentation_fragment:
   - community.hashi_vault.auth
   - community.hashi_vault.engine_mount
 options:
+  destroy:
+    description:
+      - Destroy credential instead of delete
+      - Versions is required when used
+    type: bool
+    default: False
+    required: False
   engine_mount_point:
     default: secret
   path:
@@ -76,6 +83,16 @@ EXAMPLES = """
     auth_method: userpass
     username: user
     password: '{{ passwd }}'
+
+- name: Destroy versions 1 and 3 of the secret/mysecret secret.
+  community.hashi_vault.vault_kv2_delete:
+    url: https://vault:8201
+    path: secret/mysecret
+    versions: [1, 3]
+    destroy: True
+    auth_method: userpass
+    username: user
+    password: '{{ passwd }}'
 """
 
 RETURN = """
@@ -99,6 +116,7 @@ def run_module():
 
     argspec = HashiVaultModule.generate_argspec(
         engine_mount_point=dict(type='str', default='secret'),
+        destroy=dict(type='bool', default=False, required=False),
         path=dict(type='str', required=True),
         versions=dict(type='list', elements='int', required=False)
     )
@@ -109,6 +127,7 @@ def run_module():
     )
 
     engine_mount_point = module.params.get('engine_mount_point')
+    destroy = module.params.get('destroy')
     path = module.params.get('path')
     versions = module.params.get('versions')
 
@@ -128,10 +147,13 @@ def run_module():
         # and delete specific versions.
         if module.check_mode:
             response = {}
-        elif not versions:
+        elif not versions and not destroy:
             response = client.secrets.kv.v2.delete_latest_version_of_secret(
                 path=path, mount_point=engine_mount_point)
-        else:
+        elif versions and destroy:
+            response = client.secrets.kv.v2.destroy_secret_versions(
+                path=path, versions=versions, mount_point=engine_mount_point)
+        elif versions and not destroy:
             response = client.secrets.kv.v2.delete_secret_versions(
                 path=path, versions=versions, mount_point=engine_mount_point)
 
