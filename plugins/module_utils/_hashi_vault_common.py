@@ -70,11 +70,12 @@ class HashiVaultHelper():
             except ImportError as e:
                 from ansible.module_utils.basic import missing_required_lib
                 raise MissingLibraryError(error=str(e), msg=missing_required_lib('requests_unixsocket'))
-            socket_path = (client.url
-                           .replace('unix://', '')
-                           .replace('/', '%2F'))
-            client.url = "http+unix://{0}".format(socket_path)
-            client.session.mount('http+unix://', requests_unixsocket.UnixAdapter())
+            else:
+                socket_path = (client.url
+                               .replace('unix://', '')
+                               .replace('/', '%2F'))
+                client.url = "http+unix://{0}".format(socket_path)
+                client.session.mount('http+unix://', requests_unixsocket.UnixAdapter())
 
         # logout to prevent accidental use of inferred tokens
         # https://github.com/ansible-collections/community.hashi_vault/issues/13

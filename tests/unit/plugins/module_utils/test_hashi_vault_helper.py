@@ -140,7 +140,7 @@ class TestHashiVaultHelper(object):
         assert isinstance(adapter, requests_unixsocket.UnixAdapter)
 
     def test_get_vault_client_with_unix_socket_fails_when_requests_unixsocket_not_available(self, requests_unixsocket_fail_import_hook):
+        helper = HashiVaultHelper()
         with pytest.raises(MissingLibraryError) as hvac_import:
-            helper = HashiVaultHelper()
             helper.get_vault_client(url='unix:///var/run/vault-agent.sock')
         assert hvac_import.value.error == "test case module import failure"
