@@ -21,12 +21,16 @@ class HashiVaultValueError(ValueError):
     '''Use in common code to raise an Exception that can be turned into AnsibleError or used to fail_json()'''
 
 
-class HashiVaultHVACError(ImportError):
-    '''Use in common code to signal HVAC is missing.'''
+class MissingLibraryError(ImportError):
+    '''Use in common code to signal missing library.'''
     def __init__(self, error, msg):
         super().__init__(error)
         self.msg = msg
         self.error = error
+
+
+class HashiVaultHVACError(MissingLibraryError):
+    '''Use in common code to signal HVAC is missing.'''
 
 
 class HashiVaultHelper():
@@ -58,6 +62,20 @@ class HashiVaultHelper():
         '''
 
         client = self.hvac.Client(**kwargs)
+
+        # Handle unix socket URLs (from kwargs or VAULT_ADDR env var)
+        if client.url and client.url.startswith('unix://'):
+            try:
+                import requests_unixsocket
+            except ImportError as e:
+                from ansible.module_utils.basic import missing_required_lib
+                raise MissingLibraryError(error=str(e), msg=missing_required_lib('requests_unixsocket'))
+            else:
+                socket_path = (client.url
+                               .replace('unix://', '')
+                               .replace('/', '%2F'))
+                client.url = "http+unix://{0}".format(socket_path)
+                client.session.mount('http+unix://', requests_unixsocket.UnixAdapter())
 
         # logout to prevent accidental use of inferred tokens
         # https://github.com/ansible-collections/community.hashi_vault/issues/13

@@ -7,13 +7,17 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import builtins
+import requests_unixsocket
 import os
 import pytest
 import sys
 
+from contextlib import contextmanager
+
 from .....tests.unit.compat import mock
 from .....plugins.module_utils._hashi_vault_common import (
     HashiVaultHVACError,
+    MissingLibraryError,
     HashiVaultHelper,
 )
 
@@ -28,12 +32,12 @@ def hashi_vault_hvac_error():
     return HashiVaultHVACError(error='test error', msg='message')
 
 
-@pytest.fixture
-def hvac_fail_import_hook():
+@contextmanager
+def _fail_import_hook(import_name):
     original_import = builtins.__import__
 
     def _mock(name: str, *args, **kwargs):
-        if name == 'hvac':
+        if name == import_name:
             raise ImportError('test case module import failure')
 
         return original_import(name, *args, **kwargs)
@@ -42,6 +46,18 @@ def hvac_fail_import_hook():
         yield
 
     builtins.__import__ = original_import
+
+
+@pytest.fixture
+def hvac_fail_import_hook():
+    with _fail_import_hook('hvac'):
+        yield
+
+
+@pytest.fixture
+def requests_unixsocket_fail_import_hook():
+    with _fail_import_hook('requests_unixsocket'):
+        yield
 
 
 @pytest.fixture
@@ -96,3 +112,35 @@ class TestHashiVaultHelper(object):
         client = hashi_vault_helper.get_vault_client(hashi_vault_logout_inferred_token=True)
 
         assert client.token is None
+
+    def test_get_vault_client_with_unix_socket(self, hashi_vault_helper):
+        client = hashi_vault_helper.get_vault_client(url='unix:///var/run/vault-agent.sock')
+
+        adapter = client.session.get_adapter('http+unix://')
+        assert isinstance(adapter, requests_unixsocket.UnixAdapter)
+
+    def test_get_vault_client_with_unix_socket_via_env(self, hashi_vault_helper):
+        '''get_vault_client must handle unix socket URLs even when hvac reads VAULT_ADDR directly'''
+        with mock.patch.dict(os.environ, {'VAULT_ADDR': 'unix:///var/run/vault-agent.sock'}):
+            client = hashi_vault_helper.get_vault_client()
+            assert client.url.startswith('http+unix://')
+            adapter = client.session.get_adapter('http+unix://')
+            assert isinstance(adapter, requests_unixsocket.UnixAdapter)
+
+    def test_get_vault_client_with_unix_socket_preserves_existing_session(self, hashi_vault_helper):
+        '''When a session already exists in kwargs (e.g. from retry config), it must not be replaced'''
+        import requests
+        existing_session = requests.Session()
+        client = hashi_vault_helper.get_vault_client(
+            url='unix:///var/run/vault-agent.sock',
+            session=existing_session,
+        )
+        assert client.session is existing_session
+        adapter = client.session.get_adapter('http+unix://')
+        assert isinstance(adapter, requests_unixsocket.UnixAdapter)
+
+    def test_get_vault_client_with_unix_socket_fails_when_requests_unixsocket_not_available(self, requests_unixsocket_fail_import_hook):
+        helper = HashiVaultHelper()
+        with pytest.raises(MissingLibraryError) as hvac_import:
+            helper.get_vault_client(url='unix:///var/run/vault-agent.sock')
+        assert hvac_import.value.error == "test case module import failure"
