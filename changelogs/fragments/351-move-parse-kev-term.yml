@@ -1,0 +1,3 @@
+---
+trivial:
+  - Move ``parse_kev_term`` from the lookup base class into the ``hashi_vault`` lookup plugin, its only consumer (https://github.com/ansible-collections/community.hashi_vault/issues/351).
