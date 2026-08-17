@@ -642,8 +642,8 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_login</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://localhost:8200</span>
 <span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span>
-<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;john.doe&quot;</span>
-<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">user_passwd</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">"john.doe"</span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="cp">{{</span> <span class="nv">user_passwd</span> <span class="cp">}}</span><span class="s">"</span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">login_data</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate a certificate with an existing token</span>
@@ -656,12 +656,12 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test3.example.org</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">token</span>
-<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">login_data.login.auth.client_token</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="cp">{{</span> <span class="nv">login_data.login.auth.client_token</span> <span class="cp">}}</span><span class="s">"</span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert_data</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display generated certificate</span>
 <span class="w">  </span><span class="nt">debug</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">cert_data.data.data.certificate</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="cp">{{</span> <span class="nv">cert_data.data.data.certificate</span> <span class="cp">}}</span><span class="s">"</span>
 </pre></div>
 </div>
 </section>

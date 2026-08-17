@@ -590,42 +590,42 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate creation statement</span>
 <span class="w">  </span><span class="nt">ansible.builtin.set_fact</span><span class="p">:</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">creation_statements = [</span>
-<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">&quot;CREATE ROLE \&quot;</span><span class="cp">{{</span><span class="nv">name</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">\&quot; WITH LOGIN PASSWORD &#39;</span><span class="cp">{{</span><span class="nv">password</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">&#39; VALID UNTIL &#39;</span><span class="cp">{{</span><span class="nv">expiration</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">&#39;;&quot;,</span>
-<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">&quot;GRANT SELECT ON ALL TABLES IN SCHEMA public TO \&quot;</span><span class="cp">{{</span><span class="nv">name</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">\&quot;;&quot;</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">"CREATE ROLE \"</span><span class="cp">{{</span><span class="nv">name</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">\" WITH LOGIN PASSWORD '</span><span class="cp">{{</span><span class="nv">password</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">' VALID UNTIL '</span><span class="cp">{{</span><span class="nv">expiration</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">';",</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">"GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"</span><span class="cp">{{</span><span class="nv">name</span><span class="cp">}}</span><span class="l l-Scalar l-Scalar-Plain">\";"</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">]</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create / update Role with the default mount point</span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_database_role_create</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
-<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">&#39;</span>
-<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">'</span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">'</span>
 <span class="w">    </span><span class="nt">connection_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeConnection</span>
 <span class="w">    </span><span class="nt">role_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeRole</span>
-<span class="w">    </span><span class="nt">db_username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">db_username</span><span class="cp">}}</span><span class="s">&#39;</span>
-<span class="w">    </span><span class="nt">creation_statements</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">creation_statements</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">db_username</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">db_username</span><span class="cp">}}</span><span class="s">'</span>
+<span class="w">    </span><span class="nt">creation_statements</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">creation_statements</span> <span class="cp">}}</span><span class="s">'</span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the result of the operation</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">result</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="cp">{{</span> <span class="nv">result</span> <span class="cp">}}</span><span class="s">"</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create / update Role with a custom mount point</span>
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_database_role_create</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8201</span>
 <span class="w">    </span><span class="nt">auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userpass</span>
-<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">&#39;</span>
-<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">user</span> <span class="cp">}}</span><span class="s">'</span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">passwd</span> <span class="cp">}}</span><span class="s">'</span>
 <span class="w">    </span><span class="nt">engine_mount_point</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db1</span>
 <span class="w">    </span><span class="nt">connection_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeConnection</span>
 <span class="w">    </span><span class="nt">role_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SomeRole</span>
-<span class="w">    </span><span class="nt">db_username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">db_username</span><span class="cp">}}</span><span class="s">&#39;</span>
-<span class="w">    </span><span class="nt">creation_statements</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">creation_statements</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">db_username</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">db_username</span><span class="cp">}}</span><span class="s">'</span>
+<span class="w">    </span><span class="nt">creation_statements</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">creation_statements</span> <span class="cp">}}</span><span class="s">'</span>
 <span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span>
 
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the result of the operation</span>
 <span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">result</span> <span class="cp">}}</span><span class="s">&quot;</span>
+<span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="cp">{{</span> <span class="nv">result</span> <span class="cp">}}</span><span class="s">"</span>
 </pre></div>
 </div>
 <section id="authors">

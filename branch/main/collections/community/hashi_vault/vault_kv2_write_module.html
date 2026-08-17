@@ -632,7 +632,7 @@ see <a class="reference internal" href="#ansible-collections-community-hashi-vau
 <span class="w">  </span><span class="nt">community.hashi_vault.vault_kv2_write</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault:8200</span>
 <span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello</span>
-<span class="w">    </span><span class="nt">cas</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">current.metadata.version</span> <span class="o">|</span> <span class="nf">int</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">cas</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="cp">{{</span> <span class="nv">current.metadata.version</span> <span class="o">|</span> <span class="nf">int</span> <span class="cp">}}</span><span class="s">'</span>
 <span class="w">    </span><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
 <span class="w">      </span><span class="cp">{{</span>
         <span class="nv">current.secret</span>
