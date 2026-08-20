@@ -145,6 +145,12 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='jwt', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
 
+#GCP auth
+
+- name: Authenticate with GCP
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/hola:val', auth_method='gcp', role_id='myroleid', jwt='myjwt', url='https://vault:8200') }}"
+
 # Disabling Token Validation
 # Use this when your token does not have the lookup-self capability. Usually this is applied to all tokens via the default policy.
 # However you can choose to create tokens without applying the default policy, or you can modify your default policy not to include it.
@@ -244,18 +250,9 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 display = Display()
 
-HAS_HVAC = False
-try:
-    import hvac
-    HAS_HVAC = True
-except ImportError:
-    HAS_HVAC = False
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if not HAS_HVAC:
-            raise AnsibleError("Please pip install hvac to use the hashi_vault lookup module.")
 
         ret = []
 
@@ -314,10 +311,11 @@ class LookupModule(HashiVaultLookupBase):
         field = self._secret_field
         secret = self.get_option('secret')
         return_as = self.get_option('return_format')
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         try:
             data = self.client.read(secret)
-        except hvac.exceptions.Forbidden:
+        except hvac_exceptions.Forbidden:
             raise AnsibleError("Forbidden: Permission Denied to secret '%s'." % secret)
 
         if data is None:

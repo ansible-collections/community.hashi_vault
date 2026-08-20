@@ -11,7 +11,7 @@ import pytest
 
 from ansible.plugins.loader import lookup_loader
 
-from ansible.module_utils.six.moves.urllib.parse import urlparse
+from urllib.parse import urlparse
 
 from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 

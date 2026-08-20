@@ -21,7 +21,7 @@ description:
   - Returns a list of available (dynamic) roles.
 notes:
   - This API returns a member named C(keys).
-  - In Ansible, accessing RV(data.keys) or RV(raw.data.keys) will not work because the dict object contains a method named C(keys).
+  - In Ansible, accessing RV(data['keys']) or RV(raw.data['keys']) will not work because the dict object contains a method named C(keys).
   - Instead, use RV(roles) to access the list of roles, or use the syntax C(data["keys"]) or C(raw.data["keys"]) to access the list via dict member.
 extends_documentation_fragment:
   - community.hashi_vault.attributes
@@ -74,7 +74,7 @@ data:
   sample:
     keys: *sample_roles
 roles:
-  description: The list of dynamic roles or en empty list. This can also be accessed via RV(data.keys) or RV(raw.data.keys).
+  description: The list of dynamic roles or en empty list. This can also be accessed via RV(data['keys']) or RV(raw.data['keys']).
   returned: success
   type: list
   elements: str
@@ -104,20 +104,10 @@ raw:
 
 import traceback
 
-from ansible.module_utils._text import to_native
-from ansible.module_utils.basic import missing_required_lib
+from ansible.module_utils.common.text.converters import to_text
 
 from ..module_utils._hashi_vault_module import HashiVaultModule
 from ..module_utils._hashi_vault_common import HashiVaultValueError
-
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HVAC_IMPORT_ERROR = None
-    HAS_HVAC = True
 
 
 def run_module():
@@ -127,8 +117,6 @@ def run_module():
 
     module = HashiVaultModule(argument_spec=argspec, supports_check_mode=True)
 
-    if not HAS_HVAC:
-        module.fail_json(msg=missing_required_lib("hvac"), exception=HVAC_IMPORT_ERROR)
     parameters = {}
     engine_mount_point = module.params.get("engine_mount_point", None)
     if engine_mount_point is not None:
@@ -137,22 +125,23 @@ def run_module():
     module.connection_options.process_connection_options()
     client_args = module.connection_options.get_hvac_connection_options()
     client = module.helper.get_vault_client(**client_args)
+    hvac_exceptions = module.helper.get_hvac().exceptions
 
     try:
         module.authenticator.validate()
         module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=to_text(e), exception=traceback.format_exc())
 
     try:
         raw = client.secrets.database.list_roles(**parameters)
-    except hvac.exceptions.Forbidden as e:
+    except hvac_exceptions.Forbidden as e:
         module.fail_json(
             msg="Forbidden: Permission Denied to path ['%s']." % engine_mount_point
             or "database",
             exception=traceback.format_exc(),
         )
-    except hvac.exceptions.InvalidPath as e:
+    except hvac_exceptions.InvalidPath as e:
         module.fail_json(
             msg="Invalid or missing path ['%s/roles']."
             % (engine_mount_point or "database"),

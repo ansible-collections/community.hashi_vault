@@ -16,6 +16,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import (
     HashiVaultHelper,
+    HashiVaultHVACError,
     HashiVaultOptionAdapter,
 )
 from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
@@ -31,7 +32,14 @@ class HashiVaultModule(AnsibleModule):
 
         super(HashiVaultModule, self).__init__(*args, **kwargs)
 
-        self.helper = HashiVaultHelper()
+        try:
+            self.helper = HashiVaultHelper()
+        except HashiVaultHVACError as exc:
+            self.fail_json(
+                msg=exc.msg,
+                exception=exc.error
+            )
+
         self.adapter = HashiVaultOptionAdapter.from_dict(self.params)
         self.connection_options = HashiVaultConnectionOptions(option_adapter=self.adapter, retry_callback_generator=callback)
         self.authenticator = HashiVaultAuthenticator(option_adapter=self.adapter, warning_callback=self.warn, deprecate_callback=self.deprecate)

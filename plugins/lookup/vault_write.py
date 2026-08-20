@@ -122,29 +122,14 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.utils.display import Display
 
-from ansible.module_utils.six import raise_from
-
 from ..plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 from ..module_utils._hashi_vault_common import HashiVaultValueError
 
 display = Display()
 
-try:
-    import hvac
-except ImportError as imp_exc:
-    HVAC_IMPORT_ERROR = imp_exc
-else:
-    HVAC_IMPORT_ERROR = None
-
 
 class LookupModule(HashiVaultLookupBase):
     def run(self, terms, variables=None, **kwargs):
-        if HVAC_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("This plugin requires the 'hvac' Python library"),
-                HVAC_IMPORT_ERROR
-            )
-
         ret = []
 
         self.set_options(direct=kwargs, var_options=variables)
@@ -154,6 +139,7 @@ class LookupModule(HashiVaultLookupBase):
         self.connection_options.process_connection_options()
         client_args = self.connection_options.get_hvac_connection_options()
         client = self.helper.get_vault_client(**client_args)
+        hvac_exceptions = self.helper.get_hvac().exceptions
 
         data = self._options_adapter.get_option('data')
         wrap_ttl = self._options_adapter.get_option_default('wrap_ttl')
@@ -162,7 +148,7 @@ class LookupModule(HashiVaultLookupBase):
             self.authenticator.validate()
             self.authenticator.authenticate(client)
         except (NotImplementedError, HashiVaultValueError) as e:
-            raise_from(AnsibleError(e), e)
+            raise AnsibleError(e) from e
 
         for term in terms:
             try:
@@ -173,15 +159,15 @@ class LookupModule(HashiVaultLookupBase):
                 except AttributeError as e:
                     # https://github.com/ansible-collections/community.hashi_vault/issues/389
                     if "path" in data or "wrap_ttl" in data:
-                        raise_from(AnsibleError("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2"), e)
+                        raise AnsibleError("To use 'path' or 'wrap_ttl' as data keys, use hvac >= 1.2") from e
                     else:
                         response = client.write(path=term, wrap_ttl=wrap_ttl, **data)
-            except hvac.exceptions.Forbidden as e:
-                raise_from(AnsibleError("Forbidden: Permission Denied to path '%s'." % term), e)
-            except hvac.exceptions.InvalidPath as e:
-                raise_from(AnsibleError("The path '%s' doesn't seem to exist." % term), e)
-            except hvac.exceptions.InternalServerError as e:
-                raise_from(AnsibleError("Internal Server Error: %s" % str(e)), e)
+            except hvac_exceptions.Forbidden as e:
+                raise AnsibleError("Forbidden: Permission Denied to path '%s'." % term) from e
+            except hvac_exceptions.InvalidPath as e:
+                raise AnsibleError("The path '%s' doesn't seem to exist." % term) from e
+            except hvac_exceptions.InternalServerError as e:
+                raise AnsibleError("Internal Server Error: %s" % str(e)) from e
 
             # https://github.com/hvac/hvac/issues/797
             # HVAC returns a raw response object when the body is not JSON.

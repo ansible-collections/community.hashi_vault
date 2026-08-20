@@ -112,7 +112,7 @@ login:
 
 import traceback
 
-from ansible.module_utils._text import to_native
+from ansible.module_utils.common.text.converters import to_text
 
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
@@ -177,7 +177,7 @@ def run_module():
         module.authenticator.validate()
         module.authenticator.authenticate(client)
     except (NotImplementedError, HashiVaultValueError) as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=to_text(e), exception=traceback.format_exc())
 
     pass_thru_options = module.adapter.get_filled_options(*PASS_THRU_OPTION_NAMES)
 
@@ -205,12 +205,12 @@ def run_module():
                 # See: https://github.com/hvac/hvac/issues/758
                 response = client.create_token(orphan=True, **orphan_options)
         except Exception as e:
-            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+            module.fail_json(msg=to_text(e), exception=traceback.format_exc())
     else:
         try:
             response = client.auth.token.create(**pass_thru_options)
         except Exception as e:
-            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+            module.fail_json(msg=to_text(e), exception=traceback.format_exc())
 
     module.exit_json(changed=changed, login=response)
 

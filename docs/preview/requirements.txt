@@ -2,7 +2,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-antsibull-docs >= 1.0.0, < 2.0.0
+antsibull-docs >= 2.0.0, < 3.0.0
 ansible-pygments
 sphinx != 5.2.0.post0  # temporary, see https://github.com/ansible-community/antsibull-docs/issues/39, https://github.com/ansible-community/antsibull-docs/issues/40
 sphinx-ansible-theme >= 0.9.0

@@ -10,7 +10,6 @@ import json
 
 import pytest
 
-from ansible.module_utils.six import string_types
 from ansible.module_utils.common.text.converters import to_bytes
 from ansible.module_utils.common._collections_compat import MutableMapping, Sequence
 
@@ -31,7 +30,7 @@ def module_warn():
 @pytest.fixture
 def patch_ansible_module(request, module_warn):
     def _process(param):
-        if isinstance(param, string_types):
+        if isinstance(param, str):
             args = param
             _yield = args
             return (args, _yield)
@@ -48,8 +47,7 @@ def patch_ansible_module(request, module_warn):
                 param['ANSIBLE_MODULE_ARGS']['_ansible_remote_tmp'] = '/tmp'
             if '_ansible_keep_remote_files' not in param['ANSIBLE_MODULE_ARGS']:
                 param['ANSIBLE_MODULE_ARGS']['_ansible_keep_remote_files'] = False
-            args = json.dumps(param)
-            return (args, _yield)
+            return (param, _yield)
         elif isinstance(param, Sequence):
             # First item should be a dict that serves as the base of options,
             # use it for things that aren't being parametrized.
@@ -70,7 +68,13 @@ def patch_ansible_module(request, module_warn):
         yield
     else:
         args, _yield = _process(request.param)
-        with mock.patch('ansible.module_utils.basic._ANSIBLE_ARGS', to_bytes(args)):
-            # TODO: in 2.10+ we can patch basic.warn instead of basic.AnsibleModule.warn
-            with mock.patch('ansible.module_utils.basic.AnsibleModule.warn', module_warn):
-                yield _yield
+        # TODO: in 2.10+ we can patch basic.warn instead of basic.AnsibleModule.warn
+        with mock.patch('ansible.module_utils.basic.AnsibleModule.warn', module_warn):
+            try:
+                from ansible.module_utils.testing import patch_module_args
+            except ImportError:
+                with mock.patch('ansible.module_utils.basic._ANSIBLE_ARGS', to_bytes(json.dumps(args))):
+                    yield _yield
+            else:
+                with patch_module_args(args['ANSIBLE_MODULE_ARGS']):
+                    yield _yield

@@ -7,19 +7,37 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-
 import json
 
-from ansible.module_utils.basic import missing_required_lib
-
 from ...compat import mock
+
 from .....plugins.modules import vault_pki_generate_certificate
+from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
+from .....plugins.module_utils._authenticator import HashiVaultAuthenticator
+
 
 pytestmark = pytest.mark.usefixtures(
     'patch_ansible_module',
     'patch_authenticator',
     'patch_get_vault_client',
 )
+
+
+@pytest.fixture
+def failed_authenticator():
+    authenticator = HashiVaultAuthenticator
+    authenticator.validate = mock.Mock(side_effect=HashiVaultValueError("Authentication failed"))
+    authenticator.authenticate = mock.Mock()
+
+    return authenticator
+
+
+@pytest.fixture
+def patch_failed_authenticator(failed_authenticator):
+    with mock.patch(
+            'ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module.HashiVaultAuthenticator',
+            new=failed_authenticator):
+        yield
 
 
 def _connection_options():
@@ -107,18 +125,6 @@ class TestModuleVaultPkiGenerateCertificate():
         assert e.value.code == 0
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
-    def test_vault_pki_generate_certificate_no_hvac(self, capfd):
-        with mock.patch.multiple(vault_pki_generate_certificate, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True):
-            with pytest.raises(SystemExit) as e:
-                vault_pki_generate_certificate.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert result['msg'] == missing_required_lib('hvac')
-        assert e.value.code != 0
-
-    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
     def test_vault_pki_generate_certificate_vault_exception(self, vault_client, capfd):
         hvac = pytest.importorskip('hvac')
 
@@ -129,3 +135,22 @@ class TestModuleVaultPkiGenerateCertificate():
             vault_pki_generate_certificate.main()
 
         assert e.value.code != 0
+
+    @pytest.mark.parametrize('patch_ansible_module', [_combined_options()], indirect=True)
+    def test_vault_pki_generate_certificate_authenticator_exception(self, pki_generate_certificate_response, patch_failed_authenticator, vault_client, capfd):
+        client = vault_client
+        client.secrets.pki.generate_certificate.return_value = pki_generate_certificate_response
+
+        with pytest.raises(SystemExit) as e:
+            vault_pki_generate_certificate.main()
+
+        out, err = capfd.readouterr()
+        result = json.loads(out)
+
+        assert 'msg' in result, "'msg' not found in module output"
+
+        assert result['msg'] == 'Authentication failed', (
+            f"Expected msg to be 'Authentication failed', got '{result['msg']}'"
+        )
+
+        assert e.value.code != 0, "Expected non-zero exit code when authentication fails"

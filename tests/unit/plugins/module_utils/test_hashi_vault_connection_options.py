@@ -134,7 +134,7 @@ class TestHashiVaultConnectionOptions(object):
     # can be specified as a positive int or a dict
     # (or any string that can be interpreted as one of those)
 
-    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.0])
+    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.1])
     def test_process_option_retries_invalid(self, connection_options, predefined_options, adapter, opt_retries):
         adapter.set_option('retries', opt_retries)
 
@@ -254,7 +254,7 @@ class TestHashiVaultConnectionOptions(object):
         assert 'proxies' not in opts or opts['proxies'] == predefined_options['proxies']
         assert 'namespace' not in opts or opts['namespace'] == predefined_options['namespace']
         assert 'timeout' not in opts or opts['timeout'] == predefined_options['timeout']
-        assert 'session' not in opts or isinstance(opts['session'], Session)
+        assert 'session' not in opts or (isinstance(opts['session'], Session) and opts['session'].verify == connection_options._conopt_verify)
 
     @mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._connection_options.HAS_RETRIES', new=False)
     def test_get_hvac_connection_options_retry_not_available(self, connection_options, adapter):

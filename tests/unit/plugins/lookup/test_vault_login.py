@@ -15,7 +15,8 @@ from ansible_collections.community.hashi_vault.tests.unit.compat import mock
 
 from ansible_collections.community.hashi_vault.plugins.plugin_utils._hashi_vault_lookup_base import HashiVaultLookupBase
 
-from .....plugins.lookup import vault_login
+# needs to be a relative import otherwise it breaks test_vault_login_extra_terms.
+from .....plugins.lookup import vault_login  # pylint: disable=unused-import
 
 
 pytest.importorskip('hvac')
@@ -36,11 +37,6 @@ class TestVaultLoginLookup(object):
 
     def test_vault_login_is_lookup_base(self, vault_login_lookup):
         assert issubclass(type(vault_login_lookup), HashiVaultLookupBase)
-
-    def test_vault_login_no_hvac(self, vault_login_lookup, minimal_vars):
-        with mock.patch.object(vault_login, 'HVAC_IMPORT_ERROR', new=ImportError()):
-            with pytest.raises(AnsibleError, match=r"This plugin requires the 'hvac' Python library"):
-                vault_login_lookup.run(terms='fake', variables=minimal_vars)
 
     def test_vault_login_auth_none(self, vault_login_lookup):
         with pytest.raises(AnsibleError, match=r"The 'none' auth method is not valid for this lookup"):

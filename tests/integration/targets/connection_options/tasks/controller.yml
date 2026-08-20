@@ -64,11 +64,28 @@
 
         - <<: *assert
 
+        - name: test HTTPS with no cert validation and retries
+          <<: *test
+          vars:
+            ansible_hashi_vault_validate_certs: false
+            ansible_hashi_vault_retries: 2
+
+        - <<: *assert
+
         - name: test HTTPS with cert validation
           <<: *test
           vars:
             vault_test_connection_want_args: true
             vault_test_connection_want_exception: true
+
+        - <<: *assert
+
+        - name: test HTTPS with cert validation and retries
+          <<: *test
+          vars:
+            vault_test_connection_want_args: true
+            vault_test_connection_want_exception: true
+            ansible_hashi_vault_retries: 2
 
         - <<: *assert
 

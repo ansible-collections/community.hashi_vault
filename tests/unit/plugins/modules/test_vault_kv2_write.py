@@ -10,11 +10,9 @@ __metaclass__ = type
 import json
 
 import pytest
-from ansible.module_utils.basic import missing_required_lib
 
 from .....plugins.module_utils._hashi_vault_common import HashiVaultValueError
 from .....plugins.modules import vault_kv2_write
-from ...compat import mock
 
 hvac = pytest.importorskip("hvac")
 
@@ -86,22 +84,6 @@ class TestModuleVaultKv2Write:
 
         assert e.value.code != 0, "result: %r" % (result,)
         assert result["msg"] == "throwaway msg"
-
-    @pytest.mark.parametrize(
-        "patch_ansible_module", [_combined_options()], indirect=True
-    )
-    def test_vault_kv2_write_get_no_hvac(self, capfd):
-        with mock.patch.multiple(
-            vault_kv2_write, HAS_HVAC=False, HVAC_IMPORT_ERROR=None, create=True
-        ):
-            with pytest.raises(SystemExit) as e:
-                vault_kv2_write.main()
-
-        out, err = capfd.readouterr()
-        result = json.loads(out)
-
-        assert e.value.code != 0, "result: %r" % (result,)
-        assert result["msg"] == missing_required_lib("hvac")
 
     @pytest.mark.parametrize(
         "patch_ansible_module", [[_combined_options(read_before_write=True)]], indirect=True

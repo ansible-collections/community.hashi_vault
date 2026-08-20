@@ -6,7 +6,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import sys
 import pytest
 
 import json
@@ -160,11 +159,7 @@ class TestModuleVaultTokenCreate():
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['login'], token_create_response)
         )
 
-        if sys.version_info < (3, 8):
-            # TODO: remove when python < 3.8 is dropped
-            assert pass_thru_options.items() <= client.auth.token.create.call_args[1].items()
-        else:
-            assert pass_thru_options.items() <= client.auth.token.create.call_args.kwargs.items()
+        assert pass_thru_options.items() <= client.auth.token.create.call_args.kwargs.items()
 
     @pytest.mark.parametrize('patch_ansible_module', [_combined_options(orphan=True)], indirect=True)
     def test_vault_token_create_orphan_options(self, pass_thru_options, orphan_option_translation, token_create_response, vault_client, capfd):
@@ -185,11 +180,7 @@ class TestModuleVaultTokenCreate():
             "module result did not match expected result:\nmodule: %r\nexpected: %r" % (result['module'], token_create_response)
         )
 
-        if sys.version_info < (3, 8):
-            # TODO: remove when python < 3.8 is dropped
-            call_kwargs = client.auth.token.create_orphan.call_args[1]
-        else:
-            call_kwargs = client.auth.token.create_orphan.call_args.kwargs
+        call_kwargs = client.auth.token.create_orphan.call_args.kwargs
 
         for name, orphan in orphan_option_translation.items():
             assert name not in call_kwargs, (
