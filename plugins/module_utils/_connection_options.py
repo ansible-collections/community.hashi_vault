@@ -106,6 +106,11 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         hvopts = self._options.get_filtered_options(_filter, *self.OPTIONS)
         hvopts['verify'] = self._conopt_verify
 
+        cert_auth_public_key = self._options.get_option_default('cert_auth_public_key')
+        cert_auth_private_key = self._options.get_option_default('cert_auth_private_key')
+        if cert_auth_public_key is not None and cert_auth_private_key is not None:
+            hvopts['cert'] = (cert_auth_public_key, cert_auth_private_key)
+
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
             hvopts['session'] = self._get_custom_requests_session(new_callback=self._retry_callback_generator(retry_action), **hvopts.pop('retries'))
