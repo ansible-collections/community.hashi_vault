@@ -1,2 +1,2 @@
 bugfixes:
-  - vault connection options - pass ``cert_auth_public_key`` and ``cert_auth_private_key`` through to ``hvac.Client`` as TLS client certificate credentials.
+  - vault connection options - pass ``cert_auth_public_key`` and ``cert_auth_private_key`` through to ``hvac.Client`` as TLS client certificate credentials, with ``VAULT_CLIENT_CERT`` and ``VAULT_CLIENT_KEY`` environment variable fallback support.

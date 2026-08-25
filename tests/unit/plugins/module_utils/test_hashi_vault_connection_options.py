@@ -267,6 +267,23 @@ class TestHashiVaultConnectionOptions(object):
 
         assert opts['cert'] == ('/tmp/cert.pem', '/tmp/key.pem')
 
+    def test_get_hvac_connection_options_cert_auth_client_cert_env(self, connection_options, adapter):
+        adapter.set_options(
+            cert_auth_public_key=None,
+            cert_auth_private_key=None,
+        )
+
+        envpatch = {
+            'VAULT_CLIENT_CERT': '/tmp/env-cert.pem',
+            'VAULT_CLIENT_KEY': '/tmp/env-key.pem',
+        }
+        with mock.patch.dict(os.environ, envpatch):
+            connection_options.process_connection_options()
+
+        opts = connection_options.get_hvac_connection_options()
+
+        assert opts['cert'] == ('/tmp/env-cert.pem', '/tmp/env-key.pem')
+
     @mock.patch('ansible_collections.community.hashi_vault.plugins.module_utils._connection_options.HAS_RETRIES', new=False)
     def test_get_hvac_connection_options_retry_not_available(self, connection_options, adapter):
         adapter.set_option('retries', 2)
