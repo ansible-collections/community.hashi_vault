@@ -9,6 +9,8 @@ __metaclass__ = type
 import os
 import pytest
 
+from ansible import constants as C
+from ansible.config.manager import ConfigManager
 from ansible.plugins.loader import lookup_loader
 
 from urllib.parse import urlparse
@@ -29,6 +31,46 @@ class TestHashiVaultLookup(object):
 
     def test_is_hashi_vault_lookup_base(self, hashi_vault_lookup_module):
         assert issubclass(type(hashi_vault_lookup_module), HashiVaultLookupBase)
+
+    @pytest.mark.parametrize(
+        'ini_value,variables,direct,skip_verify,expected',
+        [
+            (None, {}, {}, None, True),
+            ('false', {}, {}, None, False),
+            ('true', {}, {}, None, True),
+            ('false', {'ansible_hashi_vault_validate_certs': True}, {}, None, True),
+            ('true', {'ansible_hashi_vault_validate_certs': False}, {}, None, False),
+            ('false', {}, {'validate_certs': True}, None, True),
+            ('true', {}, {'validate_certs': False}, None, False),
+            ('true', {}, {}, 'true', True),
+            ('false', {}, {}, 'false', False),
+            (None, {}, {}, 'true', False),
+        ],
+    )
+    def test_validate_certs_ini(
+        self, hashi_vault_lookup_module, tmp_path, monkeypatch,
+        ini_value, variables, direct, skip_verify, expected,
+    ):
+        config_file = tmp_path / 'ansible.cfg'
+        config_file.write_text('[hashi_vault_collection]\n' + (
+            '' if ini_value is None else 'validate_certs = %s\n' % ini_value
+        ))
+        plugin_name = hashi_vault_lookup_module._load_name
+        definitions = C.config.get_configuration_definitions('lookup', plugin_name)
+        config = ConfigManager(conf_file=str(config_file))
+        config.initialize_plugin_configuration_definitions('lookup', plugin_name, definitions)
+        monkeypatch.setattr(C, 'config', config)
+        monkeypatch.delenv('VAULT_CACERT', raising=False)
+        monkeypatch.delenv('VAULT_SKIP_VERIFY', raising=False)
+        if skip_verify is not None:
+            monkeypatch.setenv('VAULT_SKIP_VERIFY', skip_verify)
+
+        options = dict(url='https://vault.example', secret='secret/test')
+        options.update(direct)
+        hashi_vault_lookup_module.set_options(var_options=variables, direct=options)
+        hashi_vault_lookup_module.connection_options.process_connection_options()
+
+        assert hashi_vault_lookup_module.connection_options.get_hvac_connection_options()['verify'] is expected
 
     # TODO: this test should be decoupled from the hashi_vault lookup and moved to the connection options tests
     @pytest.mark.parametrize(
