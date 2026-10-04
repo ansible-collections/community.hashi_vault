@@ -169,6 +169,7 @@ class ModuleDocFragment(object):
         vars:
           - name: ansible_hashi_vault_token
             version_added: 1.2.0
+        secret: true
       token_path:
         env:
           - name: ANSIBLE_HASHI_VAULT_TOKEN_PATH
@@ -215,6 +216,7 @@ class ModuleDocFragment(object):
         vars:
           - name: ansible_hashi_vault_password
             version_added: '1.2.0'
+        secret: true
       role_id:
         env:
           - name: ANSIBLE_HASHI_VAULT_ROLE_ID
@@ -236,6 +238,7 @@ class ModuleDocFragment(object):
       jwt:
         env:
           - name: ANSIBLE_HASHI_VAULT_JWT
+        secret: true
       aws_profile:
         env:
           - name: AWS_DEFAULT_PROFILE
@@ -250,11 +253,13 @@ class ModuleDocFragment(object):
           - name: EC2_SECRET_KEY
           - name: AWS_SECRET_KEY
           - name: AWS_SECRET_ACCESS_KEY
+        secret: true
       aws_security_token:
         env:
           - name: EC2_SECURITY_TOKEN
           - name: AWS_SESSION_TOKEN
           - name: AWS_SECURITY_TOKEN
+        secret: true
       region:
         env:
           - name: EC2_REGION
@@ -287,6 +292,7 @@ class ModuleDocFragment(object):
           - name: ANSIBLE_HASHI_VAULT_AZURE_CLIENT_SECRET
         vars:
           - name: ansible_hashi_vault_azure_client_secret
+        secret: true
       azure_resource:
         env:
           - name: ANSIBLE_HASHI_VAULT_AZURE_RESOURCE
