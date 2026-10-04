@@ -42,6 +42,7 @@ jobs:
         ansible:
           - stable-2.20
           - stable-2.21
+          - stable-2.22
           - devel
     steps:
 
@@ -68,7 +69,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
-          python-version: ${{ matrix.ansible == 'devel' && '3.14' || '3.12' }}
+          python-version: ${{ (matrix.ansible == 'devel' || matrix.ansible == 'stable-2.22') && '3.14' || '3.12' }}
           # FIXME: remove old ansible versions
 
       # Install the head of the given branch (devel, stable-2.14)
@@ -121,6 +122,7 @@ jobs:
           - stable-2.19
           - stable-2.20
           - stable-2.21
+          - stable-2.22
           - devel
 
     steps:
@@ -145,7 +147,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test units" in the docker image
           # will run on all python versions it supports.
-          python-version: ${{ matrix.ansible == 'devel' && '3.14' || '3.12' }}
+          python-version: ${{ (matrix.ansible == 'devel' || matrix.ansible == 'stable-2.22') && '3.14' || '3.12' }}
           # FIXME: remove old ansible versions
 
       - name: Install ansible-core (${{ matrix.ansible }})
@@ -202,6 +204,7 @@ jobs:
           - stable-2.19
           - stable-2.20
           - stable-2.21
+          - stable-2.22
           - devel
         python:
           - '3.8'
@@ -211,6 +214,7 @@ jobs:
           - '3.12'
           - '3.13'
           - '3.14'
+          - '3.15'
         exclude:
           # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
           # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
@@ -218,14 +222,24 @@ jobs:
             python: '3.8'
           - ansible: 'devel'
             python: '3.9'
+          - ansible: 'stable-2.22'
+            python: '3.8'
+          - ansible: 'stable-2.22'
+            python: '3.9'
+          - ansible: 'stable-2.21'
+            python: '3.15'
           - ansible: 'stable-2.21'
             python: '3.8'
           - ansible: 'stable-2.21'
             python: '3.9'
           - ansible: 'stable-2.20'
+            python: '3.15'
+          - ansible: 'stable-2.20'
             python: '3.8'
           - ansible: 'stable-2.20'
             python: '3.9'
+          - ansible: 'stable-2.19'
+            python: '3.15'
           - ansible: 'stable-2.19'
             python: '3.14'
           - ansible: 'stable-2.19'
@@ -233,11 +247,15 @@ jobs:
           - ansible: 'stable-2.19'
             python: '3.9'
           - ansible: 'stable-2.18'
+            python: '3.15'
+          - ansible: 'stable-2.18'
             python: '3.14'
           - ansible: 'stable-2.18'
             python: '3.8'
           - ansible: 'stable-2.18'
             python: '3.9'
+          - ansible: 'stable-2.17'
+            python: '3.15'
           - ansible: 'stable-2.17'
             python: '3.14'
           - ansible: 'stable-2.17'
@@ -269,7 +287,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.ansible == 'devel' && '3.14' || '3.12' }}
+          python-version: ${{ (matrix.ansible == 'devel' || matrix.ansible == 'stable-2.22') && '3.14' || '3.12' }}
           # FIXME: remove old ansible versions
 
       - name: Get Vault versions
@@ -332,7 +350,7 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.20
+          - stable-2.22
           - devel
         delete_canaries:
           - true
@@ -346,7 +364,7 @@ jobs:
         exclude:
           - ansible: devel
             delete_canaries: false
-          - ansible: stable-2.20
+          - ansible: stable-2.22
             delete_canaries: true
 
     steps:
