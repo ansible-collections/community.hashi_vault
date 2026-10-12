@@ -31,7 +31,8 @@ class ModuleDocFragment(object):
         version_added: 1.1.0
       ca_cert:
         description:
-          - Path to certificate to use for authentication.
+          - Path to a CA certificate bundle used to validate the Vault server certificate on HTTPS connections.
+          - The path is passed to the HVAC client as the TLS verify value. It is not a client certificate used to authenticate to Vault.
           - If not specified by any other means, the C(VAULT_CACERT) environment variable will be used.
         aliases: [ cacert ]
         type: str
