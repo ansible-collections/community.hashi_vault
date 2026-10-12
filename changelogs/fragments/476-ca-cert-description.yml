@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - connection options - describe ``ca_cert`` as the CA bundle used to validate Vault HTTPS connections, not as a client authentication certificate (https://github.com/ansible-collections/community.hashi_vault/issues/476).
