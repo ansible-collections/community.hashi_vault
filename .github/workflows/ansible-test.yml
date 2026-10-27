@@ -306,6 +306,7 @@ jobs:
         uses: ./.github/actions/collection-via-git
         with:
           collection: community.postgresql
+          ref: 4.2.0  # TODO: remove this and fix the tests
 
       - name: Pull Ansible test images
         timeout-minutes: 5
@@ -408,6 +409,7 @@ jobs:
         uses: ./.github/actions/collection-via-git
         with:
           collection: community.postgresql
+          ref: 4.2.0  # TODO: remove this and fix the tests
 
       - name: Pull Ansible test images
         timeout-minutes: 5
