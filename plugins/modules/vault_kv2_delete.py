@@ -30,6 +30,7 @@ attributes:
 seealso:
   - module: community.hashi_vault.vault_kv2_get
   - module: community.hashi_vault.vault_kv2_write
+  - module: community.hashi_vault.vault_kv2_delete_all
   - name: KV2 Secrets Engine
     description: Documentation for the Vault KV secrets engine, version 2.
     link: https://www.vaultproject.io/docs/secrets/kv/kv-v2
