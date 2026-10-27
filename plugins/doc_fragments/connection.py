@@ -117,6 +117,10 @@ class ModuleDocFragment(object):
             - name: ansible_hashi_vault_ca_cert
               version_added: 1.2.0
         validate_certs:
+          ini:
+            - section: hashi_vault_collection
+              key: validate_certs
+              version_added: 7.3.0
           vars:
             - name: ansible_hashi_vault_validate_certs
               version_added: 1.2.0
