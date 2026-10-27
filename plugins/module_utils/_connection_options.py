@@ -67,6 +67,8 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
     _LATE_BINDING_ENV_VAR_OPTIONS = {
         'url': dict(env=['VAULT_ADDR'], required=True),
         'ca_cert': dict(env=['VAULT_CACERT']),
+        'cert_auth_public_key': dict(env=['VAULT_CLIENT_CERT']),
+        'cert_auth_private_key': dict(env=['VAULT_CLIENT_KEY']),
         'namespace': dict(env=['VAULT_NAMESPACE']),
     }
 
@@ -105,6 +107,11 @@ class HashiVaultConnectionOptions(HashiVaultOptionGroupBase):
         # our transformed ca_cert value will become the verify parameter for the hvac client
         hvopts = self._options.get_filtered_options(_filter, *self.OPTIONS)
         hvopts['verify'] = self._conopt_verify
+
+        cert_auth_public_key = self._options.get_option_default('cert_auth_public_key')
+        cert_auth_private_key = self._options.get_option_default('cert_auth_private_key')
+        if cert_auth_public_key is not None and cert_auth_private_key is not None:
+            hvopts['cert'] = (cert_auth_public_key, cert_auth_private_key)
 
         retry_action = hvopts.pop('retry_action')
         if 'retries' in hvopts:
