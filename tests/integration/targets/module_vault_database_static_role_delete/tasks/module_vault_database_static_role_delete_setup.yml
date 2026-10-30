@@ -1,0 +1,15 @@
+---
+- name: Configuration tasks
+  module_defaults:
+    vault_ci_token_create: "{{ vault_plugins_module_defaults_common }}"
+  block:
+    - name: Create a test non-root token
+      vault_ci_token_create:
+        policies: [policy-database-all]
+      register: user_token_cmd
+
+    # role5 is created by setup_vault_configure_database and is used by other
+    # targets, so it is re-created after each successful delete below.
+    - name: Set the static role to be deleted
+      ansible.builtin.set_fact:
+        static_role_name: role5

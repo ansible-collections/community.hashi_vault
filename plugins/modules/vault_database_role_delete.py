@@ -20,7 +20,7 @@ requirements:
 description:
   - L(Delete a role definition,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#delete-a-role).
 notes:
-  - Applies to both static and dynamic roles.
+  - Only deletes dynamic roles. Use M(community.hashi_vault.vault_database_static_role_delete) to delete static roles.
   - This module always reports C(changed) status because it cannot guarantee idempotence.
   - Use C(changed_when) to control that in cases where the operation is known to not change state.
 attributes:
@@ -36,7 +36,7 @@ extends_documentation_fragment:
   - community.hashi_vault.engine_mount
 options:
   role_name:
-    description: The name of the role to rotate credentials for.
+    description: The name of the role to delete.
     type: str
     required: True
 """
