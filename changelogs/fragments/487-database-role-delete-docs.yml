@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - vault_database_role_delete - the module documentation wrongly stated that it applies to both static and dynamic roles; it only deletes dynamic roles. Use the new ``community.hashi_vault.vault_database_static_role_delete`` module to delete static roles (https://github.com/ansible-collections/community.hashi_vault/issues/487).

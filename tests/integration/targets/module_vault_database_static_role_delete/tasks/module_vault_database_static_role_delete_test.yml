@@ -1,0 +1,113 @@
+---
+- name: Var block
+  vars:
+    user_token: "{{ user_token_cmd.result.auth.client_token }}"
+  module_defaults:
+    community.hashi_vault.vault_database_static_role_delete: &defaults
+      url: "{{ vault_test_server_http }}"
+      auth_method: token
+      token: "{{ user_token }}"
+      token_validate: true
+      timeout: 5
+    vault_ci_read: "{{ vault_plugins_module_defaults_common }}"
+    vault_ci_write: "{{ vault_plugins_module_defaults_common }}"
+  block:
+    - name: Test database static role delete [check mode]
+      register: db_static_role_delete
+      check_mode: true
+      community.hashi_vault.vault_database_static_role_delete:
+        engine_mount_point: DOES NOT MATTER
+        role_name: DOES NOT MATTER
+
+    - name: Check [check mode]
+      ansible.builtin.assert: &success
+        that:
+          - db_static_role_delete is changed
+
+    - name: Test database static role delete (explicit mount - invalid, role_name)
+      register: db_static_role_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_static_role_delete:
+        engine_mount_point: NOT REAL
+        role_name: "{{ static_role_name }}"
+
+    - name: Check (explicit mount - invalid, role_name)
+      ansible.builtin.assert:
+        that:
+          - db_static_role_delete is failed
+          - db_static_role_delete.msg is search('Permission Denied')
+
+    - name: Test database static role delete (explicit mount, role_name - invalid)
+      register: db_static_role_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_static_role_delete:
+        engine_mount_point: database
+        role_name: NOT REAL
+
+    - name: Check (explicit mount, role_name - invalid)
+      ansible.builtin.assert: &failure_invalid_path
+        that:
+          - db_static_role_delete is failed
+          - db_static_role_delete.msg is search('Invalid or missing path')
+
+    - name: Test database static role delete (explicit mount, role_name)
+      register: db_static_role_delete
+      community.hashi_vault.vault_database_static_role_delete:
+        engine_mount_point: database
+        role_name: "{{ static_role_name }}"
+
+    - name: Check (explicit mount, role_name)
+      ansible.builtin.assert: *success
+
+    - name: Read the deleted static role (explicit mount)
+      register: deleted_static_role
+      vault_ci_read:
+        path: "database/static-roles/{{ static_role_name }}"
+
+    - name: Check that the static role is gone (explicit mount)
+      ansible.builtin.assert:
+        that:
+          - deleted_static_role.result is none
+
+    - name: Re-create the static role (explicit mount)
+      vault_ci_write:
+        path: "database/static-roles/{{ static_role_name }}"
+        data:
+          db_name: "{{ vault_database_connection_name }}"
+          username: "{{ static_role_name }}"
+          rotation_period: 24h
+
+    - name: Test database static role delete (default mount, role_name - invalid)
+      register: db_static_role_delete
+      ignore_errors: true
+      community.hashi_vault.vault_database_static_role_delete:
+        role_name: NOT REAL
+
+    - name: Check (default mount, role_name - invalid)
+      ansible.builtin.assert: *failure_invalid_path
+
+    - name: Test database static role delete (default mount, role_name)
+      register: db_static_role_delete
+      community.hashi_vault.vault_database_static_role_delete:
+        role_name: "{{ static_role_name }}"
+
+    - name: Check (default mount, role_name)
+      ansible.builtin.assert: *success
+
+    - name: Read the deleted static role (default mount)
+      register: deleted_static_role
+      vault_ci_read:
+        path: "database/static-roles/{{ static_role_name }}"
+
+    - name: Check that the static role is gone (default mount)
+      ansible.builtin.assert:
+        that:
+          - deleted_static_role.result is none
+
+    - name: Re-create the static role (default mount)
+      vault_ci_write:
+        path: "database/static-roles/{{ static_role_name }}"
+        data:
+          db_name: "{{ vault_database_connection_name }}"
+          username: "{{ static_role_name }}"
+          rotation_period: 24h
