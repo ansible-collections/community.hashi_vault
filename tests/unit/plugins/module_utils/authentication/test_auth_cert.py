@@ -87,3 +87,17 @@ class TestAuthCert(object):
 
         assert response["auth"]["client_token"] == cert_login_response["auth"]["client_token"]
         assert (client.token == cert_login_response["auth"]["client_token"]) is use_token
+
+    def test_auth_cert_authenticate_no_cert_verification(self, auth_cert, client, adapter):
+        # hvac refuses cert login when there is no cacert and the client does not verify certificates
+        # (validate_certs: false or VAULT_SKIP_VERIFY); the auth method should say so clearly (issue #456)
+        adapter.set_option("cert_auth_public_key", "/fake/path")
+        adapter.set_option("cert_auth_private_key", "/fake/path")
+        adapter.set_option("role_id", None)
+        adapter.set_option("mount_point", None)
+
+        hvac_error = client.auth.cert.CertificateAuthError("cacert must be True, a file_path, or valid CA Certificate.")
+
+        with mock.patch.object(client.auth.cert, "login", side_effect=hvac_error):
+            with pytest.raises(HashiVaultValueError, match=r"validate_certs"):
+                auth_cert.authenticate(client)
