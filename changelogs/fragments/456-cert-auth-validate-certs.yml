@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cert auth method - authenticating with ``auth_method=cert`` while certificate validation is turned off (``validate_certs=false`` or ``VAULT_SKIP_VERIFY``) failed with a confusing error from the ``hvac`` library; it now fails with a clear message that cert auth requires certificate validation and how to fix it (https://github.com/ansible-collections/community.hashi_vault/issues/456).
