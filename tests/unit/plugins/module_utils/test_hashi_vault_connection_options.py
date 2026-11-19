@@ -31,6 +31,7 @@ CONNECTION_OPTIONS = {
     'timeout': None,
     'retries': None,
     'retry_action': 'warn',
+    'headers': None,
 }
 
 
@@ -270,3 +271,57 @@ class TestHashiVaultConnectionOptions(object):
 
         with pytest.raises(HashiVaultValueError, match=r'Required option url was not set'):
             connection_options.process_connection_options()
+
+    # headers tests
+    # headers can be specified as a dictionary of custom HTTP headers
+    # to include in every request to Vault
+
+    @pytest.mark.parametrize('opt_headers', [
+        None,
+        {'X-Custom-Header': 'custom-value'},
+        {'CF-Access-Client-Id': 'client-id', 'CF-Access-Client-Secret': 'client-secret'},
+    ])
+    def test_get_hvac_connection_options_headers_only(self, connection_options, adapter, opt_headers):
+        """Test that headers create a session when no retries are configured"""
+        adapter.set_option('headers', opt_headers)
+
+        connection_options.process_connection_options()
+        opts = connection_options.get_hvac_connection_options()
+
+        # headers should not appear directly in opts
+        assert 'headers' not in opts
+
+        if opt_headers:
+            # session should be created for headers
+            assert 'session' in opts
+            assert isinstance(opts['session'], Session)
+            # verify headers are set on the session
+            for key, value in opt_headers.items():
+                assert opts['session'].headers.get(key) == value
+        else:
+            # no session created when no headers and no retries
+            assert 'session' not in opts
+
+    @pytest.mark.parametrize('opt_headers', [
+        {'X-Custom-Header': 'custom-value'},
+        {'CF-Access-Client-Id': 'client-id', 'CF-Access-Client-Secret': 'client-secret'},
+    ])
+    @pytest.mark.parametrize('opt_retries', [2, {'total': 3}])
+    def test_get_hvac_connection_options_headers_with_retries(self, connection_options, adapter, opt_headers, opt_retries):
+        """Test that headers are added to session when retries are also configured"""
+        adapter.set_option('headers', opt_headers)
+        adapter.set_option('retries', opt_retries)
+
+        connection_options.process_connection_options()
+        opts = connection_options.get_hvac_connection_options()
+
+        # headers should not appear directly in opts
+        assert 'headers' not in opts
+
+        # session should be created (from retries)
+        assert 'session' in opts
+        assert isinstance(opts['session'], Session)
+
+        # verify headers are set on the session
+        for key, value in opt_headers.items():
+            assert opts['session'].headers.get(key) == value
