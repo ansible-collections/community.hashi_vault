@@ -1,0 +1,11 @@
+---
+major_changes:
+  - vault_approle_files - new module and action plugin that writes AppRole credentials
+    (``role_id``, ``secret_id``, ``secret_id_accessor``) to files on the managed host.
+    All Vault API calls run on the control node; the managed host requires no network
+    access to Vault and no ``hvac`` installation.
+    Credentials are validated on each run and regenerated only when the existing
+    ``secret_id`` is no longer active.
+    Supports ``mode``, ``owner``, and ``group`` for file attribute enforcement,
+    and an optional ``role_params`` dict to pre-flight-check the role's configuration
+    before obtaining credentials.
